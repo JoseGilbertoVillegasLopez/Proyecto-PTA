@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Personal index{% endblock %}
+
+{% block body %}
+    <h1>Personal index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Ap_paterno</th>
+                <th>Ap_materno</th>
+                <th>Correo</th>
+                <th>Activo</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for personal in personals %}
+            <tr>
+                <td>{{ personal.id }}</td>
+                <td>{{ personal.nombre }}</td>
+                <td>{{ personal.apPaterno }}</td>
+                <td>{{ personal.apMaterno }}</td>
+                <td>{{ personal.correo }}</td>
+                <td>{{ personal.activo ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_personal_show', {'id': personal.id}) }}">show</a>
+                    <a href="{{ path('app_personal_edit', {'id': personal.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_personal_new') }}">Create new</a>
+{% endblock %}
