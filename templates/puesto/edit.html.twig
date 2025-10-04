@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Puesto{% endblock %}
+
+{% block body %}
+    <h1>Edit Puesto</h1>
+
+    {{ include('puesto/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_puesto_index') }}">back to list</a>
+
+    {{ include('puesto/_delete_form.html.twig') }}
+{% endblock %}

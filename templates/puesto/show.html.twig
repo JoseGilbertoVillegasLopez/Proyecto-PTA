@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Puesto{% endblock %}
+
+{% block body %}
+    <h1>Puesto</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ puesto.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ puesto.nombre }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_puesto_index') }}">back to list</a>
+
+    <a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}">edit</a>
+
+    {{ include('puesto/_delete_form.html.twig') }}
+{% endblock %}
