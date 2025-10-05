@@ -7,6 +7,7 @@ use App\Form\UsuarioType;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,6 +15,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/usuario')]
 final class UsuarioController extends AbstractController
 {
+private UserPasswordHasherInterface $passwordHasher;
+
+public function __construct(UserPasswordHasherInterface $passwordHasher)
+{
+    $this->passwordHasher = $passwordHasher;
+}
+
+    
     #[Route(name: 'app_usuario_index', methods: ['GET'])]
     public function index(UsuarioRepository $usuarioRepository): Response
     {
@@ -31,6 +40,8 @@ final class UsuarioController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->asignarRolSegunPuesto($usuario);
+            $plain = $form->get('plainPassword')->getData(); // obtenemos la contraseña en texto plano del formulario
+            $this->aplicarHashPassword($usuario, $plain); // aplicamos el hash a la contraseña
             $entityManager->persist($usuario);
             $entityManager->flush();
 
@@ -121,4 +132,15 @@ final class UsuarioController extends AbstractController
             $usuario->setRol('ROLE_USER');
         }
     }
+
+    private function aplicarHashPassword(Usuario $usuario, ?string $plainPassword): void
+{
+    if (!$plainPassword) {
+        return;
+    }
+    $hash = $this->passwordHasher->hashPassword($usuario, $plainPassword);
+    $usuario->setPassword($hash);
+}
+
+    
 }
