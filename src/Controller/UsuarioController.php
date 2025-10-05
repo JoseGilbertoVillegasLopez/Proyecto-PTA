@@ -30,6 +30,7 @@ final class UsuarioController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->asignarRolSegunPuesto($usuario);
             $entityManager->persist($usuario);
             $entityManager->flush();
 
@@ -57,6 +58,7 @@ final class UsuarioController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->asignarRolSegunPuesto($usuario);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_usuario_index', [], Response::HTTP_SEE_OTHER);
@@ -77,5 +79,46 @@ final class UsuarioController extends AbstractController
         }
 
         return $this->redirectToRoute('app_usuario_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+
+    private function asignarRolSegunPuesto(Usuario $usuario): void
+    {
+        //obtengo el puesto del usuario
+        $puesto = $usuario->getPersonal()?->getPuesto(); 
+        //obtengo el nombre del puesto en mayusculas y sin espacios al inicio o final
+        $nombre = mb_strtoupper(trim($puesto?->getNombre()?? ''), 'UTF-8'); 
+        //remuevo acentos para mayor compatibilidad
+        $nombre = str_replace(['Á','É','Í','Ó','Ú'], ['A','E','I','O','U'], $nombre);
+
+
+        //asigno el rol segun el nombre del puesto
+         if ($nombre === 'DIRECCION GENERAL'){
+            $usuario->setRol('ROLE_DIRECCION_GENERAL');
+         }
+        elseif (in_array($nombre, [
+            'DIRECCION ACADEMICA',
+            'DIRECCION DE PLANEACION Y VINCULACION',
+            'DIRECCION SUBDIRECCION DE SERVICIOS ADMINISTRATIVOS'
+        ])) {
+                $usuario->setRol('ROLE_DIRECCION');
+            }
+        elseif (in_array($nombre, [
+            'SUBDIRECCION ACADEMICA',
+            'SUBDIRECCION DE POSGRADO E INVESTIGACION',
+            'SUBDIRECCION DE VINCULACION',
+            'SUBDIRECCION DE PLANEACION'
+        ])) {
+                $usuario->setRol('ROLE_SUBDIRECCION');
+            }
+        elseif (in_array($nombre, [
+            'DEV',
+            'ADMIN'
+        ])) {
+                $usuario->setRol('ROLE_ADMIN');
+            }
+        else{
+            $usuario->setRol('ROLE_USER');
+        }
     }
 }

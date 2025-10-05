@@ -22,8 +22,8 @@ class Usuario
     #[ORM\Column(length: 255)]
     private ?string $rol = null;
 
-    #[ORM\Column]
-    private ?bool $activo = null;
+    #[ORM\Column (options: ['default' => true])]
+    private ?bool $activo = true;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]

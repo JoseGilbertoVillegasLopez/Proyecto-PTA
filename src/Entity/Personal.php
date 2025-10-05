@@ -124,4 +124,10 @@ class Personal
 
         return $this;
     }
+
+    //agregando funcion para mostrar el nombre completo en el formulario de Usuario
+    public function __toString(): string
+    {
+        return $this->nombre . ' ' . $this->ap_paterno . ' ' . $this->ap_materno;
+    }
 }
