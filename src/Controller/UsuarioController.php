@@ -15,9 +15,9 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/usuario')]
 final class UsuarioController extends AbstractController
 {
-private UserPasswordHasherInterface $passwordHasher;
+private UserPasswordHasherInterface $passwordHasher; // inyectamos el servicio de hasheo de contraseñas
 
-public function __construct(UserPasswordHasherInterface $passwordHasher)
+public function __construct(UserPasswordHasherInterface $passwordHasher) // constructor para inyectar el servicio de hasheo de contraseñas 
 {
     $this->passwordHasher = $passwordHasher;
 }

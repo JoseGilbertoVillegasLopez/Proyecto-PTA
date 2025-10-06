@@ -3,15 +3,14 @@
 {% block title %}Usuario index{% endblock %}
 
 {% block body %}
-    <h1>Usuario index</h1>
+    <h1>Lista de usuarios</h1>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Personal</th>
                 <th>Usuario</th>
-                <th>Password</th>
-                <th>Rol</th>
                 <th>Activo</th>
                 <th>actions</th>
             </tr>
@@ -20,22 +19,21 @@
         {% for usuario in usuarios %}
             <tr>
                 <td>{{ usuario.id }}</td>
+                <td>{{ usuario.personal ? usuario.personal: '' }}</td>
                 <td>{{ usuario.usuario }}</td>
-                <td>{{ usuario.password }}</td>
-                <td>{{ usuario.rol }}</td>
-                <td>{{ usuario.activo ? 'Yes' : 'No' }}</td>
+                <td>{{ usuario.activo ? 'Si' : 'No' }}</td>
                 <td>
-                    <a href="{{ path('app_usuario_show', {'id': usuario.id}) }}">show</a>
-                    <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}">edit</a>
+                    <a href="{{ path('app_usuario_show', {'id': usuario.id}) }}">Ver</a>
+                    <a href="{{ path('app_usuario_edit', {'id': usuario.id}) }}">Editar</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="6">no records found</td>
+                <td colspan="6">No existen registros en la base de datos</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_usuario_new') }}">Create new</a>
+    <a href="{{ path('app_usuario_new') }}">Crear usuario</a>
 {% endblock %}

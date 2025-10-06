@@ -4,10 +4,17 @@ namespace App\Entity;
 
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\Mapping as ORM;
+// Esta línea le dice a PHP:
+//“Trae (importa) esta interfaz llamada PasswordAuthenticatedUserInterface desde el componente de seguridad de Symfony”.
+//En otras palabras, estás importando una interfaz predefinida de Symfony que define el contrato para cualquier entidad que maneje contraseñas seguras 
+// (por ejemplo, un usuario que inicia sesión).
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UsuarioRepository::class)]
 
+//Esta línea indica que tu clase Usuario “implementa” esa interfaz.
+//👉 “Implementar” significa que aceptas las reglas definidas en la interfaz, y por tanto debes incluir los métodos obligatorios que esta interfaz declara.
+//En este caso, PasswordAuthenticatedUserInterface te obliga a tener, al menos, este método: getPassword(): ? string; que ya biene por defecto en la tabla.
 class Usuario implements PasswordAuthenticatedUserInterface
 
 {

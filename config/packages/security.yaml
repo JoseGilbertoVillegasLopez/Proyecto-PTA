@@ -1,10 +1,10 @@
 security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        App\Entity\Usuario:
-                algorithm: argon2id
-                memory_cost: 65536
-                time_cost: 4
+        App\Entity\Usuario: #definimos el nombre de la entidad que implementa UserInterface para el cifrado de contraseñas
+                algorithm: argon2id #algoritmo de cifrado
+                memory_cost: 65536 # coste de memoria que se refiere a la cantidad de memoria RAM que se utilizará para calcular el hash
+                time_cost: 4 # coste de tiempo que se refiere a la cantidad de iteraciones que se realizarán para calcular el hash
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
