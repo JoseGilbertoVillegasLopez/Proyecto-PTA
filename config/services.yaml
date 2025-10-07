@@ -6,11 +6,11 @@
 
 
 parameters: # aqui van los parametros de configuracion que se usaran en los servicios
-    app.mail.from_email: 'no-reply@tu-dominio.edu.mx' #este campo es el que envia los correos
-    app.mail.from_name:  'PTA – Notificaciones'     #este campo es el nombre que aparece en el correo
-    app.mail.support:    'soporte@tu-dominio.edu.mx'    #este campo es el correo al que los usuarios mandaran sus mensajes si contestan el correo
-    app.app_name:        'PTA – Sistema Interno'    #este campo es el nombre de la aplicacion
-    app.login_url:       'http://intranet/pta/login' #este campo es la url de inicio de sesion
+    app.mail.from_email: '%env(APP_MAIL_FROM_EMAIL)%'
+    app.mail.from_name:  '%env(APP_MAIL_FROM_NAME)%'
+    app.mail.support:    '%env(APP_MAIL_SUPPORT)%'
+    app.app_name:        '%env(APP_NAME)%'
+    app.login_url:       '%env(APP_LOGIN_URL)%'
 services:
 App\Service\WelcomeMailer:
     arguments: #aqui van los argumentos que se le pasan al servicio WelcomeMailer para que funcione
