@@ -10,6 +10,8 @@ namespace App\Service;
 use App\Entity\Usuario;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Mailer\Messenger\SendEmailMessage;
 use Symfony\Component\Mime\Address;
 
 final class WelcomeMailer # aqui se define la clase del servicio que se usará para enviar el correo de bienvenida, sirve para inyectar el
@@ -17,6 +19,7 @@ final class WelcomeMailer # aqui se define la clase del servicio que se usará p
 {
     public function __construct(
         private MailerInterface $mailer, # inyectamos el servicio de mailer de symfony
+        private MessageBusInterface $bus, # inyectamos el servicio de bus de mensajería para enviar correos de forma asíncrona
         private string $fromEmail, # la dirección de correo del remitente
         private string $fromName, # el nombre del remitente
         private string $soporteEmail, # la dirección de correo de soporte
@@ -50,6 +53,6 @@ final class WelcomeMailer # aqui se define la clase del servicio que se usará p
             ]);
 
         // Con MAILER_DSN = null://null no saldrá realmente; más adelante activamos Brevo.
-        $this->mailer->send($email);
+        $this->bus->dispatch(new SendEmailMessage($email));
     }
 }
