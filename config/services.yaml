@@ -3,9 +3,26 @@
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
-parameters:
 
+
+parameters: # aqui van los parametros de configuracion que se usaran en los servicios
+    app.mail.from_email: 'no-reply@tu-dominio.edu.mx' #este campo es el que envia los correos
+    app.mail.from_name:  'PTA – Notificaciones'     #este campo es el nombre que aparece en el correo
+    app.mail.support:    'soporte@tu-dominio.edu.mx'    #este campo es el correo al que los usuarios mandaran sus mensajes si contestan el correo
+    app.app_name:        'PTA – Sistema Interno'    #este campo es el nombre de la aplicacion
+    app.login_url:       'http://intranet/pta/login' #este campo es la url de inicio de sesion
 services:
+App\Service\WelcomeMailer:
+    arguments: #aqui van los argumentos que se le pasan al servicio WelcomeMailer para que funcione
+      $fromEmail: '%app.mail.from_email%' #este campo es el que envia los correos
+      $fromName:  '%app.mail.from_name%' # este campo es el nombre que aparece en el correo
+      $soporteEmail: '%app.mail.support%' # este campo es el correo al que los usuarios mandaran sus mensajes si contestan el correo
+      $appName: '%app.app_name%' # este campo es el nombre de la aplicacion
+      $loginUrl: '%app.login_url%' # este campo es la url de inicio de sesion
+
+
+
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

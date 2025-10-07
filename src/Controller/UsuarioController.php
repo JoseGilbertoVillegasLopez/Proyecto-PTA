@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\WelcomeMailer;
 use App\Entity\Usuario;
 use App\Form\UsuarioType;
 use App\Repository\UsuarioRepository;
@@ -18,10 +19,14 @@ final class UsuarioController extends AbstractController
 {
 private UserPasswordHasherInterface $passwordHasher; // inyectamos el servicio de hasheo de contraseñas
 
-public function __construct(UserPasswordHasherInterface $passwordHasher) // constructor para inyectar el servicio de hasheo de contraseñas 
+public function __construct(
+    UserPasswordHasherInterface $passwordHasher, 
+    private WelcomeMailer $welcomeMailer,) // constructor para inyectar el servicio de hasheo de contraseñas 
 {
     $this->passwordHasher = $passwordHasher;
+    
 }
+
 
     
     #[Route(name: 'app_usuario_index', methods: ['GET'])]
@@ -45,7 +50,8 @@ public function __construct(UserPasswordHasherInterface $passwordHasher) // cons
             $this->aplicarHashPassword($usuario, $plain); // aplicamos el hash a la contraseña
             $entityManager->persist($usuario);
             $entityManager->flush();
-
+            $this->welcomeMailer->sendBienvenida($usuario, $plain); // enviamos el correo de bienvenida con la contraseña temporal
+             $this->addFlash('success', 'Usuario creado exitosamente y correo de bienvenida enviado.'); // este linea muestra un mensaje flash de éxito
             return $this->redirectToRoute('app_usuario_index', [], Response::HTTP_SEE_OTHER);
         }
 
