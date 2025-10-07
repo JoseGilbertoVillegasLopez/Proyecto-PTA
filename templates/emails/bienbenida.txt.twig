@@ -1,0 +1,22 @@
+{# templates/emails/bienvenida.txt.twig #}
+{{ appName }} — Bienvenida
+{{ fecha|date('d/m/Y H:i') }}
+
+Hola, {{ nombreCompleto|default('Usuario') }}
+
+Bienvenido/a a {{ appName }}. Estos son tus datos:
+
+- Puesto: {{ puesto|default('N/D') }}
+- Departamento: {{ departamento|default('N/D') }}
+- Usuario: {{ usuario }}
+{% if passwordTemporal is defined and passwordTemporal -%}
+- Contraseña temporal: {{ passwordTemporal }}
+{% endif %}
+
+Accede aquí: {{ loginUrl }}
+
+{% if passwordTemporal is defined and passwordTemporal -%}
+IMPORTANTE: Cambia tu contraseña al iniciar sesión.
+{% endif %}
+
+Soporte: {{ soporteEmail }}
