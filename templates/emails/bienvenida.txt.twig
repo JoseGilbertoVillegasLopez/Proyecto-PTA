@@ -4,8 +4,7 @@
 
 Hola, {{ nombreCompleto|default('Usuario') }}
 
-Bienvenido/a a {{ appName }}. Estos son tus datos:
-
+Bienvenido/a a {{ appName }}.Se a creado un usuario para ti en el sistema para la gestion de PTA.
 - Puesto: {{ puesto|default('N/D') }}
 - Departamento: {{ departamento|default('N/D') }}
 - Usuario: {{ usuario }}
@@ -16,7 +15,6 @@ Bienvenido/a a {{ appName }}. Estos son tus datos:
 Accede aquí: {{ loginUrl }}
 
 {% if passwordTemporal is defined and passwordTemporal -%}
-IMPORTANTE: Cambia tu contraseña al iniciar sesión.
 {% endif %}
 
 Soporte: {{ soporteEmail }}

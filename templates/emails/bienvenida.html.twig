@@ -25,25 +25,20 @@
                 <h2 style="margin:0 0 12px 0;">Hola, {{ nombreCompleto|default('Usuario') }}</h2>
 
                 <p style="margin:0 0 16px 0;line-height:1.5;">
-                  Bienvenido/a a <strong>{{ appName }}</strong>. A continuación encontrarás tu información de acceso.
+                  Bienvenid@ a <strong>{{ appName }}</strong>. Se a creado un usuario para ti en el sistema para la gestion de PTA.
                 </p>
 
                 <table role="presentation" cellspacing="0" cellpadding="0" style="width:100%;background:#f9fafb;border:1px solid #e5e7eb;border-radius:6px;margin:8px 0 16px 0;">
                   <tr>
-                    <td style="padding:12px 16px;width:35%;color:#6b7280;">Puesto</td>
-                    <td style="padding:12px 16px;">{{ puesto|default('N/D') }}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding:12px 16px;color:#6b7280;">Departamento</td>
-                    <td style="padding:12px 16px;">{{ departamento|default('N/D') }}</td>
-                  </tr>
+                    <td style="padding:12px 16px;color:#6b7280;">Nombre Completo</td>
+                    <td style="padding:12px 16px;"><strong>{{ nombreCompleto|default('N/A') }}</strong></td>
                   <tr>
                     <td style="padding:12px 16px;color:#6b7280;">Usuario</td>
                     <td style="padding:12px 16px;"><strong>{{ usuario }}</strong></td>
                   </tr>
                   {% if passwordTemporal is defined and passwordTemporal %}
                   <tr>
-                    <td style="padding:12px 16px;color:#6b7280;">Contraseña temporal</td>
+                    <td style="padding:12px 16px;color:#6b7280;">Contraseña</td>
                     <td style="padding:12px 16px;"><strong>{{ passwordTemporal }}</strong></td>
                   </tr>
                   {% endif %}
@@ -53,12 +48,6 @@
                   Ingresa al sistema desde:
                   <a href="{{ loginUrl }}" style="color:#2563eb;">{{ loginUrl }}</a>
                 </p>
-
-                {% if passwordTemporal is defined and passwordTemporal %}
-                  <p style="margin:0 0 16px 0;color:#b45309;background:#fff7ed;border:1px solid #fde68a;padding:12px;border-radius:6px;">
-                    <strong>Importante:</strong> por seguridad, cambia tu contraseña al iniciar sesión.
-                  </p>
-                {% endif %}
 
                 <p style="margin:0 0 8px 0;color:#6b7280;">
                   Si no reconoces este correo, por favor contacta a <a href="mailto:{{ soporteEmail }}" style="color:#2563eb;">{{ soporteEmail }}</a>.
