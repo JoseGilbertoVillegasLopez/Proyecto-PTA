@@ -6,6 +6,7 @@ use App\Entity\Usuario;
 use App\Form\UsuarioType;
 use App\Repository\UsuarioRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\OrderBy;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,7 @@ public function __construct(UserPasswordHasherInterface $passwordHasher) // cons
     public function index(UsuarioRepository $usuarioRepository): Response
     {
         return $this->render('usuario/index.html.twig', [
-            'usuarios' => $usuarioRepository->findAll(),
+            'usuarios' => $usuarioRepository->findBy([],['id' => 'DESC']),
         ]);
     }
 

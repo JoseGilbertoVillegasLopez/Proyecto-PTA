@@ -25,8 +25,8 @@ class Personal
     #[ORM\Column(length: 255)]
     private ?string $correo = null;
 
-    #[ORM\Column]
-    private ?bool $activo = null;
+    #[ORM\Column (options: ['default' => true])]
+    private ?bool $activo = true;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
