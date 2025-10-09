@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Personal;
 use App\Form\PersonalType;
 use App\Repository\PersonalRepository;
+use App\Service\UserAccountManager; // <-- Importamos el servicio useracountmanager para la creación automática de usuarios
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,17 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/personal')]
 final class PersonalController extends AbstractController
 {
+    // --- Declaramos propiedad privada para el servicio UserAccountManager
+    private UserAccountManager $userAccountManager;
+
+    // --- Lo inyectamos en el constructor del controlador para poder usarlo en los métodos
+    public function __construct(UserAccountManager $userAccountManager)
+    {
+        $this->userAccountManager = $userAccountManager;
+    }
+
+
+
     #[Route(name: 'app_personal_index', methods: ['GET'])]
     public function index(PersonalRepository $personalRepository): Response
     {
@@ -32,6 +44,11 @@ final class PersonalController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($personal);
             $entityManager->flush();
+             //Llamamos al sincronizador de Usuario
+            // false = creación
+            $this->userAccountManager->syncFromPersonal($personal, false);
+             // 3️⃣ Mostramos notificación opcional
+            $this->addFlash('success', 'El personal fue creado y el usuario asociado se ha generado automáticamente.');
 
             return $this->redirectToRoute('app_personal_index', [], Response::HTTP_SEE_OTHER);
         }
