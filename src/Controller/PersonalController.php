@@ -47,8 +47,6 @@ final class PersonalController extends AbstractController
              //Llamamos al sincronizador de Usuario
             // false = creación
             $this->userAccountManager->syncFromPersonal($personal, false);
-             // 3️⃣ Mostramos notificación opcional
-            $this->addFlash('success', 'El personal fue creado y el usuario asociado se ha generado automáticamente.');
 
             return $this->redirectToRoute('app_personal_index', [], Response::HTTP_SEE_OTHER);
         }
