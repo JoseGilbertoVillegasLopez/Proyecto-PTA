@@ -14,7 +14,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Mailer\Messenger\SendEmailMessage;
 use Symfony\Component\Mime\Address;
 
-final class WelcomeMailer # aqui se define la clase del servicio que se usará para enviar el correo de bienvenida, sirve para inyectar el
+final class ActualizacionMailer # aqui se define la clase del servicio que se usará para enviar el correo de bienvenida, sirve para inyectar el
 # servicio en el controlador
 {
     public function __construct(
@@ -35,13 +35,12 @@ final class WelcomeMailer # aqui se define la clase del servicio que se usará p
         $departamento = $personal?->getDepartamento()?->getNombre() ?? 'N/D'; # obtenemos el nombre del departamento o 'N/D' si no está disponible
         $rol = $usuario->getrol();
 
-
         $email = (new TemplatedEmail()) // creamos el correo usando plantillas Twig para el cuerpo HTML y texto plano
             ->from(new Address($this->fromEmail, $this->fromName)) # configuramos el remitente del correo toamndo los datos inyectados en el constructor
             ->to(new Address($personal->getCorreo() ?? '')) # configuramos el destinatario del correo, usando el correo del personal relacionado o del usuario
             ->subject(sprintf('[%s] Bienvenido/a — Acceso a la plataforma', $this->appName)) # el asunto del correo
-            ->htmlTemplate('emails/bienvenida.html.twig') # la plantilla Twig para el cuerpo HTML del correo
-            ->textTemplate('emails/bienvenida.txt.twig') # la plantilla Twig para el cuerpo de texto plano del correo
+            ->htmlTemplate('emails/actualizacion.html.twig') # la plantilla Twig para el cuerpo HTML del correo
+            ->textTemplate('emails/actualizacion.txt.twig') # la plantilla Twig para el cuerpo de texto plano del correo
             ->context([  # los datos que se pasan a las plantillas Twig para personalizar el correo
                 'appName'         => $this->appName,
                 'fecha'           => new \DateTimeImmutable(),

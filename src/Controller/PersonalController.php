@@ -6,7 +6,8 @@ use App\Entity\Personal;
 use App\Form\PersonalType;
 use App\Form\personal\PersonalEditType;
 use App\Repository\PersonalRepository;
-use App\Service\UserAccountManager; // <-- Importamos el servicio useracountmanager para la creación automática de usuarios
+use App\Service\UserCreator; // <-- Importamos el servicio useracountmanager para la creación automática de usuarios
+use App\Service\UserUpdater;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,13 +17,16 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/personal')]
 final class PersonalController extends AbstractController
 {
-    // --- Declaramos propiedad privada para el servicio UserAccountManager
-    private UserAccountManager $userAccountManager;
+    // --- Declaramos propiedad privada para el servicio UserCreator
+    private UserCreator $userCreator;
+    // - Declaramos propiedad privada para el servicio UserUpdater
+    private UserUpdater $userUpdater;
 
     // --- Lo inyectamos en el constructor del controlador para poder usarlo en los métodos
-    public function __construct(UserAccountManager $userAccountManager)
+    public function __construct(UserCreator $userCreator, UserUpdater $userUpdater)
     {
-        $this->userAccountManager = $userAccountManager;
+        $this->userCreator = $userCreator;
+        $this->userUpdater = $userUpdater;
     }
 
 
@@ -47,7 +51,7 @@ final class PersonalController extends AbstractController
             $entityManager->flush();
              //Llamamos al sincronizador de Usuario
             // false = creación
-            $this->userAccountManager->syncFromPersonal($personal, false);
+            $this->userCreator->createFromPersonal($personal);
 
             return $this->redirectToRoute('app_personal_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -76,7 +80,7 @@ final class PersonalController extends AbstractController
             $entityManager->flush();
             //Llamamos al sincronizador de Usuario
             // false = creación
-            $this->userAccountManager->syncFromPersonal($personal, true);
+            $this->userUpdater->updateFromPersonal($personal);
             return $this->redirectToRoute('app_personal_index', [], Response::HTTP_SEE_OTHER);
         }
 
