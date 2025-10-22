@@ -3,7 +3,9 @@
 {% block title %}Edit Personal{% endblock %}
 
 {% block body %}
-    <h1>Edit Personal</h1>
+    <h1>Editar informacion de {{personal}}</h1>
+
+    <h2> Edite solo los camopos necesarios </h2>
 
     {{ include('personal/_form.html.twig', {'button_label': 'Update'}) }}
 

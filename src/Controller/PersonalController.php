@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Personal;
 use App\Form\PersonalType;
+use App\Form\personal\PersonalEditType;
 use App\Repository\PersonalRepository;
 use App\Service\UserAccountManager; // <-- Importamos el servicio useracountmanager para la creación automática de usuarios
 use Doctrine\ORM\EntityManagerInterface;
@@ -68,12 +69,14 @@ final class PersonalController extends AbstractController
     #[Route('/{id}/edit', name: 'app_personal_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Personal $personal, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(PersonalType::class, $personal);
+        $form = $this->createForm(PersonalEditType::class, $personal);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
+            //Llamamos al sincronizador de Usuario
+            // false = creación
+            $this->userAccountManager->syncFromPersonal($personal, true);
             return $this->redirectToRoute('app_personal_index', [], Response::HTTP_SEE_OTHER);
         }
 
