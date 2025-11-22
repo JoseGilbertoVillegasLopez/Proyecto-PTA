@@ -86,12 +86,7 @@ class UserUpdater
             // Enviar correo con nuevas credenciales
             $this->ActualizacionMailer->sendBienvenida($usuario, $plainPassword);
         }
-        else{
-            //devolbemos passwor con frace 'sin cambios'
-            $plainPassword= 'sin cambios';
-            // Enviar correo con nuevas credenciales
-            $this->ActualizacionMailer->sendBienvenida($usuario, $plainPassword);
-        }
+        
 
         // 5️⃣ Guardar los cambios en la base de datos
         $this->em->flush();
