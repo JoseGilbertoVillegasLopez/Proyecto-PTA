@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Personal;
-use App\Entity\Usuario;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -58,8 +58,8 @@ class UserUpdater
     public function updateFromPersonal(Personal $personal): void
     {
         // 1️⃣ Buscar el Usuario asociado al Personal
-        /** @var Usuario|null $usuario */
-        $usuario = $this->em->getRepository(Usuario::class)
+        /** @var User|null $usuario */
+        $usuario = $this->em->getRepository(User::class)
             ->findOneBy(['personal' => $personal]);
 
         // 2️⃣ Si no hay Usuario asociado, no hacemos nada

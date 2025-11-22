@@ -36,6 +36,9 @@ class Personal
     #[ORM\JoinColumn(nullable: false)]
     private ?Departamento $departamento = null;
 
+    #[ORM\OneToOne(mappedBy: 'personal')]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -129,5 +132,22 @@ class Personal
     public function __toString(): string
     {
         return $this->nombre . ' ' . $this->ap_paterno . ' ' . $this->ap_materno;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): static
+    {
+        // set the owning side of the relation if necessary
+        if ($user->getPersonal() !== $this) {
+            $user->setPersonal($this);
+        }
+
+        $this->user = $user;
+
+        return $this;
     }
 }

@@ -1,15 +1,14 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Edit Personal{% endblock %}
-
-{% block body %}
+<turbo-frame id="content">
     <h1>Editar informacion de {{personal}}</h1>
 
-    <h2> Edite solo los camopos necesarios </h2>
+        <h2> Edite solo los camopos necesarios </h2>
 
-    {{ include('admin/personal/_form.html.twig', {'button_label': 'Update'}) }}
+        {{ include('admin/personal/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_personal_index') }}">back to list</a>
+        <a href="{{ path('app_personal_index') }}">back to list</a>
 
-    {{ include('admin/personal/_delete_form.html.twig') }}
-{% endblock %}
+        {{ include('admin/personal/_delete_form.html.twig') }}
+
+</turbo-frame>
+    
+

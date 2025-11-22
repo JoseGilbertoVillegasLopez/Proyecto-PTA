@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Personal;
-use App\Entity\Usuario;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -60,7 +60,7 @@ class UserCreator
     public function createFromPersonal(Personal $personal): void
     {
         // 1️⃣ Crear nueva entidad Usuario y vincularla con el Personal
-        $usuario = new Usuario();
+        $usuario = new User();
         $usuario->setPersonal($personal);
 
         // 2️⃣ El nombre de usuario (username) será el correo del Personal

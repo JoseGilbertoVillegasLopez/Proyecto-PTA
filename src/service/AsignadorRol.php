@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Personal;
-use App\Entity\Usuario;
+use App\Entity\User;
 
 /**
  * Encapsula la lógica de asignación de roles según el Puesto del Personal.
@@ -31,12 +31,12 @@ class AsignadorRol
      * - {DEV, ADMIN} → ROLE_ADMIN
      * - Cualquier otro → ROLE_USER
      *
-     * @param Usuario  $usuario  Usuario a modificar.
+     * @param User  $usuario  Usuario a modificar.
      * @param Personal $personal Personal del cual se extrae el Puesto.
      *
      * @return void
      */
-    public function asignarRolSegunPuesto(Usuario $usuario, Personal $personal): void
+    public function asignarRolSegunPuesto(User $usuario, Personal $personal): void
     {
         // Obtiene la entidad Puesto relacionada con el Personal (puede ser null).
         $puesto = $personal->getPuesto();
@@ -51,7 +51,7 @@ class AsignadorRol
 
         // Mapeo 1: nombre exactamente "DIRECCION GENERAL"
         if ($nombre === 'DIRECCION GENERAL') {
-            $usuario->setRol('ROLE_DIRECCION_GENERAL'); // Aplica rol específico y retorna (implícito).
+            $usuario->setRoles(["ROLE_DIRECCION_GENERAL"]); // Aplica rol específico y retorna (implícito).
         }
         // Mapeo 2: Varios nombres que se consideran "dirección"
         elseif (in_array($nombre, [
@@ -59,7 +59,7 @@ class AsignadorRol
             'DIRECCION DE PLANEACION Y VINCULACION',
             'SUBDIRECCION DE SERVICIOS ADMINISTRATIVOS'
         ], true)) {
-            $usuario->setRol('ROLE_DIRECCION');
+            $usuario->setRoles(["ROLE_DIRECCION"]);
         }
         // Mapeo 3: Subdirecciones
         elseif (in_array($nombre, [
@@ -68,18 +68,18 @@ class AsignadorRol
             'SUBDIRECCION DE VINCULACION',
             'SUBDIRECCION DE PLANEACION'
         ], true)) {
-            $usuario->setRol('ROLE_SUBDIRECCION');
+            $usuario->setRoles(["ROLE_SUBDIRECCION"]);
         }
         // Mapeo 4: Perfiles técnicos/administradores globales
         elseif (in_array($nombre, [
             'DEV',
             'ADMIN'
         ], true)) {
-            $usuario->setRol('ROLE_ADMIN');
+            $usuario->setRoles(["ROLE_ADMIN"]);
         }
         // Por defecto: usuario estándar
         else{
-            $usuario->setRol('ROLE_USER');
+            $usuario->setRoles(["ROLE_USER"]);
         }
     }
 }

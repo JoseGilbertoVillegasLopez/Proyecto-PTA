@@ -1,9 +1,5 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Personal index{% endblock %}
-
-{% block body %}
-    <h1>Lista de personal</h1>
+<turbo-frame id="content">
+<h1>Lista de personal</h1>
     <a href="{{ path('app_personal_new') }}">Crear nuevo</a>
 
     <table class="table">
@@ -38,4 +34,7 @@
         </tbody>
     </table>
 
-{% endblock %}
+</turbo-frame>
+    
+
+

@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+
+<div style="display: flex; min-height: 100vh; background: #1e242b; color: white;">
+
+    <!-- ASIDE / MENU -->
+    <aside style="width: 250px; background: #11161c; padding: 20px;">
+        <h2 style="margin-bottom: 20px;">Menú</h2>
+
+        <ul style="list-style: none; padding: 0;">
+
+    <li style="margin-bottom: 15px;">
+        <a href="{{ path('app_personal_index') }}"
+           data-turbo-frame="content"
+           style="color: #0dcaf0; text-decoration: none;">
+            Personal
+        </a>
+    </li>
+
+    <li style="margin-bottom: 15px;">
+        <a href="{{ path('app_departamento_index') }}"
+           data-turbo-frame="content"
+           style="color: #0dcaf0; text-decoration: none;">
+            Departamentos
+        </a>
+    </li>
+
+    <li style="margin-bottom: 15px;">
+        <a href="{{ path('app_puesto_index') }}"
+           data-turbo-frame="content"
+           style="color: #0dcaf0; text-decoration: none;">
+            Puestos
+        </a>
+    </li>
+
+</ul>
+
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main style="flex: 1; padding: 30px;">
+    
+        <turbo-frame id="content">
+            <h1>Bienvenido al Dashboard</h1>
+            <p>Haz clic en cualquier módulo del menú para cargar su vista aquí.</p>
+        </turbo-frame>
+
+    </main>
+
+
+</div>
+
+{% endblock %}

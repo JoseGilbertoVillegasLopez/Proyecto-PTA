@@ -7,7 +7,7 @@
 # los datos los optenemos de la entidad Usuario y su relación con Personal, Puesto y Departamento.
 
 namespace App\Service;
-use App\Entity\Usuario;
+use App\Entity\User;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -27,13 +27,13 @@ final class ActualizacionMailer # aqui se define la clase del servicio que se us
         private string $loginUrl, # la URL de inicio de sesión
     ) {}
 
-    public function sendBienvenida(Usuario $usuario, ?string $passwordTemporal = null): void # el método que envía el correo de bienvenida
+    public function sendBienvenida(User $usuario, ?string $passwordTemporal = null): void # el método que envía el correo de bienvenida
     {
         $personal = $usuario->getPersonal(); # obtenemos el objeto Personal relacionado con el Usuario
         $nombreCompleto = (string) $personal; # convertimos el objeto Personal a cadena usando el método __toString definido en la entidad Personal
         $puesto = $personal?->getPuesto()?->getNombre() ?? 'N/D'; # obtenemos el nombre del puesto o 'N/D' si no está disponible
         $departamento = $personal?->getDepartamento()?->getNombre() ?? 'N/D'; # obtenemos el nombre del departamento o 'N/D' si no está disponible
-        $rol = $usuario->getrol();
+        $rol = $usuario->getroles();
 
         $email = (new TemplatedEmail()) // creamos el correo usando plantillas Twig para el cuerpo HTML y texto plano
             ->from(new Address($this->fromEmail, $this->fromName)) # configuramos el remitente del correo toamndo los datos inyectados en el constructor

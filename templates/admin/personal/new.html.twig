@@ -1,11 +1,10 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}New Personal{% endblock %}
-
-{% block body %}
+<turbo-frame id="content">
     <h1>Crear nuevo personal</h1>
 
-    {{ include('admin/personal/_form.html.twig') }}
+        {{ include('admin/personal/_form.html.twig') }}
 
-    <a href="{{ path('app_personal_index') }}">Lista de Personal</a>
-{% endblock %}
+        <a href="{{ path('app_personal_index') }}">Lista de Personal</a>
+
+</turbo-frame>
+    
+

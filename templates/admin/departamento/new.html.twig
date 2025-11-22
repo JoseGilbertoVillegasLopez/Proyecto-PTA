@@ -1,11 +1,8 @@
-{% extends 'base.html.twig' %}
+<turbo-frame id="content">
 
-{% block title %}New Departamento{% endblock %}
-
-{% block body %}
     <h1>Create new Departamento</h1>
 
     {{ include('admin/departamento/_form.html.twig') }}
 
     <a href="{{ path('app_departamento_index') }}">back to list</a>
-{% endblock %}
+</turbo-frame>
