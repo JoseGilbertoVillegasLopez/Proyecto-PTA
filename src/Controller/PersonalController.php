@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/personal')]
+#[Route('admin/personal')]
 final class PersonalController extends AbstractController
 {
     // --- Declaramos propiedad privada para el servicio UserCreator
@@ -34,7 +34,7 @@ final class PersonalController extends AbstractController
     #[Route(name: 'app_personal_index', methods: ['GET'])]
     public function index(PersonalRepository $personalRepository): Response
     {
-        return $this->render('personal/index.html.twig', [
+        return $this->render('admin/personal/index.html.twig', [
             'personals' => $personalRepository->findAll(),
         ]);
     }
@@ -56,7 +56,7 @@ final class PersonalController extends AbstractController
             return $this->redirectToRoute('app_personal_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('personal/new.html.twig', [
+        return $this->render('admin/personal/new.html.twig', [
             'personal' => $personal,
             'form' => $form,
         ]);
@@ -65,7 +65,7 @@ final class PersonalController extends AbstractController
     #[Route('/{id}', name: 'app_personal_show', methods: ['GET'])]
     public function show(Personal $personal): Response
     {
-        return $this->render('personal/show.html.twig', [
+        return $this->render('admin/personal/show.html.twig', [
             'personal' => $personal,
         ]);
     }
@@ -84,7 +84,7 @@ final class PersonalController extends AbstractController
             return $this->redirectToRoute('app_personal_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('personal/edit.html.twig', [
+        return $this->render('admin/personal/edit.html.twig', [
             'personal' => $personal,
             'form' => $form,
         ]);

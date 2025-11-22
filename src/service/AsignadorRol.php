@@ -57,7 +57,7 @@ class AsignadorRol
         elseif (in_array($nombre, [
             'DIRECCION ACADEMICA',
             'DIRECCION DE PLANEACION Y VINCULACION',
-            'DIRECCION SUBDIRECCION DE SERVICIOS ADMINISTRATIVOS'
+            'SUBDIRECCION DE SERVICIOS ADMINISTRATIVOS'
         ], true)) {
             $usuario->setRol('ROLE_DIRECCION');
         }

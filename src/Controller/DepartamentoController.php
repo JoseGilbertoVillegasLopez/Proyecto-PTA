@@ -11,13 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/departamento')]
+#[Route('admin/departamento')]
 final class DepartamentoController extends AbstractController
 {
     #[Route(name: 'app_departamento_index', methods: ['GET'])]
     public function index(DepartamentoRepository $departamentoRepository): Response
     {
-        return $this->render('departamento/index.html.twig', [
+        return $this->render('admin/departamento/index.html.twig', [
             'departamentos' => $departamentoRepository->findAll(),
         ]);
     }
@@ -36,7 +36,7 @@ final class DepartamentoController extends AbstractController
             return $this->redirectToRoute('app_departamento_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('departamento/new.html.twig', [
+        return $this->render('admin/departamento/new.html.twig', [
             'departamento' => $departamento,
             'form' => $form,
         ]);
@@ -45,7 +45,7 @@ final class DepartamentoController extends AbstractController
     #[Route('/{id}', name: 'app_departamento_show', methods: ['GET'])]
     public function show(Departamento $departamento): Response
     {
-        return $this->render('departamento/show.html.twig', [
+        return $this->render('admin/departamento/show.html.twig', [
             'departamento' => $departamento,
         ]);
     }
@@ -62,7 +62,7 @@ final class DepartamentoController extends AbstractController
             return $this->redirectToRoute('app_departamento_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('departamento/edit.html.twig', [
+        return $this->render('admin/departamento/edit.html.twig', [
             'departamento' => $departamento,
             'form' => $form,
         ]);

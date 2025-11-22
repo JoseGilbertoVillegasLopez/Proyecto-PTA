@@ -40,8 +40,8 @@ final class WelcomeMailer # aqui se define la clase del servicio que se usará p
             ->from(new Address($this->fromEmail, $this->fromName)) # configuramos el remitente del correo toamndo los datos inyectados en el constructor
             ->to(new Address($personal->getCorreo() ?? '')) # configuramos el destinatario del correo, usando el correo del personal relacionado o del usuario
             ->subject(sprintf('[%s] Bienvenido/a — Acceso a la plataforma', $this->appName)) # el asunto del correo
-            ->htmlTemplate('emails/bienvenida.html.twig') # la plantilla Twig para el cuerpo HTML del correo
-            ->textTemplate('emails/bienvenida.txt.twig') # la plantilla Twig para el cuerpo de texto plano del correo
+            ->htmlTemplate('admin/emails/bienvenida.html.twig') # la plantilla Twig para el cuerpo HTML del correo
+            ->textTemplate('admin/emails/bienvenida.txt.twig') # la plantilla Twig para el cuerpo de texto plano del correo
             ->context([  # los datos que se pasan a las plantillas Twig para personalizar el correo
                 'appName'         => $this->appName,
                 'fecha'           => new \DateTimeImmutable(),
