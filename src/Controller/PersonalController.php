@@ -40,7 +40,7 @@ final class PersonalController extends AbstractController
     }
 
     #[Route('/new', name: 'app_personal_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, PersonalRepository $personalRepository): Response
     {
         $personal = new Personal();
         $form = $this->createForm(PersonalType::class, $personal);
@@ -53,7 +53,9 @@ final class PersonalController extends AbstractController
             // false = creación
             $this->userCreator->createFromPersonal($personal);
 
-            return $this->redirectToRoute('app_personal_index', [], Response::HTTP_SEE_OTHER);
+            return $this->render('admin/personal/index.html.twig', [
+            'personals' => $personalRepository->findAll(),
+        ]);
         }
 
         return $this->render('admin/personal/new.html.twig', [
@@ -71,9 +73,9 @@ final class PersonalController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_personal_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Personal $personal, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Personal $personal, EntityManagerInterface $entityManager, PersonalRepository $personalRepository): Response
     {
-        $form = $this->createForm(PersonalEditType::class, $personal);
+        $form = $this->createForm(PersonalEditType::class, $personal,);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -81,7 +83,9 @@ final class PersonalController extends AbstractController
             //Llamamos al sincronizador de Usuario
             // false = creación
             $this->userUpdater->updateFromPersonal($personal);
-            return $this->redirectToRoute('app_personal_index', [], Response::HTTP_SEE_OTHER);
+            return $this->render('admin/personal/index.html.twig', [
+            'personals' => $personalRepository->findAll(),
+        ]);
         }
 
         return $this->render('admin/personal/edit.html.twig', [

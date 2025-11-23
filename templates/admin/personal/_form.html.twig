@@ -1,4 +1,10 @@
-{{ form_start(form) }}
+{{ form_start(form, {
+    'action': path('app_personal_new'), 
+    'attr': {
+        'data-turbo': 'false' }
+    }) }}
     {{ form_widget(form) }}
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
+<!-- Cada form debe tener su action junto con su pat correspondiente, por lo que este archivo 
+_form lo dejaremos de incluir a las vistas y usaremos uno propio para cada vista -->

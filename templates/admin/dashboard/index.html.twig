@@ -50,9 +50,8 @@ document.addEventListener("turbo:render", function () {
     <!-- CONTENIDO PRINCIPAL -->
     <main style="flex: 1; padding: 30px;">
     
-        <turbo-frame id="content">
-            <h1>Bienvenido al Dashboard</h1>
-            <p>Haz clic en cualquier módulo del menú para cargar su vista aquí.</p>
+        <turbo-frame id="content" src="{{ path('app_personal_index') }}">
+
         </turbo-frame>
 
     </main>
