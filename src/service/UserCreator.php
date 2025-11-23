@@ -83,6 +83,8 @@ class UserCreator
             $usuario->setActivo((bool) $personal->isActivo());
         }
 
+        //Indicar que se debe cambiar el password en el primer inicio de sesión
+        $usuario->setCambiarPassword(true);
         // Guardar el nuevo usuario en base de datos
         $this->em->persist($usuario);
         $this->em->flush();

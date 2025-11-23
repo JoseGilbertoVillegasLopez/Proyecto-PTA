@@ -31,14 +31,12 @@ class UserUpdater
      * @param EntityManagerInterface         $em               Maneja operaciones de base de datos.
      * @param UserPasswordHasherInterface    $passwordHasher   Hashea contraseñas seguras.
      * @param PasswordGenerator              $passwordGeneratorGenerador de contraseñas aleatorias.
-     * @param ActualizacionMailer            $ActualizacionMailer    Envía correos (asíncrono).
      * @param AsignadorRol                   $asignadorRol     Determina el rol según el puesto.
      */
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly PasswordGenerator $passwordGenerator,
-        private readonly ActualizacionMailer $ActualizacionMailer,
         private readonly AsignadorRol $asignadorRol,
     ) {}
 
@@ -73,20 +71,6 @@ class UserUpdater
 
         $usuario->setUsuario($nuevoCorreo);
         $this->asignadorRol->asignarRolSegunPuesto($usuario, $personal);
-
-        // 4️⃣ Si cambió el correo, generar nueva contraseña y reenviar credenciales
-        if ($correoAnterior !== $nuevoCorreo) {
-            // Generar nueva contraseña
-            $plainPassword = $this->passwordGenerator->generate();
-
-            // Hashear la nueva contraseña
-            $hash = $this->passwordHasher->hashPassword($usuario, $plainPassword);
-            $usuario->setPassword($hash);
-
-            // Enviar correo con nuevas credenciales
-            $this->ActualizacionMailer->sendBienvenida($usuario, $plainPassword);
-        }
-        
 
         // 5️⃣ Guardar los cambios en la base de datos
         $this->em->flush();

@@ -3,6 +3,13 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block body %}
+<script>
+document.addEventListener("turbo:render", function () {
+    if (typeof Sfjs !== "undefined") {
+        Sfjs.loadToolbar();
+    }
+});
+</script>
 
 <div style="display: flex; min-height: 100vh; background: #1e242b; color: white;">
 
@@ -52,5 +59,6 @@
 
 
 </div>
+
 
 {% endblock %}

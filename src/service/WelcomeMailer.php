@@ -33,7 +33,6 @@ final class WelcomeMailer # aqui se define la clase del servicio que se usará p
         $nombreCompleto = (string) $personal; # convertimos el objeto Personal a cadena usando el método __toString definido en la entidad Personal
         $puesto = $personal?->getPuesto()?->getNombre() ?? 'N/D'; # obtenemos el nombre del puesto o 'N/D' si no está disponible
         $departamento = $personal?->getDepartamento()?->getNombre() ?? 'N/D'; # obtenemos el nombre del departamento o 'N/D' si no está disponible
-        $rol = $usuario->getroles();
 
 
         $email = (new TemplatedEmail()) // creamos el correo usando plantillas Twig para el cuerpo HTML y texto plano
@@ -48,7 +47,6 @@ final class WelcomeMailer # aqui se define la clase del servicio que se usará p
                 'nombreCompleto'  => $nombreCompleto,
                 'puesto'          => $puesto,
                 'departamento'    => $departamento,
-                'rol'             => $rol,
                 'usuario'         => $usuario->getUsuario(),
                 'passwordTemporal'=> $passwordTemporal,
                 'loginUrl'        => $this->loginUrl,
