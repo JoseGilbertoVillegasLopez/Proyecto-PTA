@@ -62,7 +62,7 @@ class RecuperarPasswordController extends AbstractController
                  * 2️⃣ Verificar que Personal tenga un Usuario asociado
                  * -----------------------------------------------------------
                  */
-                $usuario = $personal->getUsuario();
+                $usuario = $personal->getUser();
 
                 if (!$usuario) {
                     $error = "No se encontró una cuenta asociada a ese correo.";
