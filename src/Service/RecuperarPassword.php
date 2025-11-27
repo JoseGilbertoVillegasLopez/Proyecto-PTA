@@ -51,7 +51,7 @@ class RecuperarPassword
      * @param Personal $personal La entidad Personal recién creada.
      * @return void
      */
-    public function createFromPersonal(User $usuario): void
+    public function resetPasswordForUser(User $usuario): void
     {
 
         // 4️⃣ Generar una contraseña aleatoria segura
