@@ -31,3 +31,11 @@ services:
       $soporteEmail: '%app.mail.support%'   # Correo de soporte al que los usuarios pueden responder en caso de dudas
       $appName: '%app.app_name%'            # este campo es el nombre de la aplicacion
       $loginUrl: '%app.login_url%'          # este campo es la url de inicio de sesion
+
+  App\Service\RecuperarPasswordMailer:
+    arguments: #Parámetros que Symfony inyectará al crear el servicio WelcomeMailer
+      $fromEmail: '%app.mail.from_email%'   #este campo es el que envia los correos
+      $fromName:  '%app.mail.from_name%'    # este campo es el nombre que aparece en el correo
+      $soporteEmail: '%app.mail.support%'   # Correo de soporte al que los usuarios pueden responder en caso de dudas
+      $appName: '%app.app_name%'            # este campo es el nombre de la aplicacion
+      $loginUrl: '%app.login_url%'          # este campo es la url de inicio de sesion
