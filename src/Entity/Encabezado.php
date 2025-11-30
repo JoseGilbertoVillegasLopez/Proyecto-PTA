@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EncabezadoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -32,9 +34,20 @@ class Encabezado
     #[ORM\Column]
     private ?bool $status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'pta')]
+    #[ORM\ManyToOne(inversedBy: 'pta', targetEntity: Personal::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Personal $responsable = null;
+
+    /**
+     * @var Collection<int, Indicadores>
+     */
+    #[ORM\OneToMany(targetEntity: Indicadores::class, mappedBy: 'encabezado')]
+    private Collection $indicadores;
+
+    public function __construct()
+    {
+        $this->indicadores = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -121,6 +134,36 @@ class Encabezado
     public function setResponsable(?Personal $responsable): static
     {
         $this->responsable = $responsable;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Indicadores>
+     */
+    public function getIndicadores(): Collection
+    {
+        return $this->indicadores;
+    }
+
+    public function addIndicadore(Indicadores $indicadore): static
+    {
+        if (!$this->indicadores->contains($indicadore)) {
+            $this->indicadores->add($indicadore);
+            $indicadore->setEncabezado($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIndicadore(Indicadores $indicadore): static
+    {
+        if ($this->indicadores->removeElement($indicadore)) {
+            // set the owning side to null (unless already changed)
+            if ($indicadore->getEncabezado() === $this) {
+                $indicadore->setEncabezado(null);
+            }
+        }
 
         return $this;
     }

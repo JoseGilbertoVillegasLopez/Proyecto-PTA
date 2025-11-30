@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\Encabezado;
+use App\Entity\Indicadores;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Encabezado>
+ * @extends ServiceEntityRepository<Indicadores>
  */
-class EncabezadoRepository extends ServiceEntityRepository
+class IndicadoresRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Encabezado::class);
+        parent::__construct($registry, Indicadores::class);
     }
 
     //    /**
-    //     * @return Encabezado[] Returns an array of Encabezado objects
+    //     * @return Indicadores[] Returns an array of Indicadores objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
+    //        return $this->createQueryBuilder('i')
+    //            ->andWhere('i.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
+    //            ->orderBy('i.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Encabezado
+    //    public function findOneBySomeField($value): ?Indicadores
     //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
+    //        return $this->createQueryBuilder('i')
+    //            ->andWhere('i.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()
