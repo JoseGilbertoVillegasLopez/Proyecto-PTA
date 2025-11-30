@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PersonalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PersonalRepository::class)]
@@ -38,6 +40,17 @@ class Personal
 
     #[ORM\OneToOne(mappedBy: 'personal')]
     private ?User $user = null;
+
+    /**
+     * @var Collection<int, Encabezado>
+     */
+    #[ORM\OneToMany(targetEntity: Encabezado::class, mappedBy: 'responsable')]
+    private Collection $pta;
+
+    public function __construct()
+    {
+        $this->pta = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -147,6 +160,36 @@ class Personal
         }
 
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Encabezado>
+     */
+    public function getPta(): Collection
+    {
+        return $this->pta;
+    }
+
+    public function addPtum(Encabezado $ptum): static
+    {
+        if (!$this->pta->contains($ptum)) {
+            $this->pta->add($ptum);
+            $ptum->setResponsable($this);
+        }
+
+        return $this;
+    }
+
+    public function removePtum(Encabezado $ptum): static
+    {
+        if ($this->pta->removeElement($ptum)) {
+            // set the owning side to null (unless already changed)
+            if ($ptum->getResponsable() === $this) {
+                $ptum->setResponsable(null);
+            }
+        }
 
         return $this;
     }
