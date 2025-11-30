@@ -47,9 +47,23 @@ class Personal
     #[ORM\OneToMany(targetEntity: Encabezado::class, mappedBy: 'responsable')]
     private Collection $pta;
 
+    /**
+     * @var Collection<int, Responsables>
+     */
+    #[ORM\OneToMany(targetEntity: Responsables::class, mappedBy: 'supervisor')]
+    private Collection $supervisor;
+
+    /**
+     * @var Collection<int, Responsables>
+     */
+    #[ORM\OneToMany(targetEntity: Responsables::class, mappedBy: 'aval')]
+    private Collection $aval;
+
     public function __construct()
     {
         $this->pta = new ArrayCollection();
+        $this->supervisor = new ArrayCollection();
+        $this->aval = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -188,6 +202,66 @@ class Personal
             // set the owning side to null (unless already changed)
             if ($ptum->getResponsable() === $this) {
                 $ptum->setResponsable(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Responsables>
+     */
+    public function getSupervisor(): Collection
+    {
+        return $this->supervisor;
+    }
+
+    public function addSupervisor(Responsables $supervisor): static
+    {
+        if (!$this->supervisor->contains($supervisor)) {
+            $this->supervisor->add($supervisor);
+            $supervisor->setSupervisor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSupervisor(Responsables $supervisor): static
+    {
+        if ($this->supervisor->removeElement($supervisor)) {
+            // set the owning side to null (unless already changed)
+            if ($supervisor->getSupervisor() === $this) {
+                $supervisor->setSupervisor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Responsables>
+     */
+    public function getAval(): Collection
+    {
+        return $this->aval;
+    }
+
+    public function addAval(Responsables $aval): static
+    {
+        if (!$this->aval->contains($aval)) {
+            $this->aval->add($aval);
+            $aval->setAval($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAval(Responsables $aval): static
+    {
+        if ($this->aval->removeElement($aval)) {
+            // set the owning side to null (unless already changed)
+            if ($aval->getAval() === $this) {
+                $aval->setAval(null);
             }
         }
 

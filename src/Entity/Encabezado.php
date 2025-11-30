@@ -41,12 +41,23 @@ class Encabezado
     /**
      * @var Collection<int, Indicadores>
      */
-    #[ORM\OneToMany(targetEntity: Indicadores::class, mappedBy: 'encabezado')]
+    #[ORM\OneToMany(targetEntity: Indicadores::class, mappedBy: 'encabezado', cascade: ['persist', 'remove'])]
     private Collection $indicadores;
+
+    /**
+     * @var Collection<int, Acciones>
+     */
+    #[ORM\OneToMany(targetEntity: Acciones::class, mappedBy: 'encabezado', cascade: ['persist', 'remove'])]
+    private Collection $acciones;
+
+    #[ORM\OneToOne(mappedBy: 'encabezado', cascade: ['persist', 'remove'])]
+    private ?Responsables $responsables = null;
+
 
     public function __construct()
     {
         $this->indicadores = new ArrayCollection();
+        $this->acciones = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -167,4 +178,52 @@ class Encabezado
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Acciones>
+     */
+    public function getAcciones(): Collection
+    {
+        return $this->acciones;
+    }
+
+    public function addAccione(Acciones $accione): static
+    {
+        if (!$this->acciones->contains($accione)) {
+            $this->acciones->add($accione);
+            $accione->setEncabezado($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAccione(Acciones $accione): static
+    {
+        if ($this->acciones->removeElement($accione)) {
+            // set the owning side to null (unless already changed)
+            if ($accione->getEncabezado() === $this) {
+                $accione->setEncabezado(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getResponsables(): ?Responsables
+    {
+        return $this->responsables;
+    }
+
+    public function setResponsables(Responsables $responsables): static
+    {
+        // set the owning side of the relation if necessary
+        if ($responsables->getEncabezado() !== $this) {
+            $responsables->setEncabezado($this);
+        }
+
+        $this->responsables = $responsables;
+
+        return $this;
+    }
+
 }

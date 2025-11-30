@@ -14,7 +14,7 @@ class Indicadores
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'indicadores')]
+    #[ORM\ManyToOne(inversedBy: 'indicadores', targetEntity: Encabezado::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Encabezado $encabezado = null;
 
