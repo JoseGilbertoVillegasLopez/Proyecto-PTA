@@ -24,8 +24,9 @@ class Acciones
     #[ORM\Column]
     private array $periodo = [];
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    private ?string $valorAlcanzado = null;
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $valorAlcanzado = null;
+
 
     public function getId(): ?int
     {
@@ -68,12 +69,12 @@ class Acciones
         return $this;
     }
 
-    public function getValorAlcanzado(): ?string
+    public function getValorAlcanzado(): ?array
     {
         return $this->valorAlcanzado;
     }
 
-    public function setValorAlcanzado(string $valorAlcanzado): static
+    public function setValorAlcanzado(array $valorAlcanzado): static
     {
         $this->valorAlcanzado = $valorAlcanzado;
 
