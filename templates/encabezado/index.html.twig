@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Encabezado index{% endblock %}
+
+{% block body %}
+    <h1>Encabezado index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Objetivo</th>
+                <th>Nombre</th>
+                <th>FechaCreacion</th>
+                <th>FechaConcluido</th>
+                <th>Tendencia</th>
+                <th>Status</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for encabezado in encabezados %}
+            <tr>
+                <td>{{ encabezado.id }}</td>
+                <td>{{ encabezado.objetivo }}</td>
+                <td>{{ encabezado.nombre }}</td>
+                <td>{{ encabezado.fechaCreacion ? encabezado.fechaCreacion|date('Y-m-d') : '' }}</td>
+                <td>{{ encabezado.fechaConcluido ? encabezado.fechaConcluido|date('Y-m-d') : '' }}</td>
+                <td>{{ encabezado.tendencia ? 'Yes' : 'No' }}</td>
+                <td>{{ encabezado.status ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_encabezado_show', {'id': encabezado.id}) }}">show</a>
+                    <a href="{{ path('app_encabezado_edit', {'id': encabezado.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_encabezado_new') }}">Create new</a>
+{% endblock %}
