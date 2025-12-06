@@ -1,8 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Encabezado index{% endblock %}
-
-{% block body %}
+<turbo-frame id="content">
     <h1>Encabezado index</h1>
 
     <table class="table">
@@ -42,4 +38,4 @@
     </table>
 
     <a href="{{ path('app_encabezado_new') }}">Create new</a>
-{% endblock %}
+</turbo-frame>

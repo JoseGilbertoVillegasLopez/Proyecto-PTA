@@ -15,17 +15,19 @@ class ResponsablesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('encabezado', EntityType::class, [
-                'class' => Encabezado::class,
-                'choice_label' => 'id',
-            ])
-            ->add('supervisor', EntityType::class, [
+            ->add('supervisor', EntityType::class, [ //relacion con personal
                 'class' => Personal::class,
-                'choice_label' => 'id',
+                'choice_label' => function (Personal $p) {
+    return $p->__toString();
+},
+
             ])
-            ->add('aval', EntityType::class, [
+            ->add('aval', EntityType::class, [ //relacion con personal
                 'class' => Personal::class,
-                'choice_label' => 'id',
+                'choice_label' => function (Personal $p) {
+    return $p->__toString();
+},
+
             ])
         ;
     }

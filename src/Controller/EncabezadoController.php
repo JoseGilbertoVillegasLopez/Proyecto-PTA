@@ -11,32 +11,61 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/encabezado')]
+#[Route('/admin/encabezado')]
 final class EncabezadoController extends AbstractController
 {
     #[Route(name: 'app_encabezado_index', methods: ['GET'])]
     public function index(EncabezadoRepository $encabezadoRepository): Response
     {
-        return $this->render('encabezado/index.html.twig', [
+        return $this->render('admin/encabezado/index.html.twig', [
             'encabezados' => $encabezadoRepository->findAll(),
         ]);
     }
 
     #[Route('/new', name: 'app_encabezado_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, EncabezadoRepository $encabezadoRepository): Response
     {
         $encabezado = new Encabezado();
+
+        // Inicializar el subobjeto responsables (OneToOne)
+        $responsables = new \App\Entity\Responsables();
+        $encabezado->setResponsables($responsables);
+
+        // Inicializar un indicador vacío
+        $indicador = new \App\Entity\Indicadores();
+        $encabezado->addIndicadore($indicador);
+
+        // Inicializar una acción vacía
+        $accion = new \App\Entity\Acciones();
+        $encabezado->addAccione($accion);
+
+
         $form = $this->createForm(EncabezadoType::class, $encabezado);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $encabezado->setFechaCreacion(new \DateTime());
+            $encabezado->setStatus(true);
+
+            // 🔥 asegurar relación padre → hijos
+            foreach ($encabezado->getIndicadores() as $indicador) {
+                $indicador->setEncabezado($encabezado);
+            }
+
+            foreach ($encabezado->getAcciones() as $accion) {
+                $accion->setEncabezado($encabezado);
+            }
+
             $entityManager->persist($encabezado);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_encabezado_index', [], Response::HTTP_SEE_OTHER);
+            return $this->render('admin/encabezado/index.html.twig', [
+            'encabezados' => $encabezadoRepository->findAll(),
+        ]);
         }
 
-        return $this->render('encabezado/new.html.twig', [
+        return $this->render('admin/encabezado/new.html.twig', [
             'encabezado' => $encabezado,
             'form' => $form,
         ]);
@@ -45,24 +74,40 @@ final class EncabezadoController extends AbstractController
     #[Route('/{id}', name: 'app_encabezado_show', methods: ['GET'])]
     public function show(Encabezado $encabezado): Response
     {
-        return $this->render('encabezado/show.html.twig', [
+        return $this->render('admin/encabezado/show.html.twig', [
             'encabezado' => $encabezado,
         ]);
     }
 
     #[Route('/{id}/edit', name: 'app_encabezado_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Encabezado $encabezado, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Encabezado $encabezado, EntityManagerInterface $entityManager, EncabezadoRepository $encabezadoRepository): Response
     {
+        if ($encabezado->getResponsables() === null) {
+            $encabezado->setResponsables(new \App\Entity\Responsables());
+        }
+
         $form = $this->createForm(EncabezadoType::class, $encabezado);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // 🔥 asegurar relación padre → hijos
+            foreach ($encabezado->getIndicadores() as $indicador) {
+                $indicador->setEncabezado($encabezado);
+            }
+
+            foreach ($encabezado->getAcciones() as $accion) {
+                $accion->setEncabezado($encabezado);
+            }
+            $entityManager->persist($encabezado);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_encabezado_index', [], Response::HTTP_SEE_OTHER);
+
+            return $this->render('admin/encabezado/index.html/twig', [
+            'encabezados' => $encabezadoRepository->findAll(),
+        ]);
         }
 
-        return $this->render('encabezado/edit.html.twig', [
+        return $this->render('admin/encabezado/edit.html.twig', [
             'encabezado' => $encabezado,
             'form' => $form,
         ]);

@@ -11,6 +11,10 @@ document.addEventListener("turbo:render", function () {
 });
 </script>
 
+
+
+
+
 <div style="display: flex; min-height: 100vh; background: #1e242b; color: white;">
 
     <!-- ASIDE / MENU -->
@@ -40,6 +44,14 @@ document.addEventListener("turbo:render", function () {
            data-turbo-frame="content"
            style="color: #0dcaf0; text-decoration: none;">
             Puestos
+        </a>
+    </li>
+
+    <li style="margin-bottom: 15px;">
+        <a href="{{ path('app_encabezado_index') }}"
+           data-turbo-frame="content"
+           style="color: #0dcaf0; text-decoration: none;">
+            PTA
         </a>
     </li>
 
