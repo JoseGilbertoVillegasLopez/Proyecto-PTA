@@ -30,6 +30,9 @@ class Indicadores
     #[ORM\Column(length: 255)]
     private ?string $periodo = null;
 
+    #[ORM\Column]
+    private ?int $indice = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -91,6 +94,18 @@ class Indicadores
     public function setPeriodo(string $periodo): static
     {
         $this->periodo = $periodo;
+
+        return $this;
+    }
+
+    public function getIndice(): ?int
+    {
+        return $this->indice;
+    }
+
+    public function setIndice(int $indice): static
+    {
+        $this->indice = $indice;
 
         return $this;
     }

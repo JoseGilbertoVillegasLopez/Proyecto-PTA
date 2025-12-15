@@ -27,6 +27,9 @@ class Acciones
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $valorAlcanzado = null;
 
+    #[ORM\Column]
+    private ?int $indicador = null;
+
 
     public function getId(): ?int
     {
@@ -77,6 +80,18 @@ class Acciones
     public function setValorAlcanzado(array $valorAlcanzado): static
     {
         $this->valorAlcanzado = $valorAlcanzado;
+
+        return $this;
+    }
+
+    public function getIndicador(): ?int
+    {
+        return $this->indicador;
+    }
+
+    public function setIndicador(int $indicador): static
+    {
+        $this->indicador = $indicador;
 
         return $this;
     }
