@@ -7,6 +7,7 @@ use App\Entity\Encabezado;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,6 +18,11 @@ class AccionesType extends AbstractType
     {
         $builder
     ->add('accion', TextType::class)
+
+     // Campo técnico: índice del indicador
+    ->add('indicador', HiddenType::class)
+
+    
     ->add('periodo', ChoiceType::class, [
         'choices' => [
             'Ene' => 'Enero', 'Feb' => 'Febrero', 'Mar' => 'Marzo', 'Abr' => 'Abril', 'May' => 'Mayo',

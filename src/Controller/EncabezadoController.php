@@ -31,14 +31,6 @@ final class EncabezadoController extends AbstractController
         $responsables = new \App\Entity\Responsables();
         $encabezado->setResponsables($responsables);
 
-        // Inicializar un indicador vacío
-        $indicador = new \App\Entity\Indicadores();
-        $encabezado->addIndicadore($indicador);
-
-        // Inicializar una acción vacía
-        $accion = new \App\Entity\Acciones();
-        $encabezado->addAccione($accion);
-
 
         $form = $this->createForm(EncabezadoType::class, $encabezado);
         $form->handleRequest($request);
@@ -62,8 +54,10 @@ final class EncabezadoController extends AbstractController
 
             return $this->render('admin/encabezado/index.html.twig', [
             'encabezados' => $encabezadoRepository->findAll(),
-        ]);
+            ]);
+
         }
+        
 
         return $this->render('admin/encabezado/new.html.twig', [
             'encabezado' => $encabezado,
@@ -102,7 +96,7 @@ final class EncabezadoController extends AbstractController
             $entityManager->flush();
 
 
-            return $this->render('admin/encabezado/index.html/twig', [
+            return $this->render('admin/encabezado/index.html.twig', [
             'encabezados' => $encabezadoRepository->findAll(),
         ]);
         }

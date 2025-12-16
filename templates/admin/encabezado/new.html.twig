@@ -5,7 +5,7 @@
     {{ form_start(form, {
         'action': path('app_encabezado_new'), 
         'attr': {
-            'data-turbo': 'false' }
+            'data-turbo': 'content' }
     }) }}
 
         <!-- ========================================================= -->
@@ -51,36 +51,11 @@
                     </tr>
                 </thead>
 
-                <tbody data-collection-holder="indicadores"
+                <tbody 
+                    data-collection-holder="indicadores"
                     data-prototype="{{ form_widget(form.indicadores.vars.prototype)|e('html_attr') }}">
 
-                    {% for indicadorForm in form.indicadores %}
-                        <tr class="indicator-row">
-
-                            <td class="p-2">
-                                {{ form_widget(indicadorForm.indicador, { attr: { class:'form-control form-control-sm' } }) }}
-                            </td>
-
-                            <td class="p-2">
-                                {{ form_widget(indicadorForm.formula, { attr: { class:'form-control form-control-sm' } }) }}
-                            </td>
-
-                            <td class="p-2">
-                                {{ form_widget(indicadorForm.valor, { attr: { class:'form-control form-control-sm' } }) }}
-                            </td>
-
-                            <td class="p-2">
-                                {{ form_widget(indicadorForm.periodo, { attr: { class:'form-select form-select-sm' } }) }}
-                            </td>
-
-                            <td class="text-center">
-                                <button type="button" class="btn btn-danger btn-sm remove-indicador">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-
-                        </tr>
-                    {% endfor %}
+                    
                 </tbody>
             </table>
 
@@ -103,36 +78,19 @@
             <table class="table table-dark table-striped align-middle pta-table">
                 <thead>
                     <tr>
+                        <th style="width:260px;">Indicador</th>
                         <th>Acción</th>
                         <th>Meses de ejecución</th>
                         <th style="width:80px;">Acciones</th>
                     </tr>
                 </thead>
 
-                <tbody data-collection-holder="acciones"
+
+                <tbody 
+                    data-collection-holder="acciones"
                     data-prototype="{{ form_widget(form.acciones.vars.prototype)|e('html_attr') }}">
 
-                    {% for accionForm in form.acciones %}
-                        <tr class="accion-row">
-
-                            <td class="p-2">
-                                {{ form_widget(accionForm.accion, {
-                                    attr: { class:'form-control form-control-sm' }
-                                }) }}
-                            </td>
-
-                            <td class="p-2 meses-td">
-                                {{ form_widget(accionForm.periodo) }}
-                            </td>
-
-                            <td class="text-center">
-                                <button type="button" class="btn btn-danger btn-sm remove-accion">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-
-                        </tr>
-                    {% endfor %}
+                    
                 </tbody>
             </table>
 
@@ -166,12 +124,14 @@
         </div>
 
 
-
+        <!-- Agregamos el Token CSRF a mano ya que se rompe con todo el movimiendo del Dom con js -->
+        {{ form_row(form._token) }}
 
 
         <!-- BOTÓN FINAL -->
         <button class="btn btn-primary">Guardar PTA</button>
 
-    {{ form_end(form) }}
+
+    {{ form_end(form, { render_rest: false }) }}
 
 </turbo-frame>

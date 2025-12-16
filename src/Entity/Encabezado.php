@@ -6,6 +6,7 @@ use App\Repository\EncabezadoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EncabezadoRepository::class)]
@@ -41,6 +42,10 @@ class Encabezado
     /**
      * @var Collection<int, Indicadores>
      */
+    #[Assert\Count(
+        min: 1,
+        minMessage: 'Debe agregar al menos un indicador.'
+    )]
     #[ORM\OneToMany(targetEntity: Indicadores::class, mappedBy: 'encabezado', cascade: ['persist', 'remove'])]
     private Collection $indicadores;
 
