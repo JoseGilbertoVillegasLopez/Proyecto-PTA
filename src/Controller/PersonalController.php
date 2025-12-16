@@ -49,8 +49,7 @@ final class PersonalController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($personal);
             $entityManager->flush();
-             //Llamamos al sincronizador de Usuario
-            // false = creación
+             //Llamamos el servicio de creación de usuario
             $this->userCreator->createFromPersonal($personal);
 
             return $this->render('admin/personal/index.html.twig', [

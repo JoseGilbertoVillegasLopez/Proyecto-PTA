@@ -1,0 +1,137 @@
+<turbo-frame id="content">
+
+    <h1 class="mb-4">Crear nuevo PTA</h1>
+
+    {{ form_start(form, {
+        'action': path('app_encabezado_new'), 
+        'attr': {
+            'data-turbo': 'content' }
+    }) }}
+
+        <!-- ========================================================= -->
+        <!-- 1. ENCABEZADO DEL PTA -->
+        <!-- ========================================================= -->
+        <div class="card pta-card mb-4">
+            <h4 class="pta-title">
+                <i class="bi bi-card-checklist"></i> 1. Datos del Encabezado
+            </h4>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    {{ form_row(form.nombre, { label: 'Nombre del Proyecto' }) }}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form_row(form.tendencia, { label: 'Tendencia (Creciente / Decreciente)' }) }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                {{ form_row(form.objetivo, { label: 'Objetivo del PTA' }) }}
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- 3. INDICADORES -->
+        <!-- ========================================================= -->
+        <div class="card pta-card mb-4">
+
+            <h4 class="pta-title">
+                <i class="bi bi-graph-up"></i> 3. Indicadores
+            </h4>
+
+            <table class="table table-dark table-striped align-middle pta-table">
+                <thead>
+                    <tr>
+                        <th>Indicador</th>
+                        <th>Fórmula</th>
+                        <th>Valor a alcanzar</th>
+                        <th>Periodo</th>
+                        <th style="width:60px;">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody 
+                    data-collection-holder="indicadores"
+                    data-prototype="{{ form_widget(form.indicadores.vars.prototype)|e('html_attr') }}">
+
+                    
+                </tbody>
+            </table>
+
+            <button type="button" class="btn btn-success w-100" id="add-indicador">
+                <i class="bi bi-plus-circle"></i> Agregar Indicador
+            </button>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- 4. ACCIONES -->
+        <!-- ========================================================= -->
+        <div class="card pta-card mb-4">
+
+            <h4 class="pta-title">
+                <i class="bi bi-list-task"></i> 4. Acciones del Proyecto
+            </h4>
+
+            <table class="table table-dark table-striped align-middle pta-table">
+                <thead>
+                    <tr>
+                        <th style="width:260px;">Indicador</th>
+                        <th>Acción</th>
+                        <th>Meses de ejecución</th>
+                        <th style="width:80px;">Acciones</th>
+                    </tr>
+                </thead>
+
+
+                <tbody 
+                    data-collection-holder="acciones"
+                    data-prototype="{{ form_widget(form.acciones.vars.prototype)|e('html_attr') }}">
+
+                    
+                </tbody>
+            </table>
+
+            <button type="button" class="btn btn-success w-100" id="add-accion">
+                <i class="bi bi-plus-circle"></i> Agregar Acción
+            </button>
+
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- 2. RESPONSABLES -->
+        <!-- ========================================================= -->
+        <div class="card pta-card mb-4">
+            <h4 class="pta-title">
+                <i class="bi bi-people-fill"></i> 2. Responsables del Proyecto
+            </h4>
+
+            <div class="mb-3">
+                {{ form_row(form.responsable, { label: 'Responsable del Proyecto' }) }}
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    {{ form_row(form.responsables.supervisor, { label: 'Supervisor del Proyecto' }) }}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form_row(form.responsables.aval, { label: 'Aval del Proyecto' }) }}
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Agregamos el Token CSRF a mano ya que se rompe con todo el movimiendo del Dom con js -->
+        {{ form_row(form._token) }}
+
+
+        <!-- BOTÓN FINAL -->
+        <button class="btn btn-primary">Guardar PTA</button>
+
+
+    {{ form_end(form, { render_rest: false }) }}
+
+</turbo-frame>

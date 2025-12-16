@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Encabezado{% endblock %}
+
+{% block body %}
+    <h1>Edit Encabezado</h1>
+
+    {{ include('encabezado/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_encabezado_index') }}">back to list</a>
+
+    {{ include('encabezado/_delete_form.html.twig') }}
+{% endblock %}
