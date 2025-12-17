@@ -22,6 +22,10 @@
  */
 document.addEventListener("turbo:frame-load", (event) => {
 
+
+    
+
+
     // Frame que acaba de cargarse
     const frame = event.target;
 
@@ -29,6 +33,75 @@ document.addEventListener("turbo:frame-load", (event) => {
     if (frame.id !== "content") return;
 
     console.log("PTA NEW JS cargado ✔");
+
+
+    function initPersonalSearch({
+        inputSelector,
+        hiddenSelector,
+        resultsSelector
+    }) {
+        const input = frame.querySelector(inputSelector);
+        const hidden = frame.querySelector(hiddenSelector);
+        const results = frame.querySelector(resultsSelector);
+
+        if (!input || !hidden || !results) return;
+
+        let controller = null;
+
+        input.addEventListener("input", () => {
+            const q = input.value.trim();
+
+            hidden.value = "";
+            results.innerHTML = "";
+
+            if (q.length < 2) return;
+
+            if (controller) controller.abort();
+            controller = new AbortController();
+
+            fetch(`/admin/api/personal/buscar?q=${encodeURIComponent(q)}`, {
+                signal: controller.signal
+            })
+                .then(res => res.json())
+                .then(data => {
+                    results.innerHTML = "";
+
+                    data.forEach(p => {
+                        const item = document.createElement("div");
+                        item.classList.add("search-item");
+                        item.textContent = p.nombre;
+
+                        item.addEventListener("click", () => {
+                            input.value = p.nombre;
+                            hidden.value = p.id;
+                            results.innerHTML = "";
+                        });
+
+                        results.appendChild(item);
+                    });
+                })
+                .catch(() => {});
+        });
+
+        frame.addEventListener("click", (e) => {
+    if (!results.contains(e.target) && e.target !== input) {
+        results.innerHTML = "";
+    }
+});
+
+    }
+    initPersonalSearch({
+    inputSelector: ".supervisor-search",
+    hiddenSelector: 'input[name$="[supervisor]"]',
+    resultsSelector: ".supervisor-results"
+});
+initPersonalSearch({
+    inputSelector: ".aval-search",
+    hiddenSelector: 'input[name$="[aval]"]',
+    resultsSelector: ".aval-results"
+});
+
+
 
     /**
      * Índice lógico incremental para indicadores.
@@ -186,15 +259,17 @@ document.addEventListener("turbo:frame-load", (event) => {
             // Crear fila de tabla
             const row = document.createElement("tr");
             row.classList.add("indicator-row");
+            const tendenciaSelect = temp.querySelector('[name$="[tendencia]"]');
 
             row.innerHTML = `
                 <td class="p-2">
                     ${temp.querySelector('[name$="[indicador]"]').outerHTML}
                     ${indiceInput ? indiceInput.outerHTML : ''}
                 </td>
-                <td class="p-2">${temp.querySelector('[name$="[formula]"]').outerHTML}</td>
-                <td class="p-2">${temp.querySelector('[name$="[valor]"]').outerHTML}</td>
-                <td class="p-2">${temp.querySelector('[name$="[periodo]"]').outerHTML}</td>
+                <td class="p-1">${temp.querySelector('[name$="[formula]"]').outerHTML}</td>
+                <td class="p-1">${temp.querySelector('[name$="[valor]"]').outerHTML}</td>
+                <td class="p-1">${temp.querySelector('[name$="[periodo]"]').outerHTML}</td>
+                <td class="p-1">${temp.querySelector('[name$="[tendencia]"]').outerHTML}</td>
                 <td class="text-center">
                     <button type="button" class="btn btn-danger btn-sm remove-indicador">
                         <i class="bi bi-trash"></i>
@@ -319,6 +394,13 @@ document.addEventListener("turbo:frame-load", (event) => {
         activateRemoveButtons(frame, ".remove-accion");
     }
 
+    function limpiarErroresVisuales(frame) {
+        frame.querySelectorAll(".field-error").forEach(el => {
+            el.classList.remove("field-error");
+        });
+    }
+
+
     /**
      * =====================================================
      * VALIDACIÓN FINAL — SUBMIT
@@ -329,26 +411,77 @@ document.addEventListener("turbo:frame-load", (event) => {
     if (form) {
         form.addEventListener("submit", (e) => {
 
+
+            // ===============================
+// VALIDACIÓN RESPONSABLES
+// ===============================
+const supervisorInput = frame.querySelector(".supervisor-search");
+const supervisorHidden = frame.querySelector('input[name$="[supervisor]"]');
+
+const avalInput = frame.querySelector(".aval-search");
+const avalHidden = frame.querySelector('input[name$="[aval]"]');
+
+let erroresResponsables = [];
+
+// Supervisor obligatorio y válido
+if (!supervisorHidden || supervisorHidden.value === "") {
+    erroresResponsables.push("Supervisor del Proyecto");
+}
+
+// Aval obligatorio y válido
+if (!avalHidden || avalHidden.value === "") {
+    erroresResponsables.push("Aval del Proyecto");
+}
+
+if (erroresResponsables.length > 0) {
+    e.preventDefault();
+    e.stopImmediatePropagation(); // 🔥 importante con Turbo
+
+    const lista = document.getElementById("errores-lista");
+    lista.innerHTML = "";
+
+    erroresResponsables.forEach(r => {
+        const li = document.createElement("li");
+        li.classList.add("list-group-item", "bg-dark", "text-light");
+        li.innerHTML = `<strong>Responsables:</strong> ${r}`;
+        lista.appendChild(li);
+    });
+
+    new bootstrap.Modal(
+        document.getElementById("erroresModal")
+    ).show();
+
+    return;
+}
+
+
+
+            limpiarErroresVisuales(frame);
+            let primerCampoConError = null;
+
+
             const indicadoresRows = frame.querySelectorAll(".indicator-row");
             const accionesRows = frame.querySelectorAll(".accion-row");
 
+            let errores = [];
+
             // Regla 1: no puede estar todo vacío
             if (indicadoresRows.length === 0 && accionesRows.length === 0) {
-                e.preventDefault();
-                e.stopPropagation();
-                alert("Debes agregar al menos 1 indicador y 1 acción.");
-                return;
+                errores.push({
+                    accion: "General",
+                    errores: ["no hay indicadores ni acciones"]
+                });
             }
 
             // Regla 2: no puede haber indicadores sin acciones
             if (indicadoresRows.length > 0 && accionesRows.length === 0) {
-                e.preventDefault();
-                e.stopPropagation();
-                alert("Agregaste indicadores, pero falta agregar al menos 1 acción.");
-                return;
+                errores.push({
+                    accion: "General",
+                    errores: ["hay indicadores pero no hay acciones"]
+                });
             }
 
-            let errores = [];
+
 
             accionesRows.forEach((row, index) => {
                 const accionInput = row.querySelector('[name$="[accion]"]');
@@ -356,6 +489,33 @@ document.addEventListener("turbo:frame-load", (event) => {
                 const mesesChecks = row.querySelectorAll('input[type="checkbox"]:checked');
 
                 let erroresAccion = [];
+
+                if (!accionInput || accionInput.value.trim() === "") {
+                    erroresAccion.push("sin acción");
+                    if (accionInput) {
+                        accionInput.classList.add("field-error");
+                        if (!primerCampoConError) primerCampoConError = accionInput;
+                    }
+                }
+
+                if (!indicadorHidden || indicadorHidden.value === "") {
+                    erroresAccion.push("sin indicador");
+                    const selectVisible = row.querySelector("select");
+                    if (selectVisible) {
+                        selectVisible.classList.add("field-error");
+                        if (!primerCampoConError) primerCampoConError = selectVisible;
+                    }
+                }
+
+                if (mesesChecks.length === 0) {
+                    erroresAccion.push("sin meses");
+                    const mesesCol = row.querySelector(".meses-col");
+                    if (mesesCol) {
+                        mesesCol.classList.add("field-error");
+                        if (!primerCampoConError) primerCampoConError = mesesCol;
+                    }
+                }
+
 
                 if (!accionInput || accionInput.value.trim() === "") erroresAccion.push("sin acción");
                 if (!indicadorHidden || indicadorHidden.value === "") erroresAccion.push("sin indicador");
@@ -369,12 +529,68 @@ document.addEventListener("turbo:frame-load", (event) => {
             if (errores.length > 0) {
                 e.preventDefault();
                 e.stopPropagation();
-                alert(
-                    "Hay acciones inválidas.\n" +
-                    "Revisa que todas tengan:\n" +
-                    "- Indicador\n- Acción\n- Meses seleccionados"
+
+                const lista = document.getElementById("errores-lista");
+                lista.innerHTML = "";
+
+                errores.forEach(err => {
+                    const li = document.createElement("li");
+                    li.classList.add("list-group-item", "bg-dark", "text-light");
+
+                    li.innerHTML = `
+                        <strong>Acción ${err.accion}:</strong>
+                        ${err.errores.join(", ")}
+                    `;
+
+                    lista.appendChild(li);
+                });
+
+                const modal = new bootstrap.Modal(
+                    document.getElementById("erroresModal")
                 );
+                if (primerCampoConError) {
+                    primerCampoConError.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+                }
+
+                modal.show();
             }
+
         });
     }
+});
+
+document.querySelectorAll('.fixed-textarea').forEach(textarea => {
+    textarea.addEventListener('input', () => {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    });
+});
+
+function autoGrowLimited(textarea, maxRows = 5) {
+    const lineHeight = parseFloat(getComputedStyle(textarea).lineHeight);
+
+    // Resetear altura para recalcular correctamente
+    textarea.style.height = 'auto';
+
+    const rows = Math.floor(textarea.scrollHeight / lineHeight);
+
+    if (rows <= maxRows) {
+        textarea.style.overflowY = 'hidden';
+        textarea.style.height = textarea.scrollHeight + 'px';
+    } else {
+        textarea.style.overflowY = 'auto';
+        textarea.style.height = (lineHeight * maxRows) + 'px';
+    }
+}
+
+frame.querySelectorAll('.fixed-textarea').forEach(textarea => {
+    // Ajuste inicial (por si viene con texto)
+    autoGrowLimited(textarea, 5);
+
+    textarea.addEventListener('input', () => {
+        autoGrowLimited(textarea, 5);
+    });
 });

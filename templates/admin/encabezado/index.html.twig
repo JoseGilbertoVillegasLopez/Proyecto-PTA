@@ -9,7 +9,6 @@
                 <th>Nombre</th>
                 <th>FechaCreacion</th>
                 <th>FechaConcluido</th>
-                <th>Tendencia</th>
                 <th>Status</th>
                 <th>actions</th>
             </tr>
@@ -22,7 +21,6 @@
                 <td>{{ encabezado.nombre }}</td>
                 <td>{{ encabezado.fechaCreacion ? encabezado.fechaCreacion|date('Y-m-d') : '' }}</td>
                 <td>{{ encabezado.fechaConcluido ? encabezado.fechaConcluido|date('Y-m-d') : '' }}</td>
-                <td>{{ encabezado.tendencia ? 'Yes' : 'No' }}</td>
                 <td>{{ encabezado.status ? 'Yes' : 'No' }}</td>
                 <td>
                     <a href="{{ path('app_encabezado_show', {'id': encabezado.id}) }}">show</a>

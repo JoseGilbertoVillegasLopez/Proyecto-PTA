@@ -2,6 +2,127 @@
 /*  ESTILOS PTA - Formato institucional base                */
 /* ========================================================= */
 
+
+
+/* Estilos para los campos del formulario que estan incompletas a la hora de queerer guardar el js los pinta despues de mostrar el modal*/
+.field-error {
+    border: 2px solid #ff4d4f !important;
+    box-shadow:
+        0 0 0 0.25rem rgba(255, 77, 79, 0.35),
+        inset 0 0 0 1px rgba(255, 77, 79, 0.6);
+    background-color: rgba(255, 77, 79, 0.08);
+    border-radius: 6px;
+}
+/* Estilos para los campos del formulario que son pequenos que estan incompletas a la hora de queerer guardar el js los pinta despues de mostrar el modal*/
+input.field-error,
+select.field-error {
+    background-color: rgba(255, 77, 79, 0.12);
+}
+
+
+/* para el encabezado nombre y objetivo */
+.fixed-textarea {
+    width: 100%;
+    resize: none;          /* ❌ no manipulable */
+    overflow-y: auto;      /* scroll solo cuando llegue al límite */
+    line-height: 1.4;
+}
+
+
+/* ESTILOS PARA EL TEXT AREA DE INDICADORES PARA EL CAMPO INDICADOR Y FORMULA */
+.indicator-textarea {
+    width: 100%;
+    resize: none;          /* ❌ no manipulable */
+    overflow-y: auto;
+    min-height: 48px;      /* compacto */
+    max-height: 96px;      /* suficiente para texto */
+    line-height: 1.35;
+    font-size: 0.9rem;
+    padding: 1px;
+}
+
+/* ESTILOS PARA EL INPUT DE VALOR A ALCANZAR DE INDICADORES */
+.indicator-valor {
+    max-width: 100%; 
+    text-align: center;
+}
+
+.pta-indicadores-table > :not(caption) > * > * {
+    padding: 2.5px !important; /* prueba 1px, 2px o 0 */
+}
+
+.pta-indicadores-table {
+    table-layout: fixed;   /* 🔥 CLAVE */
+    width: 100%;
+}
+
+.pta-indicadores-table{
+    width: 100%;
+    min-width: 0 !important;   /* 🔥 rompe el límite */
+    max-width: 100%;
+    padding: 2px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.pta-acciones-table{
+    width: 100%;
+    min-width: 0 !important;   /* 🔥 rompe el límite */
+    max-width: 100%;
+    padding: 2px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+
+.accion-textarea {
+    width: 100%;
+    resize: none;          /* ❌ no manipulable */
+    overflow-y: auto;
+    min-height: 48px;
+    max-height: 96px;
+    line-height: 1.35;
+    font-size: 0.9rem;
+}
+
+/* Contenedor de meses */
+.pta-acciones-table .meses-col {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 🔥 4 por fila */
+    gap: 6px 12px;                         /* filas / columnas */
+    justify-items: center;                /* centra cada checkbox */
+    align-items: center;
+}
+
+.pta-acciones-table .mes-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.pta-acciones-table td .meses-col {
+    margin: 0 auto;
+}
+
+.pta-card h4 {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* espacio entre icono y texto */
+}
+
+
+
+
+
+
+
+
+
+
 .pta-card {
     background-color: #1f242b !important;
     border-radius: 12px;

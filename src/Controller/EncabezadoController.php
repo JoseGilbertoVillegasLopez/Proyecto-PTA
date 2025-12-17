@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Encabezado;
+use App\Entity\Personal;
 use App\Form\EncabezadoType;
 use App\Repository\EncabezadoRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,11 +32,40 @@ final class EncabezadoController extends AbstractController
         $responsables = new \App\Entity\Responsables();
         $encabezado->setResponsables($responsables);
 
+        $usuario = $this->getUser();
+        if ($usuario instanceof \App\Entity\User && $usuario->getPersonal()) {
+            $encabezado->setResponsable($usuario->getPersonal());
+        }
+
+
+
 
         $form = $this->createForm(EncabezadoType::class, $encabezado);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $responsables = $encabezado->getResponsables();
+
+$responsables = $encabezado->getResponsables();
+
+if ($responsables) {
+    $data = $request->request->all('encabezado');
+
+    $supervisorId = $data['responsables']['supervisor'] ?? null;
+    $avalId       = $data['responsables']['aval'] ?? null;
+
+    if ($supervisorId) {
+        $supervisor = $entityManager->getRepository(Personal::class)->find($supervisorId);
+        $responsables->setSupervisor($supervisor);
+    }
+
+    if ($avalId) {
+        $aval = $entityManager->getRepository(Personal::class)->find($avalId);
+        $responsables->setAval($aval);
+    }
+}
+
+
 
             $encabezado->setFechaCreacion(new \DateTime());
             $encabezado->setStatus(true);
@@ -48,6 +78,13 @@ final class EncabezadoController extends AbstractController
             foreach ($encabezado->getAcciones() as $accion) {
                 $accion->setEncabezado($encabezado);
             }
+
+            $usuario = $this->getUser();
+
+            if ($usuario instanceof \App\Entity\User && $usuario->getPersonal()) {
+                $encabezado->setResponsable($usuario->getPersonal());
+            }
+
 
             $entityManager->persist($encabezado);
             $entityManager->flush();

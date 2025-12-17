@@ -11,25 +11,20 @@
         <!-- ========================================================= -->
         <!-- 1. ENCABEZADO DEL PTA -->
         <!-- ========================================================= -->
-        <div class="card pta-card mb-4">
-            <h4 class="pta-title">
-                <i class="bi bi-card-checklist"></i> 1. Datos del Encabezado
-            </h4>
+        <div class="row g-3">
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    {{ form_row(form.nombre, { label: 'Nombre del Proyecto' }) }}
-                </div>
-
-                <div class="col-md-6">
-                    {{ form_row(form.tendencia, { label: 'Tendencia (Creciente / Decreciente)' }) }}
-                </div>
+            <div class="col-md-6">
+                {{ form_label(form.nombre) }}
+                {{ form_widget(form.nombre) }}
+                {{ form_errors(form.nombre) }}
             </div>
 
-            <div class="mb-3">
-                {{ form_row(form.objetivo, { label: 'Objetivo del PTA' }) }}
+            <div class="col-md-6">
+                {{ form_label(form.objetivo) }}
+                {{ form_widget(form.objetivo) }}
+                {{ form_errors(form.objetivo) }}
             </div>
-        </div>
+        </div> <br><br>
 
         <!-- ========================================================= -->
         <!-- 3. INDICADORES -->
@@ -40,14 +35,24 @@
                 <i class="bi bi-graph-up"></i> 3. Indicadores
             </h4>
 
-            <table class="table table-dark table-striped align-middle pta-table">
+            <table class="table table-dark table-striped align-middle pta-indicadores-table">
+                <colgroup>
+                    <col style="width: 37%">  {# Indicador #}
+                    <col style="width: 37%">  {# Fórmula #}
+                    <col style="width: 5%">   {# Valor a alcanzar #}
+                    <col style="width: 8%">  {# Periodo #}
+                    <col style="width: 8%">  {# Tendencia #}
+                    <col style="width: 5%">   {# Acciones #}
+                </colgroup>
+
                 <thead>
                     <tr>
                         <th>Indicador</th>
                         <th>Fórmula</th>
-                        <th>Valor a alcanzar</th>
+                        <th>Meta</th>
                         <th>Periodo</th>
-                        <th style="width:60px;">Acciones</th>
+                        <th>Tendencia</th>
+                        <th></th>
                     </tr>
                 </thead>
 
@@ -59,9 +64,14 @@
                 </tbody>
             </table>
 
-            <button type="button" class="btn btn-success w-100" id="add-indicador">
-                <i class="bi bi-plus-circle"></i> Agregar Indicador
-            </button>
+            <div class="text-center my-3">
+                <button type="button"
+                        class="btn btn-success px-5"
+                        id="add-indicador">
+                    <i class="bi bi-plus-circle"></i> Agregar Indicador
+                </button>
+            </div>
+
 
         </div>
 
@@ -75,13 +85,20 @@
                 <i class="bi bi-list-task"></i> 4. Acciones del Proyecto
             </h4>
 
-            <table class="table table-dark table-striped align-middle pta-table">
+            <table class="table table-dark table-striped align-middle pta-acciones-table">
+                <colgroup>
+                    <col style="width: 25%">  {# Indicador #}
+                    <col style="width: 45%">  {# Acción #}
+                    <col style="width: 25%">  {# Meses de ejecución #}
+                    <col style="width: 5%">   {# Acciones #}
+                </colgroup>
+
                 <thead>
                     <tr>
-                        <th style="width:260px;">Indicador</th>
+                        <th>Indicador</th>
                         <th>Acción</th>
-                        <th>Meses de ejecución</th>
-                        <th style="width:80px;">Acciones</th>
+                        <th>Periodo</th>
+                        <th></th>
                     </tr>
                 </thead>
 
@@ -94,9 +111,14 @@
                 </tbody>
             </table>
 
-            <button type="button" class="btn btn-success w-100" id="add-accion">
-                <i class="bi bi-plus-circle"></i> Agregar Acción
-            </button>
+            <div class="text-center my-3">
+                <button type="button"
+                        class="btn btn-success px-5"
+                        id="add-accion">
+                    <i class="bi bi-plus-circle"></i> Agregar Acción
+                </button>
+            </div>
+
 
         </div>
 
@@ -107,18 +129,41 @@
             <h4 class="pta-title">
                 <i class="bi bi-people-fill"></i> 2. Responsables del Proyecto
             </h4>
-
-            <div class="mb-3">
-                {{ form_row(form.responsable, { label: 'Responsable del Proyecto' }) }}
-            </div>
-
             <div class="row mb-3">
                 <div class="col-md-6">
-                    {{ form_row(form.responsables.supervisor, { label: 'Supervisor del Proyecto' }) }}
+                    <div class="position-relative">
+                        <label class="form-label">Supervisor del Proyecto</label>
+
+                        {{ form_widget(form.responsables.supervisor_search, {
+                            attr: {
+                                class: 'form-control supervisor-search',
+                                placeholder: 'Buscar supervisor...'
+                            }
+                        }) }}
+
+                        {{ form_widget(form.responsables.supervisor) }}
+
+                        <div class="search-results supervisor-results"></div>
+                    </div>
+
                 </div>
 
                 <div class="col-md-6">
-                    {{ form_row(form.responsables.aval, { label: 'Aval del Proyecto' }) }}
+                    <div class="position-relative">
+                        <label class="form-label">Aval del Proyecto</label>
+
+                        {{ form_widget(form.responsables.aval_search, {
+                            attr: {
+                                class: 'form-control aval-search',
+                                placeholder: 'Buscar aval...'
+                            }
+                        }) }}
+
+                        {{ form_widget(form.responsables.aval) }}
+
+                        <div class="search-results aval-results"></div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -129,7 +174,44 @@
 
 
         <!-- BOTÓN FINAL -->
-        <button class="btn btn-primary">Guardar PTA</button>
+        <div class="text-center mt-4">
+            <button type="submit"
+                    class="btn btn-primary px-5">
+                Guardar PTA
+            </button>
+        </div>
+
+
+        <div class="modal fade" id="erroresModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content bg-dark text-light border-warning">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Errores en el formulario
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p class="mb-2">
+                            Se encontraron los siguientes problemas. Corrígelos antes de continuar:
+                        </p>
+
+                        <ul id="errores-lista" class="list-group list-group-flush">
+                            <!-- errores dinámicos -->
+                        </ul>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Entendido
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
     {{ form_end(form, { render_rest: false }) }}
