@@ -12,18 +12,61 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * =========================================================
+ * FORM TYPE: RESPONSABLES
+ * ---------------------------------------------------------
+ * Define el subformulario de responsables del PTA.
+ *
+ * IMPORTANTE:
+ * - Este FormType NO persiste datos directamente
+ * - TODOS sus campos son mapped = false
+ * - La asignación real se hace en el Controller (new)
+ *
+ * Se usa únicamente como:
+ * - Contenedor de inputs visibles + hidden
+ * - Apoyo al buscador dinámico vía JS
+ * =========================================================
+ */
 class ResponsablesType extends AbstractType
 {
+    /**
+     * =====================================================
+     * DEFINICIÓN DEL SUBFORMULARIO DE RESPONSABLES
+     * =====================================================
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            // SUPERVISOR (ID real, NO mapeado)
+
+            /**
+             * =============================================
+             * SUPERVISOR (ID REAL)
+             * ---------------------------------------------
+             * - Campo hidden
+             * - Guarda el ID real del Personal seleccionado
+             * - mapped = false:
+             *   - Symfony NO lo asigna automáticamente
+             *   - Se procesa manualmente en el Controller
+             * =============================================
+             */
             ->add('supervisor', HiddenType::class, [
                 'mapped' => false,
                 'required' => false,
             ])
 
-            // input visible
+            /**
+             * =============================================
+             * SUPERVISOR (INPUT VISIBLE)
+             * ---------------------------------------------
+             * - Input de texto para búsqueda
+             * - NO se persiste
+             * - El JS:
+             *   - Llama a la API
+             *   - Muestra sugerencias
+             *   - Asigna el ID al campo hidden
+             * =============================================
+             */
             ->add('supervisor_search', TextType::class, [
                 'mapped' => false,
                 'required' => false,
@@ -35,13 +78,27 @@ class ResponsablesType extends AbstractType
                 ],
             ])
 
-            // AVAL (ID real, NO mapeado)
+            /**
+             * =============================================
+             * AVAL (ID REAL)
+             * ---------------------------------------------
+             * - Campo hidden
+             * - Mismo comportamiento que supervisor
+             * =============================================
+             */
             ->add('aval', HiddenType::class, [
                 'mapped' => false,
                 'required' => false,
             ])
 
-            // input visible
+            /**
+             * =============================================
+             * AVAL (INPUT VISIBLE)
+             * ---------------------------------------------
+             * - Input para búsqueda dinámica
+             * - Controlado completamente por JS
+             * =============================================
+             */
             ->add('aval_search', TextType::class, [
                 'mapped' => false,
                 'required' => false,
@@ -51,12 +108,17 @@ class ResponsablesType extends AbstractType
                     'placeholder' => 'Buscar aval...',
                     'autocomplete' => 'off',
                 ],
-            ])
-
-
-        ;
+            ]);
     }
 
+    /**
+     * =====================================================
+     * CONFIGURACIÓN DEL FORM TYPE
+     * -----------------------------------------------------
+     * - Se asocia este subformulario con la entidad
+     *   Responsables (OneToOne con Encabezado)
+     * =====================================================
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
