@@ -1,7 +1,198 @@
 /* ========================================================= */
 /*  ESTILOS PTA - Formato institucional base                */
+/* --------------------------------------------------------- */
+/* Este archivo define el estilo visual del módulo PTA      */
+/* en la vista NEW.                                         */
+/*                                                          */
+/* IMPORTANTE:                                              */
+/* - No es solo estético                                   */
+/* - Está directamente ligado al JS de validación           */
+/* - Muchas clases se agregan dinámicamente desde JS        */
 /* ========================================================= */
 
+
+
+/* ========================================================= */
+/* ESTADOS DE ERROR (VALIDACIÓN JS)                          */
+/* --------------------------------------------------------- */
+/* Estas clases se aplican dinámicamente cuando el usuario   */
+/* intenta guardar el formulario con datos incompletos.     */
+/* El JS las agrega DESPUÉS de mostrar el modal de errores. */
+/* ========================================================= */
+.field-error {
+    border: 2px solid #ff4d4f !important;
+    box-shadow:
+        0 0 0 0.25rem rgba(255, 77, 79, 0.35),
+        inset 0 0 0 1px rgba(255, 77, 79, 0.6);
+    background-color: rgba(255, 77, 79, 0.08);
+    border-radius: 6px;
+}
+
+/* Versión específica para inputs pequeños (input/select) */
+input.field-error,
+select.field-error {
+    background-color: rgba(255, 77, 79, 0.12);
+}
+
+
+
+/* ========================================================= */
+/* TEXTAREAS DEL ENCABEZADO (NOMBRE / OBJETIVO)              */
+/* --------------------------------------------------------- */
+/* Estas textareas usan auto-grow manejado por JS            */
+/* Se desactiva el resize manual para mantener layout limpio*/
+/* ========================================================= */
+.fixed-textarea {
+    width: 100%;
+    resize: none;          /* ❌ el usuario no puede redimensionar */
+    overflow-y: auto;      /* scroll solo al llegar al límite */
+    line-height: 1.4;
+}
+
+
+
+/* ========================================================= */
+/* TEXTAREAS DE INDICADORES (INDICADOR / FÓRMULA)            */
+/* --------------------------------------------------------- */
+/* Diseño compacto para caber dentro de la tabla             */
+/* Mantiene legibilidad sin romper el layout                 */
+/* ========================================================= */
+.indicator-textarea {
+    width: 100%;
+    resize: none;          /* ❌ no manipulable */
+    overflow-y: auto;
+    min-height: 48px;      /* altura mínima compacta */
+    max-height: 96px;      /* evita crecer demasiado */
+    line-height: 1.35;
+    font-size: 0.9rem;
+    padding: 1px;
+}
+
+
+
+/* ========================================================= */
+/* INPUT DE META (VALOR A ALCANZAR)                           */
+/* --------------------------------------------------------- */
+/* Campo numérico, centrado para mejor lectura               */
+/* ========================================================= */
+.indicator-valor {
+    max-width: 100%;
+    text-align: center;
+}
+
+
+
+/* ========================================================= */
+/* TABLA DE INDICADORES                                      */
+/* --------------------------------------------------------- */
+/* Configuración crítica para evitar que la tabla se rompa  */
+/* con contenido dinámico                                   */
+/* ========================================================= */
+.pta-indicadores-table > :not(caption) > * > * {
+    padding: 2.5px !important; /* padding ultra compacto */
+}
+
+.pta-indicadores-table {
+    table-layout: fixed;   /* 🔥 CLAVE para columnas estables */
+    width: 100%;
+}
+
+.pta-indicadores-table {
+    width: 100%;
+    min-width: 0 !important;   /* 🔥 rompe límites de bootstrap */
+    max-width: 100%;
+    padding: 2px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+
+
+/* ========================================================= */
+/* TABLA DE ACCIONES                                         */
+/* --------------------------------------------------------- */
+/* Misma filosofía que indicadores                           */
+/* ========================================================= */
+.pta-acciones-table {
+    width: 100%;
+    min-width: 0 !important;
+    max-width: 100%;
+    padding: 2px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+
+
+/* ========================================================= */
+/* TEXTAREA DE ACCIONES                                      */
+/* --------------------------------------------------------- */
+/* Similar a indicadores, pero usado en otra tabla           */
+/* ========================================================= */
+.accion-textarea {
+    width: 100%;
+    resize: none;
+    overflow-y: auto;
+    min-height: 48px;
+    max-height: 96px;
+    line-height: 1.35;
+    font-size: 0.9rem;
+}
+
+
+
+/* ========================================================= */
+/* MESES DE EJECUCIÓN (ACCIONES)                              */
+/* --------------------------------------------------------- */
+/* Estos estilos funcionan junto con el JS que reenvuelve   */
+/* los checkboxes en labels visuales                         */
+/* ========================================================= */
+
+/* Contenedor general de meses */
+.pta-acciones-table .meses-col {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 🔥 4 meses por fila */
+    gap: 6px 12px;                         /* filas / columnas */
+    justify-items: center;
+    align-items: center;
+}
+
+/* Etiqueta individual de cada mes */
+.pta-acciones-table .mes-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+/* Centrado del grid dentro de la celda */
+.pta-acciones-table td .meses-col {
+    margin: 0 auto;
+}
+
+
+
+/* ========================================================= */
+/* TÍTULOS DE TARJETAS                                       */
+/* --------------------------------------------------------- */
+/* Centrado de texto + icono                                 */
+/* ========================================================= */
+.pta-card h4 {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* espacio entre icono y texto */
+}
+
+
+
+/* ========================================================= */
+/* CONTENEDOR PRINCIPAL PTA                                  */
+/* --------------------------------------------------------- */
+/* Tarjetas institucionales del módulo                       */
+/* ========================================================= */
 .pta-card {
     background-color: #1f242b !important;
     border-radius: 12px;
@@ -9,6 +200,9 @@
     border: 1px solid #2b323a;
 }
 
+
+
+/* Título de sección */
 .pta-title {
     color: #f0f0f0;
     font-size: 1.2rem;
@@ -19,13 +213,22 @@
     gap: 6px;
 }
 
+
+
+/* Tabla base (si se reutiliza en otros módulos) */
 .pta-table {
     background-color: #2a3038 !important;
     border-radius: 10px;
     overflow: hidden;
 }
 
-/* Campos más bonitos */
+
+
+/* ========================================================= */
+/* INPUTS, SELECTS Y TEXTAREAS DENTRO DE PTA                 */
+/* --------------------------------------------------------- */
+/* Uniformidad visual en modo oscuro                         */
+/* ========================================================= */
 .pta-card input,
 .pta-card select,
 .pta-card textarea {
@@ -34,13 +237,27 @@
     color: #e6e6e6 !important;
 }
 
-/* Botones de acción */
+
+
+/* ========================================================= */
+/* BOTONES DE ELIMINAR                                       */
+/* --------------------------------------------------------- */
+/* Usados tanto en indicadores como acciones                 */
+/* ========================================================= */
 .remove-indicador,
 .remove-accion {
     border-radius: 6px;
 }
 
-/* Checkboxes más visibles */
+
+
+/* ========================================================= */
+/* CHECKBOXES DE MESES (ESTILO ALTERNATIVO)                  */
+/* --------------------------------------------------------- */
+/* NOTA:                                                     */
+/* - Algunas clases no se usan directamente en esta vista   */
+/* - Se dejan para consistencia o reutilización futura      */
+/* ========================================================= */
 .meses-td label {
     padding: 6px 10px;
     background-color: #2f353d;
@@ -50,6 +267,6 @@
 }
 
 .meses-td input[type="checkbox"] {
-    accent-color: #2ecc71; /* verde TEC */
+    accent-color: #2ecc71; /* verde institucional */
     transform: scale(1.2);
 }

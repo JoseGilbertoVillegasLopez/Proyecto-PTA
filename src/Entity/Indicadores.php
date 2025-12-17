@@ -33,6 +33,9 @@ class Indicadores
     #[ORM\Column]
     private ?int $indice = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $tendencia = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -106,6 +109,18 @@ class Indicadores
     public function setIndice(int $indice): static
     {
         $this->indice = $indice;
+
+        return $this;
+    }
+
+    public function getTendencia(): ?string
+    {
+        return $this->tendencia;
+    }
+
+    public function setTendencia(string $tendencia): static
+    {
+        $this->tendencia = $tendencia;
 
         return $this;
     }

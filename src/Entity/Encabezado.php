@@ -29,9 +29,6 @@ class Encabezado
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $fechaConcluido = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $tendencia = null;
-
     #[ORM\Column]
     private ?bool $status = null;
 
@@ -57,6 +54,7 @@ class Encabezado
 
     #[ORM\OneToOne(mappedBy: 'encabezado', cascade: ['persist', 'remove'])]
     private ?Responsables $responsables = null;
+
 
 
     public function __construct()
@@ -114,18 +112,6 @@ class Encabezado
     public function setFechaConcluido(?\DateTime $fechaConcluido): static
     {
         $this->fechaConcluido = $fechaConcluido;
-
-        return $this;
-    }
-
-    public function isTendencia(): ?bool
-    {
-        return $this->tendencia;
-    }
-
-    public function setTendencia(?bool $tendencia): static
-    {
-        $this->tendencia = $tendencia;
 
         return $this;
     }
