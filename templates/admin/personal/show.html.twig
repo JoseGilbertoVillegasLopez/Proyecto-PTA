@@ -1,41 +1,98 @@
 <turbo-frame id="content">
-    <h1>Personal</h1>
+    <section class="personal-module">
+        <section class="personal-show-module">
 
-        <table class="table">
-            <tbody>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ personal.id }}</td>
-                </tr>
-                <tr>
-                    <th>Nombre</th>
-                    <td>{{ personal.nombre }}</td>
-                </tr>
-                <tr>
-                    <th>Ap_paterno</th>
-                    <td>{{ personal.apPaterno }}</td>
-                </tr>
-                <tr>
-                    <th>Ap_materno</th>
-                    <td>{{ personal.apMaterno }}</td>
-                </tr>
-                <tr>
-                    <th>Correo</th>
-                    <td>{{ personal.correo }}</td>
-                </tr>
-                <tr>
-                    <th>Activo</th>
-                    <td>{{ personal.activo ? 'Yes' : 'No' }}</td>
-                </tr>
-            </tbody>
-        </table>
+            <!-- ===============================
+                 HEADER (IZQ | CENTRO | DER)
+            ================================ -->
+            <header class="personal-show-module__header">
 
-        <a href="{{ path('app_personal_index') }}">back to list</a>
+                <!-- IZQUIERDA -->
+                <div class="personal-show-module__header-left">
+                    <a
+                        href="{{ path('app_personal_index') }}"
+                        class="personal-show-module__action personal-show-module__action--back"
+                        title="Volver a la lista"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                </div>
 
-        <a href="{{ path('app_personal_edit', {'id': personal.id}) }}">edit</a>
+                <!-- CENTRO -->
+                <h1 class="personal-show-module__title">
+                    Información del personal
+                </h1>
 
-        {{ include('admin/personal/_delete_form.html.twig') }}
+                <!-- DERECHA -->
+                <div class="personal-show-module__header-right">
 
+                    <a
+                        href="{{ path('app_personal_edit', {'id': personal.id}) }}"
+                        class="personal-show-module__action personal-show-module__action--edit"
+                        title="Editar"
+                    >
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
+
+                    <div
+                        class="personal-show-module__action personal-show-module__action--delete"
+                        title="Eliminar"
+                    >
+                        {{ include('admin/personal/_delete_form.html.twig') }}
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- ===============================
+                 DETAIL
+            ================================ -->
+            <div class="personal-show-module__detail-wrapper">
+                <table class="personal-show-module__detail-table">
+                    <tbody>
+
+                        <tr>
+                            <th class="personal-show-module__detail-label">Nombre</th>
+                            <td class="personal-show-module__detail-value">{{ personal.nombre }}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="personal-show-module__detail-label">Apellido paterno</th>
+                            <td class="personal-show-module__detail-value">{{ personal.apPaterno }}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="personal-show-module__detail-label">Apellido materno</th>
+                            <td class="personal-show-module__detail-value">{{ personal.apMaterno }}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="personal-show-module__detail-label">Puesto</th>
+                            <td class="personal-show-module__detail-value">{{ personal.puesto.nombre }}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="personal-show-module__detail-label">Departamento</th>
+                            <td class="personal-show-module__detail-value">{{ personal.departamento.nombre }}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="personal-show-module__detail-label">Correo</th>
+                            <td class="personal-show-module__detail-value">{{ personal.correo }}</td>
+                        </tr>
+
+                        <tr>
+                            <th class="personal-show-module__detail-label">Activo</th>
+                            <td class="personal-show-module__detail-value">
+                                {{ personal.activo ? 'Sí' : 'No' }}
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </section>
 </turbo-frame>
-    
-

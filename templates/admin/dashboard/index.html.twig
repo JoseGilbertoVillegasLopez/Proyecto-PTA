@@ -11,65 +11,58 @@ document.addEventListener("turbo:render", function () {
 });
 </script>
 
-
-
-
-
-<div style="display: flex; min-height: 100vh; background: #1e242b; color: white;">
+<div style="display: flex; min-height: 100vh; background: #1e242b; color: white; width: 100%; overflow-x: hidden;">
 
     <!-- ASIDE / MENU -->
-    <aside style="width: 250px; background: #11161c; padding: 20px;">
+    <aside style="width: 250px; background: #11161c; padding: 20px; box-sizing: border-box;">
         <h2 style="margin-bottom: 20px;">Menú</h2>
 
         <ul style="list-style: none; padding: 0;">
 
-    <li style="margin-bottom: 15px;">
-        <a href="{{ path('app_personal_index') }}"
-           data-turbo-frame="content"
-           style="color: #0dcaf0; text-decoration: none;">
-            Personal
-        </a>
-    </li>
+            <li style="margin-bottom: 15px;">
+                <a href="{{ path('app_personal_index') }}"
+                   data-turbo-frame="content"
+                   style="color: #0dcaf0; text-decoration: none;">
+                    Personal
+                </a>
+            </li>
 
-    <li style="margin-bottom: 15px;">
-        <a href="{{ path('app_departamento_index') }}"
-           data-turbo-frame="content"
-           style="color: #0dcaf0; text-decoration: none;">
-            Departamentos
-        </a>
-    </li>
+            <li style="margin-bottom: 15px;">
+                <a href="{{ path('app_departamento_index') }}"
+                   data-turbo-frame="content"
+                   style="color: #0dcaf0; text-decoration: none;">
+                    Departamentos
+                </a>
+            </li>
 
-    <li style="margin-bottom: 15px;">
-        <a href="{{ path('app_puesto_index') }}"
-           data-turbo-frame="content"
-           style="color: #0dcaf0; text-decoration: none;">
-            Puestos
-        </a>
-    </li>
+            <li style="margin-bottom: 15px;">
+                <a href="{{ path('app_puesto_index') }}"
+                   data-turbo-frame="content"
+                   style="color: #0dcaf0; text-decoration: none;">
+                    Puestos
+                </a>
+            </li>
 
-    <li style="margin-bottom: 15px;">
-        <a href="{{ path('app_encabezado_index') }}"
-           data-turbo-frame="content"
-           style="color: #0dcaf0; text-decoration: none;">
-            PTA
-        </a>
-    </li>
+            <li style="margin-bottom: 15px;">
+                <a href="{{ path('app_encabezado_index') }}"
+                   data-turbo-frame="content"
+                   style="color: #0dcaf0; text-decoration: none;">
+                    PTA
+                </a>
+            </li>
 
-</ul>
-
+        </ul>
     </aside>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <main style="flex: 1; padding: 30px;">
-    
-        <turbo-frame id="content" src="{{ path('app_personal_index') }}">
+    <main style="flex: 1; padding: 30px; max-width: 100%; overflow-x: hidden; box-sizing: border-box;">
 
+        <turbo-frame id="content"
+                     src="{{ path('app_personal_index') }}"
+                     style="display: block; width: 100%; max-width: 100%; overflow-x: hidden;">
         </turbo-frame>
 
     </main>
 
-
 </div>
-
-
 {% endblock %}

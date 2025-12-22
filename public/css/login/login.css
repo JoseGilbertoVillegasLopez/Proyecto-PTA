@@ -1,0 +1,217 @@
+/* ===============================
+   LOGIN — Dark & Cyan
+   =============================== */
+
+:root {
+    --primary: #0dcaf0;
+    --primary-oscuro: #0aa2c0;
+
+    --fondo: #0f0f0f;
+    --card: #1a1a1a;
+    --input: #242424;
+    --borde: #3a3a3a;
+
+    --texto: #eaeaea;
+    --muted: #b5b5b5;
+}
+
+/* ===============================
+   FONDO GENERAL
+   =============================== */
+
+html,
+body {
+    background: var(--fondo);
+    height: 100%;
+    margin: 0;
+    color: var(--texto);
+}
+
+/* ===============================
+   CONTENEDOR LOGIN
+   =============================== */
+
+.login-page {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    background: radial-gradient(
+        circle at center,
+        #1b1b1b 0%,
+        #0f0f0f 60%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===============================
+   TARJETA
+   =============================== */
+
+.login-card {
+    position: relative;
+    z-index: 2;
+
+    background: var(--card);
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem;
+    border-radius: 12px;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,0.45),
+        inset 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+/* ===============================
+   TEXTO Y MENSAJES
+   =============================== */
+
+.login-title {
+    text-align: center;
+    margin-bottom: 1.8rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.login-alert {
+    background: rgba(13,202,240,0.15);
+    color: var(--primary);
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.login-logged {
+    background: #222;
+    color: var(--muted);
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+}
+
+/* ===============================
+   FORMULARIO
+   =============================== */
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-group {
+    margin-bottom: 1.2rem;
+}
+
+.login-group label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.login-group input {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--borde);
+    background: var(--input);
+    color: var(--texto);
+    font-size: 0.95rem;
+}
+
+.login-group input::placeholder {
+    color: #888;
+}
+
+.login-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(13,202,240,0.35);
+}
+
+/* ===============================
+   ACCIONES
+   =============================== */
+
+.login-actions {
+    text-align: right;
+    margin-bottom: 1.5rem;
+}
+
+.login-link {
+    font-size: 0.85rem;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+/* ===============================
+   BOTÓN
+   =============================== */
+
+.login-button {
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary-oscuro)
+    );
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.login-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(2, 46, 54, 0.6);
+}
+
+/* ===============================
+   BURBUJAS FLOTANTES
+   =============================== */
+
+.bubbles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.bubble {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.6;
+
+    background: radial-gradient(
+        circle at 30% 30%,
+        rgba(255,255,255,0.35),
+        rgba(13,202,240,0.25),
+        rgba(0,0,0,0.25)
+    );
+
+    animation: float 20s infinite linear;
+    transition: transform 0.25s ease;
+}
+
+/* Movimiento base */
+@keyframes float {
+    from {
+        transform: translateY(100vh) scale(0.8);
+    }
+    to {
+        transform: translateY(-120vh) scale(1.2);
+    }
+}

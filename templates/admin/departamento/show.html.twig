@@ -1,26 +1,59 @@
-{% extends 'base.html.twig' %}
+<turbo-frame id="content">
+    <section class="departamento-module">
+        <section class="departamento-show-module">
 
-{% block title %}Departamento{% endblock %}
+            <header class="departamento-show-module__header">
 
-{% block body %}
-    <h1>Departamento</h1>
+                <div class="departamento-show-module__header-left">
+                    <a
+                        href="{{ path('app_departamento_index') }}"
+                        class="departamento-show-module__action departamento-show-module__action--back"
+                        title="Volver a la lista"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ departamento.id }}</td>
-            </tr>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ departamento.nombre }}</td>
-            </tr>
-        </tbody>
-    </table>
+                <h1 class="departamento-show-module__title">
+                    Información del departamento
+                </h1>
 
-    <a href="{{ path('app_departamento_index') }}">back to list</a>
+                <div class="departamento-show-module__header-right">
 
-    <a href="{{ path('app_departamento_edit', {'id': departamento.id}) }}">edit</a>
+                    <a
+                        href="{{ path('app_departamento_edit', {'id': departamento.id}) }}"
+                        class="departamento-show-module__action departamento-show-module__action--edit"
+                        title="Editar"
+                    >
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
 
-    {{ include('admin/departamento/_delete_form.html.twig') }}
-{% endblock %}
+                    <div
+                        class="departamento-show-module__action departamento-show-module__action--delete"
+                        title="Eliminar"
+                    >
+                        {{ include('admin/departamento/_delete_form.html.twig') }}
+                    </div>
+
+                </div>
+
+            </header>
+
+            <div class="departamento-show-module__detail-wrapper">
+                <table class="departamento-show-module__detail-table">
+                    <tbody>
+
+                        <tr>
+                            <th class="departamento-show-module__detail-label">Nombre</th>
+                            <td class="departamento-show-module__detail-value">
+                                {{ departamento.nombre }}
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </section>
+</turbo-frame>

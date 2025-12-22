@@ -1,0 +1,28 @@
+/* =====================================================
+   INDEX — RESPONSIVE (MÓVIL)
+   Reglas comunes para vistas index
+   ===================================================== */
+
+@media (max-width: 640px) {
+
+    /* Header en 3 columnas compacto */
+    .index-header {
+        grid-template-columns: auto 1fr auto;
+    }
+
+    /* Botón crear → solo icono */
+    .index-create-button span {
+        display: none;
+    }
+
+    .index-create-button {
+        padding: 0.55rem;
+        aspect-ratio: 1 / 1;
+        gap: 0;
+    }
+
+    /* Acciones más juntas */
+    .index-table-actions {
+        gap: 0.45rem;
+    }
+}

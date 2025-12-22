@@ -7,6 +7,11 @@
         {% block stylesheets %}
             <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
             <link rel="stylesheet" href="{{asset('css/pta.css')}}">
+            <link rel="stylesheet" href="{{ asset('css/personal/personal.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/departamento/departamento.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/puesto/puesto.css') }}">
+            <link rel="stylesheet" href="{{ asset('css/responsive/index-responsive.css') }}">
+
             <link rel="stylesheet" href="{{ asset('libs/bootstrap-icons/bootstrap-icons.css') }}">
         {% endblock %}
 
@@ -18,13 +23,6 @@
     </head>
     <body>
         {% block body %}{% endblock %}
-        <style>
-            h1{
-                color:#aaa;
-                text-align: center;}
-            body{
-                background: #333;
-            }
-        </style>
+        
     </body>
 </html>

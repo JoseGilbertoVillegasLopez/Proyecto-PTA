@@ -1,40 +1,73 @@
 <turbo-frame id="content">
-<h1>Lista de personal</h1>
-    <a href="{{ path('app_personal_new') }}">Crear nuevo</a>
+    <section class="personal-module">
+        <section class="personal-index-module">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nombre completo</th>
-                <th>Correo</th>
-                <th>Puesto</th>
-                <th>Departamento</th>
-                <th>Activo</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for personal in personals %}
-            <tr>
-                <td>{{ personal }}</td>
-                <td>{{ personal.correo }}</td>
-                <td>{{ personal.puesto.nombre }}</td>
-                <td>{{ personal.departamento.nombre }}</td>
-                <td>{{ personal.activo ? 'Si' : 'No' }}</td>
-                <td>
-                    <a href="{{ path('app_personal_show', {'id': personal.id}) }}">Ver</a>
-                    <a href="{{ path('app_personal_edit', {'id': personal.id}) }}">Editar</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="7">No se encontraron registros</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <header class="personal-index-module__header index-header">
+                <h1 class="personal-index-module__title">
+                    Lista de personal
+                </h1>
 
+                <a
+                    href="{{ path('app_personal_new') }}"
+                    data-turbo-frame="content"
+                    class="personal-index-module__create-button index-create-button"
+                >
+                    <i class="bi bi-person-plus-fill"></i>
+                    <span>Crear nuevo</span>
+                </a>
+            </header>
+
+            <div class="personal-index-module__table-wrapper">
+                <table class="personal-index-module__table">
+
+                    <thead class="personal-index-module__table-head">
+                        <tr>
+                            <th class="personal-index-module__table-head-cell">Nombre completo</th>
+                            <th class="personal-index-module__table-head-cell">Correo</th>
+                            <th class="personal-index-module__table-head-cell">Puesto</th>
+                            <th class="personal-index-module__table-head-cell">Departamento</th>
+                            <th class="personal-index-module__table-head-cell">Activo</th>
+                            <th class="personal-index-module__table-head-cell">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for personal in personals %}
+                        <tr class="personal-index-module__table-row">
+                            <td class="personal-index-module__table-cell">{{ personal }}</td>
+                            <td class="personal-index-module__table-cell">{{ personal.correo }}</td>
+                            <td class="personal-index-module__table-cell">{{ personal.puesto.nombre }}</td>
+                            <td class="personal-index-module__table-cell">{{ personal.departamento.nombre }}</td>
+                            <td class="personal-index-module__table-cell">
+                                {{ personal.activo ? 'Sí' : 'No' }}
+                            </td>
+                            <td class="personal-index-module__table-cell personal-index-module__table-cell--actions index-table-actions">
+                                <a
+                                    href="{{ path('app_personal_show', {'id': personal.id}) }}"
+                                    class="personal-index-module__action"
+                                >
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                                <a
+                                    href="{{ path('app_personal_edit', {'id': personal.id}) }}"
+                                    class="personal-index-module__action personal-index-module__action--edit"
+                                >
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="personal-index-module__table-cell--empty">
+                                No se encontraron registros
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </section>
+    </section>
 </turbo-frame>
-    
-
-

@@ -1,33 +1,67 @@
 <turbo-frame id="content">
-    <h1>Puesto index</h1>
+    <section class="puesto-module">
+        <section class="puesto-index-module">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for puesto in puestos %}
-            <tr>
-                <td>{{ puesto.id }}</td>
-                <td>{{ puesto.nombre }}</td>
-                <td>
-                    <a href="{{ path('app_puesto_show', {'id': puesto.id}) }}">show</a>
-                    <a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <header class="puesto-index-module__header index-header">
+                <h1 class="puesto-index-module__title">
+                    Lista de puestos
+                </h1>
 
-    <a href="{{ path('app_puesto_new') }}">Create new</a>
+                <a
+                    href="{{ path('app_puesto_new') }}"
+                    data-turbo-frame="content"
+                    class="puesto-index-module__create-button index-create-button"
+                >
+                    <i class="bi bi-briefcase-fill"></i>
+                    <span>Crear nuevo</span>
+                </a>
+            </header>
+
+            <div class="puesto-index-module__table-wrapper">
+                <table class="puesto-index-module__table">
+
+                    <thead class="puesto-index-module__table-head">
+                        <tr>
+                            <th class="puesto-index-module__table-head-cell">Nombre</th>
+                            <th class="puesto-index-module__table-head-cell">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for puesto in puestos %}
+                        <tr class="puesto-index-module__table-row">
+                            <td class="puesto-index-module__table-cell">
+                                {{ puesto.nombre }}
+                            </td>
+
+                            <td class="puesto-index-module__table-cell puesto-index-module__table-cell--actions index-table-actions">
+                                <a
+                                    href="{{ path('app_puesto_show', {'id': puesto.id}) }}"
+                                    class="puesto-index-module__action"
+                                >
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+
+                                <a
+                                    href="{{ path('app_puesto_edit', {'id': puesto.id}) }}"
+                                    class="puesto-index-module__action puesto-index-module__action--edit"
+                                >
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="2" class="puesto-index-module__table-cell--empty">
+                                No se encontraron registros
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </section>
+    </section>
 </turbo-frame>
-
-

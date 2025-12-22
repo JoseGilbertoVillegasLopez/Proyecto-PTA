@@ -9,30 +9,17 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route(path: '/', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
-    {
-        //Rediriguir al dashboard correspondiente segiun el rol
-        if ($this->getUser()){
-            if ($this->isGranted('ROLE_ADMIN')){
-                return $this->redirectToRoute('app_admin_dashboard');
-            } 
-            if ($this->isGranted('ROLE_USER')){
-                return $this->redirectToRoute('user_dashboard');
-            }
-        }
+#[Route(path: '/', name: 'app_login')]
+public function login(AuthenticationUtils $authenticationUtils): Response
+{
 
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
+   return $this->render('security/login.html.twig', [
+        'last_username' => $authenticationUtils->getLastUsername(),
+        'error' => $authenticationUtils->getLastAuthenticationError(),
+    ]);
+}
 
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
-    }
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void

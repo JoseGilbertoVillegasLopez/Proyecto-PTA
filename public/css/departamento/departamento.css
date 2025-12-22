@@ -1,0 +1,762 @@
+/* =====================================================
+   DEPARTAMENTO — BASE GLOBAL
+   Aplica a: index | show | new | edit
+   ===================================================== */
+
+/* =====================================================
+   ✅ RESPONSIVE BUTTON SYSTEM (AISLADO)
+   ===================================================== */
+:root {
+    --departamento-btn-size: clamp(34px, 4.5vw, 46px);
+    --departamento-btn-icon: clamp(0.9rem, 2.4vw, 1.15rem);
+    --departamento-btn-radius: clamp(10px, 2vw, 14px);
+}
+
+.departamento-module {
+    color: var(--texto);
+    font-size: 1rem;
+    line-height: 1.5;
+
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Reset SOLO dentro del módulo */
+.departamento-module h1,
+.departamento-module h2,
+.departamento-module h3 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.departamento-module a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.departamento-module a:hover {
+    text-decoration: underline;
+}
+
+.departamento-module table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* =====================================================
+   DEPARTAMENTO — INDEX
+   ===================================================== */
+
+.departamento-index-module {
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(13,202,240,0.08),
+            transparent 55%
+        ),
+        linear-gradient(180deg, #1b1f24, #171a1f);
+
+    padding: 2.2rem;
+    border-radius: 18px;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.65),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* ===============================
+   HEADER
+   =============================== */
+
+.departamento-index-module__header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+
+    margin-bottom: 2.6rem;
+    padding-bottom: 1.4rem;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.departamento-index-module__title {
+    grid-column: 2;
+    text-align: center;
+
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+
+    color: #047031;
+}
+
+/* ---------- BOTÓN CREAR ---------- */
+
+.departamento-index-module__create-button {
+    grid-column: 3;
+    justify-self: end;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary-oscuro)
+    );
+
+    color: #fff;
+    font-weight: 600;
+
+    font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+    padding: clamp(0.45rem, 1vw, 0.6rem)
+             clamp(0.7rem, 1.6vw, 1.15rem);
+
+    border-radius: clamp(8px, 2vw, 10px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.15),
+        0 6px 14px rgba(0,0,0,0.45);
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.departamento-index-module__create-button i {
+    font-size: clamp(0.9rem, 2vw, 1.05rem);
+}
+
+.departamento-index-module__create-button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.25),
+        0 10px 22px rgba(2, 46, 54, 0.7);
+}
+
+/* ===============================
+   TABLA
+   =============================== */
+
+.departamento-index-module__table-wrapper {
+    overflow-x: auto;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.04),
+            rgba(255,255,255,0.015)
+        ),
+        linear-gradient(180deg, #161a1f, #14171b);
+
+    padding: 1.6rem;
+    border-radius: 16px;
+
+    border: 1px solid rgba(255,255,255,0.06);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        0 14px 30px rgba(0,0,0,0.55);
+}
+
+.departamento-index-module__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* ---------- HEAD ---------- */
+
+.departamento-index-module__table-head-cell {
+    padding: 1.1rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ---------- BODY ---------- */
+
+.departamento-index-module__table-row {
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.departamento-index-module__table-row:hover {
+    background: rgba(13,202,240,0.08);
+    transform: translateX(6px);
+
+    box-shadow:
+        -4px 0 0 rgba(13,202,240,0.55),
+        0 10px 22px rgba(0,0,0,0.55);
+}
+
+.departamento-index-module__table-cell {
+    padding: 0.95rem;
+    font-size: 1rem;
+    color: var(--texto);
+
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    word-break: break-word;
+}
+
+/* ---------- ACCIONES ---------- */
+
+.departamento-index-module__table-cell--actions {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+}
+
+.departamento-index-module__action {
+    width: var(--departamento-btn-size);
+    height: var(--departamento-btn-size);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--departamento-btn-radius);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.03)
+        );
+
+    color: var(--primary);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.12),
+        0 8px 18px rgba(0,0,0,0.55);
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.departamento-index-module__action i {
+    font-size: var(--departamento-btn-icon);
+}
+
+.departamento-index-module__action:hover {
+    background: rgba(1,143,44,0.14);
+    transform: translateY(-3px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13,240,81,0.45),
+        0 14px 30px rgba(0,0,0,0.75);
+}
+
+/* ---------- EMPTY ---------- */
+
+.departamento-index-module__table-cell--empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 2rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =====================================================
+   DEPARTAMENTO — SHOW
+   ===================================================== */
+
+.departamento-show-module {
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(13,202,240,0.08),
+            transparent 55%
+        ),
+        linear-gradient(180deg, #1b1f24, #171a1f);
+
+    padding: 2.2rem;
+    border-radius: 18px;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.65),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* ===============================
+   HEADER
+   =============================== */
+
+.departamento-show-module__header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+
+    margin-bottom: 2.6rem;
+    padding-bottom: 1.4rem;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.departamento-show-module__header-left,
+.departamento-show-module__header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.departamento-show-module__title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+    color: #047031;
+
+    padding: 0 1rem;
+    word-break: break-word;
+}
+
+/* ===============================
+   DETAIL
+   =============================== */
+
+.departamento-show-module__detail-wrapper {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.04),
+            rgba(255,255,255,0.015)
+        ),
+        linear-gradient(180deg, #161a1f, #14171b);
+
+    padding: 1.9rem;
+    border-radius: 16px;
+
+    border: 1px solid rgba(255,255,255,0.06);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        0 14px 30px rgba(0,0,0,0.55);
+}
+
+.departamento-show-module__detail-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.55rem;
+}
+
+.departamento-show-module__detail-table tr {
+    background: rgba(255,255,255,0.025);
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+/* 🔹 ÚNICO CAMBIO: línea azul igual a PERSONAL */
+.departamento-show-module__detail-table tr:hover {
+    background: rgba(13,202,240,0.08);
+    transform: translateX(6px);
+
+    box-shadow:
+        -4px 0 0 rgba(13,202,240,0.55),
+        0 10px 22px rgba(0,0,0,0.55);
+}
+
+.departamento-show-module__detail-label {
+    width: 30%;
+    padding: 1.3rem 1.25rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--primary);
+}
+
+.departamento-show-module__detail-value {
+    padding: 1.3rem 1.25rem;
+    font-size: 1.35rem;
+    color: var(--texto);
+}
+
+/* =====================================================
+   ACTIONS (BACK / EDIT / DELETE)
+   ===================================================== */
+
+.departamento-show-module__action {
+    width: var(--departamento-btn-size);
+    height: var(--departamento-btn-size);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--departamento-btn-radius);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.03)
+        );
+
+    color: var(--primary);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.12),
+        0 8px 18px rgba(0,0,0,0.55);
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.departamento-show-module__action i {
+    font-size: var(--departamento-btn-icon);
+}
+
+.departamento-show-module__action:hover {
+    background: rgba(1, 143, 44, 0.14);
+    transform: translateY(-3px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13,240,81,0.45),
+        0 14px 30px rgba(0,0,0,0.75);
+}
+
+/* =====================================================
+   DELETE — FIX REAL (IGUAL A PERSONAL)
+   ===================================================== */
+
+.departamento-show-module__action--delete {
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0;
+}
+
+.departamento-show-module__action--delete form {
+    margin: 0;
+}
+
+.departamento-show-module__action--delete button {
+    all: unset;
+    cursor: pointer;
+
+    width: var(--departamento-btn-size);
+    height: var(--departamento-btn-size);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--departamento-btn-radius);
+    color: var(--primary);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.03)
+        );
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.12),
+        0 8px 18px rgba(0,0,0,0.55);
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+
+    font-size: 0;
+}
+
+.departamento-show-module__action--delete button::before {
+    font-family: "bootstrap-icons";
+    content: "\f78a";
+    font-size: var(--departamento-btn-icon);
+}
+
+.departamento-show-module__action--delete button:hover {
+    background: rgba(1, 143, 44, 0.14);
+    transform: translateY(-3px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13,240,81,0.45),
+        0 14px 30px rgba(0,0,0,0.75);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =====================================================
+   DEPARTAMENTO — EDIT
+   ===================================================== */
+
+.departamento-edit-module {
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(13,202,240,0.08),
+            transparent 55%
+        ),
+        linear-gradient(180deg, #1b1f24, #171a1f);
+
+    padding: 2.2rem;
+    border-radius: 18px;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.65),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* ===============================
+   HEADER
+   =============================== */
+
+.departamento-edit-module__header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+
+    margin-bottom: 2.6rem;
+    padding-bottom: 1.4rem;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.departamento-edit-module__header-left,
+.departamento-edit-module__header-right {
+    display: flex;
+    align-items: center;
+}
+
+.departamento-edit-module__title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+    color: #047031;
+
+    padding: 0 1rem;
+    word-break: break-word;
+}
+
+/* ===============================
+   ACTIONS (BACK / SAVE)
+   =============================== */
+
+.departamento-edit-module__action {
+    width: var(--departamento-btn-size);
+    height: var(--departamento-btn-size);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--departamento-btn-radius);
+    border: none;
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.03)
+        );
+
+    color: var(--primary);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.12),
+        0 8px 18px rgba(0,0,0,0.55);
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.departamento-edit-module__action i {
+    font-size: var(--departamento-btn-icon);
+}
+
+.departamento-edit-module__action:hover {
+    background: rgba(1, 143, 44, 0.14);
+    transform: translateY(-3px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13,240,81,0.45),
+        0 14px 30px rgba(0,0,0,0.75);
+}
+
+/* ===============================
+   FORM
+   =============================== */
+
+.departamento-edit-module__form {
+    margin-top: 2.2rem;
+}
+
+.departamento-edit-module__form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.departamento-edit-module__field label {
+    display: block;
+    margin-bottom: 0.45rem;
+
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+
+    color: var(--primary);
+}
+
+.departamento-edit-module__field input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+
+    font-size: 1.15rem;
+    font-weight: 500;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.04),
+            rgba(255,255,255,0.015)
+        ),
+        linear-gradient(180deg, #161a1f, #14171b);
+
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+
+    padding: 0.75rem 0.9rem;
+    color: var(--texto);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        0 6px 14px rgba(0,0,0,0.45);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
+}
+
+.departamento-edit-module__field input:focus {
+    outline: none;
+    border-color: rgba(13,202,240,0.65);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13,202,240,0.35),
+        0 0 0 4px rgba(13,202,240,0.12),
+        0 10px 22px rgba(0,0,0,0.75);
+
+    transform: translateY(-1px);
+}
+
+/* ===============================
+   DELETE (ICON ONLY — IGUAL A PERSONAL)
+   =============================== */
+
+.departamento-edit-module__delete {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+.departamento-edit-module__delete-button {
+    all: unset;
+    cursor: pointer;
+
+    width: var(--departamento-btn-size);
+    height: var(--departamento-btn-size);
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: var(--departamento-btn-radius);
+    color: var(--primary);
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+
+/* 👇 Caja aparece SOLO en hover (como Personal) */
+.departamento-edit-module__delete-button:hover {
+    background: rgba(1, 143, 44, 0.14);
+    transform: translateY(-3px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13,240,81,0.45),
+        0 14px 30px rgba(0,0,0,0.75);
+}
+
+/* =====================================================
+   DELETE ICON — VIA CSS (IGUAL A SHOW / PERSONAL)
+   ===================================================== */
+
+.departamento-edit-module__delete-button::before {
+    font-family: "bootstrap-icons";
+    content: "\f78a";
+    font-size: var(--departamento-btn-icon);
+    line-height: 1;
+    pointer-events: none;
+}

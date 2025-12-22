@@ -1,14 +1,111 @@
 <turbo-frame id="content">
-    <h1>Editar informacion de {{personal}}</h1>
 
-        <h2> Edite solo los camopos necesarios </h2>
+    <section class="personal-module">
+        <section class="personal-edit-module">
 
-        {{ include('admin/personal/_form.html.twig', {'button_label': 'Update'}) }}
+            {# ===============================
+               FORM (se abre ANTES del header
+               para poder usar submit externo)
+               =============================== #}
+            {{ form_start(form, {
+                action: path('app_personal_edit', { id: personal.id }),
+                attr: {
+                    'data-turbo-frame': 'content',
+                    'class': 'personal-edit-module__form'
+                }
+            }) }}
 
-        <a href="{{ path('app_personal_index') }}">back to list</a>
+            {# ===============================
+               HEADER (IZQ | CENTRO | DER)
+               =============================== #}
+            <header class="personal-edit-module__header">
 
-        {{ include('admin/personal/_delete_form.html.twig') }}
+                <!-- IZQUIERDA — VOLVER -->
+                <div class="personal-edit-module__header-left">
+                    <a
+                        href="{{ path('app_personal_index') }}"
+                        data-turbo-frame="content"
+                        class="personal-edit-module__action personal-edit-module__action--back"
+                        title="Volver"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                </div>
+
+                <!-- CENTRO — TÍTULO -->
+                <h1 class="personal-edit-module__title">
+                    Editar información
+                </h1>
+
+                <!-- DERECHA — GUARDAR -->
+                <div class="personal-edit-module__header-right">
+                    <button
+                        type="submit"
+                        class="personal-edit-module__action personal-edit-module__action--save"
+                        title="Guardar cambios"
+                    >
+                        <i class="bi bi-save-fill"></i>
+                    </button>
+                </div>
+
+            </header>
+
+            {# ===============================
+               CAMPOS
+               =============================== #}
+            <div class="personal-edit-module__form-grid">
+
+                <div class="personal-edit-module__field">
+                    {{ form_label(form.nombre) }}
+                    {{ form_widget(form.nombre) }}
+                    {{ form_errors(form.nombre) }}
+                </div>
+
+                <div class="personal-edit-module__field">
+                    {{ form_label(form.ap_paterno) }}
+                    {{ form_widget(form.ap_paterno) }}
+                    {{ form_errors(form.ap_paterno) }}
+                </div>
+
+                <div class="personal-edit-module__field">
+                    {{ form_label(form.ap_materno) }}
+                    {{ form_widget(form.ap_materno) }}
+                    {{ form_errors(form.ap_materno) }}
+                </div>
+
+                <div class="personal-edit-module__field">
+                    {{ form_label(form.correo) }}
+                    {{ form_widget(form.correo) }}
+                    {{ form_errors(form.correo) }}
+                </div>
+
+                <div class="personal-edit-module__field">
+                    {{ form_label(form.puesto) }}
+                    {{ form_widget(form.puesto) }}
+                    {{ form_errors(form.puesto) }}
+                </div>
+
+                <div class="personal-edit-module__field">
+                    {{ form_label(form.departamento) }}
+                    {{ form_widget(form.departamento) }}
+                    {{ form_errors(form.departamento) }}
+                </div>
+
+            </div>
+
+            {# 🔐 CSRF + hidden fields #}
+            {{ form_rest(form) }}
+
+            {{ form_end(form) }}
+
+            {# ===============================
+               DELETE (solo icono, abajo)
+               =============================== #}
+            <div class="personal-edit-module__delete">
+                {{ include('admin/personal/_delete_form.html.twig') }}
+            </div>
+
+        </section>
+    </section>
 
 </turbo-frame>
-    
-

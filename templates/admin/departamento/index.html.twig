@@ -1,31 +1,72 @@
 <turbo-frame id="content">
-    <h1>Departamento index</h1>
+    <section class="departamento-module">
+        <section class="departamento-index-module">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for departamento in departamentos %}
-            <tr>
-                <td>{{ departamento.id }}</td>
-                <td>{{ departamento.nombre }}</td>
-                <td>
-                    <a href="{{ path('app_departamento_show', {'id': departamento.id}) }}">show</a>
-                    <a href="{{ path('app_departamento_edit', {'id': departamento.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <header class="departamento-index-module__header index-header">
+                <h1 class="departamento-index-module__title">
+                    Lista de departamentos
+                </h1>
 
-    <a href="{{ path('app_departamento_new') }}">Create new</a>
+                <a
+                    href="{{ path('app_departamento_new') }}"
+                    data-turbo-frame="content"
+                    class="departamento-index-module__create-button index-create-button"
+                >
+                    <i class="bi bi-building-add"></i>
+                    <span>Crear nuevo</span>
+                </a>
+            </header>
+
+            <div class="departamento-index-module__table-wrapper">
+                <table class="departamento-index-module__table">
+
+                    <thead>
+                        <tr>
+                            <th class="departamento-index-module__table-head-cell">ID</th>
+                            <th class="departamento-index-module__table-head-cell">Nombre</th>
+                            <th class="departamento-index-module__table-head-cell">Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for departamento in departamentos %}
+                        <tr class="departamento-index-module__table-row">
+                            <td class="departamento-index-module__table-cell">
+                                {{ departamento.id }}
+                            </td>
+                            <td class="departamento-index-module__table-cell">
+                                {{ departamento.nombre }}
+                            </td>
+                            <td class="departamento-index-module__table-cell departamento-index-module__table-cell--actions index-table-actions">
+
+                                <a
+                                    href="{{ path('app_departamento_show', {'id': departamento.id}) }}"
+                                    class="departamento-index-module__action"
+                                >
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+
+                                <a
+                                    href="{{ path('app_departamento_edit', {'id': departamento.id}) }}"
+                                    class="departamento-index-module__action departamento-index-module__action--edit"
+                                >
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="departamento-index-module__table-cell--empty">
+                                No se encontraron registros
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+        </section>
+    </section>
 </turbo-frame>

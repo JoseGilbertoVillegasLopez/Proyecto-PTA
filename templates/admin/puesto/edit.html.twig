@@ -1,11 +1,81 @@
 <turbo-frame id="content">
-    <h1>Edit Puesto</h1>
 
-    {{ include('admin/puesto/_form.html.twig', {'button_label': 'Update'}) }}
+    <section class="puesto-module">
+        <section class="puesto-edit-page">
 
-    <a href="{{ path('app_puesto_index') }}">back to list</a>
+            {# ===============================
+               FORM (se abre ANTES del header
+               para poder usar submit externo)
+               =============================== #}
+            {{ form_start(form, {
+                action: path('app_puesto_edit', { id: puesto.id }),
+                attr: {
+                    'data-turbo-frame': 'content',
+                    'class': 'puesto-edit-page__form'
+                }
+            }) }}
 
-    {{ include('admin/puesto/_delete_form.html.twig') }}
+            {# ===============================
+               HEADER (IZQ | CENTRO | DER)
+               =============================== #}
+            <header class="puesto-edit-page__header">
+
+                <!-- IZQUIERDA — VOLVER -->
+                <div class="puesto-edit-page__header-left">
+                    <a
+                        href="{{ path('app_puesto_index') }}"
+                        data-turbo-frame="content"
+                        class="puesto-edit-page__action puesto-edit-page__action--back"
+                        title="Volver"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                </div>
+
+                <!-- CENTRO — TÍTULO -->
+                <h1 class="puesto-edit-page__title">
+                    Editar puesto
+                </h1>
+
+                <!-- DERECHA — GUARDAR -->
+                <div class="puesto-edit-page__header-right">
+                    <button
+                        type="submit"
+                        class="puesto-edit-page__action puesto-edit-page__action--save"
+                        title="Guardar cambios"
+                    >
+                        <i class="bi bi-save-fill"></i>
+                    </button>
+                </div>
+
+            </header>
+
+            {# ===============================
+               CAMPOS
+               =============================== #}
+            <div class="puesto-edit-page__form-grid">
+
+                <div class="puesto-edit-page__field">
+                    {{ form_label(form.nombre) }}
+                    {{ form_widget(form.nombre) }}
+                    {{ form_errors(form.nombre) }}
+                </div>
+
+            </div>
+
+            {# 🔐 CSRF + hidden fields #}
+            {{ form_rest(form) }}
+
+            {{ form_end(form) }}
+
+            {# ===============================
+               DELETE (solo icono, abajo)
+               =============================== #}
+            <div class="puesto-edit-page__delete">
+                {{ include('admin/puesto/_delete_form.html.twig') }}
+            </div>
+
+        </section>
+    </section>
+
 </turbo-frame>
-
-

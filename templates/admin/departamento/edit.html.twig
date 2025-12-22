@@ -1,12 +1,80 @@
 <turbo-frame id="content">
-    <h1>Edit Departamento</h1>
 
-        {{ include('admin/departamento/_form.html.twig', {'button_label': 'Update'}) }}
+    <section class="departamento-module">
+        <section class="departamento-edit-module">
 
-        <a href="{{ path('app_departamento_index') }}">back to list</a>
+            {# ===============================
+               FORM
+               =============================== #}
+            {{ form_start(form, {
+                action: path('app_departamento_edit', { id: departamento.id }),
+                attr: {
+                    'data-turbo-frame': 'content',
+                    'class': 'departamento-edit-module__form'
+                }
+            }) }}
 
-        {{ include('admin/departamento/_delete_form.html.twig') }}
+            {# ===============================
+               HEADER (IZQ | CENTRO | DER)
+               =============================== #}
+            <header class="departamento-edit-module__header">
+
+                <!-- IZQUIERDA — VOLVER -->
+                <div class="departamento-edit-module__header-left">
+                    <a
+                        href="{{ path('app_departamento_index') }}"
+                        data-turbo-frame="content"
+                        class="departamento-edit-module__action departamento-edit-module__action--back"
+                        title="Volver"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                </div>
+
+                <!-- CENTRO — TÍTULO -->
+                <h1 class="departamento-edit-module__title">
+                    Editar departamento
+                </h1>
+
+                <!-- DERECHA — GUARDAR -->
+                <div class="departamento-edit-module__header-right">
+                    <button
+                        type="submit"
+                        class="departamento-edit-module__action departamento-edit-module__action--save"
+                        title="Guardar cambios"
+                    >
+                        <i class="bi bi-save-fill"></i>
+                    </button>
+                </div>
+
+            </header>
+
+            {# ===============================
+               CAMPOS
+               =============================== #}
+            <div class="departamento-edit-module__form-grid">
+
+                <div class="departamento-edit-module__field">
+                    {{ form_label(form.nombre) }}
+                    {{ form_widget(form.nombre) }}
+                    {{ form_errors(form.nombre) }}
+                </div>
+
+            </div>
+
+            {# 🔐 CSRF + hidden fields #}
+            {{ form_rest(form) }}
+
+            {{ form_end(form) }}
+
+            {# ===============================
+               DELETE (ICON ONLY)
+               =============================== #}
+            <div class="departamento-edit-module__delete">
+                {{ include('admin/departamento/_delete_form.html.twig') }}
+            </div>
+
+        </section>
+    </section>
 
 </turbo-frame>
-    
-

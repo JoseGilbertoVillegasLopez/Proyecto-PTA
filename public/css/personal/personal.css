@@ -1,0 +1,914 @@
+/* =====================================================
+   PERSONAL — BASE GLOBAL
+   Aplica a: index | show | new | edit
+   ===================================================== */
+
+/* =====================================================
+   ✅ RESPONSIVE BUTTON SYSTEM (GLOBAL)
+   - Hace que los botones/íconos escalen con el tamaño de la ventana
+   - Evita que se encimen / sobresalgan en pantallas chicas
+   ===================================================== */
+:root {
+    /* Tamaño base de botones (icon buttons) */
+    --personal-btn-size: clamp(34px, 4.5vw, 46px);
+    /* Tamaño de icono dentro del botón */
+    --personal-btn-icon: clamp(0.9rem, 2.4vw, 1.15rem);
+    /* Radio consistente */
+    --personal-btn-radius: clamp(10px, 2vw, 14px);
+}
+
+.personal-module {
+    color: var(--texto);
+    font-size: 1rem;
+    line-height: 1.5;
+
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Reset de elementos comunes SOLO dentro del módulo */
+.personal-module h1,
+.personal-module h2,
+.personal-module h3 {
+    margin: 0;
+    font-weight: 700;
+}
+
+.personal-module a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.personal-module a:hover {
+    text-decoration: underline;
+}
+
+.personal-module table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* =====================================================
+   PERSONAL — INDEX
+   Se comporta IGUAL que SHOW (centrado, contenido)
+   ===================================================== */
+
+.personal-index-module {
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(13,202,240,0.08),
+            transparent 55%
+        ),
+        linear-gradient(180deg, #1b1f24, #171a1f);
+
+    padding: 2.2rem;
+    border-radius: 18px;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.65),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+
+    /* 🔥 CLAVE: mismo patrón que SHOW */
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* ===============================
+   HEADER
+   =============================== */
+
+.personal-index-module__header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+
+    margin-bottom: 2.6rem;
+    padding-bottom: 1.4rem;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.personal-index-module__title {
+    grid-column: 2;
+    text-align: center;
+
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+
+    color: #047031;
+}
+
+/* ---------- BOTÓN CREAR ---------- */
+
+.personal-index-module__create-button {
+    grid-column: 3;
+    justify-self: end;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--primary-oscuro)
+    );
+
+    color: #fff;
+    padding: 0.6rem 1.15rem;
+    border-radius: 10px;
+
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.15),
+        0 6px 14px rgba(0,0,0,0.45);
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ✅ RESPONSIVE: el botón "Crear nuevo" se adapta */
+.personal-index-module__create-button {
+    font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+    padding: clamp(0.45rem, 1vw, 0.6rem)
+             clamp(0.7rem, 1.6vw, 1.15rem);
+    border-radius: clamp(8px, 2vw, 10px);
+}
+
+.personal-index-module__create-button i {
+    font-size: 1.05rem;
+}
+
+/* ✅ RESPONSIVE: icono del botón crear */
+.personal-index-module__create-button i {
+    font-size: clamp(0.9rem, 2vw, 1.05rem);
+}
+
+.personal-index-module__create-button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.25),
+        0 10px 22px rgba(2, 46, 54, 0.7);
+}
+
+/* ===============================
+   TABLA (CONTENIDA, NO ROMPE LAYOUT)
+   =============================== */
+
+.personal-index-module__table-wrapper {
+    overflow-x: auto;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.04),
+            rgba(255,255,255,0.015)
+        ),
+        linear-gradient(180deg, #161a1f, #14171b);
+
+    padding: 1.6rem;
+    border-radius: 16px;
+
+    border: 1px solid rgba(255,255,255,0.06);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        0 14px 30px rgba(0,0,0,0.55);
+
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.personal-index-module__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
+}
+
+/* ---------- HEAD ---------- */
+
+.personal-index-module__table-head {
+    background: transparent;
+}
+
+.personal-index-module__table-head-cell {
+    padding: 1.1rem 1rem;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    text-align: left;
+}
+
+/* ---------- BODY ---------- */
+
+.personal-index-module__table-row {
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.personal-index-module__table-row:hover {
+    background: rgba(13,202,240,0.08);
+    transform: translateX(6px);
+
+    box-shadow:
+        -4px 0 0 rgba(13,202,240,0.55),
+        0 10px 22px rgba(0,0,0,0.55);
+}
+
+.personal-index-module__table-cell {
+    padding: 0.95rem;
+    font-size: 1rem;
+    color: var(--texto);
+
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+
+    /* 🔥 IMPORTANTE: permite adaptación */
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* ---------- ACCIONES ---------- */
+
+.personal-index-module__table-cell--actions {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+}
+
+.personal-index-module__action {
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.03)
+        );
+
+    color: var(--primary);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.12),
+        0 8px 18px rgba(0,0,0,0.55);
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+/* ✅ RESPONSIVE: acciones del index ahora escalan */
+.personal-index-module__action {
+    width: var(--personal-btn-size);
+    height: var(--personal-btn-size);
+    border-radius: var(--personal-btn-radius);
+}
+.personal-index-module__action i {
+    font-size: var(--personal-btn-icon);
+}
+
+.personal-index-module__action:hover {
+    background: rgba(1, 143, 44, 0.14);
+    transform: translateY(-3px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 240, 81, 0.45),
+        0 14px 30px rgba(0,0,0,0.75);
+}
+
+/* ---------- EMPTY ---------- */
+
+.personal-index-module__table-row--empty:hover {
+    background: transparent;
+}
+
+.personal-index-module__table-cell--empty {
+    text-align: center;
+    color: var(--muted);
+    font-size: 1rem;
+    padding: 2rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =====================================================
+   PERSONAL — SHOW
+   Dark & Cyan · Elegante · Extravagante (AJUSTADO)
+   ===================================================== */
+
+.personal-show-module {
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(13,202,240,0.08),
+            transparent 55%
+        ),
+        linear-gradient(180deg, #1b1f24, #171a1f);
+
+    padding: 2.2rem;
+    border-radius: 18px;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.65),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+
+    /* ✅ FIX: card estable al achicar ventana */
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* ===============================
+   HEADER (IZQ | CENTRO | DER)
+   =============================== */
+
+.personal-show-module__header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+
+    margin-bottom: 2.6rem;
+    padding-bottom: 1.4rem;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* IZQUIERDA */
+.personal-show-module__header-left {
+    display: flex;
+    align-items: center;
+}
+
+/* CENTRO — TÍTULO (VERDE SUAVE) */
+.personal-show-module__title {
+    margin: 0;
+    text-align: center;
+
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+
+    color: #047031;
+
+    /* ✅ FIX: que no empuje/rompa */
+    padding: 0 1rem;
+    word-break: break-word;
+}
+
+/* DERECHA */
+.personal-show-module__header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+/* ===============================
+   DETAIL TABLE
+   =============================== */
+
+.personal-show-module__detail-wrapper {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.04),
+            rgba(255,255,255,0.015)
+        ),
+        linear-gradient(180deg, #161a1f, #14171b);
+
+    padding: 1.9rem;
+    border-radius: 16px;
+
+    border: 1px solid rgba(255,255,255,0.06);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        0 14px 30px rgba(0,0,0,0.55);
+
+    /* ✅ FIX: evita rarezas de ancho */
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Tabla tipo “placas” */
+.personal-show-module__detail-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.55rem;
+
+    font-size: 1.2rem;
+}
+
+/* Fila como tarjeta */
+.personal-show-module__detail-table tr {
+    background: rgba(255,255,255,0.025);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Hover elegante */
+.personal-show-module__detail-table tr:hover {
+    background: rgba(13,202,240,0.08);
+    transform: translateX(6px);
+
+    box-shadow:
+        -4px 0 0 rgba(13,202,240,0.55),
+        0 10px 22px rgba(0,0,0,0.55);
+}
+
+/* ✅ FIX: IMPORTANTÍSIMO para que el contenido no “empuje” */
+.personal-show-module__detail-table th,
+.personal-show-module__detail-table td {
+    min-width: 0;
+}
+
+/* LABELS */
+.personal-show-module__detail-label {
+    width: 30%;
+    padding: 1.3rem 1.25rem;
+
+    font-size: 1.1rem;
+    font-weight: 600;
+
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    opacity: 0.9;
+
+    /* ✅ FIX: etiquetas largas no rompen */
+    word-break: break-word;
+}
+
+/* VALUES */
+.personal-show-module__detail-value {
+    padding: 1.3rem 1.25rem;
+
+    font-size: 1.35rem;
+    font-weight: 500;
+
+    color: var(--texto);
+    letter-spacing: 0.35px;
+
+    /* ✅ FIX: correos/textos largos */
+    word-break: break-word;
+}
+
+/* Bordes redondeados por fila */
+.personal-show-module__detail-table tr th:first-child,
+.personal-show-module__detail-table tr td:first-child {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+}
+
+.personal-show-module__detail-table tr th:last-child,
+.personal-show-module__detail-table tr td:last-child {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+/* ===============================
+   ACTIONS — ICON BUTTONS
+   =============================== */
+
+.personal-show-module__action {
+    width: 46px;
+    height: 46px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.03)
+        );
+
+    color: var(--primary);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.12),
+        0 8px 18px rgba(0,0,0,0.55);
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+/* ✅ RESPONSIVE: acciones del show ahora escalan */
+.personal-show-module__action {
+    width: var(--personal-btn-size);
+    height: var(--personal-btn-size);
+    border-radius: var(--personal-btn-radius);
+}
+
+.personal-show-module__action i {
+    font-size: var(--personal-btn-icon);
+}
+
+/* Hover botones */
+.personal-show-module__action:hover {
+    background: rgba(1, 143, 44, 0.14);
+    transform: translateY(-3px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 240, 81, 0.45),
+        0 14px 30px rgba(0,0,0,0.75);
+}
+
+/* ===============================
+   DELETE — ICON ONLY (NO ROJO)
+   =============================== */
+
+.personal-show-module__action--delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.personal-show-module__action--delete form {
+    margin: 0;
+}
+
+.personal-show-module__action--delete button {
+    all: unset;
+    cursor: pointer;
+
+    width: 46px;
+    height: 46px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+    color: var(--primary);
+
+    font-size: 0;
+}
+
+/* ✅ RESPONSIVE: delete button escala igual */
+.personal-show-module__action--delete button {
+    width: var(--personal-btn-size);
+    height: var(--personal-btn-size);
+    border-radius: var(--personal-btn-radius);
+}
+
+/* Icono basura */
+.personal-show-module__action--delete button::before {
+    font-family: "bootstrap-icons";
+    content: "\f78a";
+    font-size: 1.15rem;
+}
+
+/* ✅ RESPONSIVE: icono basura escala */
+.personal-show-module__action--delete button::before {
+    font-size: var(--personal-btn-icon);
+}
+
+/* Hover sobrio */
+.personal-show-module__action--delete:hover {
+    background: rgba(1, 143, 44, 0.14);
+}
+
+
+
+
+
+
+
+
+
+
+
+/* =====================================================
+   PERSONAL — EDIT
+   ===================================================== */
+
+.personal-edit-module {
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(13,202,240,0.08),
+            transparent 55%
+        ),
+        linear-gradient(180deg, #1b1f24, #171a1f);
+
+    padding: 2.2rem;
+    border-radius: 18px;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.65),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+
+    /* ✅ FIX: card estable al achicar ventana */
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* ===============================
+   HEADER (IZQ | CENTRO | DER)
+   =============================== */
+
+.personal-edit-module__header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+
+    margin-bottom: 2.6rem;
+    padding-bottom: 1.4rem;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.personal-edit-module__header-left,
+.personal-edit-module__header-right {
+    display: flex;
+    align-items: center;
+}
+
+/* TÍTULO */
+.personal-edit-module__title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 0.45px;
+    color: #047031;
+
+    /* ✅ FIX: que no empuje/rompa */
+    padding: 0 1rem;
+    word-break: break-word;
+}
+
+/* ===============================
+   HEADER ACTIONS — ICON BUTTONS
+   =============================== */
+
+.personal-edit-module__action {
+    width: 46px;
+    height: 46px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+    border: none;
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.03)
+        );
+
+    color: var(--primary);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.12),
+        0 8px 18px rgba(0,0,0,0.55);
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+/* ✅ RESPONSIVE: acciones del edit ahora escalan */
+.personal-edit-module__action {
+    width: var(--personal-btn-size);
+    height: var(--personal-btn-size);
+    border-radius: var(--personal-btn-radius);
+}
+
+.personal-edit-module__action i {
+    font-size: 1.15rem;
+}
+
+/* ✅ RESPONSIVE: iconos del edit escalan */
+.personal-edit-module__action i {
+    font-size: var(--personal-btn-icon);
+}
+
+.personal-edit-module__action:hover {
+    background: rgba(1, 143, 44, 0.14);
+    transform: translateY(-3px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13,240,81,0.45),
+        0 14px 30px rgba(0,0,0,0.75);
+}
+
+/* ===============================
+   FORM
+   =============================== */
+
+.personal-edit-module__form {
+    margin-top: 2.2rem;
+}
+
+.personal-edit-module__form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.6rem 1.8rem;
+
+    /* ✅ FIX: evita overflow “raro” */
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* ✅ FIX: importantísimo para grid + inputs */
+.personal-edit-module__field {
+    min-width: 0;
+}
+
+/* LABELS */
+.personal-edit-module__field label {
+    display: block;
+    margin-bottom: 0.45rem;
+
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+
+    color: var(--primary);
+}
+
+/* INPUTS / SELECTS */
+.personal-edit-module__field input,
+.personal-edit-module__field select {
+    width: 100%;
+
+    /* ✅ FIX: evita que contenido empuje */
+    max-width: 100%;
+    box-sizing: border-box;
+
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.04),
+            rgba(255,255,255,0.015)
+        ),
+        linear-gradient(180deg, #161a1f, #14171b);
+
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+
+    padding: 0.75rem 0.9rem;
+    color: var(--texto);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.03),
+        0 6px 14px rgba(0,0,0,0.45);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease,
+        background 0.2s ease;
+
+    word-break: break-word;
+}
+
+/* PLACEHOLDER */
+.personal-edit-module__field input::placeholder {
+    font-size: 1.05rem;
+    color: var(--muted);
+}
+
+/* HOVER */
+.personal-edit-module__field input:hover,
+.personal-edit-module__field select:hover {
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,0.06),
+            rgba(255,255,255,0.025)
+        ),
+        linear-gradient(180deg, #181c21, #15181c);
+}
+
+/* FOCUS */
+.personal-edit-module__field input:focus,
+.personal-edit-module__field select:focus {
+    outline: none;
+    border-color: rgba(13,202,240,0.65);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13,202,240,0.35),
+        0 0 0 4px rgba(13,202,240,0.12),
+        0 10px 22px rgba(0,0,0,0.75);
+
+    transform: translateY(-1px);
+}
+
+/* ===============================
+   DELETE (ICON ONLY)
+   =============================== */
+
+.personal-edit-module__delete {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+.personal-edit-module__delete-button {
+    all: unset;
+    cursor: pointer;
+
+    width: 46px;
+    height: 46px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+    color: var(--primary);
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+/* ✅ RESPONSIVE: delete del edit escala igual */
+.personal-edit-module__delete-button {
+    width: var(--personal-btn-size);
+    height: var(--personal-btn-size);
+    border-radius: var(--personal-btn-radius);
+}
+
+/* Icono basura */
+.personal-edit-module__delete-button::before {
+    font-family: "bootstrap-icons";
+    content: "\f78a";
+    font-size: 1.15rem;
+}
+
+/* ✅ RESPONSIVE: icono basura escala */
+.personal-edit-module__delete-button::before {
+    font-size: var(--personal-btn-icon);
+}
+
+/* Hover delete (sobrio, no rojo) */
+.personal-edit-module__delete-button:hover {
+    background: rgba(1, 143, 44, 0.14);
+    transform: translateY(-3px);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13,240,81,0.45),
+        0 14px 30px rgba(0,0,0,0.75);
+}
+

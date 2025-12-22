@@ -1,24 +1,68 @@
 <turbo-frame id="content">
-    <h1>Puesto</h1>
+    <section class="puesto-module">
+        <section class="puesto-show-module">
 
-        <table class="table">
-            <tbody>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ puesto.id }}</td>
-                </tr>
-                <tr>
-                    <th>Nombre</th>
-                    <td>{{ puesto.nombre }}</td>
-                </tr>
-            </tbody>
-        </table>
+            <!-- ===============================
+                 HEADER (IZQ | CENTRO | DER)
+            ================================ -->
+            <header class="puesto-show-module__header">
 
-        <a href="{{ path('app_puesto_index') }}">back to list</a>
+                <!-- IZQUIERDA -->
+                <div class="puesto-show-module__header-left">
+                    <a
+                        href="{{ path('app_puesto_index') }}"
+                        class="puesto-show-module__action puesto-show-module__action--back"
+                        title="Volver a la lista"
+                    >
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                </div>
 
-        <a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}">edit</a>
+                <!-- CENTRO -->
+                <h1 class="puesto-show-module__title">
+                    Información del puesto
+                </h1>
 
-        {{ include('admin/puesto/_delete_form.html.twig') }}
+                <!-- DERECHA -->
+                <div class="puesto-show-module__header-right">
+
+                    <a
+                        href="{{ path('app_puesto_edit', {'id': puesto.id}) }}"
+                        class="puesto-show-module__action puesto-show-module__action--edit"
+                        title="Editar"
+                    >
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
+
+                    <div
+                        class="puesto-show-module__action puesto-show-module__action--delete"
+                        title="Eliminar"
+                    >
+                        {{ include('admin/puesto/_delete_form.html.twig') }}
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- ===============================
+                 DETAIL
+            ================================ -->
+            <div class="puesto-show-module__detail-wrapper">
+                <table class="puesto-show-module__detail-table">
+                    <tbody>
+
+                        <tr>
+                            <th class="puesto-show-module__detail-label">Nombre</th>
+                            <td class="puesto-show-module__detail-value">
+                                {{ puesto.nombre }}
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+    </section>
 </turbo-frame>
-    
-
