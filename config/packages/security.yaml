@@ -1,7 +1,7 @@
 security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        App\Entity\Usuario: #definimos el nombre de la entidad que implementa UserInterface para el cifrado de contraseñas
+        App\Entity\User: #definimos el nombre de la entidad que implementa UserInterface para el cifrado de contraseñas
                 algorithm: argon2id #algoritmo de cifrado
                 memory_cost: 65536 # coste de memoria que se refiere a la cantidad de memoria RAM que se utilizará para calcular el hash
                 time_cost: 4 # coste de tiempo que se refiere a la cantidad de iteraciones que se realizarán para calcular el hash
@@ -39,7 +39,13 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/usuarioNvl0, roles: ROLE_USER }
+        - { path: ^/usuarioNvl1, roles: ROLE_SUBDIRECCION }
+        - { path: ^/usuarioNvl2, roles: ROLE_DIRECCION }
+        - { path: ^/usuarioNvl3, roles: ROLE_DIRECCION_GENERAL }
+        
+        
+
 
 when@test:
     security:

@@ -1,0 +1,199 @@
+{# ============================================================
+   PTA — GRÁFICAS
+   ------------------------------------------------------------
+   Vista de visualización gráfica del PTA.
+   - Renderiza una gráfica por cada indicador
+   - Muestra meta, tendencia y porcentaje de avance
+   - Desglosa el aporte de cada acción
+   ------------------------------------------------------------
+   IMPORTANTE:
+   - Twig SOLO renderiza estructura y data-attributes
+   - Los cálculos ya vienen procesados desde el controlador
+   ============================================================ #}
+
+<turbo-frame id="content">
+
+    {# =========================================================
+       CONTENEDOR PRINCIPAL DEL MÓDULO
+       ---------------------------------------------------------
+       data-pta-view="graficas" se usa para:
+       - Detectar la vista desde JS (Turbo compatible)
+       - Aislar estilos específicos del módulo
+       ========================================================= #}
+    <section class="pta-module" data-pta-view="graficas">
+
+        {# =========================================================
+           HEADER SUPERIOR
+           ---------------------------------------------------------
+           Incluye:
+           - Botón de regreso a la vista SHOW del encabezado
+           - Título del módulo
+           ========================================================= #}
+        <header class="pta-module__header">
+
+            <div class="pta-module__header-left">
+                <a
+                    href="{{ path('app_encabezado_show', { id: encabezado.id }) }}"
+                    data-turbo-frame="content"
+                    class="pta-back-btn"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Volver</span>
+                </a>
+            </div>
+
+            <h1 class="pta-module__title">
+                📊 Gráficas del PTA
+            </h1>
+
+        </header>
+
+        {# =========================================================
+           CONTENIDO PRINCIPAL
+           ---------------------------------------------------------
+           Se itera una gráfica por cada indicador recibido
+           desde el controlador.
+           ========================================================= #}
+        <div class="pta-module__content">
+
+            {% for grafica in graficas %}
+
+                {# =================================================
+                   CARD POR INDICADOR
+                   ================================================= #}
+                <div class="card pta-card mb-4">
+
+                    {# =============================================
+                       HEADER DEL INDICADOR
+                       ---------------------------------------------
+                       Muestra información general del indicador:
+                       - Nombre
+                       - Meta
+                       - Tendencia
+                       - Porcentaje de avance
+                       ============================================= #}
+                    <div class="pta-card__header pta-indicador-header">
+
+                        <div class="pta-indicador-main">
+                            <h3 class="pta-indicador-title">
+                                {{ grafica.indicador }}
+                            </h3>
+                        </div>
+
+                        <div class="pta-indicador-stats">
+
+                            {# Meta del indicador #}
+                            <div class="pta-stat">
+                                <span class="pta-stat-label">Meta</span>
+                                <span class="pta-stat-value">
+                                    {{ grafica.meta }}
+                                </span>
+                            </div>
+
+                            {# Tendencia del indicador #}
+                            <div class="pta-stat">
+                                <span class="pta-stat-label">Tendencia</span>
+
+                                {% if grafica.tendencia == 'POSITIVA' %}
+                                    <span class="pta-badge pta-badge-positiva">
+                                        Positiva
+                                    </span>
+                                {% else %}
+                                    <span class="pta-badge pta-badge-negativa">
+                                        Negativa
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            {# Porcentaje de avance global #}
+                            <div class="pta-stat">
+                                <span class="pta-stat-label">Avance</span>
+                                <span class="pta-stat-value">
+                                    {{ grafica.porcentaje }}%
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {# =============================================
+                       BODY — GRÁFICA
+                       ---------------------------------------------
+                       Canvas usado por Chart.js.
+                       Los datos se pasan vía data-attributes:
+                       - data-meta
+                       - data-tendencia
+                       - data-meses (JSON)
+                       ============================================= #}
+                    <div class="pta-card__body">
+                        <canvas
+                            class="pta-chart"
+                            data-indicador="{{ grafica.indicador }}"
+                            data-meta="{{ grafica.meta }}"
+                            data-tendencia="{{ grafica.tendencia }}"
+                            data-meses='{{ grafica.meses|json_encode|raw }}'>
+                        </canvas>
+                    </div>
+
+                    {# =============================================
+                       RESUMEN DE ACCIONES
+                       ---------------------------------------------
+                       Desglose visual del aporte de cada acción
+                       al indicador:
+                       - Porcentaje relativo
+                       - Barra de progreso
+                       - Valores mensuales
+                       ============================================= #}
+                    <div class="pta-actions">
+
+                        {% for accion in grafica.acciones %}
+
+                            <div class="pta-action-card">
+
+                                {# Header de la acción #}
+                                <div class="pta-action-header">
+                                    <strong>{{ accion.nombre }}</strong>
+                                    <span>{{ accion.porcentaje }}%</span>
+                                </div>
+
+                                {# Barra de progreso proporcional #}
+                                <div class="pta-action-bar">
+                                    <div
+                                        class="pta-action-bar-fill"
+                                        style="width: {{ accion.porcentaje }}%">
+                                    </div>
+                                </div>
+
+                                {# Valores mensuales de la acción #}
+                                <div class="pta-action-months">
+                                    {% for mes, valor in accion.meses %}
+                                        <span>
+                                            <strong>{{ mes|slice(0,3) }}</strong>:
+                                            {{ valor }}
+                                        </span>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                {# =================================================
+                   CASO SIN INDICADORES
+                   ================================================= #}
+                <div class="text-center text-muted">
+                    No hay indicadores para mostrar.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+</turbo-frame>
