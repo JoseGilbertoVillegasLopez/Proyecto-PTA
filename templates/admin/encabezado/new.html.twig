@@ -6,284 +6,313 @@
    - Si el ID cambia, el JS NO se ejecutará
    ============================================================ #}
 <turbo-frame id="content">
+<div class="pta-back-wrapper">
+    <a href="{{ path('app_encabezado_index') }}"
+       data-turbo-frame="content"
+       class="pta-back-btn">
+        <i class="bi bi-arrow-left"></i>
+        <span>Volver</span>
+    </a>
+</div>
 
-    {# Título principal de la vista #}
-    <h1 class="mb-4">Crear nuevo PTA</h1>
-
-    {# ============================================================
-       INICIO DEL FORMULARIO SYMFONY
-       ------------------------------------------------------------
-       - action: ruta que maneja la creación del PTA
-       - data-turbo: indica que el submit se maneja dentro del frame
-       - NO es AJAX, Symfony procesa el submit normal
-       ============================================================ #}
-    {{ form_start(form, {
-        'action': path('app_encabezado_new'), 
-        'attr': {
-            'data-turbo': 'content'
-        }
-    }) }}
+        {# Título principal de la vista #}
+        <h1 class="mb-4">Crear nuevo PTA</h1>
 
         {# ============================================================
-           1. ENCABEZADO DEL PTA
-           ------------------------------------------------------------
-           - Datos generales del proyecto
-           - Nombre y Objetivo
-           - Textareas con auto-grow manejado por JS
-           ============================================================ #}
-        <div class="row g-3">
+        INICIO DEL FORMULARIO SYMFONY
+        ------------------------------------------------------------
+        - action: ruta que maneja la creación del PTA
+        - data-turbo: indica que el submit se maneja dentro del frame
+        - NO es AJAX, Symfony procesa el submit normal
+        ============================================================ #}
+        {{ form_start(form, {
+            'action': path('app_encabezado_new'), 
+            'attr': {
+                'data-turbo': 'content',
+                'data-pta-form': 'pta-new'
+            }
+        }) }}
 
-            <div class="col-md-6">
-                {{ form_label(form.nombre) }}   {# Label del nombre del proyecto #}
-                {{ form_widget(form.nombre) }} {# Campo textarea del nombre #}
-                {{ form_errors(form.nombre) }} {# Errores de validación Symfony #}
+            {# ============================================================
+            1. ENCABEZADO DEL PTA
+            ------------------------------------------------------------
+            - Datos generales del proyecto
+            - Nombre y Objetivo
+            - Textareas con auto-grow manejado por JS
+            ============================================================ #}
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    {{ form_label(form.nombre) }}   {# Label del nombre del proyecto #}
+                    {{ form_widget(form.nombre) }} {# Campo textarea del nombre #}
+                    {{ form_errors(form.nombre) }} {# Errores de validación Symfony #}
+                </div>
+
+                <div class="col-md-6">
+                    {{ form_label(form.objetivo) }}   {# Label del objetivo #}
+                    {{ form_widget(form.objetivo) }} {# Campo textarea del objetivo #}
+                    {{ form_errors(form.objetivo) }} {# Errores de validación Symfony #}
+                </div>
             </div>
 
+            {# ===========================
+            AÑO DE EJECUCIÓN
+            =========================== #}
             <div class="col-md-6">
-                {{ form_label(form.objetivo) }}   {# Label del objetivo #}
-                {{ form_widget(form.objetivo) }} {# Campo textarea del objetivo #}
-                {{ form_errors(form.objetivo) }} {# Errores de validación Symfony #}
+                <div class="position-relative">
+                    {{ form_label(form.anioEjecucion, null, {
+                        label_attr: { class: 'form-label' }
+                    }) }}
+
+                    {{ form_widget(form.anioEjecucion, {
+                        attr: {
+                            class: 'form-control pta-select'
+                        }
+                    }) }}
+
+                    {{ form_errors(form.anioEjecucion) }}
+                </div>
             </div>
-        </div>
 
-        <br><br>
 
-        {# ============================================================
-           3. INDICADORES
-           ------------------------------------------------------------
-           - Sección dinámica
-           - Usa CollectionType + prototype
-           - Las filas NO se renderizan aquí
-           - El JS se encarga de crearlas dinámicamente
-           ============================================================ #}
-        <div class="card pta-card mb-4">
 
-            {# Título de la sección de indicadores #}
-            <h4 class="pta-title">
-                <i class="bi bi-graph-up"></i> 3. Indicadores
-            </h4>
+            <br><br>
 
-            {# Tabla contenedora de indicadores #}
-            <table class="table table-dark table-striped align-middle pta-indicadores-table">
+            {# ============================================================
+            3. INDICADORES
+            ------------------------------------------------------------
+            - Sección dinámica
+            - Usa CollectionType + prototype
+            - Las filas NO se renderizan aquí
+            - El JS se encarga de crearlas dinámicamente
+            ============================================================ #}
+            <div class="card pta-card mb-4">
 
-                {# Definición de anchos fijos por columna (clave para layout compacto) #}
-                <colgroup>
-                    <col style="width: 37%">  {# Indicador #}
-                    <col style="width: 37%">  {# Fórmula #}
-                    <col style="width: 5%">   {# Meta #}
-                    <col style="width: 8%">   {# Periodo #}
-                    <col style="width: 8%">   {# Tendencia #}
-                    <col style="width: 5%">   {# Acciones (eliminar) #}
-                </colgroup>
+                {# Título de la sección de indicadores #}
+                <h4 class="pta-title">
+                    <i class="bi bi-graph-up"></i> 3. Indicadores
+                </h4>
 
-                <thead>
-                    <tr>
-                        <th>Indicador</th>
-                        <th>Fórmula</th>
-                        <th>Meta</th>
-                        <th>Periodo</th>
-                        <th>Tendencia</th>
-                        <th></th>
-                    </tr>
-                </thead>
+                {# Tabla contenedora de indicadores #}
+                <table class="table table-dark table-striped align-middle pta-indicadores-table">
 
-                {# ====================================================
-                   BODY DE INDICADORES
-                   ------------------------------------------------
-                   - data-collection-holder: identificador para JS
-                   - data-prototype: HTML base generado por Symfony
-                   - El tbody inicia vacío a propósito
-                   ==================================================== #}
-                <tbody 
-                    data-collection-holder="indicadores"
-                    data-prototype="{{ form_widget(form.indicadores.vars.prototype)|e('html_attr') }}">
-                </tbody>
-            </table>
+                    {# Definición de anchos fijos por columna (clave para layout compacto) #}
+                    <colgroup>
+                        <col style="width: 37%">  {# Indicador #}
+                        <col style="width: 37%">  {# Fórmula #}
+                        <col style="width: 5%">   {# Meta #}
+                        <col style="width: 8%">   {# Periodo #}
+                        <col style="width: 8%">   {# Tendencia #}
+                        <col style="width: 5%">   {# Acciones (eliminar) #}
+                    </colgroup>
 
-            {# Botón para agregar un indicador dinámicamente #}
-            <div class="text-center my-3">
-                <button type="button"
-                        class="btn btn-success px-5"
-                        id="add-indicador">
-                    <i class="bi bi-plus-circle"></i> Agregar Indicador
+                    <thead>
+                        <tr>
+                            <th>Indicador</th>
+                            <th>Fórmula</th>
+                            <th>Meta</th>
+                            <th>Periodo</th>
+                            <th>Tendencia</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    {# ====================================================
+                    BODY DE INDICADORES
+                    ------------------------------------------------
+                    - data-collection-holder: identificador para JS
+                    - data-prototype: HTML base generado por Symfony
+                    - El tbody inicia vacío a propósito
+                    ==================================================== #}
+                    <tbody 
+                        data-collection-holder="indicadores"
+                        data-prototype="{{ form_widget(form.indicadores.vars.prototype)|e('html_attr') }}">
+                    </tbody>
+                </table>
+
+                {# Botón para agregar un indicador dinámicamente #}
+                <div class="text-center my-3">
+                    <button type="button"
+                            class="btn btn-success px-5"
+                            id="add-indicador">
+                        <i class="bi bi-plus-circle"></i> Agregar Indicador
+                    </button>
+                </div>
+            </div>
+
+            {# ============================================================
+            4. ACCIONES
+            ------------------------------------------------------------
+            - Acciones asociadas a indicadores
+            - También dinámicas (CollectionType)
+            - El indicador se selecciona vía JS
+            ============================================================ #}
+            <div class="card pta-card mb-4">
+
+                <h4 class="pta-title">
+                    <i class="bi bi-list-task"></i> 4. Acciones del Proyecto
+                </h4>
+
+                <table class="table table-dark table-striped align-middle pta-acciones-table">
+
+                    <colgroup>
+                        <col style="width: 25%">  {# Indicador #}
+                        <col style="width: 45%">  {# Acción #}
+                        <col style="width: 25%">  {# Meses #}
+                        <col style="width: 5%">   {# Acciones #}
+                    </colgroup>
+
+                    <thead>
+                        <tr>
+                            <th>Indicador</th>
+                            <th>Acción</th>
+                            <th>Periodo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    {# ====================================================
+                    BODY DE ACCIONES
+                    ------------------------------------------------
+                    - Manejado 100% por JS
+                    - Relaciona acciones ↔ indicadores por índice lógico
+                    ==================================================== #}
+                    <tbody 
+                        data-collection-holder="acciones"
+                        data-prototype="{{ form_widget(form.acciones.vars.prototype)|e('html_attr') }}">
+                    </tbody>
+                </table>
+
+                {# Botón para agregar una acción #}
+                <div class="text-center my-3">
+                    <button type="button"
+                            class="btn btn-success px-5"
+                            id="add-accion">
+                        <i class="bi bi-plus-circle"></i> Agregar Acción
+                    </button>
+                </div>
+            </div>
+
+            {# ============================================================
+            2. RESPONSABLES
+            ------------------------------------------------------------
+            - Supervisor y Aval
+            - Inputs visibles + hidden
+            - El ID real se asigna vía JS + API
+            ============================================================ #}
+            <div class="card pta-card mb-4">
+
+                <h4 class="pta-title">
+                    <i class="bi bi-people-fill"></i> 2. Responsables del Proyecto
+                </h4>
+
+                <div class="row mb-3">
+
+                    {# ===========================
+                    SUPERVISOR
+                    =========================== #}
+                    <div class="col-md-6">
+                        <div class="position-relative">
+                            <label class="form-label">Supervisor del Proyecto</label>
+
+                            {# Input visible para búsqueda #}
+                            {{ form_widget(form.responsables.supervisor_search, {
+                                attr: {
+                                    class: 'form-control supervisor-search',
+                                    placeholder: 'Buscar supervisor...'
+                                }
+                            }) }}
+
+                            {# Hidden que guarda el ID real #}
+                            {{ form_widget(form.responsables.supervisor) }}
+
+                            {# Contenedor de resultados dinámicos #}
+                            <div class="search-results supervisor-results"></div>
+                        </div>
+                    </div>
+
+                    {# ===========================
+                    AVAL
+                    =========================== #}
+                    <div class="col-md-6">
+                        <div class="position-relative">
+                            <label class="form-label">Aval del Proyecto</label>
+
+                            {{ form_widget(form.responsables.aval_search, {
+                                attr: {
+                                    class: 'form-control aval-search',
+                                    placeholder: 'Buscar aval...'
+                                }
+                            }) }}
+
+                            {{ form_widget(form.responsables.aval) }}
+
+                            <div class="search-results aval-results"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# ============================================================
+            TOKEN CSRF
+            ------------------------------------------------------------
+            - Se renderiza manualmente
+            - Evita problemas con manipulación dinámica del DOM
+            ============================================================ #}
+            {{ form_row(form._token) }}
+
+            {# ============================================================
+            BOTÓN FINAL DE SUBMIT
+            ============================================================ #}
+            <div class="text-center mt-4">
+                <button type="submit"
+                        class="btn btn-primary px-5">
+                    Guardar PTA
                 </button>
             </div>
-        </div>
 
-        {# ============================================================
-           4. ACCIONES
-           ------------------------------------------------------------
-           - Acciones asociadas a indicadores
-           - También dinámicas (CollectionType)
-           - El indicador se selecciona vía JS
-           ============================================================ #}
-        <div class="card pta-card mb-4">
+            {# ============================================================
+            MODAL DE ERRORES
+            ------------------------------------------------------------
+            - Usado por el JS para mostrar validaciones
+            - El contenido se llena dinámicamente
+            ============================================================ #}
+            <div class="modal fade" id="erroresModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content bg-dark text-light border-warning">
 
-            <h4 class="pta-title">
-                <i class="bi bi-list-task"></i> 4. Acciones del Proyecto
-            </h4>
+                        <div class="modal-header">
+                            <h5 class="modal-title text-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Errores en el formulario
+                            </h5>
+                            <button type="button"
+                                    class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal">
+                            </button>
+                        </div>
 
-            <table class="table table-dark table-striped align-middle pta-acciones-table">
+                        <div class="modal-body">
+                            <p class="mb-2">
+                                Se encontraron los siguientes problemas. Corrígelos antes de continuar:
+                            </p>
 
-                <colgroup>
-                    <col style="width: 25%">  {# Indicador #}
-                    <col style="width: 45%">  {# Acción #}
-                    <col style="width: 25%">  {# Meses #}
-                    <col style="width: 5%">   {# Acciones #}
-                </colgroup>
+                            <ul id="errores-lista" class="list-group list-group-flush">
+                                {# Los errores se insertan vía JS #}
+                            </ul>
+                        </div>
 
-                <thead>
-                    <tr>
-                        <th>Indicador</th>
-                        <th>Acción</th>
-                        <th>Periodo</th>
-                        <th></th>
-                    </tr>
-                </thead>
-
-                {# ====================================================
-                   BODY DE ACCIONES
-                   ------------------------------------------------
-                   - Manejado 100% por JS
-                   - Relaciona acciones ↔ indicadores por índice lógico
-                   ==================================================== #}
-                <tbody 
-                    data-collection-holder="acciones"
-                    data-prototype="{{ form_widget(form.acciones.vars.prototype)|e('html_attr') }}">
-                </tbody>
-            </table>
-
-            {# Botón para agregar una acción #}
-            <div class="text-center my-3">
-                <button type="button"
-                        class="btn btn-success px-5"
-                        id="add-accion">
-                    <i class="bi bi-plus-circle"></i> Agregar Acción
-                </button>
-            </div>
-        </div>
-
-        {# ============================================================
-           2. RESPONSABLES
-           ------------------------------------------------------------
-           - Supervisor y Aval
-           - Inputs visibles + hidden
-           - El ID real se asigna vía JS + API
-           ============================================================ #}
-        <div class="card pta-card mb-4">
-
-            <h4 class="pta-title">
-                <i class="bi bi-people-fill"></i> 2. Responsables del Proyecto
-            </h4>
-
-            <div class="row mb-3">
-
-                {# ===========================
-                   SUPERVISOR
-                   =========================== #}
-                <div class="col-md-6">
-                    <div class="position-relative">
-                        <label class="form-label">Supervisor del Proyecto</label>
-
-                        {# Input visible para búsqueda #}
-                        {{ form_widget(form.responsables.supervisor_search, {
-                            attr: {
-                                class: 'form-control supervisor-search',
-                                placeholder: 'Buscar supervisor...'
-                            }
-                        }) }}
-
-                        {# Hidden que guarda el ID real #}
-                        {{ form_widget(form.responsables.supervisor) }}
-
-                        {# Contenedor de resultados dinámicos #}
-                        <div class="search-results supervisor-results"></div>
-                    </div>
-                </div>
-
-                {# ===========================
-                   AVAL
-                   =========================== #}
-                <div class="col-md-6">
-                    <div class="position-relative">
-                        <label class="form-label">Aval del Proyecto</label>
-
-                        {{ form_widget(form.responsables.aval_search, {
-                            attr: {
-                                class: 'form-control aval-search',
-                                placeholder: 'Buscar aval...'
-                            }
-                        }) }}
-
-                        {{ form_widget(form.responsables.aval) }}
-
-                        <div class="search-results aval-results"></div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                Entendido
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        {# ============================================================
-           TOKEN CSRF
-           ------------------------------------------------------------
-           - Se renderiza manualmente
-           - Evita problemas con manipulación dinámica del DOM
-           ============================================================ #}
-        {{ form_row(form._token) }}
-
-        {# ============================================================
-           BOTÓN FINAL DE SUBMIT
-           ============================================================ #}
-        <div class="text-center mt-4">
-            <button type="submit"
-                    class="btn btn-primary px-5">
-                Guardar PTA
-            </button>
-        </div>
-
-        {# ============================================================
-           MODAL DE ERRORES
-           ------------------------------------------------------------
-           - Usado por el JS para mostrar validaciones
-           - El contenido se llena dinámicamente
-           ============================================================ #}
-        <div class="modal fade" id="erroresModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content bg-dark text-light border-warning">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title text-warning">
-                            <i class="bi bi-exclamation-triangle"></i>
-                            Errores en el formulario
-                        </h5>
-                        <button type="button"
-                                class="btn-close btn-close-white"
-                                data-bs-dismiss="modal">
-                        </button>
-                    </div>
-
-                    <div class="modal-body">
-                        <p class="mb-2">
-                            Se encontraron los siguientes problemas. Corrígelos antes de continuar:
-                        </p>
-
-                        <ul id="errores-lista" class="list-group list-group-flush">
-                            {# Los errores se insertan vía JS #}
-                        </ul>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-secondary"
-                                data-bs-dismiss="modal">
-                            Entendido
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    {# Fin del formulario (NO render_rest para evitar campos no deseados) #}
-    {{ form_end(form, { render_rest: false }) }}
-
-</turbo-frame>
+        {# Fin del formulario (NO render_rest para evitar campos no deseados) #}
+        {{ form_end(form, { render_rest: false }) }}
+    </turbo-frame>

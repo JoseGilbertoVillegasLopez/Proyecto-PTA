@@ -55,6 +55,9 @@ class Encabezado
     #[ORM\OneToOne(mappedBy: 'encabezado', cascade: ['persist', 'remove'])]
     private ?Responsables $responsables = null;
 
+    #[ORM\Column]
+    private ?int $anioEjecucion = null;
+
 
 
     public function __construct()
@@ -213,6 +216,18 @@ class Encabezado
         }
 
         $this->responsables = $responsables;
+
+        return $this;
+    }
+
+    public function getAnioEjecucion(): ?int
+    {
+        return $this->anioEjecucion;
+    }
+
+    public function setAnioEjecucion(int $anioEjecucion): static
+    {
+        $this->anioEjecucion = $anioEjecucion;
 
         return $this;
     }

@@ -47,6 +47,7 @@ select.field-error {
     resize: none;          /* ❌ el usuario no puede redimensionar */
     overflow-y: auto;      /* scroll solo al llegar al límite */
     line-height: 1.4;
+    background-color:#2d333b;
 }
 
 
@@ -269,4 +270,93 @@ select.field-error {
 .meses-td input[type="checkbox"] {
     accent-color: #2ecc71; /* verde institucional */
     transform: scale(1.2);
+}
+
+
+
+.pta-card .form-label {
+    color: #e9ecef; /* gris claro tipo Bootstrap dark */
+    font-weight: 500;
+}
+
+
+.pta-card .form-control::placeholder {
+    color: #adb5bd; /* gris claro */
+    opacity: 1;     /* importante */
+}
+
+.pta-card .form-label {
+    margin-bottom: 6px;
+    letter-spacing: .3px;
+}
+/* =========================
+   RESULTADOS BUSCADOR RESPONSABLES
+   ========================= */
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    background: #1f252b;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+
+    max-height: 220px;
+    overflow-y: auto;
+
+    z-index: 1000;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Item individual */
+.search-results div {
+    padding: 8px 12px;
+    cursor: pointer;
+
+    color: #f8f9fa;
+    font-size: 0.9rem;
+
+    transition: background 0.15s ease;
+}
+
+/* Hover */
+.search-results div:hover {
+    background: rgba(13, 110, 253, 0.25);
+}
+
+/* Texto secundario (si usas spans) */
+.search-results small {
+    color: #adb5bd;
+}
+
+.fixed-textarea {
+    color: #fff;
+}
+
+
+/* ===============================
+   SELECT — AÑO DE EJECUCIÓN
+   =============================== */
+
+.pta-select {
+    background-color: #2b3138;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #e9ecef;
+    padding: 0.65rem 0.75rem;
+    border-radius: 6px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pta-select:focus {
+    background-color: #2b3138;
+    color: #ffffff;
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.25);
+}
+
+.pta-select option {
+    background-color: #1e242b;
+    color: #e9ecef;
 }

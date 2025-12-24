@@ -13,15 +13,34 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/admin/encabezado')]
-final class EncabezadoController extends AbstractController
+final class AdminEncabezadoController extends AbstractController
 {
     #[Route(name: 'app_encabezado_index', methods: ['GET'])]
-    public function index(EncabezadoRepository $encabezadoRepository): Response
-    {
-        return $this->render('admin/encabezado/index.html.twig', [
-            'encabezados' => $encabezadoRepository->findAll(),
-        ]);
-    }
+public function index(
+    Request $request,
+    EncabezadoRepository $encabezadoRepository
+): Response
+{
+    // Año actual por defecto
+    $anioActual = (int) date('Y');
+
+    // Año de ejecución seleccionado (GET) o año actual
+    $anioEjecucion = $request->query->getInt('anio', $anioActual);
+
+    $encabezados = $encabezadoRepository->createQueryBuilder('e')
+        ->andWhere('e.anioEjecucion = :anio')
+        ->setParameter('anio', $anioEjecucion)
+        ->orderBy('e.fechaCreacion', 'DESC')
+        ->getQuery()
+        ->getResult();
+
+    return $this->render('admin/encabezado/index.html.twig', [
+        'encabezados' => $encabezados,
+        'anioSeleccionado' => $anioEjecucion,
+    ]);
+}
+
+
 
     #[Route('/new', name: 'app_encabezado_new', methods: ['GET', 'POST'])]
         public function new(
@@ -30,6 +49,18 @@ final class EncabezadoController extends AbstractController
             EncabezadoRepository $encabezadoRepository
         ): Response
         {
+            // Año actual por defecto
+            $anioActual = (int) date('Y');
+
+            // Año de ejecución seleccionado (GET) o año actual
+            $anioEjecucion = $request->query->getInt('anio', $anioActual);
+
+            $encabezados = $encabezadoRepository->createQueryBuilder('e')
+                ->andWhere('e.anioEjecucion = :anio')
+                ->setParameter('anio', $anioEjecucion)
+                ->orderBy('e.fechaCreacion', 'DESC')
+                ->getQuery()
+                ->getResult();
             /**
              * =========================================================
              * CREACIÓN DE LA ENTIDAD PRINCIPAL
@@ -193,7 +224,8 @@ final class EncabezadoController extends AbstractController
                  * =====================================================
                  */
                 return $this->render('admin/encabezado/index.html.twig', [
-                    'encabezados' => $encabezadoRepository->findAll(),
+                    'encabezados' => $encabezados,
+                    'anioSeleccionado' => $anioEjecucion,
                 ]);
             }
 
@@ -217,37 +249,68 @@ final class EncabezadoController extends AbstractController
         ]);
     }
 
+
+
     #[Route('/{id}/edit', name: 'app_encabezado_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Encabezado $encabezado, EntityManagerInterface $entityManager, EncabezadoRepository $encabezadoRepository): Response
     {
+        if ($request->isMethod('POST')) {
+            // Año actual por defecto
+    $anioActual = (int) date('Y');
+
+    // Año de ejecución seleccionado (GET) o año actual
+    $anioEjecucion = $request->query->getInt('anio', $anioActual);
+
+    $encabezados = $encabezadoRepository->createQueryBuilder('e')
+        ->andWhere('e.anioEjecucion = :anio')
+        ->setParameter('anio', $anioEjecucion)
+        ->orderBy('e.fechaCreacion', 'DESC')
+        ->getQuery()
+        ->getResult();
+
+    // 1. Validar CSRF
+    if (!$this->isCsrfTokenValid('edit' . $encabezado->getId(), $request->request->get('_token'))) {
+        throw $this->createAccessDeniedException('Token CSRF inválido');
+    }
+
+    // 2. Obtener valores alcanzados
+    $valoresAlcanzados = $request->request->all('valor_alcanzado');
+
+    // 3. Recorrer acciones del encabezado
+    foreach ($encabezado->getAcciones() as $accion) {
+
+        $accionId = $accion->getId();
+
+        if (!isset($valoresAlcanzados[$accionId])) {
+            continue;
+        }
+        $meses = $valoresAlcanzados[$accionId];
+        // 4. Limpieza opcional: convertir "" a null
+        foreach ($meses as $mes => $valor) {
+            if ($valor === '') {
+                $meses[$mes] = null;
+            }
+        }
+        // 5. Guardar JSON en la acción
+        $accion->setValorAlcanzado($meses);
+    }
+    // 6. Persistir cambios
+    $entityManager->flush();
+
+    // 7. Redirigir (POST/REDIRECT/GET)
+    return $this->render('admin/encabezado/index.html.twig', [
+        'encabezados' => $encabezados,
+        'anioSeleccionado' => $anioEjecucion,
+    ]);
+}
+
+
         if ($encabezado->getResponsables() === null) {
             $encabezado->setResponsables(new \App\Entity\Responsables());
         }
 
-        $form = $this->createForm(EncabezadoType::class, $encabezado);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // 🔥 asegurar relación padre → hijos
-            foreach ($encabezado->getIndicadores() as $indicador) {
-                $indicador->setEncabezado($encabezado);
-            }
-
-            foreach ($encabezado->getAcciones() as $accion) {
-                $accion->setEncabezado($encabezado);
-            }
-            $entityManager->persist($encabezado);
-            $entityManager->flush();
-
-
-            return $this->render('admin/encabezado/index.html.twig', [
-            'encabezados' => $encabezadoRepository->findAll(),
-        ]);
-        }
-
         return $this->render('admin/encabezado/edit.html.twig', [
             'encabezado' => $encabezado,
-            'form' => $form,
         ]);
     }
 
@@ -261,4 +324,138 @@ final class EncabezadoController extends AbstractController
 
         return $this->redirectToRoute('app_encabezado_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/graficas/{id}', name: 'app_encabezado_graficas', methods: ['GET'])]
+    public function graficas(Encabezado $encabezado): Response
+    {
+        // Orden fijo de meses
+        $meses = [
+            'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+            'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+        ];
+
+        $graficas = [];
+        $acciones = $encabezado->getAcciones();
+
+        foreach ($encabezado->getIndicadores() as $indicador) {
+
+            // ===============================
+            // 1) SUMA MENSUAL REAL (BASE)
+            // ===============================
+            $valoresMensuales = array_fill_keys($meses, 0);
+
+            foreach ($acciones as $accion) {
+                if ($accion->getIndicador() !== $indicador->getIndice()) {
+                    continue;
+                }
+
+                $valoresAccion = $accion->getValorAlcanzado() ?? [];
+
+                foreach ($meses as $mes) {
+                    if (isset($valoresAccion[$mes])) {
+                        $valoresMensuales[$mes] += (float) $valoresAccion[$mes];
+                    }
+                }
+            }
+
+            $meta      = (float) $indicador->getValor();
+            $tendencia = $indicador->getTendencia();
+
+            // ===============================
+            // 2) SERIE FINAL PARA LA GRÁFICA
+            // ===============================
+            $serie = [];
+            $ultimoValor = 0;
+
+            if ($tendencia === 'POSITIVA') {
+
+                $acumulado = 0;
+                foreach ($meses as $mes) {
+                    $acumulado += $valoresMensuales[$mes];
+                    $serie[$mes] = $acumulado;
+                }
+
+                $avanceFinal = end($serie);
+                $porcentaje = ($meta > 0)
+                    ? round(($avanceFinal / $meta) * 100, 1)
+                    : 0;
+
+            } else {
+
+                // NEGATIVA → valores reales (sin acumulado)
+                foreach ($meses as $mes) {
+                    if ($valoresMensuales[$mes] > 0) {
+                        $ultimoValor = $valoresMensuales[$mes];
+                    }
+                    $serie[$mes] = $ultimoValor;
+                }
+
+                $avanceFinal = end($serie);
+
+                // En tendencia negativa: llegar o bajar a la meta = 100%
+                if ($meta > 0 && $avanceFinal > 0) {
+                    $porcentaje = ($avanceFinal <= $meta)
+                        ? 100
+                        : round(($meta / $avanceFinal) * 100, 1);
+                } else {
+                    $porcentaje = 0;
+                }
+            }
+
+            // Limitar porcentaje
+            $porcentaje = max(0, min(100, $porcentaje));
+
+            // ===============================
+            // 3) RESUMEN POR ACCIONES
+            // ===============================
+            $accionesResumen = [];
+            $totalIndicador = array_sum($valoresMensuales);
+
+            foreach ($acciones as $accion) {
+                if ($accion->getIndicador() !== $indicador->getIndice()) {
+                    continue;
+                }
+
+                $valoresAccion = $accion->getValorAlcanzado() ?? [];
+                $totalAccion = 0;
+                $mesesAccion = [];
+
+                foreach ($meses as $mes) {
+                    $valor = (float) ($valoresAccion[$mes] ?? 0);
+                    $mesesAccion[$mes] = $valor;
+                    $totalAccion += $valor;
+                }
+
+                $porcentajeAccion = $totalIndicador > 0
+                    ? round(($totalAccion / $totalIndicador) * 100, 1)
+                    : 0;
+
+                $accionesResumen[] = [
+                    'nombre'     => $accion->getAccion(),
+                    'meses'      => $mesesAccion,
+                    'total'      => $totalAccion,
+                    'porcentaje' => $porcentajeAccion,
+                ];
+            }
+
+            // ===============================
+            // 4) ARMADO FINAL
+            // ===============================
+            $graficas[] = [
+                'indicador'  => $indicador->getIndicador(),
+                'meta'       => $meta,
+                'tendencia'  => $tendencia,
+                'meses'      => $serie,          // 👈 serie FINAL
+                'porcentaje' => $porcentaje,
+                'acciones'   => $accionesResumen
+            ];
+        }
+
+        return $this->render('admin/encabezado/graficas.html.twig', [
+            'encabezado' => $encabezado,
+            'graficas'   => $graficas,
+        ]);
+    }
+
+
 }

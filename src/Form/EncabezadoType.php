@@ -43,6 +43,26 @@ class EncabezadoType extends AbstractType
 
             /**
              * =============================================
+             * AÑO DE EJECUCIÓN DEL PTA
+             * ---------------------------------------------
+             * - Representa el periodo real del PTA
+             * - Solo permite:
+             *   - Año actual
+             *   - Año siguiente
+             * =============================================
+             */
+            ->add('anioEjecucion', ChoiceType::class, [
+                'label' => 'Año de ejecución',
+                'choices' => [
+                    date('Y') => date('Y'),
+                    date('Y') + 1 => date('Y') + 1,
+                ],
+                'placeholder' => 'Seleccione el año de ejecución',
+            ])
+
+
+            /**
+             * =============================================
              * OBJETIVO DEL PROYECTO
              * ---------------------------------------------
              * - Textarea para permitir texto largo

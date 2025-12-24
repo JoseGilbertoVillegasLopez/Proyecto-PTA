@@ -31,10 +31,19 @@ document.addEventListener("turbo:frame-load", (event) => {
 
     // Seguridad: solo ejecutar si es el frame principal del contenido
     if (frame.id !== "content") return;
+    
+    const ptaForm = frame.querySelector('form[data-pta-form="pta-new"]');
+    if (!ptaForm) return;
+    initPtaNew(frame, ptaForm);
+});
 
+
+
+
+function initPtaNew(frame, ptaForm) {
     console.log("PTA NEW JS cargado ✔");
 
-    /**
+/**
      * =====================================================
      * BUSCADOR GENÉRICO DE PERSONAL
      * -----------------------------------------------------
@@ -97,7 +106,7 @@ document.addEventListener("turbo:frame-load", (event) => {
              * Petición a la API de personal
              * Devuelve [{ id, nombre }]
              */
-            fetch(`/admin/api/personal/buscar?q=${encodeURIComponent(q)}`, {
+            fetch(`/api/personal/buscar?q=${encodeURIComponent(q)}`, {
                 signal: controller.signal
             })
                 .then(res => res.json())
@@ -141,6 +150,7 @@ document.addEventListener("turbo:frame-load", (event) => {
         });
     }
 
+    
     // Inicialización del buscador de Supervisor
     initPersonalSearch({
         inputSelector: ".supervisor-search",
@@ -251,6 +261,7 @@ document.addEventListener("turbo:frame-load", (event) => {
         console.log("🔄 Indicadores sincronizados con acciones");
     }
 
+
     /**
      * =====================================================
      * UTILIDAD: BOTONES DE ELIMINAR
@@ -346,6 +357,7 @@ document.addEventListener("turbo:frame-load", (event) => {
 
         activateRemoveButtons(frame, ".remove-indicador");
     }
+
 
     /**
      * =====================================================
@@ -455,6 +467,8 @@ document.addEventListener("turbo:frame-load", (event) => {
         activateRemoveButtons(frame, ".remove-accion");
     }
 
+
+
     /**
      * =====================================================
      * LIMPIEZA VISUAL DE ERRORES
@@ -466,15 +480,15 @@ document.addEventListener("turbo:frame-load", (event) => {
         });
     }
 
+
     /**
      * =====================================================
      * VALIDACIÓN FINAL ANTES DEL SUBMIT
      * =====================================================
      */
-    const form = frame.querySelector("form");
 
-    if (form) {
-        form.addEventListener("submit", (e) => {
+    if (ptaForm) {
+        ptaForm.addEventListener("submit", (e) => {
 
             // ===============================
             // VALIDACIÓN DE RESPONSABLES
@@ -668,9 +682,8 @@ document.addEventListener("turbo:frame-load", (event) => {
             }
         });
     }
-});
 
-/**
+    /**
  * =====================================================
  * AUTO-GROW DE TEXTAREAS (ENCABEZADO)
  * =====================================================
@@ -712,3 +725,17 @@ frame.querySelectorAll('.fixed-textarea').forEach(textarea => {
         autoGrowLimited(textarea, 5);
     });
 });
+
+}// fin de la funcion de contencion
+
+
+
+
+
+
+
+
+    
+
+    
+

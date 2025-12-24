@@ -1,13 +1,217 @@
-{% extends 'base.html.twig' %}
+{# ============================================================
+   EDIT PTA — CAPTURA DE AVANCE
+   ============================================================ #}
 
-{% block title %}Edit Encabezado{% endblock %}
+<turbo-frame id="content" data-pta-view="edit">
+<div class="pta-back-wrapper">
+    <a href="{{ path('app_encabezado_index') }}"
+       data-turbo-frame="content"
+       class="pta-back-btn">
+        <i class="bi bi-arrow-left"></i>
+        <span>Volver</span>
+    </a>
+</div>
 
-{% block body %}
-    <h1>Edit Encabezado</h1>
 
-    {{ include('encabezado/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_encabezado_index') }}">back to list</a>
+    <form method="post" action="{{ path('app_encabezado_edit', { id: encabezado.id }) }}">
 
-    {{ include('encabezado/_delete_form.html.twig') }}
-{% endblock %}
+
+        {# ===========================
+        ENCABEZADO TIPO FORMATO (AJUSTADO)
+        =========================== #}
+        <div class="pta-card pta-header-box mb-4">
+
+            <!-- FILA 1 -->
+            <div class="pta-header-row">
+                <div class="pta-header-label">
+                    NOMBRE DEL PROYECTO
+                </div>
+                <div class="pta-header-value">
+                    {{ encabezado.nombre }}
+                </div>
+            </div>
+
+            <!-- FILA 2 -->
+            <div class="pta-header-row">
+
+                <!-- COLUMNA IZQUIERDA -->
+                <div class="pta-header-col-numero">
+                    <div class="pta-header-label small">
+                        NÚMERO DE PROYECTO
+                    </div>
+                    <div class="pta-header-value small">
+                        {{ encabezado.id }}
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA -->
+                <div class="pta-header-col-objetivo">
+
+                    <div class="pta-header-objetivo-label">
+                        OBJETIVO
+                    </div>
+
+                    <div class="pta-header-objetivo-value">
+                        {{ encabezado.objetivo }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+
+        {# ===========================
+           INDICADORES (SOLO LECTURA)
+           =========================== #}
+        {# ===========================
+   INDICADORES (MISMO FORMATO QUE NEW)
+   =========================== #}
+<div class="card pta-card mt-4">
+    <h4 class="pta-title">
+        <i class="bi bi-graph-up"></i> Indicadores
+    </h4>
+
+    {% if encabezado.indicadores is empty %}
+        <p class="text-muted">No hay indicadores registrados.</p>
+    {% else %}
+        <table class="table table-dark table-striped align-middle pta-indicadores-table">
+            <thead>
+                <tr>
+                    <th>Indicador</th>
+                    <th>Fórmula</th>
+                    <th>Meta</th>
+                    <th>Periodo</th>
+                    <th>Tendencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for indicador in encabezado.indicadores %}
+                    <tr>
+                        <td>
+                            <div class="indicator-textarea">
+                                {{ indicador.indicador }}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="indicator-textarea">
+                                {{ indicador.formula }}
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <strong>{{ indicador.valor }}</strong>
+                        </td>
+                        <td class="text-center">
+                            {{ indicador.periodo }}
+                        </td>
+                        <td class="text-center">
+                            {% if indicador.tendencia == 'POSITIVA' %}
+                                <span class="badge bg-success">Positiva</span>
+                            {% else %}
+                                <span class="badge bg-danger">Negativa</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+<br>
+
+        {# ===========================
+           ACCIONES + MESES
+           =========================== #}
+        <div class="pta-card mb-4">
+
+            <h4 class="pta-title">
+                <i class="bi bi-list-task"></i> Acciones / Avance mensual
+            </h4>
+
+            <table class="table table-dark table-bordered pta-acciones-table">
+                <thead>
+                    <tr>
+                        <th style="width: 25%">Indicador</th>
+                        <th style="width: 30%">Acción</th>
+                        <th style="width: 45%">Periodo de ejecución</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% set meses = [
+                    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+                ] %}
+
+                {% for accion in encabezado.acciones %}
+                    <tr>
+
+                        {# Indicador #}
+                        <td>
+                            {% set nombreIndicador = '—' %}
+                            {% for ind in encabezado.indicadores %}
+                                {% if ind.indice == accion.indicador %}
+                                    {% set nombreIndicador = ind.indicador %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ nombreIndicador }}
+                        </td>
+
+                        {# Acción #}
+                        <td>
+                            {{ accion.accion }}
+                        </td>
+
+                        {# Meses #}
+                        <td>
+                            <div class="meses-grid">
+
+                                {% for mes in meses %}
+                                    {% set activo = mes in accion.periodo %}
+                                    {% set valor = accion.valorAlcanzado[mes] ?? '' %}
+
+                                    <input
+                                        type="number"
+                                        name="valor_alcanzado[{{ accion.id }}][{{ mes }}]"
+                                        class="mes-input {{ activo ? 'mes-activo' : 'mes-inactivo' }}"
+                                        placeholder="{{ mes }}"
+                                        min="0"
+                                        {{ not activo ? 'readonly' }}
+                                        value="{{ valor }}"
+                                    >
+                                {% endfor %}
+
+                            </div>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+        {# ===========================
+           CSRF
+           =========================== #}
+        <input type="hidden"
+               name="_token"
+               value="{{ csrf_token('edit' ~ encabezado.id) }}">
+
+        {# ===========================
+           BOTÓN
+           =========================== #}
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-5">
+                Guardar avance
+            </button>
+        </div>
+
+    </form>
+
+</turbo-frame>

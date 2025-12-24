@@ -15,7 +15,7 @@ document.addEventListener("turbo:render", function () {
 
 
 
-<div style="display: flex; min-height: 100vh; background: #1e242b; color: white;">
+<div style="display: flex; height: 94.8vh; background: #1e242b; color: white;">
 
     <!-- ASIDE / MENU -->
     <aside style="width: 250px; background: #11161c; padding: 20px;">
@@ -60,7 +60,7 @@ document.addEventListener("turbo:render", function () {
     </aside>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <main style="flex: 1; padding: 30px;">
+    <main style="flex: 1; padding: 30px; overflow-y: auto;">
     
         <turbo-frame id="content" src="{{ path('app_personal_index') }}">
 

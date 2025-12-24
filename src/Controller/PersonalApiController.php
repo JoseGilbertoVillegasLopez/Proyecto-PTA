@@ -21,8 +21,8 @@ use Symfony\Component\Routing\Attribute\Route;
  * - Es consumido exclusivamente por JavaScript
  * =========================================================
  */
-#[Route('/admin/api/personal')]
-final class AdminPersonalApiController extends AbstractController
+#[Route('/api/personal')]
+final class PersonalApiController extends AbstractController
 {
     /**
      * =====================================================
