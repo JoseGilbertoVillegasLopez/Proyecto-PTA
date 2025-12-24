@@ -252,66 +252,162 @@ public function index(
 
 
     #[Route('/{id}/edit', name: 'app_encabezado_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Encabezado $encabezado, EntityManagerInterface $entityManager, EncabezadoRepository $encabezadoRepository): Response
+    public function edit(
+        Request $request,
+        Encabezado $encabezado,
+        EntityManagerInterface $entityManager,
+        EncabezadoRepository $encabezadoRepository
+    ): Response
     {
+        /**
+         * =====================================================
+         * BLOQUE POST
+         * =====================================================
+         * Este bloque se ejecuta únicamente cuando el usuario
+         * envía el formulario de captura de avance mensual.
+         *
+         * Responsabilidad:
+         *  - Validar CSRF
+         *  - Leer valores enviados por acción y mes
+         *  - Normalizar valores vacíos
+         *  - Guardar el avance (JSON) en cada acción
+         *  - Retornar al index manteniendo el año seleccionado
+         * =====================================================
+         */
         if ($request->isMethod('POST')) {
-            // Año actual por defecto
-    $anioActual = (int) date('Y');
 
-    // Año de ejecución seleccionado (GET) o año actual
-    $anioEjecucion = $request->query->getInt('anio', $anioActual);
+            /**
+             * -------------------------------------------------
+             * 1. Determinar el año de ejecución
+             * -------------------------------------------------
+             * - Se usa el año actual como valor por defecto
+             * - Si viene un año por query (?anio=XXXX),
+             *   se respeta para mantener el contexto
+             */
+            $anioActual = (int) date('Y');
 
-    $encabezados = $encabezadoRepository->createQueryBuilder('e')
-        ->andWhere('e.anioEjecucion = :anio')
-        ->setParameter('anio', $anioEjecucion)
-        ->orderBy('e.fechaCreacion', 'DESC')
-        ->getQuery()
-        ->getResult();
+            $anioEjecucion = $request->query->getInt('anio', $anioActual);
 
-    // 1. Validar CSRF
-    if (!$this->isCsrfTokenValid('edit' . $encabezado->getId(), $request->request->get('_token'))) {
-        throw $this->createAccessDeniedException('Token CSRF inválido');
-    }
+            /**
+             * -------------------------------------------------
+             * 2. Obtener encabezados del año seleccionado
+             * -------------------------------------------------
+             * Estos datos NO afectan la edición.
+             * Se usan únicamente para renderizar correctamente
+             * la vista index después de guardar el avance.
+             */
+            $encabezados = $encabezadoRepository->createQueryBuilder('e')
+                ->andWhere('e.anioEjecucion = :anio')
+                ->setParameter('anio', $anioEjecucion)
+                ->orderBy('e.fechaCreacion', 'DESC')
+                ->getQuery()
+                ->getResult();
 
-    // 2. Obtener valores alcanzados
-    $valoresAlcanzados = $request->request->all('valor_alcanzado');
-
-    // 3. Recorrer acciones del encabezado
-    foreach ($encabezado->getAcciones() as $accion) {
-
-        $accionId = $accion->getId();
-
-        if (!isset($valoresAlcanzados[$accionId])) {
-            continue;
-        }
-        $meses = $valoresAlcanzados[$accionId];
-        // 4. Limpieza opcional: convertir "" a null
-        foreach ($meses as $mes => $valor) {
-            if ($valor === '') {
-                $meses[$mes] = null;
+            /**
+             * -------------------------------------------------
+             * 3. Validación de token CSRF
+             * -------------------------------------------------
+             * Protege el formulario contra ataques CSRF.
+             * El token está ligado al ID del encabezado.
+             */
+            if (
+                !$this->isCsrfTokenValid(
+                    'edit' . $encabezado->getId(),
+                    $request->request->get('_token')
+                )
+            ) {
+                throw $this->createAccessDeniedException('Token CSRF inválido');
             }
+
+            /**
+             * -------------------------------------------------
+             * 4. Obtener valores enviados del formulario
+             * -------------------------------------------------
+             * Estructura esperada:
+             * [
+             *   accion_id => [
+             *     'Enero' => valor,
+             *     'Febrero' => valor,
+             *     ...
+             *   ]
+             * ]
+             */
+            $valoresAlcanzados = $request->request->all('valor_alcanzado');
+
+            /**
+             * -------------------------------------------------
+             * 5. Recorrer acciones del encabezado
+             * -------------------------------------------------
+             * Solo se procesan acciones que pertenecen
+             * al encabezado actual.
+             */
+            foreach ($encabezado->getAcciones() as $accion) {
+
+                $accionId = $accion->getId();
+
+                // Si la acción no viene en el POST, se omite
+                if (!isset($valoresAlcanzados[$accionId])) {
+                    continue;
+                }
+
+                $meses = $valoresAlcanzados[$accionId];
+
+                /**
+                 * -------------------------------------------------
+                 * 6. Normalización de valores
+                 * -------------------------------------------------
+                 * Convierte strings vacíos ("") a null para:
+                 *  - Diferenciar entre "sin captura" y "valor 0"
+                 *  - Evitar datos inconsistentes en el JSON
+                 */
+                foreach ($meses as $mes => $valor) {
+                    if ($valor === '') {
+                        $meses[$mes] = null;
+                    }
+                }
+
+                /**
+                 * -------------------------------------------------
+                 * 7. Guardar avance mensual en la acción
+                 * -------------------------------------------------
+                 * El avance se guarda como JSON asociado
+                 * directamente a la acción.
+                 */
+                $accion->setValorAlcanzado($meses);
+            }
+
+            /**
+             * -------------------------------------------------
+             * 8. Persistir cambios en base de datos
+             * -------------------------------------------------
+             * No se usa persist() porque las acciones ya
+             * están administradas por Doctrine.
+             */
+            $entityManager->flush();
+
+            /**
+             * -------------------------------------------------
+             * 9. Retornar a la vista index
+             * -------------------------------------------------
+             * Se renderiza directamente la vista index
+             * manteniendo el año seleccionado.
+             * (No se usa redirect por diseño del flujo)
+             */
+            return $this->render('admin/encabezado/index.html.twig', [
+                'encabezados'      => $encabezados,
+                'anioSeleccionado' => $anioEjecucion,
+            ]);
         }
-        // 5. Guardar JSON en la acción
-        $accion->setValorAlcanzado($meses);
-    }
-    // 6. Persistir cambios
-    $entityManager->flush();
-
-    // 7. Redirigir (POST/REDIRECT/GET)
-    return $this->render('admin/encabezado/index.html.twig', [
-        'encabezados' => $encabezados,
-        'anioSeleccionado' => $anioEjecucion,
-    ]);
-}
 
 
-        if ($encabezado->getResponsables() === null) {
-            $encabezado->setResponsables(new \App\Entity\Responsables());
-        }
 
-        return $this->render('admin/encabezado/edit.html.twig', [
-            'encabezado' => $encabezado,
-        ]);
+            if ($encabezado->getResponsables() === null) {
+                $encabezado->setResponsables(new \App\Entity\Responsables());
+            }
+
+            return $this->render('admin/encabezado/edit.html.twig', [
+                'encabezado' => $encabezado,
+            ]);
     }
 
     #[Route('/{id}', name: 'app_encabezado_delete', methods: ['POST'])]
@@ -328,29 +424,87 @@ public function index(
     #[Route('/graficas/{id}', name: 'app_encabezado_graficas', methods: ['GET'])]
     public function graficas(Encabezado $encabezado): Response
     {
-        // Orden fijo de meses
+        /**
+         * =====================================================
+         * MÓDULO GRÁFICAS PTA
+         * -----------------------------------------------------
+         * Este método construye TODA la información necesaria
+         * para la visualización gráfica de un PTA.
+         *
+         * Reglas clave:
+         * - TODOS los cálculos se hacen en PHP
+         * - El frontend (JS) solo dibuja
+         * - La vista recibe datos ya procesados
+         * =====================================================
+         */
+
+        /**
+         * -----------------------------------------------------
+         * ORDEN FIJO DE MESES
+         * -----------------------------------------------------
+         * Se define explícitamente el orden de los meses
+         * para:
+         * - Mantener consistencia visual
+         * - Evitar dependencias del orden en base de datos
+         * - Garantizar coherencia entre series
+         */
         $meses = [
             'Enero','Febrero','Marzo','Abril','Mayo','Junio',
             'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
         ];
 
+        /**
+         * Arreglo final que contendrá TODAS las gráficas
+         * (una por indicador)
+         */
         $graficas = [];
+
+        /**
+         * Acciones asociadas al encabezado
+         * Se reutilizan varias veces para:
+         * - Sumar valores
+         * - Generar resúmenes
+         */
         $acciones = $encabezado->getAcciones();
 
+        /**
+         * =====================================================
+         * RECORRIDO PRINCIPAL POR INDICADORES
+         * =====================================================
+         * Cada indicador genera:
+         * - Una serie mensual
+         * - Un porcentaje de avance
+         * - Un resumen por acciones
+         */
         foreach ($encabezado->getIndicadores() as $indicador) {
 
-            // ===============================
-            // 1) SUMA MENSUAL REAL (BASE)
-            // ===============================
+            /**
+             * =================================================
+             * 1) SUMA MENSUAL REAL (BASE)
+             * =================================================
+             * Se calcula la suma REAL mensual considerando
+             * todas las acciones que pertenecen al indicador.
+             *
+             * Resultado:
+             * [
+             *   'Enero' => total,
+             *   'Febrero' => total,
+             *   ...
+             * ]
+             */
             $valoresMensuales = array_fill_keys($meses, 0);
 
             foreach ($acciones as $accion) {
+
+                // Ignorar acciones que no pertenecen al indicador
                 if ($accion->getIndicador() !== $indicador->getIndice()) {
                     continue;
                 }
 
+                // Valores alcanzados por mes (JSON)
                 $valoresAccion = $accion->getValorAlcanzado() ?? [];
 
+                // Acumulación mensual
                 foreach ($meses as $mes) {
                     if (isset($valoresAccion[$mes])) {
                         $valoresMensuales[$mes] += (float) $valoresAccion[$mes];
@@ -358,23 +512,39 @@ public function index(
                 }
             }
 
+            /**
+             * Meta y tipo de tendencia del indicador
+             */
             $meta      = (float) $indicador->getValor();
             $tendencia = $indicador->getTendencia();
 
-            // ===============================
-            // 2) SERIE FINAL PARA LA GRÁFICA
-            // ===============================
+            /**
+             * =================================================
+             * 2) CONSTRUCCIÓN DE LA SERIE FINAL
+             * =================================================
+             * La serie depende del tipo de tendencia:
+             *
+             * POSITIVA:
+             * - Acumulado progresivo
+             *
+             * NEGATIVA:
+             * - Valor real más reciente
+             * - Mientras no haya valor, se conserva el último
+             */
             $serie = [];
             $ultimoValor = 0;
 
             if ($tendencia === 'POSITIVA') {
 
+                // Tendencia positiva → acumulado
                 $acumulado = 0;
+
                 foreach ($meses as $mes) {
                     $acumulado += $valoresMensuales[$mes];
                     $serie[$mes] = $acumulado;
                 }
 
+                // Porcentaje de avance respecto a la meta
                 $avanceFinal = end($serie);
                 $porcentaje = ($meta > 0)
                     ? round(($avanceFinal / $meta) * 100, 1)
@@ -382,7 +552,7 @@ public function index(
 
             } else {
 
-                // NEGATIVA → valores reales (sin acumulado)
+                // Tendencia negativa → valor real (no acumulado)
                 foreach ($meses as $mes) {
                     if ($valoresMensuales[$mes] > 0) {
                         $ultimoValor = $valoresMensuales[$mes];
@@ -392,7 +562,11 @@ public function index(
 
                 $avanceFinal = end($serie);
 
-                // En tendencia negativa: llegar o bajar a la meta = 100%
+                /**
+                 * En tendencia negativa:
+                 * - Llegar o bajar a la meta = 100%
+                 * - Si se excede, el porcentaje disminuye
+                 */
                 if ($meta > 0 && $avanceFinal > 0) {
                     $porcentaje = ($avanceFinal <= $meta)
                         ? 100
@@ -402,16 +576,26 @@ public function index(
                 }
             }
 
-            // Limitar porcentaje
+            /**
+             * Limitar porcentaje a rango válido [0, 100]
+             */
             $porcentaje = max(0, min(100, $porcentaje));
 
-            // ===============================
-            // 3) RESUMEN POR ACCIONES
-            // ===============================
+            /**
+             * =================================================
+             * 3) RESUMEN POR ACCIONES
+             * =================================================
+             * Se calcula:
+             * - Total por acción
+             * - Distribución porcentual dentro del indicador
+             * - Detalle mensual por acción
+             */
             $accionesResumen = [];
             $totalIndicador = array_sum($valoresMensuales);
 
             foreach ($acciones as $accion) {
+
+                // Filtrar solo acciones del indicador
                 if ($accion->getIndicador() !== $indicador->getIndice()) {
                     continue;
                 }
@@ -426,6 +610,7 @@ public function index(
                     $totalAccion += $valor;
                 }
 
+                // Porcentaje de contribución de la acción
                 $porcentajeAccion = $totalIndicador > 0
                     ? round(($totalAccion / $totalIndicador) * 100, 1)
                     : 0;
@@ -438,24 +623,30 @@ public function index(
                 ];
             }
 
-            // ===============================
-            // 4) ARMADO FINAL
-            // ===============================
+            /**
+             * =================================================
+             * 4) ARMADO FINAL DE LA GRÁFICA
+             * =================================================
+             * Este arreglo es consumido directamente
+             * por la vista y el JS de Chart.js
+             */
             $graficas[] = [
                 'indicador'  => $indicador->getIndicador(),
                 'meta'       => $meta,
                 'tendencia'  => $tendencia,
-                'meses'      => $serie,          // 👈 serie FINAL
-                'porcentaje' => $porcentaje,
+                'meses'      => $serie,        // Serie FINAL
+                'porcentaje' => $porcentaje,   // Avance global
                 'acciones'   => $accionesResumen
             ];
         }
 
+        /**
+         * Render de la vista de gráficas
+         */
         return $this->render('admin/encabezado/graficas.html.twig', [
             'encabezado' => $encabezado,
             'graficas'   => $graficas,
         ]);
     }
-
 
 }

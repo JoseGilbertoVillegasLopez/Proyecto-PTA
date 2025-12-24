@@ -1,7 +1,18 @@
-/* ========================================================= */
-/* PTA EDIT — CAPTURA DE AVANCE                              */
-/* ========================================================= */
+/* =========================================================
+   PTA EDIT — CAPTURA DE AVANCE
+   ---------------------------------------------------------
+   Estilos específicos para la vista EDIT del módulo PTA.
+   Incluye:
+   - Encabezado tipo formato Excel
+   - Indicadores en modo solo lectura
+   - Captura de avance mensual por acción
+   ========================================================= */
 
+/* =========================================================
+   UTILIDADES GENERALES
+   ========================================================= */
+
+/* Etiqueta genérica usada en vistas PTA */
 .pta-label {
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -9,6 +20,7 @@
     margin-bottom: 4px;
 }
 
+/* Contenedor visual para valores no editables */
 .pta-readonly {
     background-color: #2d333b;
     border: 1px solid #3a424d;
@@ -17,16 +29,18 @@
     color: #e6e6e6;
 }
 
-/* ===========================
-   MESES (GRID TIPO EXCEL)
-   =========================== */
+/* =========================================================
+   MESES — GRID TIPO EXCEL (EDIT)
+   ========================================================= */
 
+/* Contenedor de inputs mensuales */
 .meses-grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 6px;
 }
 
+/* Input base para captura mensual */
 .mes-input {
     width: 100%;
     text-align: center;
@@ -34,11 +48,11 @@
     font-size: 0.8rem;
 }
 
-
 /* =========================================================
-   ENCABEZADO PTA – ESTILO FORMATO EXCEL
+   ENCABEZADO PTA — ESTILO FORMATO EXCEL
    ========================================================= */
 
+/* Contenedor principal del encabezado */
 .pta-header-table {
     display: grid;
     grid-template-columns: 220px 180px 1fr;
@@ -47,9 +61,9 @@
     overflow: hidden;
 }
 
-/* Etiquetas (rojo vino del Excel, adaptado a dark) */
+/* Etiquetas del encabezado */
 .pta-header-label {
-    background-color: #072d56; /* vino oscuro */
+    background-color: #072d56; /* tono institucional oscuro */
     color: #f1f1f1;
     font-size: 0.8rem;
     font-weight: 600;
@@ -61,7 +75,7 @@
     align-items: center;
 }
 
-/* Valores */
+/* Valores del encabezado */
 .pta-header-value {
     background-color: #1f242b;
     color: #e6e6e6;
@@ -72,39 +86,40 @@
     line-height: 1.4;
 }
 
-/* Objetivo ocupa 2 columnas */
+/* Elemento que ocupa dos columnas */
 .pta-header-span-2 {
     grid-column: span 2;
 }
 
-/* Quitar borde derecho en última columna */
+/* Quita borde derecho en la última columna */
 .pta-header-table > div:nth-child(3n) {
     border-right: none;
 }
-/* ===========================
-   ENCABEZADO PTA (EDIT)
-   =========================== */
 
+/* =========================================================
+   ENCABEZADO PTA — VARIANTE EDIT
+   ========================================================= */
+
+/* Contenedor principal del encabezado en EDIT */
 .pta-header-box {
     padding: 0;
     overflow: hidden;
 }
 
-/* Fila genérica */
+/* Fila genérica del encabezado */
 .pta-header-row {
     display: grid;
     grid-template-columns: 260px 1fr;
     border-bottom: 1px solid #3a424d;
 }
 
-/* Fila dividida (numero + objetivo) */
+/* Fila dividida (número + objetivo) */
 .pta-header-row-split {
     grid-template-columns: 260px 1fr;
 }
 
-/* Label */
+/* Label general */
 .pta-header-label {
-    /*background-color: #06dd14;  vino institucional */
     color: #fff;
     font-weight: 600;
     padding: 12px 14px;
@@ -136,21 +151,22 @@
     font-size: 0.95rem;
 }
 
-/* Columna número */
+/* Columna del número de proyecto */
 .pta-header-col-numero {
     display: flex;
     flex-direction: column;
     border-right: 1px solid #3a424d;
 }
 
-/* Columna objetivo */
+/* Columna del objetivo */
 .pta-header-col-objetivo {
     display: flex;
     flex-direction: column;
 }
-/* ===========================
-   OBJETIVO HORIZONTAL
-   =========================== */
+
+/* =========================================================
+   OBJETIVO — DISTRIBUCIÓN HORIZONTAL
+   ========================================================= */
 
 .pta-header-col-objetivo-horizontal {
     display: grid;
@@ -160,7 +176,6 @@
 
 /* Label objetivo en línea */
 .pta-header-label-inline {
-    /*background-color: #06dd14; */
     color: #fff;
     font-weight: 600;
     padding: 10px 14px;
@@ -179,9 +194,10 @@
     align-items: center;
     line-height: 1.4;
 }
-/* ===========================
-   OBJETIVO EN CELDAS SEPARADAS
-   =========================== */
+
+/* =========================================================
+   OBJETIVO — CELDAS SEPARADAS
+   ========================================================= */
 
 .pta-header-col-objetivo {
     display: grid;
@@ -189,27 +205,7 @@
     border-left: 1px solid #3a424d;
 }
 
-/* Label OBJETIVO */
-.pta-header-objetivo-label {
-    /*background-color:#06dd14;*/
-    color: #fff;
-    font-weight: 600;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* Valor OBJETIVO */
-.pta-header-objetivo-value {
-    padding: 10px 14px;
-    color: #e6e6e6;
-    display: flex;
-    align-items: center;
-    line-height: 1.4;
-    background-color: #1f242b;
-}
+/* Label del objetivo */
 .pta-header-objetivo-label {
     background-color: #072d56;
     color: #fff;
@@ -219,39 +215,43 @@
     align-items: center;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-
-    /* 🔥 ESTA ES LA CLAVE */
     border-right: 1px solid #3a424d;
 }
-/* ===============================
-   CENTRADO REAL DE VALORES (FIX)
-   =============================== */
+
+/* Valor del objetivo */
+.pta-header-objetivo-value {
+    padding: 10px 14px;
+    color: #e6e6e6;
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+    background-color: #1f242b;
+}
+
+/* =========================================================
+   CENTRADO REAL DE VALORES (AJUSTES FINOS)
+   ========================================================= */
 
 /* Nombre del proyecto */
 .pta-header-value {
-    display: flex;
-    align-items: center;        /* centrado vertical */
+    align-items: center;
 }
 
-/* Número de proyecto */
+/* Número del proyecto */
 .pta-header-value.small {
-    display: flex;
-    align-items: center;        /* vertical */
-    justify-content: center;    /* horizontal */
+    justify-content: center;
     font-size: 1.1rem;
     font-weight: 600;
 }
 
 /* Objetivo */
 .pta-header-objetivo-value {
-    display: flex;
-    align-items: center;        /* centrado vertical */
+    align-items: center;
 }
 
-
-/* ===========================
-   INDICADORES – FORMATO PTA
-   =========================== */
+/* =========================================================
+   INDICADORES — FORMATO PTA
+   ========================================================= */
 
 .pta-indicador-box {
     border: 1px solid #3a424d;
@@ -289,149 +289,60 @@
     line-height: 1.4;
 }
 
-.pta-indicador-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 10px;
-}
+/* =========================================================
+   INDICADORES — TABLA (ANCHOS Y BORDES)
+   ========================================================= */
 
-.pta-indicador-grid > div {
-    background-color: #2a3038;
-    border-radius: 6px;
-    padding: 8px 10px;
-}
-/* =========================================
-   INDICADORES – AJUSTE DE ANCHOS DE COLUMNAS
-   ========================================= */
-
-/* Forzar layout fijo */
+/* Layout fijo */
 .pta-indicadores-table {
     table-layout: fixed;
-}
-
-/* Indicador */
-.pta-indicadores-table th:nth-child(1),
-.pta-indicadores-table td:nth-child(1) {
-    width: 35%;
-}
-
-/* Fórmula */
-.pta-indicadores-table th:nth-child(2),
-.pta-indicadores-table td:nth-child(2) {
-    width: 35%;
-}
-
-/* Meta */
-.pta-indicadores-table th:nth-child(3),
-.pta-indicadores-table td:nth-child(3) {
-    width: 10%;
-    text-align: center;
-}
-
-/* Periodo */
-.pta-indicadores-table th:nth-child(4),
-.pta-indicadores-table td:nth-child(4) {
-    width: 10%;
-    text-align: center;
-}
-
-/* Tendencia */
-.pta-indicadores-table th:nth-child(5),
-.pta-indicadores-table td:nth-child(5) {
-    width: 10%;
-    text-align: center;
-}
-/* =========================================
-   INDICADORES – AJUSTE DE ANCHOS DE COLUMNAS
-   ========================================= */
-
-/* Forzar layout fijo */
-.pta-indicadores-table {
-    table-layout: fixed;
-}
-
-/* Indicador */
-.pta-indicadores-table th:nth-child(1),
-.pta-indicadores-table td:nth-child(1) {
-    width: 35%;
-}
-
-/* Fórmula */
-.pta-indicadores-table th:nth-child(2),
-.pta-indicadores-table td:nth-child(2) {
-    width: 35%;
-}
-
-/* Meta */
-.pta-indicadores-table th:nth-child(3),
-.pta-indicadores-table td:nth-child(3) {
-    width: 10%;
-    text-align: center;
-}
-
-/* Periodo */
-.pta-indicadores-table th:nth-child(4),
-.pta-indicadores-table td:nth-child(4) {
-    width: 10%;
-    text-align: center;
-}
-
-/* Tendencia */
-.pta-indicadores-table th:nth-child(5),
-.pta-indicadores-table td:nth-child(5) {
-    width: 10%;
-    text-align: center;
-}
-/* =========================================
-   INDICADORES – BORDES TIPO CONTENEDOR
-   ========================================= */
-
-/* Bordes generales de la tabla */
-.pta-indicadores-table {
-    border-collapse: separate;   /* 🔥 clave */
+    border-collapse: separate;
     border-spacing: 0;
+    border: 1px solid #3a424d;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-/* Bordes de celdas */
+/* Bordes internos */
 .pta-indicadores-table th,
 .pta-indicadores-table td {
     border-right: 1px solid #3a424d;
     border-bottom: 1px solid #3a424d;
 }
 
-/* Quitar borde derecho de la última columna */
+/* Última columna sin borde derecho */
 .pta-indicadores-table th:last-child,
 .pta-indicadores-table td:last-child {
     border-right: none;
 }
 
-/* Quitar borde inferior de la última fila */
+/* Última fila sin borde inferior */
 .pta-indicadores-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-/* Indicador y Fórmula sin doble borde */
-.pta-indicadores-table .indicator-textarea {
-    padding: 4px 6px;
-    background: transparent;
+/* Ajuste de columnas */
+.pta-indicadores-table th:nth-child(1),
+.pta-indicadores-table td:nth-child(1) { width: 35%; }
+
+.pta-indicadores-table th:nth-child(2),
+.pta-indicadores-table td:nth-child(2) { width: 35%; }
+
+.pta-indicadores-table th:nth-child(3),
+.pta-indicadores-table td:nth-child(3),
+.pta-indicadores-table th:nth-child(4),
+.pta-indicadores-table td:nth-child(4),
+.pta-indicadores-table th:nth-child(5),
+.pta-indicadores-table td:nth-child(5) {
+    width: 10%;
+    text-align: center;
 }
-/* =========================================
-   INDICADORES – BORDE EXTERIOR
-   ========================================= */
 
-/* Marco exterior de la tabla */
-.pta-indicadores-table {
-    border: 1px solid #3a424d;   /* 🔥 borde exterior */
-    border-radius: 8px;          /* opcional, elegante */
-    overflow: hidden;            /* para que no se salga */
-}
+/* =========================================================
+   ACCIONES — MESES (ACTIVO / INACTIVO)
+   ========================================================= */
 
-/* =========================================
-   ACCIONES – MESES (ACTIVO / INACTIVO)
-   ========================================= */
-
-/* Base común de todos los meses */
+/* Input base */
 .mes-input {
     width: 100px;
     text-align: center;
@@ -443,55 +354,33 @@
     cursor: not-allowed;
 }
 
-/* ---------------------------
-   MESES ACTIVOS
-   --------------------------- */
-.mes-input.mes-activo {
-    background-color: rgba(59, 130, 246, 0.15); /* azul suave */
-    border-color: #3b82f6;
-    color: #e5f0ff;
-    cursor: text;
-}
-
-/* Hover SOLO para activos */
-.mes-input.mes-activo:hover {
-    background-color: rgba(59, 130, 246, 0.25);
-}
-
-/* Focus SOLO para activos */
-.mes-input.mes-activo:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
-}
-
-/* ---------------------------
-   MESES INACTIVOS
-   --------------------------- */
-.mes-input.mes-inactivo {
-    background-color: #1b1f24;
-    color: #6b7280;
-    opacity: 0.6;
-}
+/* Mes activo */
 .mes-input.mes-activo {
     background-color: #0dcaf0;
     border: 1px solid #c7e600;
     color: #eaf2ff;
     font-weight: 500;
+    cursor: text;
 }
+
+/* Focus activo */
 .mes-input.mes-activo:focus {
     outline: none;
     background-color: rgba(5, 62, 155, 0.38);
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.45);
 }
+
+/* Mes inactivo */
 .mes-input.mes-inactivo {
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px dashed rgba(255, 255, 255, 0.15);
     color: rgba(255, 255, 255, 0.35);
     cursor: not-allowed;
 }
-/* ================================
-   MESES - VISTA SHOW
-   ================================ */
+
+/* =========================================================
+   MESES — VISTA SHOW (PÍLDORAS)
+   ========================================================= */
 
 .meses-grid {
     display: flex;
@@ -503,21 +392,38 @@
     padding: 4px 10px;
     border-radius: 999px;
     font-size: 0.85rem;
-    border: 1px solid transparent;
     white-space: nowrap;
 }
 
-/* 🔵 Mes activo */
 .mes-activo {
-    background-color: rgba(13, 110, 253, 0.25); /* azul Bootstrap */
+    background-color: rgba(13, 110, 253, 0.25);
     border-color: #0d6efd;
     color: #e9f2ff;
-    font-weight: 500;
 }
 
-/* ⚫ Mes inactivo */
 .mes-inactivo {
     background-color: rgba(255, 255, 255, 0.04);
     border-color: rgba(255, 255, 255, 0.1);
     color: #6c757d;
+}
+/* ===============================
+   TENDENCIA — BADGE GRANDE
+   =============================== */
+
+/* Badge base de tendencia */
+.pta-indicadores-table .badge,
+.pta-indicador-table .badge {
+    font-size: 0.95rem;          /* 👈 más grande */
+    padding: 0.45rem 0.85rem;    /* 👈 más aire */
+    border-radius: 999px;        /* estilo píldora */
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* Ajuste fino para que no se vea aplastado en tablas */
+.pta-indicadores-table td .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;             /* 👈 tamaño visual consistente */
 }
