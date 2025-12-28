@@ -1,0 +1,281 @@
+{# ============================================================
+   PTA — EDIT
+   Vista de captura de avance mensual por acción
+   ------------------------------------------------------------
+   Esta vista permite:
+   - Visualizar información general del encabezado (solo lectura)
+   - Mostrar indicadores (solo lectura)
+   - Capturar el avance mensual de cada acción
+   - Enviar los datos al controlador para su persistencia
+   ============================================================ #}
+
+<turbo-frame id="content" data-pta-view="edit">
+
+    {# =========================================================
+       BOTÓN DE REGRESO
+       ---------------------------------------------------------
+       Regresa al index de encabezados manteniendo Turbo Frame
+       ========================================================= #}
+    <div class="pta-back-wrapper">
+        <a
+            href="{{ path('app_encabezado_index') }}"
+            data-turbo-frame="content"
+            class="pta-back-btn"
+        >
+            <i class="bi bi-arrow-left"></i>
+            <span>Volver</span>
+        </a>
+    </div>
+
+    {# =========================================================
+       FORMULARIO PRINCIPAL
+       ---------------------------------------------------------
+       - Método POST
+       - Acción apunta al método edit del encabezado actual
+       - Contiene únicamente inputs de avance mensual
+       ========================================================= #}
+    <form
+        method="post"
+        action="{{ path('app_encabezado_edit', { id: encabezado.id }) }}"
+    >
+
+        {# =========================================================
+           ENCABEZADO — INFORMACIÓN GENERAL (SOLO LECTURA)
+           ---------------------------------------------------------
+           Muestra:
+           - Nombre del proyecto
+           - ID del proyecto
+           - Objetivo
+           ---------------------------------------------------------
+           No es editable, solo informativo
+           ========================================================= #}
+        <div class="pta-card pta-header-box mb-4">
+
+            {# FILA 1 — NOMBRE DEL PROYECTO #}
+            <div class="pta-header-row">
+                <div class="pta-header-label">
+                    NOMBRE DEL PROYECTO
+                </div>
+                <div class="pta-header-value">
+                    {{ encabezado.nombre }}
+                </div>
+            </div>
+
+            {# FILA 2 — NÚMERO Y OBJETIVO #}
+            <div class="pta-header-row">
+
+                {# COLUMNA IZQUIERDA — ID DEL PROYECTO #}
+                <div class="pta-header-col-numero">
+                    <div class="pta-header-label small">
+                        NÚMERO DE PROYECTO
+                    </div>
+                    <div class="pta-header-value small">
+                        {{ encabezado.id }}
+                    </div>
+                </div>
+
+                {# COLUMNA DERECHA — OBJETIVO #}
+                <div class="pta-header-col-objetivo">
+                    <div class="pta-header-objetivo-label">
+                        OBJETIVO
+                    </div>
+                    <div class="pta-header-objetivo-value">
+                        {{ encabezado.objetivo }}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        {# =========================================================
+           INDICADORES — SOLO LECTURA
+           ---------------------------------------------------------
+           Se muestran en el mismo formato que la vista NEW
+           No son editables en esta etapa
+           ========================================================= #}
+        <div class="card pta-card mt-4">
+
+            <h4 class="pta-title">
+                <i class="bi bi-graph-up"></i> Indicadores
+            </h4>
+
+            {% if encabezado.indicadores is empty %}
+
+                {# Mensaje cuando no existen indicadores #}
+                <p class="text-muted">
+                    No hay indicadores registrados.
+                </p>
+
+            {% else %}
+
+                {# Tabla de indicadores #}
+                <table class="table table-dark table-striped align-middle pta-indicadores-table">
+
+                    <thead>
+                        <tr>
+                            <th>Indicador</th>
+                            <th>Fórmula</th>
+                            <th>Meta</th>
+                            <th>Periodo</th>
+                            <th>Tendencia</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for indicador in encabezado.indicadores %}
+                            <tr>
+
+                                {# Nombre del indicador #}
+                                <td>
+                                    <div class="indicator-textarea">
+                                        {{ indicador.indicador }}
+                                    </div>
+                                </td>
+
+                                {# Fórmula #}
+                                <td>
+                                    <div class="indicator-textarea">
+                                        {{ indicador.formula }}
+                                    </div>
+                                </td>
+
+                                {# Meta #}
+                                <td class="text-center">
+                                    <strong>{{ indicador.valor }}</strong>
+                                </td>
+
+                                {# Periodo #}
+                                <td class="text-center">
+                                    {{ indicador.periodo }}
+                                </td>
+
+                                {# Tendencia #}
+                                <td class="text-center">
+                                    {% if indicador.tendencia == 'POSITIVA' %}
+                                        <span class="badge bg-success">
+                                            Positiva
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            Negativa
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            {% endif %}
+        </div>
+
+        <br>
+
+        {# =========================================================
+           ACCIONES + AVANCE MENSUAL
+           ---------------------------------------------------------
+           - Cada fila representa una acción
+           - Cada input representa el avance de un mes
+           - Solo los meses activos son editables
+           ========================================================= #}
+        <div class="pta-card mb-4">
+
+            <h4 class="pta-title">
+                <i class="bi bi-list-task"></i>
+                Acciones / Avance mensual
+            </h4>
+
+            <table class="table table-dark table-bordered pta-acciones-table">
+
+                <thead>
+                    <tr>
+                        <th style="width: 25%">Indicador</th>
+                        <th style="width: 30%">Acción</th>
+                        <th style="width: 45%">Periodo de ejecución</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {# Lista fija de meses #}
+                    {% set meses = [
+                        'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                        'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+                    ] %}
+
+                    {% for accion in encabezado.acciones %}
+                        <tr>
+
+                            {# Indicador asociado a la acción #}
+                            <td>
+                                {% set nombreIndicador = '—' %}
+                                {% for ind in encabezado.indicadores %}
+                                    {% if ind.indice == accion.indicador %}
+                                        {% set nombreIndicador = ind.indicador %}
+                                    {% endif %}
+                                {% endfor %}
+                                {{ nombreIndicador }}
+                            </td>
+
+                            {# Descripción de la acción #}
+                            <td>
+                                {{ accion.accion }}
+                            </td>
+
+                            {# Avance mensual #}
+                            <td>
+                                <div class="meses-grid">
+
+                                    {% for mes in meses %}
+
+                                        {# Determina si el mes está activo #}
+                                        {% set activo = mes in accion.periodo %}
+
+                                        {# Valor previamente guardado (si existe) #}
+                                        {% set valor = accion.valorAlcanzado[mes] ?? '' %}
+
+                                        <input
+                                            type="number"
+                                            name="valor_alcanzado[{{ accion.id }}][{{ mes }}]"
+                                            class="mes-input {{ activo ? 'mes-activo' : 'mes-inactivo' }}"
+                                            placeholder="{{ mes }}"
+                                            min="0"
+                                            {{ not activo ? 'readonly' }}
+                                            value="{{ valor }}"
+                                        >
+                                    {% endfor %}
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        {# =========================================================
+           TOKEN CSRF
+           ========================================================= #}
+        <input
+            type="hidden"
+            name="_token"
+            value="{{ csrf_token('edit' ~ encabezado.id) }}"
+        >
+
+        {# =========================================================
+           BOTÓN DE ENVÍO
+           ========================================================= #}
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-5">
+                Guardar avance
+            </button>
+        </div>
+
+    </form>
+
+</turbo-frame>

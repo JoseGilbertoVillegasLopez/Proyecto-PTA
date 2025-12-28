@@ -1,0 +1,134 @@
+<turbo-frame id="content">
+
+    <div class="card pta-card">
+
+        <h4 class="pta-title mb-3">
+            <i class="bi bi-list-ul"></i> Proyectos PTA
+        </h4>
+        <div class="pta-toolbar">
+
+        {# IZQUIERDA — BOTÓN AGREGAR #}
+        <div class="pta-toolbar-left">
+            <div class="pta-toolbar-left">
+            <a href="{{ path('app_encabezado_new') }}"
+            data-turbo-frame="content"
+            class="pta-add-btn">
+                <i class="bi bi-plus-circle"></i>
+                <span>Agregar</span>
+            </a>
+        </div>
+
+    </div>
+
+        {# DERECHA — FILTRO #}
+        <div class="pta-toolbar-right">
+            <form method="get"
+          action="{{ path('app_encabezado_index') }}"
+          data-turbo-frame="content"
+          class="pta-filter-form">
+
+        <label class="form-label mb-0">Año de ejecución</label>
+
+        <select name="anio" class="form-select">
+            {% set anioActual = "now"|date("Y") %}
+            {% set anioSeleccionado = anioSeleccionado ?? anioActual %}
+            <option value="{{ anioActual }}"
+                {{ anioActual == anioSeleccionado ? 'selected' }}>
+                {{ anioActual }}
+            </option>
+            <option value="{{ anioActual + 1 }}"
+                {{ (anioActual + 1) == anioSeleccionado ? 'selected' }}>
+                {{ anioActual + 1 }}
+            </option>
+        </select>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-funnel"></i>
+                </button>
+            </form>
+        </div>
+        </div>
+
+
+
+        <table class="table table-dark table-hover align-middle">
+            <thead>
+                <tr>
+                    <th style="width: 10%">#</th>
+                    <th style="width: 25%">Nombre del proyecto</th>
+                    <th style="width: 45%">Objetivo</th>
+                    <th style="width: 20%" class="text-center">Creado</th>
+                    <th style="width: 15%" class="text-center">Periodo</th>
+                    <th class="text-center" style="width: 10%">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            {% for encabezado in encabezados %}
+                <tr>
+
+                    {# Número de proyecto #}
+                    <td>
+                        <strong>{{ encabezado.id }}</strong>
+                    </td>
+
+                    {# Nombre #}
+                    <td>
+                        {{ encabezado.nombre }}
+                    </td>
+
+                    {# Objetivo #}
+                    <td class="text-truncate" style="max-width: 400px;">
+                        {{ encabezado.objetivo }}
+                    </td>
+
+                    {# CREADO #}
+                    <td class="text-center">
+                        {{ encabezado.fechaCreacion|date('d/m/Y') }}
+                    </td>
+
+                    {# PERIODO / AÑO DE EJECUCIÓN #}
+                    <td class="text-center">
+                        <span class="pta-badge pta-badge-periodo">
+                            {{ encabezado.anioEjecucion }}
+                        </span>
+                    </td>
+
+
+                    <td class="text-center">
+                        <div class="pta-actions">
+
+                            <a href="{{ path('app_encabezado_show', { id: encabezado.id }) }}"
+                            data-turbo-frame="content"
+                            class="pta-action-btn pta-action-view"
+                            title="Ver proyecto">
+                                <i class="bi bi-eye"></i>
+                            </a>
+
+                            <a href="{{ path('app_encabezado_edit', { id: encabezado.id }) }}"
+                            data-turbo-frame="content"
+                            class="pta-action-btn pta-action-edit"
+                            title="Editar proyecto">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+
+                        </div>
+                    </td>
+
+
+
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted">
+                        No hay proyectos registrados.
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+</turbo-frame>

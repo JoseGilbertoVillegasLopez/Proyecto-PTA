@@ -1,0 +1,300 @@
+/* =========================================================
+   TABLA INDEX PTA
+   ========================================================= */
+
+.pta-card table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* ======================
+   THEAD
+   ====================== */
+.pta-card table thead th {
+    background: linear-gradient(
+        180deg,
+        #0b3c6f,
+        #062a4f
+    );
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+    padding: 14px 16px;
+}
+
+/* ======================
+   FILAS
+   ====================== */
+.pta-card table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+/* Hover suave */
+.pta-card table tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.08);
+}
+
+/* ======================
+   CELDAS
+   ====================== */
+.pta-card table tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    vertical-align: middle;
+}
+
+/* Quitar borde derecho de la última columna */
+.pta-card table tbody td:last-child,
+.pta-card table thead th:last-child {
+    border-right: none;
+}
+
+
+
+/* ======================
+   OBJETIVO (mejor lectura)
+   ====================== */
+.pta-card table tbody td:nth-child(3) {
+    color: #e2e8f0;
+    line-height: 1.4;
+}
+
+/* ======================
+   FECHA
+   ====================== */
+.pta-card table tbody td:last-child {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #adb5bd;
+}
+
+/* ======================
+   ÚLTIMA FILA
+   ====================== */
+.pta-card table tbody tr:last-child td {
+    border-bottom: none;
+}
+/* ======================
+   BORDE EXTERNO TABLA
+   ====================== */
+
+.pta-card table {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    overflow: hidden; /* clave para que el radio funcione */
+}
+/* =========================
+   BADGES STATUS PTA
+   ========================= */
+
+.pta-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+/* 🟡 EN PROCESO */
+.pta-badge-proceso {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.5);
+}
+
+/* 🟢 TERMINADO */
+.pta-badge-terminado {
+    background-color: rgba(25, 135, 84, 0.15);
+    color: #198754;
+    border: 1px solid rgba(25, 135, 84, 0.5);
+}
+
+/* =========================
+   ACCIONES INDEX PTA
+   ========================= */
+
+.pta-actions {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.pta-action-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+/* 👁 VER */
+.pta-action-view {
+    background-color: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+}
+
+.pta-action-view:hover {
+    background-color: rgba(13, 202, 240, 0.3);
+    color: #ffffff;
+}
+
+/* ✏️ EDITAR */
+.pta-action-edit {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.pta-action-edit:hover {
+    background-color: rgba(255, 193, 7, 0.3);
+    color: #ffffff;
+}
+/* =========================
+   BOTÓN VOLVER PTA
+   ========================= */
+
+.pta-back-wrapper {
+    margin-bottom: 16px;
+}
+
+.pta-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 14px;
+    border-radius: 8px;
+
+    background: rgba(13, 110, 253, 0.15);
+    color: #0d6efd;
+
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+
+    border: 1px solid rgba(13, 110, 253, 0.4);
+
+    transition: all 0.2s ease;
+}
+
+.pta-back-btn i {
+    font-size: 1.1rem;
+}
+
+/* Hover */
+.pta-back-btn:hover {
+    background: rgba(13, 110, 253, 0.35);
+    color: #ffffff;
+    border-color: #0d6efd;
+}
+/* =========================
+   BOTÓN AGREGAR PTA
+   ========================= */
+
+.pta-add-wrapper {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: flex-end; /* alineado a la derecha */
+}
+
+.pta-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 16px;
+    border-radius: 8px;
+
+    background: rgba(25, 135, 84, 0.15); /* verde */
+    color: #198754;
+
+    font-weight: 500;
+    font-size: 0.9rem;
+
+    border: 1px solid rgba(25, 135, 84, 0.5);
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.pta-add-btn i {
+    font-size: 1.1rem;
+}
+
+/* Hover */
+.pta-add-btn:hover {
+    background: rgba(25, 135, 84, 0.35);
+    color: #ffffff;
+    border-color: #198754;
+}
+/* =========================
+   TOOLBAR SUPERIOR PTA
+   ========================= */
+
+.pta-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+/* IZQUIERDA */
+.pta-toolbar-left {
+    display: flex;
+    align-items: center;
+}
+
+/* DERECHA */
+.pta-toolbar-right {
+    display: flex;
+    align-items: center;
+}
+
+/* FORM FILTRO */
+.pta-filter-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+/* Ajuste label */
+.pta-filter-form .form-label {
+    font-size: 0.8rem;
+    color: #adb5bd;
+}
+/* ===============================
+   TOOLBAR — FILTRO AÑO EJECUCIÓN
+   =============================== */
+
+.pta-toolbar-right .pta-filter-form {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pta-toolbar-right .form-label {
+    font-size: 0.95rem;     /* más grande */
+    font-weight: 600;
+    color: #cfd8dc;         /* claro en dark */
+    margin-bottom: 0;       /* evita que se baje */
+    white-space: nowrap;   /* no se parte en 2 líneas */
+}
+.pta-badge-periodo {
+    background: rgba(13, 110, 253, 0.15);
+    color: #0d6efd;
+    border: 1px solid rgba(13, 110, 253, 0.35);
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}

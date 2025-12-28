@@ -1,0 +1,142 @@
+/* =========================================================
+   PTA — SHOW
+   Visualización de información y avance (solo lectura)
+   ---------------------------------------------------------
+   Incluye:
+   - Visualización de meses como píldoras
+   - Barra superior (volver / gráficas / año)
+   ========================================================= */
+
+
+/* =========================================================
+   MESES — VISTA SHOW (PÍLDORAS)
+   ========================================================= */
+
+/* Contenedor flexible para mostrar los meses */
+.meses-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* Píldora base de mes */
+.mes-pill {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+
+/* Mes activo (incluido en el periodo de la acción) */
+.mes-activo {
+    background-color: rgba(13, 110, 253, 0.25); /* azul Bootstrap */
+    border-color: #0d6efd;
+    color: #e9f2ff;
+    font-weight: 500;
+}
+
+/* Mes inactivo (fuera del periodo de la acción) */
+.mes-inactivo {
+    background-color: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #6c757d;
+}
+
+
+/* =========================================================
+   SHOW — TOP BAR
+   ========================================================= */
+
+/* Barra superior con acciones y contexto */
+.pta-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+
+/* =========================================================
+   SHOW — AÑO DE EJECUCIÓN
+   ========================================================= */
+
+/* Contenedor visual del año activo */
+.pta-year-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.75rem;
+    background: #2b3138;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    color: #e9ecef;
+    font-size: 0.9rem;
+}
+
+/* Ícono del año */
+.pta-year-chip i {
+    color: #0dcaf0;
+    font-size: 1rem;
+}
+
+/* Año destacado */
+.pta-year-chip strong {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   BOTÓN — GRÁFICAS
+   ========================================================= */
+
+/* Botón que redirige al módulo de gráficas */
+.pta-graph-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.9rem;
+    margin-left: 0.5rem;
+    background: #1f2a36;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    color: #e9ecef;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Hover del botón */
+.pta-graph-btn:hover {
+    background: #263445;
+    border-color: #0dcaf0;
+    color: #ffffff;
+}
+
+/* Ícono del botón */
+.pta-graph-btn i {
+    color: #0dcaf0;
+    font-size: 1.1rem;
+}
+/* ===============================
+   TENDENCIA — BADGE GRANDE
+   =============================== */
+
+/* Badge base de tendencia */
+.pta-indicadores-table .badge,
+.pta-indicador-table .badge {
+    font-size: 0.95rem;          /* 👈 más grande */
+    padding: 0.45rem 0.85rem;    /* 👈 más aire */
+    border-radius: 999px;        /* estilo píldora */
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+/* Ajuste fino para que no se vea aplastado en tablas */
+.pta-indicadores-table td .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;             /* 👈 tamaño visual consistente */
+}

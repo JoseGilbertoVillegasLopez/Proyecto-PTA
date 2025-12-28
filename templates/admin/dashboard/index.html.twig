@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block body %}
+<script>
+document.addEventListener("turbo:render", function () {
+    if (typeof Sfjs !== "undefined") {
+        Sfjs.loadToolbar();
+    }
+});
+</script>
+
+
+
+
+
+<div style="display: flex; height: 94.8vh; background: #1e242b; color: white;">
+
+    <!-- ASIDE / MENU -->
+    <aside style="width: 250px; background: #11161c; padding: 20px;">
+        <h2 style="margin-bottom: 20px;">Menú</h2>
+
+        <ul style="list-style: none; padding: 0;">
+
+    <li style="margin-bottom: 15px;">
+        <a href="{{ path('app_personal_index') }}"
+           data-turbo-frame="content"
+           style="color: #0dcaf0; text-decoration: none;">
+            Personal
+        </a>
+    </li>
+
+    <li style="margin-bottom: 15px;">
+        <a href="{{ path('app_departamento_index') }}"
+           data-turbo-frame="content"
+           style="color: #0dcaf0; text-decoration: none;">
+            Departamentos
+        </a>
+    </li>
+
+    <li style="margin-bottom: 15px;">
+        <a href="{{ path('app_puesto_index') }}"
+           data-turbo-frame="content"
+           style="color: #0dcaf0; text-decoration: none;">
+            Puestos
+        </a>
+    </li>
+
+    <li style="margin-bottom: 15px;">
+        <a href="{{ path('app_encabezado_index') }}"
+           data-turbo-frame="content"
+           style="color: #0dcaf0; text-decoration: none;">
+            PTA
+        </a>
+    </li>
+
+</ul>
+
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main style="flex: 1; padding: 30px; overflow-y: auto;">
+    
+        <turbo-frame id="content" src="{{ path('app_personal_index') }}">
+
+        </turbo-frame>
+
+    </main>
+
+
+</div>
+
+
+{% endblock %}

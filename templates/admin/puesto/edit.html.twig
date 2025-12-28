@@ -1,0 +1,11 @@
+<turbo-frame id="content">
+    <h1>Edit Puesto</h1>
+
+    {{ include('admin/puesto/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_puesto_index') }}">back to list</a>
+
+    {{ include('admin/puesto/_delete_form.html.twig') }}
+</turbo-frame>
+
+
