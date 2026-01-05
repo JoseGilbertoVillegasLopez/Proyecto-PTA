@@ -40,4 +40,14 @@ class PuestoRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findByDepartamentoIds(array $departamentoIds): array
+{
+    return $this->createQueryBuilder('p')
+        ->andWhere('p.departamento IN (:departamentos)')
+        ->setParameter('departamentos', $departamentoIds)
+        ->orderBy('p.nombre', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
 }

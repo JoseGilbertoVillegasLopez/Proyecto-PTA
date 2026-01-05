@@ -39,10 +39,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/usuarioNvl0, roles: ROLE_USER }
-        - { path: ^/usuarioNvl1, roles: ROLE_SUBDIRECCION }
-        - { path: ^/usuarioNvl2, roles: ROLE_DIRECCION }
-        - { path: ^/usuarioNvl3, roles: ROLE_DIRECCION_GENERAL }
+        - { path: ^/pta, roles: IS_AUTHENTICATED_FULLY }
         
         
 

@@ -5,40 +5,179 @@ namespace App\Controller;
 use App\Entity\Encabezado;
 use App\Entity\Personal;
 use App\Form\EncabezadoType;
+use App\Repository\DepartamentoRepository;
 use App\Repository\EncabezadoRepository;
+use App\Repository\PuestoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Entity\User;
 
-#[Route('/admin/encabezado')]
-final class AdminEncabezadoController extends AbstractController
-{
+    #[Route('/pta/encabezado')]
+    final class AdminEncabezadoController extends AbstractController
+    {
+        
+
     #[Route(name: 'app_encabezado_index', methods: ['GET'])]
 public function index(
     Request $request,
-    EncabezadoRepository $encabezadoRepository
-): Response
-{
-    // Año actual por defecto
-    $anioActual = (int) date('Y');
+    EncabezadoRepository $encabezadoRepository,
+    DepartamentoRepository $departamentoRepository,
+    PuestoRepository $puestoRepository,
+    \App\Service\Pta\PtaAccessResolver $ptaAccessResolver
+): Response {
 
-    // Año de ejecución seleccionado (GET) o año actual
+    /* =====================================================
+     * 1. FILTRO COMÚN: AÑO DE EJECUCIÓN
+     * ===================================================== */
+    $anioActual    = (int) date('Y');
     $anioEjecucion = $request->query->getInt('anio', $anioActual);
 
-    $encabezados = $encabezadoRepository->createQueryBuilder('e')
+    /* =====================================================
+     * 2. USUARIO + ACCESO
+     * ===================================================== */
+    /** @var \App\Entity\User $usuario */
+    $usuario = $this->getUser();
+    $personal = $usuario->getPersonal();
+
+    $access = $ptaAccessResolver->resolve($usuario);
+
+    /* =====================================================
+     * 3. QUERY BASE
+     * ===================================================== */
+    $qb = $encabezadoRepository->createQueryBuilder('e')
         ->andWhere('e.anioEjecucion = :anio')
         ->setParameter('anio', $anioEjecucion)
-        ->orderBy('e.fechaCreacion', 'DESC')
-        ->getQuery()
-        ->getResult();
+        ->orderBy('e.fechaCreacion', 'DESC');
 
-    return $this->render('admin/encabezado/index.html.twig', [
-        'encabezados' => $encabezados,
+    /* =====================================================
+     * 4. JOIN BASE (SI NO ES PROPIO)
+     * ===================================================== */
+    if ($access['scope'] !== 'PROPIO') {
+        $qb->join('e.responsable', 'p');
+    }
+
+    /* =====================================================
+     * 5. ALCANCE MÁXIMO
+     * ===================================================== */
+
+    if ($access['scope'] === 'PROPIO') {
+        $qb->andWhere('e.responsable = :personal')
+           ->setParameter('personal', $personal);
+    }
+
+    if ($access['scope'] === 'DEPARTAMENTAL') {
+        $qb->andWhere('p.departamento = :departamentoBase')
+           ->setParameter('departamentoBase', $personal->getDepartamento()->getId());
+    }
+
+    if ($access['scope'] === 'MULTI_DEPARTAMENTAL') {
+        $qb->andWhere('p.departamento IN (:departamentos)')
+           ->setParameter('departamentos', $access['departamentos']);
+    }
+
+    // GLOBAL → sin restricción
+
+    /* =====================================================
+     * 6. FILTROS REDUCTIVOS
+     * ===================================================== */
+
+    if (
+        $access['filters']['departamento'] &&
+        $request->query->get('departamento')
+    ) {
+        $qb->andWhere('p.departamento = :departamentoFiltro')
+           ->setParameter(
+               'departamentoFiltro',
+               (int) $request->query->get('departamento')
+           );
+    }
+
+    if (
+        $access['filters']['puesto'] &&
+        $request->query->get('puesto')
+    ) {
+        $qb->andWhere('p.puesto = :puestoFiltro')
+           ->setParameter(
+               'puestoFiltro',
+               (int) $request->query->get('puesto')
+           );
+    }
+
+    /* =====================================================
+     * 7. EJECUTAR QUERY
+     * ===================================================== */
+    $encabezados = $qb->getQuery()->getResult();
+
+    /* =====================================================
+     * 8. CONSTRUIR FILTROS PARA LA VISTA
+     * ===================================================== */
+
+    // ---------- DEPARTAMENTOS ----------
+    $departamentosFiltro = [];
+
+    if ($access['filters']['departamento']) {
+
+        if ($access['scope'] === 'GLOBAL') {
+            $departamentos = $departamentoRepository->findAll();
+        } else {
+            $departamentos = $departamentoRepository->findBy([
+                'id' => $access['departamentos']
+            ]);
+        }
+
+        foreach ($departamentos as $departamento) {
+            $departamentosFiltro[$departamento->getId()] = $departamento->getNombre();
+        }
+    }
+
+    // ---------- PUESTOS ----------
+    $puestosFiltro = [];
+
+if ($access['filters']['puesto']) {
+    $puestos = $puestoRepository->findAll();
+
+    foreach ($puestos as $puesto) {
+        $puestosFiltro[$puesto->getId()] = $puesto->getNombre();
+    }
+}
+
+
+    /* =====================================================
+     * 9. SELECCIÓN DE VISTA
+     * ===================================================== */
+    $isAdminUi = in_array('ROLE_ADMIN', $usuario->getRoles(), true);
+
+    $view = $isAdminUi
+        ? 'admin/encabezado/index.html.twig'
+        : 'pta/encabezado/index.html.twig';
+
+    /* =====================================================
+     * 10. RENDER
+     * ===================================================== */
+    return $this->render($view, [
+        'encabezados'      => $encabezados,
         'anioSeleccionado' => $anioEjecucion,
+        'access'           => $access,
+
+        // 👇 filtros reales para la vista
+        'departamentosFiltro' => $departamentosFiltro,
+        'puestosFiltro'       => $puestosFiltro,
+        'filtrosActivos' => [
+            'departamento' => $request->query->get('departamento'),
+            'puesto'       => $request->query->get('puesto'),
+        ],
     ]);
 }
+
+
+
+
+
+
+
 
 
 
@@ -94,8 +233,10 @@ public function index(
              * - Se asigna automáticamente al crear el PTA
              * =========================================================
              */
+           /** @var User $usuario */
             $usuario = $this->getUser();
-            if ($usuario instanceof \App\Entity\User && $usuario->getPersonal()) {
+
+            if ($usuario instanceof User && $usuario->getPersonal()) {
                 $encabezado->setResponsable($usuario->getPersonal());
             }
 
@@ -200,10 +341,12 @@ public function index(
                  * - Garantiza que el PTA quede ligado al creador
                  * =====================================================
                  */
-                $usuario = $this->getUser();
-                if ($usuario instanceof \App\Entity\User && $usuario->getPersonal()) {
-                    $encabezado->setResponsable($usuario->getPersonal());
-                }
+                /** @var User $usuario */
+                    $usuario = $this->getUser();
+
+                    if ($usuario instanceof User && $usuario->getPersonal()) {
+                        $encabezado->setResponsable($usuario->getPersonal());
+                    }
 
                 /**
                  * =====================================================
