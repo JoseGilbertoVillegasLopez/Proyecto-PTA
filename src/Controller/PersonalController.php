@@ -6,7 +6,7 @@ use App\Entity\Personal;
 use App\Form\PersonalType;
 use App\Form\personal\PersonalEditType;
 use App\Repository\PersonalRepository;
-use App\Service\UserCreator; // <-- Importamos el servicio useracountmanager para la creación automática de usuarios
+use App\Service\UserCreator;
 use App\Service\UserUpdater;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,19 +17,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('admin/personal')]
 final class PersonalController extends AbstractController
 {
-    // --- Declaramos propiedad privada para el servicio UserCreator
     private UserCreator $userCreator;
-    // - Declaramos propiedad privada para el servicio UserUpdater
     private UserUpdater $userUpdater;
 
-    // --- Lo inyectamos en el constructor del controlador para poder usarlo en los métodos
     public function __construct(UserCreator $userCreator, UserUpdater $userUpdater)
     {
         $this->userCreator = $userCreator;
         $this->userUpdater = $userUpdater;
     }
-
-
 
     #[Route(name: 'app_personal_index', methods: ['GET'])]
     public function index(PersonalRepository $personalRepository): Response
@@ -40,21 +35,29 @@ final class PersonalController extends AbstractController
     }
 
     #[Route('/new', name: 'app_personal_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, PersonalRepository $personalRepository): Response
-    {
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        PersonalRepository $personalRepository
+    ): Response {
         $personal = new Personal();
         $form = $this->createForm(PersonalType::class, $personal);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            // ✅ FORZAMOS ACTIVO AL CREAR
+            $personal->setActivo(true);
+
             $entityManager->persist($personal);
             $entityManager->flush();
-             //Llamamos el servicio de creación de usuario
+
+            // Crear usuario asociado
             $this->userCreator->createFromPersonal($personal);
 
             return $this->render('admin/personal/index.html.twig', [
-            'personals' => $personalRepository->findAll(),
-        ]);
+                'personals' => $personalRepository->findAll(),
+            ]);
         }
 
         return $this->render('admin/personal/new.html.twig', [
@@ -72,19 +75,24 @@ final class PersonalController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_personal_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Personal $personal, EntityManagerInterface $entityManager, PersonalRepository $personalRepository): Response
-    {
-        $form = $this->createForm(PersonalEditType::class, $personal,);
+    public function edit(
+        Request $request,
+        Personal $personal,
+        EntityManagerInterface $entityManager,
+        PersonalRepository $personalRepository
+    ): Response {
+        $form = $this->createForm(PersonalEditType::class, $personal);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-            //Llamamos al sincronizador de Usuario
-            // false = creación
+
+            // Sincronizar usuario
             $this->userUpdater->updateFromPersonal($personal);
+
             return $this->render('admin/personal/index.html.twig', [
-            'personals' => $personalRepository->findAll(),
-        ]);
+                'personals' => $personalRepository->findAll(),
+            ]);
         }
 
         return $this->render('admin/personal/edit.html.twig', [
@@ -94,9 +102,12 @@ final class PersonalController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_personal_delete', methods: ['POST'])]
-    public function delete(Request $request, Personal $personal, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$personal->getId(), $request->getPayload()->getString('_token'))) {
+    public function delete(
+        Request $request,
+        Personal $personal,
+        EntityManagerInterface $entityManager
+    ): Response {
+        if ($this->isCsrfTokenValid('delete' . $personal->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($personal);
             $entityManager->flush();
         }
