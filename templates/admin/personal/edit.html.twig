@@ -27,15 +27,6 @@
                 </p>
             </div>
 
-            <!-- GUARDAR (ARRIBA DERECHA) -->
-            <button
-                type="submit"
-                form="{{ form.vars.id }}"
-                class="personal-form__icon-btn personal-form__icon-btn--save"
-                title="Guardar cambios"
-            >
-                <i class="bi bi-check-lg"></i>
-            </button>
 
         </header>
 
@@ -49,6 +40,7 @@
                 'class': 'personal-form__form'
             }
         }) }}
+           
 
             <div class="personal-form__group">
                 {{ form_label(form.nombre) }}
@@ -92,8 +84,18 @@
                 {{ form_errors(form.activo) }}
             </div>
 
+            <!-- BOTÓN GUARDAR  -->
+            <div class="personal-form__submit-proxy">
+                <button
+                    type="submit"
+                    class="personal-form__icon-btn personal-form__icon-btn--save"
+                    title="Guardar cambios"
+                >
+                    <i class="bi bi-check-lg"></i>
+                </button>
+            </div>
 
-
+            {{ form_rest(form) }}
         {{ form_end(form) }}
 
     </section>

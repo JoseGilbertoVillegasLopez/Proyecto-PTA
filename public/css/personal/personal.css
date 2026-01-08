@@ -937,17 +937,7 @@
     color: #ffffff;
 }
 
-/* GUARDAR (DERECHA, VERDE) */
-.personal-form__icon-btn--save {
-    background: rgba(25,135,84,0.15);
-    color: #198754;
-    border: 1px solid rgba(25,135,84,0.55);
-}
 
-.personal-form__icon-btn--save:hover {
-    background: rgba(25,135,84,0.35);
-    color: #ffffff;
-}
 
 /* =========================================================
    FORM
@@ -970,3 +960,34 @@
     border-bottom: none;
 }
 
+/* =========================================================
+   BOTÓN GUARDAR — ABAJO CENTRADO
+   ========================================================= */
+   /* vERDE */
+.personal-form__icon-btn--save {
+    background: rgba(25,135,84,0.15);
+    color: #198754;
+    border: 1px solid rgba(25,135,84,0.55);
+}
+
+.personal-form__icon-btn--save:hover {
+    background: rgba(25,135,84,0.35);
+    color: #ffffff;
+}
+
+.personal-form__submit-proxy {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 2.6rem;
+    padding-top: 1.6rem;
+
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* hacerlo un poco más protagonista que los icon-btn normales */
+.personal-form__submit-proxy .personal-form__icon-btn--save {
+    width: 54px;
+    height: 54px;
+    font-size: 1.3rem;
+}
