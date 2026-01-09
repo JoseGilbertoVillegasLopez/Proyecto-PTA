@@ -1,10 +1,57 @@
 <turbo-frame id="content">
-    <h1>Create new Puesto</h1>
+    <section class="puesto-form puesto-form--new">
 
-        {{ include('admin/puesto/_form.html.twig') }}
+        <!-- ===============================
+             HEADER
+        ================================ -->
+        <header class="puesto-form__header">
 
-        <a href="{{ path('app_puesto_index') }}">back to list</a>
+            <!-- VOLVER -->
+            <a
+                href="{{ path('app_puesto_index') }}"
+                data-turbo-frame="content"
+                class="puesto-form__icon-btn puesto-form__icon-btn--back"
+                title="Volver"
+            >
+                <i class="bi bi-arrow-left"></i>
+            </a>
 
+            <!-- TÍTULO -->
+            <h1 class="puesto-form__title">
+                Crear nuevo puesto
+            </h1>
 
+        </header>
+
+        <!-- ===============================
+             FORM
+        ================================ -->
+        {{ form_start(form, {
+            action: path('app_puesto_new'),
+            attr: {
+                'data-turbo-frame': 'content',
+                'class': 'puesto-form__form'
+            }
+        }) }}
+
+            <div class="puesto-form__group">
+                {{ form_label(form.nombre) }}
+                {{ form_widget(form.nombre) }}
+                {{ form_errors(form.nombre) }}
+            </div>
+
+            <!-- GUARDAR CENTRADO -->
+            <div class="puesto-form__actions">
+                <button
+                    type="submit"
+                    class="puesto-form__submit puesto-form__submit--icon"
+                    title="Guardar"
+                >
+                    <i class="bi bi-check-lg"></i>
+                </button>
+            </div>
+
+        {{ form_end(form) }}
+
+    </section>
 </turbo-frame>
-    

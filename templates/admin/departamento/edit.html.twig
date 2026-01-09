@@ -1,12 +1,66 @@
 <turbo-frame id="content">
-    <h1>Edit Departamento</h1>
+    <section class="departamento-form departamento-form--edit">
 
-        {{ include('admin/departamento/_form.html.twig', {'button_label': 'Update'}) }}
+        <!-- HEADER -->
+        <header class="departamento-form__header">
 
-        <a href="{{ path('app_departamento_index') }}">back to list</a>
+            <!-- VOLVER -->
+            <a
+                href="{{ path('app_departamento_index') }}"
+                data-turbo-frame="content"
+                class="departamento-form__icon-btn departamento-form__icon-btn--back"
+                title="Volver"
+            >
+                <i class="bi bi-arrow-left"></i>
+            </a>
 
-        {{ include('admin/departamento/_delete_form.html.twig') }}
+            <!-- TÍTULO + SUB -->
+            <div class="departamento-form__header-center">
+                <h1 class="departamento-form__title">
+                    Editar departamento
+                </h1>
 
+                <p class="departamento-form__subtitle">
+                    Edita solo los campos necesarios
+                </p>
+            </div>
+
+        </header>
+
+        <!-- FORM -->
+        {{ form_start(form, {
+            action: path('app_departamento_edit', { id: departamento.id }),
+            attr: {
+                'data-turbo-frame': 'content',
+                'class': 'departamento-form__form'
+            }
+        }) }}
+
+            <div class="departamento-form__group">
+                {{ form_label(form.nombre) }}
+                {{ form_widget(form.nombre) }}
+                {{ form_errors(form.nombre) }}
+            </div>
+
+            <div class="departamento-form__group">
+                {{ form_label(form.activo) }}
+                {{ form_widget(form.activo) }}
+                {{ form_errors(form.activo) }}
+            </div>
+
+            <!-- GUARDAR -->
+            <div class="departamento-form__submit-proxy">
+                <button
+                    type="submit"
+                    class="departamento-form__icon-btn departamento-form__icon-btn--save"
+                    title="Guardar cambios"
+                >
+                    <i class="bi bi-check-lg"></i>
+                </button>
+            </div>
+
+            {{ form_rest(form) }}
+        {{ form_end(form) }}
+
+    </section>
 </turbo-frame>
-    
-
