@@ -31,6 +31,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 // Permite configurar opciones del formulario (como data_class)
 
 
+
 class PersonalType extends AbstractType
 // Formulario base para CREAR un registro de Personal
 {
