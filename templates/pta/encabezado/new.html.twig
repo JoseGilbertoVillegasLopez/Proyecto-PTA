@@ -1,0 +1,7 @@
+{# templates/pta/encabezado/new.html.twig #}
+
+{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+	{% include 'pta/encabezado/new_admin.html.twig' %}
+{% else %}
+	{% include 'pta/encabezado/new_general.html.twig' %}
+{% endif %}

@@ -39,7 +39,7 @@ class CambiarPasswordController extends AbstractController
 
                 $em->flush();
 
-                return $this->redirectToRoute('app_admin_dashboard');
+                return $this->redirectToRoute('app_encabezado_index');
             }
         }
 

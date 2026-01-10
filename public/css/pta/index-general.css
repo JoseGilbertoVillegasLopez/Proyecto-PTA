@@ -1,0 +1,72 @@
+/* =========================================================
+   LAYOUT GENERAL (SIN DASHBOARD)
+   ========================================================= */
+
+.pta-general-layout {
+    min-height: 100vh;
+    background: #1e242b;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.pta-general-main {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* =========================================================
+   CARD PRINCIPAL (MISMO LOOK ADMIN)
+   ========================================================= */
+
+.pta-card {
+    background: linear-gradient(180deg, #20252b, #1b1f24);
+    border-radius: 14px;
+    padding: 24px;
+
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* =========================================================
+   TÍTULO
+   ========================================================= */
+
+.pta-title {
+    color: #ffffff;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pta-title i {
+    color: #0dcaf0;
+}
+
+/* =========================================================
+   FORM CONTROLES (SELECTS)
+   ========================================================= */
+
+.pta-filter-form .form-select {
+    background-color: #11161c;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.pta-filter-form .form-select:focus {
+    border-color: #0dcaf0;
+    box-shadow: none;
+}
+
+/* =========================================================
+   BOTÓN FILTRO
+   ========================================================= */
+
+.pta-filter-form .btn-primary {
+    background: rgba(13, 110, 253, 0.15);
+    border: 1px solid rgba(13, 110, 253, 0.5);
+}
+
+.pta-filter-form .btn-primary:hover {
+    background: rgba(13, 110, 253, 0.35);
+}

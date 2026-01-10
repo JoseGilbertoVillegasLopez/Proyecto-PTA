@@ -1,61 +1,75 @@
-security:
+security: # Sección principal de configuración de seguridad de Symfony
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
-    password_hashers:
-        App\Entity\User: #definimos el nombre de la entidad que implementa UserInterface para el cifrado de contraseñas
-                algorithm: argon2id #algoritmo de cifrado
-                memory_cost: 65536 # coste de memoria que se refiere a la cantidad de memoria RAM que se utilizará para calcular el hash
-                time_cost: 4 # coste de tiempo que se refiere a la cantidad de iteraciones que se realizarán para calcular el hash
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
-    providers:
-        # used to reload user from session & other features (e.g. switch_user)
-        app_user_provider:
-            entity:
-                class: App\Entity\User
-                property: usuario
-    firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-        main:
-            lazy: true
-            provider: app_user_provider
-            form_login:
-                login_path: app_login
-                check_path: app_login
-                enable_csrf: true
-                success_handler: App\Security\LoginSuccessHandler  # 👈 CLAVE
+    password_hashers: # Configuración de cómo Symfony cifra (hashea) las contraseñas
+        App\Entity\User: # definimos la entidad User que implementa UserInterface para el cifrado de contraseñas
+            algorithm: argon2id # algoritmo de hash Argon2id (seguro contra ataques GPU y side-channel)
+            memory_cost: 65536 # cantidad de memoria RAM (en KB) usada durante el cálculo del hash
+            time_cost: 4 # número de iteraciones internas del algoritmo (más = más seguro y más lento)
 
-            logout:
-                path: app_logout
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
+        # Define un hasher automático para cualquier clase que implemente PasswordAuthenticatedUserInterface
+        # Symfony elegirá el algoritmo más adecuado según la versión y configuración
+
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
+    providers: # Define de dónde se cargan los usuarios (BD, LDAP, API, etc.)
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider: # Nombre del provider personalizado
+            entity: # Indica que los usuarios se obtienen desde Doctrine (base de datos)
+                class: App\Entity\User # Entidad que representa a los usuarios del sistema
+                property: usuario # Campo usado para identificar al usuario (username / email / login)
+
+    firewalls: # Define zonas de seguridad (qué rutas usan qué reglas de autenticación)
+        dev: # Firewall para entorno de desarrollo
+            pattern: ^/(_(profiler|wdt)|css|images|js)/ # Rutas excluidas de seguridad
+            security: false # Desactiva autenticación para profiler, assets y debug toolbar
+
+        main: # Firewall principal del sistema
+            lazy: true # Inicializa la seguridad solo cuando se necesita (mejora rendimiento)
+            provider: app_user_provider # Usa el provider definido arriba
+            user_checker: App\Security\UserChecker
+            # viene desde src/Security/UserChecker.php
+            # Se ejecuta ANTES y DESPUÉS del login para validar estado del usuario
+            # Aquí bloqueas usuarios inactivos
+
+            form_login: # Autenticación mediante formulario
+                login_path: app_login # Ruta que muestra el formulario de login
+                check_path: app_login # Ruta que procesa el submit del login
+                enable_csrf: true # Activa protección CSRF en el formulario
+                success_handler: App\Security\LoginSuccessHandler # 👈 CLAVE
+                # Clase que decide a dónde redirigir al usuario tras login exitoso
+                # Se ejecuta DESPUÉS de autenticarse correctamente
+
+            logout: # Configuración de cierre de sesión
+                path: app_logout # Ruta que invalida la sesión y desloguea al usuario
                 # where to redirect after logout
-                # target: app_any_route
+                # target: app_any_route # Ruta opcional de redirección tras logout
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            # switch_user: true # Permite suplantación de usuario (impersonation), actualmente desactivado
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
-    access_control:
+    access_control: # Reglas de autorización basadas en rutas y roles
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/pta, roles: IS_AUTHENTICATED_FULLY }
-        
-        
-
 
 when@test:
     security:
         password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
-            App\Entity\Usuario:
-                algorithm: argon2id
-                memory_cost: 65536
-                time_cost: 4
-                threads: 2
-            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+            # By default, password hashers are resource intensive and take time.
+            # This is important to generate secure password hashes.
+            # In tests however, secure hashes are not important,
+            # waste resources and increase test times.
+            # The following reduces the work factor to the lowest possible values.
+
+            App\Entity\User: # Entidad de usuario usada en pruebas
+                algorithm: argon2id # Algoritmo usado también en test
+                memory_cost: 65536 # Coste de memoria (igual que prod aquí)
+                time_cost: 4 # Coste de tiempo reducido para acelerar tests
+                threads: 2 # Número de hilos usados por Argon2 (optimiza pruebas)
+
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
+            # Hasher automático también activo en entorno de pruebas

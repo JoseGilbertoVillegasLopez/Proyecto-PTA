@@ -1,0 +1,8 @@
+{# templates/pta/encabezado/new_admin.html.twig #}
+
+<turbo-frame id="content">
+	{% include 'pta/encabezado/_new_content.html.twig' with {
+        usar_turbo: true,
+        volver_path: path('app_encabezado_index')
+    } %}
+</turbo-frame>

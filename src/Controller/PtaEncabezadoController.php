@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
 
     #[Route('/pta/encabezado')]
-    final class AdminEncabezadoController extends AbstractController
+    final class PtaEncabezadoController extends AbstractController
     {
         
 
@@ -144,32 +144,27 @@ if ($access['filters']['puesto']) {
     }
 }
 
+$isAdmin = in_array('ROLE_ADMIN', $usuario->getRoles(), true);
 
-    /* =====================================================
-     * 9. SELECCIÓN DE VISTA
-     * ===================================================== */
-    $isAdminUi = in_array('ROLE_ADMIN', $usuario->getRoles(), true);
-
-    $view = $isAdminUi
-        ? 'admin/encabezado/index.html.twig'
-        : 'pta/encabezado/index.html.twig';
+$view = $isAdmin
+    ? 'pta/encabezado/index.html.twig'        // UI ADMIN (Turbo)
+    : 'pta/encabezado/indexGeneral.html.twig'; // UI GENERAL
 
     /* =====================================================
      * 10. RENDER
      * ===================================================== */
     return $this->render($view, [
-        'encabezados'      => $encabezados,
-        'anioSeleccionado' => $anioEjecucion,
-        'access'           => $access,
+    'encabezados'      => $encabezados,
+    'anioSeleccionado' => $anioEjecucion,
+    'access'           => $access,
+    'departamentosFiltro' => $departamentosFiltro,
+    'puestosFiltro'       => $puestosFiltro,
+    'filtrosActivos' => [
+        'departamento' => $request->query->get('departamento'),
+        'puesto'       => $request->query->get('puesto'),
+    ],
+]);
 
-        // 👇 filtros reales para la vista
-        'departamentosFiltro' => $departamentosFiltro,
-        'puestosFiltro'       => $puestosFiltro,
-        'filtrosActivos' => [
-            'departamento' => $request->query->get('departamento'),
-            'puesto'       => $request->query->get('puesto'),
-        ],
-    ]);
 }
 
 
@@ -366,10 +361,11 @@ if ($access['filters']['puesto']) {
                  * - Se regresa al index con todos los PTAs
                  * =====================================================
                  */
-                return $this->render('admin/encabezado/index.html.twig', [
-                    'encabezados' => $encabezados,
-                    'anioSeleccionado' => $anioEjecucion,
-                ]);
+                return $this->redirectToRoute(
+                    'app_encabezado_index',
+                ['anio' => $anioEjecucion]
+                );
+
             }
 
             /**
@@ -377,7 +373,7 @@ if ($access['filters']['puesto']) {
              * RENDER DE LA VISTA NEW (GET o FORM INVÁLIDO)
              * =========================================================
              */
-            return $this->render('admin/encabezado/new.html.twig', [
+            return $this->render('pta/encabezado/new.html.twig', [
                 'encabezado' => $encabezado,
                 'form' => $form,
             ]);
@@ -387,7 +383,7 @@ if ($access['filters']['puesto']) {
     #[Route('/{id}', name: 'app_encabezado_show', methods: ['GET'])]
     public function show(Encabezado $encabezado): Response
     {
-        return $this->render('admin/encabezado/show.html.twig', [
+        return $this->render('pta/encabezado/show.html.twig', [
             'encabezado' => $encabezado,
         ]);
     }
@@ -459,7 +455,8 @@ if ($access['filters']['puesto']) {
                     $request->request->get('_token')
                 )
             ) {
-                throw $this->createAccessDeniedException('Token CSRF inválido');
+                return $this->redirectToRoute('app_encabezado_index');
+
             }
 
             /**
@@ -536,10 +533,10 @@ if ($access['filters']['puesto']) {
              * manteniendo el año seleccionado.
              * (No se usa redirect por diseño del flujo)
              */
-            return $this->render('admin/encabezado/index.html.twig', [
-                'encabezados'      => $encabezados,
-                'anioSeleccionado' => $anioEjecucion,
-            ]);
+            return $this->redirectToRoute(
+        'app_encabezado_index',
+    ['anio' => $anioEjecucion]
+            );
         }
 
 
@@ -548,12 +545,12 @@ if ($access['filters']['puesto']) {
                 $encabezado->setResponsables(new \App\Entity\Responsables());
             }
 
-            return $this->render('admin/encabezado/edit.html.twig', [
+            return $this->render('pta/encabezado/edit.html.twig', [
                 'encabezado' => $encabezado,
             ]);
     }
 
-    #[Route('/{id}', name: 'app_encabezado_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_encabezado_delete', methods: ['POST'])]
     public function delete(Request $request, Encabezado $encabezado, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$encabezado->getId(), $request->getPayload()->getString('_token'))) {
@@ -786,7 +783,7 @@ if ($access['filters']['puesto']) {
         /**
          * Render de la vista de gráficas
          */
-        return $this->render('admin/encabezado/graficas.html.twig', [
+        return $this->render('pta/encabezado/graficas.html.twig', [
             'encabezado' => $encabezado,
             'graficas'   => $graficas,
         ]);
