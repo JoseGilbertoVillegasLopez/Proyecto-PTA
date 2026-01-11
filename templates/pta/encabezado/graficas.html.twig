@@ -1,0 +1,5 @@
+{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+	{% include 'pta/encabezado/graficas_admin.html.twig' %}
+{% else %}
+	{% include 'pta/encabezado/graficas_general.html.twig' %}
+{% endif %}

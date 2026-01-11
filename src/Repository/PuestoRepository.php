@@ -57,7 +57,14 @@ class PuestoRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-    //
-    // Método de ejemplo para obtener un solo resultado
-    // Devuelve null si no se encuentra ningún registro
+    public function findByDepartamentoIds(array $departamentoIds): array
+{
+    return $this->createQueryBuilder('p')
+        ->andWhere('p.departamento IN (:departamentos)')
+        ->setParameter('departamentos', $departamentoIds)
+        ->orderBy('p.nombre', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
 }

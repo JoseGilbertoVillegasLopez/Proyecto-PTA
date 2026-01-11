@@ -18,35 +18,36 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     ) {}
 
     public function onAuthenticationSuccess(
-        Request $request,
-        TokenInterface $token
-    ): RedirectResponse {
-        /** @var User $user */
-        $user = $this->tokenStorage->getToken()->getUser();
+    Request $request,
+    TokenInterface $token
+): RedirectResponse {
+    /** @var User $user */
+    $user = $this->tokenStorage->getToken()->getUser();
 
-        // 🔴 Seguridad extra
-        if (!$user instanceof User) {
-            return new RedirectResponse(
-                $this->router->generate('app_login')
-            );
-        }
+    // Seguridad extra
+    if (!$user instanceof User) {
+        return new RedirectResponse(
+            $this->router->generate('app_login')
+        );
+    }
 
-        // 🔴 PRIMER LOGIN → cambiar contraseña
-        if ($user->isCambiarPassword()) {
-            return new RedirectResponse(
-                $this->router->generate('app_cambiar_password')
-            );
-        }
+    // PRIMER LOGIN → cambiar contraseña
+    if ($user->isCambiarPassword()) {
+        return new RedirectResponse(
+            $this->router->generate('app_cambiar_password')
+        );
+    }
 
-        // 🟢 DASHBOARD SEGÚN ROL
-        if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
-            return new RedirectResponse(
-                $this->router->generate('app_admin_dashboard')
-            );
-        }
-
+    // ADMIN → dashboard admin
+    if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
         return new RedirectResponse(
             $this->router->generate('app_admin_dashboard')
         );
     }
+
+    // 👉 TODOS LOS DEMÁS → PTA
+    return new RedirectResponse(
+        $this->router->generate('app_encabezado_index')
+    );
+}
 }

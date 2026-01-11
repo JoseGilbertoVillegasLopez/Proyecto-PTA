@@ -1,0 +1,15 @@
+/* =========================================================
+   PTA — LAYOUT GENERAL (NO ADMIN)
+   ========================================================= */
+
+.pta-general-layout {
+    min-height: 100vh;
+    background: #1e242b;
+    color: #ffffff;
+}
+
+.pta-general-main {
+    padding: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+}

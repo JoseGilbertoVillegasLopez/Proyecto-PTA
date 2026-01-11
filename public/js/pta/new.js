@@ -24,17 +24,54 @@
  *  - Este JS vive dentro de un dashboard
  *  - Por eso se ejecuta solo cuando el frame correcto se carga
  */
-document.addEventListener("turbo:frame-load", (event) => {
 
-    // Referencia al frame que acaba de cargarse
-    const frame = event.target;
-
-    // Seguridad: solo ejecutar si es el frame principal del contenido
-    if (frame.id !== "content") return;
-    
-    const ptaForm = frame.querySelector('form[data-pta-form="pta-new"]');
+/**
+ * =====================================================
+ * BOOTSTRAP UNIVERSAL PTA NEW
+ * -----------------------------------------------------
+ * Permite que el mismo JS funcione:
+ *  - Dentro de Turbo (admin)
+ *  - En carga normal (no-admin)
+ * =====================================================
+ */
+function bootPtaNew(context) {
+    const ptaForm = context.querySelector('form[data-pta-form="pta-new"]');
     if (!ptaForm) return;
-    initPtaNew(frame, ptaForm);
+
+    // 🛑 PROTECCIÓN: evitar doble inicialización
+    if (ptaForm.dataset.ptaInitialized === "true") return;
+
+    ptaForm.dataset.ptaInitialized = "true";
+
+    initPtaNew(context, ptaForm);
+}
+
+
+/**
+ * =====================================================
+ * EVENTOS UNIVERSALES
+ * -----------------------------------------------------
+ * - Admin: turbo:frame-load (frame #content)
+ * - No-admin con Turbo Drive: turbo:load
+ * - No-admin sin Turbo: DOMContentLoaded
+ * =====================================================
+ */
+
+// ✅ Admin (dashboard): cuando se carga el frame content
+document.addEventListener("turbo:frame-load", (event) => {
+    const frame = event.target;
+    if (!frame || frame.id !== "content") return;
+    bootPtaNew(frame);
+});
+
+// ✅ No-admin con Turbo Drive (navegación sin recargar página)
+document.addEventListener("turbo:load", () => {
+    bootPtaNew(document);
+});
+
+// ✅ Fallback (si algún día Turbo no está activo)
+document.addEventListener("DOMContentLoaded", () => {
+    bootPtaNew(document);
 });
 
 

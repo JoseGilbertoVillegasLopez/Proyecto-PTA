@@ -1,20 +1,17 @@
 security: # Sección principal de configuración de seguridad de Symfony
-
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers: # Configuración de cómo Symfony cifra (hashea) las contraseñas
-
         App\Entity\User: # definimos la entidad User que implementa UserInterface para el cifrado de contraseñas
             algorithm: argon2id # algoritmo de hash Argon2id (seguro contra ataques GPU y side-channel)
             memory_cost: 65536 # cantidad de memoria RAM (en KB) usada durante el cálculo del hash
             time_cost: 4 # número de iteraciones internas del algoritmo (más = más seguro y más lento)
 
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
         # Define un hasher automático para cualquier clase que implemente PasswordAuthenticatedUserInterface
         # Symfony elegirá el algoritmo más adecuado según la versión y configuración
 
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers: # Define de dónde se cargan los usuarios (BD, LDAP, API, etc.)
-
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider: # Nombre del provider personalizado
             entity: # Indica que los usuarios se obtienen desde Doctrine (base de datos)
@@ -22,7 +19,6 @@ security: # Sección principal de configuración de seguridad de Symfony
                 property: usuario # Campo usado para identificar al usuario (username / email / login)
 
     firewalls: # Define zonas de seguridad (qué rutas usan qué reglas de autenticación)
-
         dev: # Firewall para entorno de desarrollo
             pattern: ^/(_(profiler|wdt)|css|images|js)/ # Rutas excluidas de seguridad
             security: false # Desactiva autenticación para profiler, assets y debug toolbar
@@ -30,7 +26,7 @@ security: # Sección principal de configuración de seguridad de Symfony
         main: # Firewall principal del sistema
             lazy: true # Inicializa la seguridad solo cuando se necesita (mejora rendimiento)
             provider: app_user_provider # Usa el provider definido arriba
-            user_checker: App\Security\UserChecker 
+            user_checker: App\Security\UserChecker
             # viene desde src/Security/UserChecker.php
             # Se ejecuta ANTES y DESPUÉS del login para validar estado del usuario
             # Aquí bloqueas usuarios inactivos
@@ -39,7 +35,7 @@ security: # Sección principal de configuración de seguridad de Symfony
                 login_path: app_login # Ruta que muestra el formulario de login
                 check_path: app_login # Ruta que procesa el submit del login
                 enable_csrf: true # Activa protección CSRF en el formulario
-                success_handler: App\Security\LoginSuccessHandler  # 👈 CLAVE
+                success_handler: App\Security\LoginSuccessHandler # 👈 CLAVE
                 # Clase que decide a dónde redirigir al usuario tras login exitoso
                 # Se ejecuta DESPUÉS de autenticarse correctamente
 
@@ -57,25 +53,10 @@ security: # Sección principal de configuración de seguridad de Symfony
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control: # Reglas de autorización basadas en rutas y roles
-
         - { path: ^/admin, roles: ROLE_ADMIN }
-        # Cualquier ruta que empiece con /admin requiere ROLE_ADMIN
+        - { path: ^/pta, roles: IS_AUTHENTICATED_FULLY }
 
-        - { path: ^/usuarioNvl0, roles: ROLE_USER }
-        # Rutas de nivel usuario básico
-
-        - { path: ^/usuarioNvl1, roles: ROLE_SUBDIRECCION }
-        # Rutas accesibles solo por subdirección
-
-        - { path: ^/usuarioNvl2, roles: ROLE_DIRECCION }
-        # Rutas accesibles solo por dirección
-
-        - { path: ^/usuarioNvl3, roles: ROLE_DIRECCION_GENERAL }
-        # Rutas exclusivas de dirección general
-
-
-when@test: # Configuración que SOLO se aplica cuando el entorno es "test"
-
+when@test:
     security:
         password_hashers:
             # By default, password hashers are resource intensive and take time.
@@ -84,11 +65,11 @@ when@test: # Configuración que SOLO se aplica cuando el entorno es "test"
             # waste resources and increase test times.
             # The following reduces the work factor to the lowest possible values.
 
-            App\Entity\Usuario: # Entidad de usuario usada en pruebas
+            App\Entity\User: # Entidad de usuario usada en pruebas
                 algorithm: argon2id # Algoritmo usado también en test
                 memory_cost: 65536 # Coste de memoria (igual que prod aquí)
                 time_cost: 4 # Coste de tiempo reducido para acelerar tests
                 threads: 2 # Número de hilos usados por Argon2 (optimiza pruebas)
 
-            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
             # Hasher automático también activo en entorno de pruebas

@@ -1,0 +1,13 @@
+{# templates/pta/encabezado/show_general.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/pta/show.css') }}">
+{% endblock %}
+
+{% block body %}
+	<div class="container py-4">
+		{% include 'pta/encabezado/_show_content.html.twig' %}
+	</div>
+{% endblock %}

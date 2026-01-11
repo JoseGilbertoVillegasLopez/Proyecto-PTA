@@ -6,7 +6,6 @@
    data-pta-view="graficas"
    ===================================================== */
 
-
 /* =====================================================
    GRÁFICA (CANVAS)
    ===================================================== */
@@ -21,7 +20,15 @@
     width: 100%;
     height: 300px;
 }
+/* =====================================================
+   CONTENEDOR DE LA GRÁFICA (CRÍTICO)
+   ===================================================== */
 
+.pta-card__body {
+    position: relative;
+    width: 100%;
+    height: 320px; /* 👈 CLAVE */
+}
 
 /* =====================================================
    HEADER DEL INDICADOR
@@ -56,7 +63,6 @@
     align-items: center;
 }
 
-
 /* =====================================================
    ESTADÍSTICAS DEL INDICADOR
    ===================================================== */
@@ -78,7 +84,6 @@
     font-size: 1.1rem;
     font-weight: 600;
 }
-
 
 /* =====================================================
    PTA — RESUMEN DE ACCIONES
@@ -102,13 +107,12 @@
 .pta-module[data-pta-view="graficas"] .pta-action-card {
     background: linear-gradient(
         180deg,
-        rgba(255,255,255,0.05),
-        rgba(255,255,255,0.02)
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.02)
     );
     border-radius: 14px;
     padding: 1rem 1.25rem;
-    box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,0.06);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 /* Header de la acción (nombre + porcentaje) */
@@ -131,7 +135,7 @@
 .pta-module[data-pta-view="graficas"] .pta-action-bar {
     margin: 0.6rem 0 0.4rem;
     height: 8px;
-    background: rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.12);
     border-radius: 6px;
     overflow: hidden;
 }
@@ -139,12 +143,8 @@
 /* Relleno de la barra de progreso */
 .pta-module[data-pta-view="graficas"] .pta-action-bar-fill {
     height: 100%;
-    background: linear-gradient(
-        90deg,
-        #198754,
-        #20c997
-    );
-    box-shadow: 0 0 6px rgba(32,201,151,0.6);
+    background: linear-gradient(90deg, #198754, #20c997);
+    box-shadow: 0 0 6px rgba(32, 201, 151, 0.6);
 }
 
 /* Contenedor de meses y valores */
@@ -158,10 +158,10 @@
 
 /* Píldora individual de mes */
 .pta-module[data-pta-view="graficas"] .pta-action-months span {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
     padding: 0.35rem 0.65rem;
     border-radius: 8px;
     font-weight: 500;
     line-height: 1.2;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
