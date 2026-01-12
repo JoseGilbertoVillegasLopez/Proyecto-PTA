@@ -29,9 +29,14 @@ class CambiarPasswordController extends AbstractController
             $password1 = $request->request->get('password');
             $password2 = $request->request->get('password_confirm');
 
-            if ($password1 !== $password2) {
-                $this->addFlash('error', 'Las contraseñas no coinciden.');
-            } else {
+        if ($password1 !== $password2) {
+            $this->addFlash(
+                'error',
+                'Las contraseñas no coinciden. Por favor, verifica que ambas sean iguales'
+            );
+
+            return $this->redirectToRoute('app_cambiar_password');
+        } else {
                 $user->setPassword(
                     $passwordHasher->hashPassword($user, $password1)
                 );
@@ -39,7 +44,14 @@ class CambiarPasswordController extends AbstractController
 
                 $em->flush();
 
+                // ADMIN → dashboard
+                if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+                    return $this->redirectToRoute('app_admin_dashboard');
+                }
+
+                // TODOS LOS DEMÁS → PTA
                 return $this->redirectToRoute('app_encabezado_index');
+
             }
         }
 
