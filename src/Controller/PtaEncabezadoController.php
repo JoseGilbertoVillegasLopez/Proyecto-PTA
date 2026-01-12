@@ -24,13 +24,12 @@ use App\Entity\User;
 public function index(
     Request $request,
     EncabezadoRepository $encabezadoRepository,
-    DepartamentoRepository $departamentoRepository,
     PuestoRepository $puestoRepository,
     \App\Service\Pta\PtaAccessResolver $ptaAccessResolver
 ): Response {
 
     /* =====================================================
-     * 1. FILTRO COMÚN: AÑO DE EJECUCIÓN
+     * 1. AÑO ACTUAL (DEFAULT)
      * ===================================================== */
     $anioActual    = (int) date('Y');
     $anioEjecucion = $request->query->getInt('anio', $anioActual);
@@ -39,135 +38,87 @@ public function index(
      * 2. USUARIO + ACCESO
      * ===================================================== */
     /** @var \App\Entity\User $usuario */
-    $usuario = $this->getUser();
+    $usuario  = $this->getUser();
     $personal = $usuario->getPersonal();
 
     $access = $ptaAccessResolver->resolve($usuario);
 
     /* =====================================================
-     * 3. QUERY BASE
+     * 3. FILTROS REQUEST
      * ===================================================== */
-    $qb = $encabezadoRepository->createQueryBuilder('e')
-        ->andWhere('e.anioEjecucion = :anio')
-        ->setParameter('anio', $anioEjecucion)
-        ->orderBy('e.fechaCreacion', 'DESC');
+    $filters = [
+        'anio'         => $anioEjecucion,
+        'puesto'       => $request->query->get('puesto'),
+        'departamento' => $request->query->get('departamento'),
+        'personal_id'  => $personal?->getId(),
+    ];
 
     /* =====================================================
-     * 4. JOIN BASE (SI NO ES PROPIO)
+     * 4. PTA VISIBLES
      * ===================================================== */
-    if ($access['scope'] !== 'PROPIO') {
-        $qb->join('e.responsable', 'p');
-    }
+    $encabezados = $encabezadoRepository->findVisiblePta($access, $filters);
 
     /* =====================================================
-     * 5. ALCANCE MÁXIMO
+     * 5. FILTROS DISPONIBLES
      * ===================================================== */
 
-    if ($access['scope'] === 'PROPIO') {
-        $qb->andWhere('e.responsable = :personal')
-           ->setParameter('personal', $personal);
-    }
-
-    if ($access['scope'] === 'DEPARTAMENTAL') {
-        $qb->andWhere('p.departamento = :departamentoBase')
-           ->setParameter('departamentoBase', $personal->getDepartamento()->getId());
-    }
-
-    if ($access['scope'] === 'MULTI_DEPARTAMENTAL') {
-        $qb->andWhere('p.departamento IN (:departamentos)')
-           ->setParameter('departamentos', $access['departamentos']);
-    }
-
-    // GLOBAL → sin restricción
-
-    /* =====================================================
-     * 6. FILTROS REDUCTIVOS
-     * ===================================================== */
-
-    if (
-        $access['filters']['departamento'] &&
-        $request->query->get('departamento')
-    ) {
-        $qb->andWhere('p.departamento = :departamentoFiltro')
-           ->setParameter(
-               'departamentoFiltro',
-               (int) $request->query->get('departamento')
-           );
-    }
-
-    if (
-        $access['filters']['puesto'] &&
-        $request->query->get('puesto')
-    ) {
-        $qb->andWhere('p.puesto = :puestoFiltro')
-           ->setParameter(
-               'puestoFiltro',
-               (int) $request->query->get('puesto')
-           );
-    }
-
-    /* =====================================================
-     * 7. EJECUTAR QUERY
-     * ===================================================== */
-    $encabezados = $qb->getQuery()->getResult();
-
-    /* =====================================================
-     * 8. CONSTRUIR FILTROS PARA LA VISTA
-     * ===================================================== */
-
-    // ---------- DEPARTAMENTOS ----------
-    $departamentosFiltro = [];
-
-    if ($access['filters']['departamento']) {
-
-        if ($access['scope'] === 'GLOBAL') {
-            $departamentos = $departamentoRepository->findAll();
-        } else {
-            $departamentos = $departamentoRepository->findBy([
-                'id' => $access['departamentos']
-            ]);
-        }
-
-        foreach ($departamentos as $departamento) {
-            $departamentosFiltro[$departamento->getId()] = $departamento->getNombre();
-        }
-    }
+    // ---------- AÑOS ----------
+    $aniosFiltro = $encabezadoRepository->findAniosDisponibles(
+        $access,
+        $personal?->getId() ?? 0
+    );
 
     // ---------- PUESTOS ----------
     $puestosFiltro = [];
+    if ($access['filters']['puesto']) {
 
-if ($access['filters']['puesto']) {
-    $puestos = $puestoRepository->findAll();
+        $puestos = $access['scope'] === 'GLOBAL'
+            ? $puestoRepository->findBy(['activo' => true], ['nombre' => 'ASC'])
+            : $puestoRepository->findBy(['id' => $access['puestos_visibles']], ['nombre' => 'ASC']);
 
-    foreach ($puestos as $puesto) {
-        $puestosFiltro[$puesto->getId()] = $puesto->getNombre();
+        foreach ($puestos as $p) {
+            $puestosFiltro[$p->getId()] = $p->getNombre();
+        }
     }
-}
 
-$isAdmin = in_array('ROLE_ADMIN', $usuario->getRoles(), true);
+    // ---------- DEPARTAMENTOS ----------
+    $departamentosFiltro = [];
+    if ($access['filters']['departamento']) {
 
-$view = $isAdmin
-    ? 'pta/encabezado/index.html.twig'        // UI ADMIN (Turbo)
-    : 'pta/encabezado/indexGeneral.html.twig'; // UI GENERAL
+        $departamentos = $access['scope'] === 'GLOBAL'
+            ? $puestoRepository->findBy(['activo' => true], ['nombre' => 'ASC'])
+            : $puestoRepository->findBy(['id' => $access['departamentos_visibles']], ['nombre' => 'ASC']);
+
+        foreach ($departamentos as $d) {
+            if ($d->getSubordinados()->count() > 0) {
+                $departamentosFiltro[$d->getId()] = $d->getNombre();
+            }
+        }
+    }
 
     /* =====================================================
-     * 10. RENDER
+     * 6. VISTA
+     * ===================================================== */
+    $view = in_array('ROLE_ADMIN', $usuario->getRoles(), true)
+        ? 'pta/encabezado/index.html.twig'
+        : 'pta/encabezado/indexGeneral.html.twig';
+
+    /* =====================================================
+     * 7. RENDER
      * ===================================================== */
     return $this->render($view, [
-    'encabezados'      => $encabezados,
-    'anioSeleccionado' => $anioEjecucion,
-    'access'           => $access,
-    'departamentosFiltro' => $departamentosFiltro,
-    'puestosFiltro'       => $puestosFiltro,
-    'filtrosActivos' => [
-        'departamento' => $request->query->get('departamento'),
-        'puesto'       => $request->query->get('puesto'),
-    ],
-]);
-
+        'encabezados'         => $encabezados,
+        'anioSeleccionado'    => $anioEjecucion,
+        'aniosFiltro'         => $aniosFiltro,
+        'access'              => $access,
+        'puestosFiltro'       => $puestosFiltro,
+        'departamentosFiltro' => $departamentosFiltro,
+        'filtrosActivos' => [
+            'puesto'       => $filters['puesto'],
+            'departamento' => $filters['departamento'],
+        ],
+    ]);
 }
-
-
 
 
 
@@ -380,175 +331,207 @@ $view = $isAdmin
         }
 
 
+
+
     #[Route('/{id}', name: 'app_encabezado_show', methods: ['GET'])]
-    public function show(Encabezado $encabezado): Response
-    {
-        return $this->render('pta/encabezado/show.html.twig', [
-            'encabezado' => $encabezado,
-        ]);
-    }
+public function show(
+    Request $request,
+    Encabezado $encabezado
+): Response
+{
+    return $this->render('pta/encabezado/show.html.twig', [
+        'encabezado' => $encabezado,
+
+        // 👇 preservar filtros actuales
+        'filtros' => [
+            'anio'         => $request->query->get('anio'),
+            'departamento' => $request->query->get('departamento'),
+            'puesto'       => $request->query->get('puesto'),
+        ],
+    ]);
+}
 
 
 
     #[Route('/{id}/edit', name: 'app_encabezado_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        Request $request,
-        Encabezado $encabezado,
-        EntityManagerInterface $entityManager,
-        EncabezadoRepository $encabezadoRepository
-    ): Response
-    {
+public function edit(
+    Request $request,
+    Encabezado $encabezado,
+    EntityManagerInterface $entityManager,
+    EncabezadoRepository $encabezadoRepository
+): Response
+{
+    /**
+     * =====================================================
+     * BLOQUE POST
+     * =====================================================
+     * Este bloque se ejecuta únicamente cuando el usuario
+     * envía el formulario de captura de avance mensual.
+     *
+     * Responsabilidad:
+     *  - Validar CSRF
+     *  - Leer valores enviados por acción y mes
+     *  - Normalizar valores vacíos
+     *  - Guardar el avance (JSON) en cada acción
+     *  - Retornar al index manteniendo el año seleccionado
+     * =====================================================
+     */
+    if ($request->isMethod('POST')) {
+
         /**
-         * =====================================================
-         * BLOQUE POST
-         * =====================================================
-         * Este bloque se ejecuta únicamente cuando el usuario
-         * envía el formulario de captura de avance mensual.
-         *
-         * Responsabilidad:
-         *  - Validar CSRF
-         *  - Leer valores enviados por acción y mes
-         *  - Normalizar valores vacíos
-         *  - Guardar el avance (JSON) en cada acción
-         *  - Retornar al index manteniendo el año seleccionado
-         * =====================================================
+         * -------------------------------------------------
+         * 1. Determinar el año de ejecución
+         * -------------------------------------------------
+         * - Se usa el año actual como valor por defecto
+         * - Si viene un año por query (?anio=XXXX),
+         *   se respeta para mantener el contexto
          */
-        if ($request->isMethod('POST')) {
+        $anioActual = (int) date('Y');
+        $anioEjecucion = $request->query->getInt('anio', $anioActual);
 
-            /**
-             * -------------------------------------------------
-             * 1. Determinar el año de ejecución
-             * -------------------------------------------------
-             * - Se usa el año actual como valor por defecto
-             * - Si viene un año por query (?anio=XXXX),
-             *   se respeta para mantener el contexto
-             */
-            $anioActual = (int) date('Y');
+        /**
+         * -------------------------------------------------
+         * (EXTRA) Preservar filtros actuales
+         * -------------------------------------------------
+         * Estos valores viajan por querystring para que
+         * al volver al index NO se reseteen los filtros.
+         */
+        $departamentoSeleccionado = $request->query->get('departamento');
+        $puestoSeleccionado       = $request->query->get('puesto');
 
-            $anioEjecucion = $request->query->getInt('anio', $anioActual);
+        /**
+         * -------------------------------------------------
+         * 2. Obtener encabezados del año seleccionado
+         * -------------------------------------------------
+         * Estos datos NO afectan la edición.
+         * Se usan únicamente para renderizar correctamente
+         * la vista index después de guardar el avance.
+         */
+        $encabezados = $encabezadoRepository->createQueryBuilder('e')
+            ->andWhere('e.anioEjecucion = :anio')
+            ->setParameter('anio', $anioEjecucion)
+            ->orderBy('e.fechaCreacion', 'DESC')
+            ->getQuery()
+            ->getResult();
 
-            /**
-             * -------------------------------------------------
-             * 2. Obtener encabezados del año seleccionado
-             * -------------------------------------------------
-             * Estos datos NO afectan la edición.
-             * Se usan únicamente para renderizar correctamente
-             * la vista index después de guardar el avance.
-             */
-            $encabezados = $encabezadoRepository->createQueryBuilder('e')
-                ->andWhere('e.anioEjecucion = :anio')
-                ->setParameter('anio', $anioEjecucion)
-                ->orderBy('e.fechaCreacion', 'DESC')
-                ->getQuery()
-                ->getResult();
-
-            /**
-             * -------------------------------------------------
-             * 3. Validación de token CSRF
-             * -------------------------------------------------
-             * Protege el formulario contra ataques CSRF.
-             * El token está ligado al ID del encabezado.
-             */
-            if (
-                !$this->isCsrfTokenValid(
-                    'edit' . $encabezado->getId(),
-                    $request->request->get('_token')
-                )
-            ) {
-                return $this->redirectToRoute('app_encabezado_index');
-
-            }
-
-            /**
-             * -------------------------------------------------
-             * 4. Obtener valores enviados del formulario
-             * -------------------------------------------------
-             * Estructura esperada:
-             * [
-             *   accion_id => [
-             *     'Enero' => valor,
-             *     'Febrero' => valor,
-             *     ...
-             *   ]
-             * ]
-             */
-            $valoresAlcanzados = $request->request->all('valor_alcanzado');
-
-            /**
-             * -------------------------------------------------
-             * 5. Recorrer acciones del encabezado
-             * -------------------------------------------------
-             * Solo se procesan acciones que pertenecen
-             * al encabezado actual.
-             */
-            foreach ($encabezado->getAcciones() as $accion) {
-
-                $accionId = $accion->getId();
-
-                // Si la acción no viene en el POST, se omite
-                if (!isset($valoresAlcanzados[$accionId])) {
-                    continue;
-                }
-
-                $meses = $valoresAlcanzados[$accionId];
-
-                /**
-                 * -------------------------------------------------
-                 * 6. Normalización de valores
-                 * -------------------------------------------------
-                 * Convierte strings vacíos ("") a null para:
-                 *  - Diferenciar entre "sin captura" y "valor 0"
-                 *  - Evitar datos inconsistentes en el JSON
-                 */
-                foreach ($meses as $mes => $valor) {
-                    if ($valor === '') {
-                        $meses[$mes] = null;
-                    }
-                }
-
-                /**
-                 * -------------------------------------------------
-                 * 7. Guardar avance mensual en la acción
-                 * -------------------------------------------------
-                 * El avance se guarda como JSON asociado
-                 * directamente a la acción.
-                 */
-                $accion->setValorAlcanzado($meses);
-            }
-
-            /**
-             * -------------------------------------------------
-             * 8. Persistir cambios en base de datos
-             * -------------------------------------------------
-             * No se usa persist() porque las acciones ya
-             * están administradas por Doctrine.
-             */
-            $entityManager->flush();
-
-            /**
-             * -------------------------------------------------
-             * 9. Retornar a la vista index
-             * -------------------------------------------------
-             * Se renderiza directamente la vista index
-             * manteniendo el año seleccionado.
-             * (No se usa redirect por diseño del flujo)
-             */
-            return $this->redirectToRoute(
-        'app_encabezado_index',
-    ['anio' => $anioEjecucion]
-            );
+        /**
+         * -------------------------------------------------
+         * 3. Validación de token CSRF
+         * -------------------------------------------------
+         * Protege el formulario contra ataques CSRF.
+         * El token está ligado al ID del encabezado.
+         */
+        if (
+            !$this->isCsrfTokenValid(
+                'edit' . $encabezado->getId(),
+                $request->request->get('_token')
+            )
+        ) {
+            // ⬅️ IMPORTANTE: volver al index preservando filtros
+            return $this->redirectToRoute('app_encabezado_index', [
+                'anio'         => $anioEjecucion,
+                'departamento' => $departamentoSeleccionado,
+                'puesto'       => $puestoSeleccionado,
+            ]);
         }
 
+        /**
+         * -------------------------------------------------
+         * 4. Obtener valores enviados del formulario
+         * -------------------------------------------------
+         * Estructura esperada:
+         * [
+         *   accion_id => [
+         *     'Enero' => valor,
+         *     'Febrero' => valor,
+         *     ...
+         *   ]
+         * ]
+         */
+        $valoresAlcanzados = $request->request->all('valor_alcanzado');
 
+        /**
+         * -------------------------------------------------
+         * 5. Recorrer acciones del encabezado
+         * -------------------------------------------------
+         * Solo se procesan acciones que pertenecen
+         * al encabezado actual.
+         */
+        foreach ($encabezado->getAcciones() as $accion) {
 
-            if ($encabezado->getResponsables() === null) {
-                $encabezado->setResponsables(new \App\Entity\Responsables());
+            $accionId = $accion->getId();
+
+            // Si la acción no viene en el POST, se omite
+            if (!isset($valoresAlcanzados[$accionId])) {
+                continue;
             }
 
-            return $this->render('pta/encabezado/edit.html.twig', [
-                'encabezado' => $encabezado,
-            ]);
+            $meses = $valoresAlcanzados[$accionId];
+
+            /**
+             * -------------------------------------------------
+             * 6. Normalización de valores
+             * -------------------------------------------------
+             * Convierte strings vacíos ("") a null para:
+             *  - Diferenciar entre "sin captura" y "valor 0"
+             *  - Evitar datos inconsistentes en el JSON
+             */
+            foreach ($meses as $mes => $valor) {
+                if ($valor === '') {
+                    $meses[$mes] = null;
+                }
+            }
+
+            /**
+             * -------------------------------------------------
+             * 7. Guardar avance mensual en la acción
+             * -------------------------------------------------
+             * El avance se guarda como JSON asociado
+             * directamente a la acción.
+             */
+            $accion->setValorAlcanzado($meses);
+        }
+
+        /**
+         * -------------------------------------------------
+         * 8. Persistir cambios en base de datos
+         * -------------------------------------------------
+         * No se usa persist() porque las acciones ya
+         * están administradas por Doctrine.
+         */
+        $entityManager->flush();
+
+        /**
+         * -------------------------------------------------
+         * 9. Retornar a la vista index
+         * -------------------------------------------------
+         * Se renderiza directamente la vista index
+         * manteniendo el año seleccionado.
+         * (No se usa redirect por diseño del flujo)
+         */
+        return $this->redirectToRoute('app_encabezado_index', [
+            'anio'         => $anioEjecucion,
+            'departamento' => $departamentoSeleccionado,
+            'puesto'       => $puestoSeleccionado,
+        ]);
     }
+
+    // (GET) Preservar filtros actuales para el botón "Volver"
+    $filtros = [
+        'anio'         => $request->query->get('anio'),
+        'departamento' => $request->query->get('departamento'),
+        'puesto'       => $request->query->get('puesto'),
+    ];
+
+    if ($encabezado->getResponsables() === null) {
+        $encabezado->setResponsables(new \App\Entity\Responsables());
+    }
+
+    return $this->render('pta/encabezado/edit.html.twig', [
+        'encabezado' => $encabezado,
+        'filtros'    => $filtros,
+    ]);
+}
 
     #[Route('/{id}/delete', name: 'app_encabezado_delete', methods: ['POST'])]
     public function delete(Request $request, Encabezado $encabezado, EntityManagerInterface $entityManager): Response
@@ -562,7 +545,7 @@ $view = $isAdmin
     }
 
     #[Route('/graficas/{id}', name: 'app_encabezado_graficas', methods: ['GET'])]
-    public function graficas(Encabezado $encabezado): Response
+    public function graficas(Request $request,Encabezado $encabezado): Response
     {
         /**
          * =====================================================
@@ -784,9 +767,14 @@ $view = $isAdmin
          * Render de la vista de gráficas
          */
         return $this->render('pta/encabezado/graficas.html.twig', [
-            'encabezado' => $encabezado,
-            'graficas'   => $graficas,
-        ]);
+        'encabezado' => $encabezado,
+        'graficas'   => $graficas,
+        'filtros' => [
+            'anio'         => $request->query->get('anio'),
+            'departamento' => $request->query->get('departamento'),
+            'puesto'       => $request->query->get('puesto'),
+        ],
+    ]);
     }
 
 }

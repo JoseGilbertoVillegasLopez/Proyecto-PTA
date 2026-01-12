@@ -59,6 +59,7 @@ class Personal
     #[ORM\OneToMany(targetEntity: Responsables::class, mappedBy: 'aval')]
     private Collection $aval;
 
+
     public function __construct()
     {
         $this->pta = new ArrayCollection();
@@ -267,4 +268,5 @@ class Personal
     {
         return $this->nombre . ' ' . $this->ap_paterno . ' ' . $this->ap_materno;
     }
+
 }

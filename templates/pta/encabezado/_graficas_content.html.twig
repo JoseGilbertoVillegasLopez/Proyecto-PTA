@@ -32,10 +32,22 @@
 		<header class="pta-module__header">
 
 			<div class="pta-module__header-left">
-				<a href="{{ path('app_encabezado_show', { id: encabezado.id }) }}" data-turbo-frame="content" class="pta-back-btn">
-					<i class="bi bi-arrow-left"></i>
-					<span>Volver</span>
-				</a>
+				<a
+    href="{{ path('app_encabezado_show', {
+        id: encabezado.id,
+        anio: filtros.anio,
+        departamento: filtros.departamento,
+        puesto: filtros.puesto
+    }) }}"
+    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+        data-turbo-frame="content"
+    {% endif %}
+    class="pta-back-btn"
+>
+    <i class="bi bi-arrow-left"></i>
+    <span>Volver</span>
+</a>
+
 			</div>
 
 			<h1 class="pta-module__title">

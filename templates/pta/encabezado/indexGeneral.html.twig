@@ -38,17 +38,15 @@
 							</label>
 
 							<select name="anio" class="form-select">
-								{% set anioActual = "now"|date("Y") %}
-								{% set anioSeleccionado = anioSeleccionado ?? anioActual %}
-								<option value="{{ anioActual }}" {{ anioActual == anioSeleccionado ? 'selected' }}>
-									{{ anioActual }}
-								</option>
-								<option value="{{ anioActual + 1 }}" {{ (anioActual + 1) == anioSeleccionado ? 'selected' }}>
-									{{ anioActual + 1 }}
-								</option>
+								{% for anio in aniosFiltro %}
+									<option value="{{ anio }}" {{ anio == anioSeleccionado ? 'selected' }}>
+										{{ anio }}
+									</option>
+								{% endfor %}
 							</select>
 
-							{% if access.filters.departamento %}
+
+							{% if access.filters.departamento and departamentosFiltro is not empty %}
 								<select name="departamento" class="form-select">
 									<option value="">Departamento</option>
 									{% for id, nombre in departamentosFiltro %}
@@ -59,7 +57,7 @@
 								</select>
 							{% endif %}
 
-							{% if access.filters.puesto %}
+							{% if access.filters.puesto and puestosFiltro is not empty %}
 								<select name="puesto" class="form-select">
 									<option value="">Puesto</option>
 									{% for id, nombre in puestosFiltro %}
@@ -108,12 +106,14 @@
 								</td>
 								<td class="text-center">
 									<div class="pta-actions">
-										<a href="{{ path('app_encabezado_show', { id: encabezado.id }) }}" class="pta-action-btn pta-action-view">
+										<a href="{{ path('app_encabezado_show', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" class="pta-action-btn pta-action-view">
 											<i class="bi bi-eye"></i>
 										</a>
-										<a href="{{ path('app_encabezado_edit', { id: encabezado.id }) }}" class="pta-action-btn pta-action-edit">
+
+										<a href="{{ path('app_encabezado_edit', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" class="pta-action-btn pta-action-edit">
 											<i class="bi bi-pencil-square"></i>
 										</a>
+
 									</div>
 								</td>
 							</tr>
@@ -133,4 +133,22 @@
 
 	</div>
 
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+const dep = document.querySelector('select[name="departamento"]');
+const puesto = document.querySelector('select[name="puesto"]');
+
+if (! dep || ! puesto) 
+return;
+
+
+
+dep.addEventListener('change', () => {
+puesto.selectedIndex = 0; // reset puesto
+});
+});
+	</script>
 {% endblock %}

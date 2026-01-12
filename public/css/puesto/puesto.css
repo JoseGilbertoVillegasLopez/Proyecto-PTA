@@ -1,0 +1,918 @@
+/* =========================================================
+   PUESTO — INDEX
+   ========================================================= */
+
+.puesto-index {
+    background:
+        radial-gradient(circle at top, rgba(13,202,240,0.08), transparent 55%),
+        linear-gradient(180deg, #1b1f24, #171a1f);
+
+    padding: 2.4rem;
+    border-radius: 22px;
+
+    box-shadow:
+        0 28px 70px rgba(0,0,0,0.75),
+        inset 0 0 0 1px rgba(255,255,255,0.06);
+
+    position: relative;
+}
+
+.puesto-index::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    pointer-events: none;
+    box-shadow: inset 0 0 22px rgba(13,202,240,0.08);
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.puesto-index__toolbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 2.2rem;
+    padding-bottom: 1.1rem;
+
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.puesto-index__title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #e9ecef;
+    letter-spacing: 0.4px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   BOTÓN AGREGAR
+   ========================================================= */
+
+.puesto-index__table-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    margin-top: 1.8rem;
+    margin-bottom: 3rem;
+
+    padding-left: 0.4rem;
+}
+
+.puesto-index__add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    padding: 0.6rem 1.1rem;
+    border-radius: 12px;
+
+    background: rgba(25,135,84,0.15);
+    color: #198754;
+
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+
+    border: 1px solid rgba(25,135,84,0.55);
+    transition: all 0.25s ease;
+}
+
+.puesto-index__add-btn:hover {
+    background: rgba(25,135,84,0.35);
+    color: #ffffff;
+    border-color: #198754;
+
+    box-shadow:
+        0 10px 26px rgba(25,135,84,0.35),
+        inset 0 0 0 1px rgba(25,135,84,0.35);
+}
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.puesto-index__table-wrapper {
+    overflow-x: auto;
+}
+
+.puesto-index__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    border-radius: 14px;
+    overflow: hidden;
+
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.015);
+}
+
+.puesto-index__table thead th {
+    background: linear-gradient(180deg, #0b3c6f, #062a4f);
+    color: #ffffff;
+
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.puesto-index__table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.puesto-index__table tbody tr:hover {
+    background-color: rgba(13,110,253,0.08);
+}
+
+.puesto-index__table tbody td {
+    padding: 14px 18px;
+    color: #dee2e6;
+    vertical-align: middle;
+
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+.puesto-index__table tbody td:last-child,
+.puesto-index__table thead th:last-child {
+    border-right: none;
+}
+
+.puesto-index__table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.puesto-index__badge {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.puesto-index__badge.is-active {
+    background: rgba(25,135,84,0.20);
+    color: #198754;
+    border: 1px solid rgba(25,135,84,0.50);
+}
+
+.puesto-index__badge.is-inactive {
+    background: rgba(220,53,69,0.20);
+    color: #dc3545;
+    border: 1px solid rgba(220,53,69,0.50);
+}
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+
+.puesto-index__actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.puesto-index__action {
+    width: 36px;
+    height: 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    font-size: 1.1rem;
+    text-decoration: none;
+
+    transition: all 0.25s ease;
+}
+
+.puesto-index__action--view {
+    background: rgba(13,202,240,0.15);
+    color: #0dcaf0;
+}
+
+.puesto-index__action--view:hover {
+    background: rgba(13,202,240,0.35);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(13,202,240,0.35);
+}
+
+.puesto-index__action--edit {
+    background: rgba(255,193,7,0.15);
+    color: #ffc107;
+}
+
+.puesto-index__action--edit:hover {
+    background: rgba(255,193,7,0.35);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(255,193,7,0.35);
+}
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.puesto-index__empty {
+    text-align: center;
+    padding: 2.2rem;
+    color: #adb5bd;
+    font-style: italic;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   PUESTO — SHOW
+   (alineado a PTA, solo iconos en acciones)
+   ========================================================= */
+
+.puesto-show {
+    background:
+        radial-gradient(circle at top, rgba(13,202,240,0.08), transparent 55%),
+        linear-gradient(180deg, #1b1f24, #171a1f);
+
+    padding: 2.4rem;
+    border-radius: 22px;
+
+    box-shadow:
+        0 28px 70px rgba(0,0,0,0.75),
+        inset 0 0 0 1px rgba(255,255,255,0.06);
+
+    position: relative;
+}
+
+.puesto-show::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    pointer-events: none;
+    box-shadow: inset 0 0 22px rgba(13,202,240,0.08);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.puesto-show__header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+
+    margin-bottom: 2rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.puesto-show__title {
+    justify-self: center;
+    text-align: center;
+
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #e9ecef;
+    letter-spacing: 0.4px;
+}
+
+/* =========================================================
+   BOTONES BASE (SOLO ÍCONO)
+   ========================================================= */
+
+.puesto-show__icon-btn {
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    font-size: 1.15rem;
+
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+/* =========================================================
+   VOLVER
+   ========================================================= */
+
+.puesto-show__icon-btn--back {
+    background: rgba(13,110,253,0.15);
+    color: #0d6efd;
+    border: 1px solid rgba(13,110,253,0.45);
+}
+
+.puesto-show__icon-btn--back:hover {
+    background: rgba(13,110,253,0.35);
+    color: #ffffff;
+
+    box-shadow:
+        0 10px 26px rgba(13,110,253,0.35),
+        inset 0 0 0 1px rgba(13,110,253,0.4);
+}
+
+/* =========================================================
+   HEADER ACTIONS
+   ========================================================= */
+
+.puesto-show__header-actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-self: end;
+}
+
+/* =========================================================
+   EDITAR
+   ========================================================= */
+
+.puesto-show__icon-btn--edit {
+    background: rgba(255,193,7,0.15);
+    color: #ffc107;
+    border: 1px solid rgba(255,193,7,0.55);
+}
+
+.puesto-show__icon-btn--edit:hover {
+    background: rgba(255,193,7,0.35);
+    color: #ffffff;
+
+    box-shadow:
+        0 10px 26px rgba(255,193,7,0.35),
+        inset 0 0 0 1px rgba(255,193,7,0.4);
+}
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.puesto-show__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    border-radius: 14px;
+    overflow: hidden;
+
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.015);
+}
+
+.puesto-show__table th {
+    width: 35%;
+    background: linear-gradient(180deg, #0b3c6f, #062a4f);
+    color: #ffffff;
+
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+
+    padding: 14px 18px;
+}
+
+.puesto-show__table td {
+    padding: 14px 18px;
+    color: #dee2e6;
+
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.01);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   PUESTO — NEW
+   ========================================================= */
+
+.puesto-form--new {
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(13,202,240,0.08),
+            transparent 55%
+        ),
+        linear-gradient(180deg, #1b1f24, #171a1f);
+
+    padding: 2.4rem;
+    border-radius: 22px;
+
+    box-shadow:
+        0 26px 65px rgba(0,0,0,0.75),
+        inset 0 0 0 1px rgba(255,255,255,0.06);
+
+    position: relative;
+}
+
+.puesto-form--new::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    pointer-events: none;
+    box-shadow: inset 0 0 22px rgba(13,202,240,0.08);
+}
+
+/* =========================================================
+   FORM BASE
+   ========================================================= */
+
+.puesto-form {
+    max-width: 720px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.puesto-form__header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+
+    margin-bottom: 2rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.puesto-form__title {
+    justify-self: center;
+    text-align: center;
+
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #e9ecef;
+    letter-spacing: 0.4px;
+}
+
+/* =========================================================
+   BOTÓN VOLVER
+   ========================================================= */
+
+.puesto-form__icon-btn {
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    font-size: 1.15rem;
+
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.puesto-form__icon-btn--back {
+    background: rgba(13,110,253,0.15);
+    color: #0d6efd;
+    border: 1px solid rgba(13,110,253,0.45);
+}
+
+.puesto-form__icon-btn--back:hover {
+    background: rgba(13,110,253,0.35);
+    color: #ffffff;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.puesto-form--new .puesto-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+}
+
+/* =========================================================
+   LABELS
+   ========================================================= */
+
+.puesto-form__group label {
+    display: block;
+    margin-bottom: 0.35rem;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+
+    color: #adb5bd;
+}
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+
+.puesto-form__group input {
+    width: 100%;
+    background: #1f2a36;
+    color: #e9ecef;
+
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+}
+
+.puesto-form__group input:hover {
+    border-color: rgba(13,202,240,0.35);
+}
+
+.puesto-form__group input:focus {
+    outline: none;
+    background: #263445;
+    border-color: #0dcaf0;
+
+    box-shadow:
+        0 0 0 2px rgba(13,202,240,0.15),
+        inset 0 0 0 1px rgba(13,202,240,0.25);
+}
+
+/* =========================================================
+   GRUPOS
+   ========================================================= */
+
+.puesto-form--new .puesto-form__group {
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.puesto-form--new .puesto-form__group:last-child {
+    border-bottom: none;
+}
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+
+.puesto-form__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.4rem;
+}
+
+/* =========================================================
+   BOTÓN GUARDAR
+   ========================================================= */
+
+.puesto-form--new .puesto-form__submit {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(25,135,84,0.15);
+    color: #198754;
+
+    border: 1px solid rgba(25,135,84,0.55);
+    font-size: 1.3rem;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    box-shadow:
+        0 10px 26px rgba(0,0,0,0.35),
+        inset 0 0 0 1px rgba(25,135,84,0.25);
+}
+
+.puesto-form--new .puesto-form__submit:hover {
+    background: rgba(25,135,84,0.35);
+    color: #ffffff;
+    border-color: #198754;
+
+    box-shadow:
+        0 12px 30px rgba(25,135,84,0.35),
+        inset 0 0 0 1px rgba(25,135,84,0.35);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   PUESTO — EDIT
+   ========================================================= */
+
+.puesto-form--edit {
+    background:
+        radial-gradient(circle at top, rgba(13,202,240,0.08), transparent 55%),
+        linear-gradient(180deg, #1b1f24, #171a1f);
+
+    padding: 2.4rem;
+    border-radius: 22px;
+
+    box-shadow:
+        0 26px 65px rgba(0,0,0,0.75),
+        inset 0 0 0 1px rgba(255,255,255,0.06);
+
+    position: relative;
+}
+
+.puesto-form--edit::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    pointer-events: none;
+    box-shadow: inset 0 0 22px rgba(13,202,240,0.08);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.puesto-form__header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+
+    margin-bottom: 2rem;
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.puesto-form__header-center {
+    text-align: center;
+}
+
+.puesto-form__title {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #e9ecef;
+    letter-spacing: 0.4px;
+}
+
+.puesto-form__subtitle {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #adb5bd;
+}
+
+/* =========================================================
+   ICON BUTTONS (VOLVER / GUARDAR)
+   ========================================================= */
+
+.puesto-form__icon-btn {
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    font-size: 1.15rem;
+
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+/* VOLVER — AZUL (IGUAL A DEPARTAMENTO) */
+.puesto-form__icon-btn--back {
+    background: rgba(13,110,253,0.15);
+    color: #0d6efd;
+    border: 1px solid rgba(13,110,253,0.45);
+}
+
+.puesto-form__icon-btn--back:hover {
+    background: rgba(13,110,253,0.35);
+    color: #ffffff;
+
+    box-shadow:
+        0 10px 26px rgba(13,110,253,0.35),
+        inset 0 0 0 1px rgba(13,110,253,0.35);
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.puesto-form--edit .puesto-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* =========================================================
+   GRUPOS
+   ========================================================= */
+
+.puesto-form--edit .puesto-form__group {
+    margin-bottom: 1.6rem;
+    padding-bottom: 1.2rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.puesto-form--edit .puesto-form__group:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+/* =========================================================
+   GUARDAR — MISMO LOOK QUE DEPARTAMENTO
+   ========================================================= */
+
+.puesto-form__submit-proxy {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 2.6rem;
+    padding-top: 1.6rem;
+
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.puesto-form__icon-btn--save {
+    width: 54px;
+    height: 54px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+    font-size: 1.3rem;
+
+    background: rgba(25,135,84,0.15);
+    color: #198754;
+
+    border: 1px solid rgba(25,135,84,0.55);
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+
+    box-shadow:
+        0 10px 26px rgba(0,0,0,0.35),
+        inset 0 0 0 1px rgba(25,135,84,0.25);
+}
+
+.puesto-form__icon-btn--save:hover {
+    background: rgba(25,135,84,0.35);
+    color: #ffffff;
+
+    box-shadow:
+        0 12px 30px rgba(25,135,84,0.35),
+        inset 0 0 0 1px rgba(25,135,84,0.35);
+}
+
+/* =========================================================
+   INPUTS Y SELECTS (ESTILO PTA)
+   ========================================================= */
+
+.puesto-form__group input,
+.puesto-form__group select {
+    width: 100%;
+
+    background: #1f2a36;
+    color: #e9ecef;
+
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9rem;
+
+    transition: all 0.25s ease;
+}
+
+.puesto-form__group input:hover,
+.puesto-form__group select:hover {
+    border-color: rgba(13,202,240,0.35);
+}
+
+.puesto-form__group input:focus,
+.puesto-form__group select:focus {
+    outline: none;
+
+    background: #263445;
+    border-color: #0dcaf0;
+
+    box-shadow:
+        0 0 0 2px rgba(13,202,240,0.15),
+        inset 0 0 0 1px rgba(13,202,240,0.25);
+}

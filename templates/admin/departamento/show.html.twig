@@ -1,26 +1,58 @@
-{% extends 'base.html.twig' %}
+<turbo-frame id="content">
+    <section class="departamento-show">
 
-{% block title %}Departamento{% endblock %}
+        <!-- ===============================
+             HEADER
+        ================================ -->
+        <header class="departamento-show__header">
 
-{% block body %}
-    <h1>Departamento</h1>
+            <!-- IZQUIERDA: VOLVER -->
+            <a
+                href="{{ path('app_departamento_index') }}"
+                data-turbo-frame="content"
+                class="departamento-show__icon-btn departamento-show__icon-btn--back"
+                title="Volver"
+            >
+                <i class="bi bi-arrow-left"></i>
+            </a>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ departamento.id }}</td>
-            </tr>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ departamento.nombre }}</td>
-            </tr>
-        </tbody>
-    </table>
+            <!-- CENTRO: TÍTULO -->
+            <h1 class="departamento-show__title">
+                Información del departamento
+            </h1>
 
-    <a href="{{ path('app_departamento_index') }}">back to list</a>
+            <!-- DERECHA: EDITAR -->
+            <div class="departamento-show__header-actions">
+                <a
+                    href="{{ path('app_departamento_edit', {'id': departamento.id}) }}"
+                    data-turbo-frame="content"
+                    class="departamento-show__icon-btn departamento-show__icon-btn--edit"
+                    title="Editar"
+                >
+                    <i class="bi bi-pencil"></i>
+                </a>
+            </div>
 
-    <a href="{{ path('app_departamento_edit', {'id': departamento.id}) }}">edit</a>
+        </header>
 
-    {{ include('admin/departamento/_delete_form.html.twig') }}
-{% endblock %}
+        <!-- ===============================
+             TABLE
+        ================================ -->
+        <table class="departamento-show__table">
+            <tbody>
+
+                <tr>
+                    <th>ID</th>
+                    <td>{{ departamento.id }}</td>
+                </tr>
+
+                <tr>
+                    <th>Nombre</th>
+                    <td>{{ departamento.nombre }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </section>
+</turbo-frame>

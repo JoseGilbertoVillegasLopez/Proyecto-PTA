@@ -1,33 +1,67 @@
 <turbo-frame id="content">
-    <h1>Puesto index</h1>
+	<section class="puesto-index">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for puesto in puestos %}
-            <tr>
-                <td>{{ puesto.id }}</td>
-                <td>{{ puesto.nombre }}</td>
-                <td>
-                    <a href="{{ path('app_puesto_show', {'id': puesto.id}) }}">show</a>
-                    <a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+		<div class="puesto-index__toolbar">
+			<h1 class="puesto-index__title">Lista de puestos</h1>
+		</div>
 
-    <a href="{{ path('app_puesto_new') }}">Create new</a>
+		<div class="puesto-index__table-actions">
+			<a href="{{ path('app_puesto_new') }}" class="puesto-index__add-btn">
+				<i class="bi bi-briefcase-fill"></i>
+				Crear nuevo
+			</a>
+		</div>
+
+		<div class="puesto-index__table-wrapper">
+			<table class="puesto-index__table">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Supervisor directo</th>
+						<th>Estado</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for puesto in puestos %}
+						<tr>
+							<td>{{ puesto.nombre }}</td>
+
+							<td>
+								{{ puesto.supervisorDirecto
+                                ? puesto.supervisorDirecto.nombre
+                                : '—' }}
+							</td>
+
+							<td>
+								<span class="puesto-index__badge {{ puesto.activo ? 'is-active' : 'is-inactive' }}">
+									{{ puesto.activo ? 'Activo' : 'Inactivo' }}
+								</span>
+							</td>
+
+							<td>
+								<div class="puesto-index__actions">
+									<a href="{{ path('app_puesto_show', {'id': puesto.id}) }}" data-turbo-frame="content" class="puesto-index__action puesto-index__action--view">
+										<i class="bi bi-eye"></i>
+									</a>
+
+									<a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}" data-turbo-frame="content" class="puesto-index__action puesto-index__action--edit">
+										<i class="bi bi-pencil"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="4" class="puesto-index__empty">
+								No se encontraron registros
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+	</section>
 </turbo-frame>
-
-

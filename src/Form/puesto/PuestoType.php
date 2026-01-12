@@ -6,6 +6,7 @@ use App\Entity\Puesto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class PuestoType extends AbstractType
 {
@@ -13,7 +14,14 @@ class PuestoType extends AbstractType
     {
         $builder
             ->add('nombre')
-        ;
+
+            ->add('supervisorDirecto', EntityType::class, [
+                'class' => Puesto::class,
+                'choice_label' => 'nombre',
+                'required' => false,
+                'label' => 'Supervisor directo',
+                'placeholder' => '— Sin supervisor —',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
