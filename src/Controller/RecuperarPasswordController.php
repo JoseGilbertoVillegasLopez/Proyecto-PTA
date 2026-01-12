@@ -8,6 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\PuestoRepository;
+use App\Repository\DepartamentoRepository;
+
 
 class RecuperarPasswordController extends AbstractController
 {
@@ -28,20 +31,33 @@ class RecuperarPasswordController extends AbstractController
     public function mostrarYProcesarFormulario(
         Request $request,
         PersonalRepository $personalRepository,
+        PuestoRepository $puestoRepository,
+        DepartamentoRepository $departamentoRepository,
         RecuperarPassword $servicioRecuperarPassword
-    ): Response {
+    ): Response{
 
         // Variables para mostrar mensajes en la vista
         $error = null;
         $mensaje = null;
+
+        $puestos = $puestoRepository->findBy(
+            ['activo' => true],
+            ['nombre' => 'ASC']
+        );
+
+        $departamentos = $departamentoRepository->findBy(
+            ['activo' => true],
+            ['nombre' => 'ASC']
+        );
+
 
         // Si el usuario envió el formulario por método POST
         if ($request->isMethod('POST')) {
 
             // Obtener y limpiar los datos enviados por el usuario
             $email        = trim($request->request->get('email'));
-            $puestoInput  = trim($request->request->get('puesto'));
-            $deptoInput   = trim($request->request->get('departamento'));
+            $puestoInput = $request->request->get('puesto');
+            $deptoInput  = $request->request->get('departamento');
 
             /**
              * -----------------------------------------------------------
@@ -76,11 +92,12 @@ class RecuperarPasswordController extends AbstractController
                      * y los comparamos con lo que el usuario escribió.
                      * -----------------------------------------------------------
                      */
-                    $puestoReal = $personal->getPuesto()?->getNombre();
-                    $deptoReal  = $personal->getDepartamento()?->getNombre();
+                    $puestoReal = $personal->getPuesto()?->getId();
+                    $deptoReal  = $personal->getDepartamento()?->getId();
 
-                    // Comparación literal (podemos mejorarla luego si quieres: case-insensitive)
-                    if ($puestoReal !== $puestoInput || $deptoReal !== $deptoInput) {
+                    if ((string) $puestoReal !== (string) $puestoInput ||
+                        (string) $deptoReal  !== (string) $deptoInput) {
+
                         $error = "Los datos no coinciden. Verifica tu puesto y departamento.";
                     } else {
 
@@ -111,8 +128,11 @@ class RecuperarPasswordController extends AbstractController
          * -----------------------------------------------------------
          */
         return $this->render('security/recuperar_password.html.twig', [
-            'error'   => $error,
-            'mensaje' => $mensaje,
+            'error'         => $error,
+            'mensaje'       => $mensaje,
+            'puestos'       => $puestos,
+            'departamentos' => $departamentos,
         ]);
+
     }
 }
