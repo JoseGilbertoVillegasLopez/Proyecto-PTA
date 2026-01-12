@@ -6,10 +6,14 @@
 {% endblock %}
 
 {% block body %}
-
 	<div class="pta-general-layout">
 
 		<main class="pta-general-main">
+			<div class="pta-general-logout-wrapper">
+				<a href="{{ path('app_logout') }}" class="pta-general-logout" title="Cerrar sesión">
+					<i class="bi bi-door-open-fill"></i>
+				</a>
+			</div>
 
 			<div class="pta-card">
 
@@ -34,7 +38,7 @@
 						<form method="get" action="{{ path('app_encabezado_index') }}" class="pta-filter-form">
 
 							<label class="form-label mb-0">
-								Año de ejecución
+								AÑO DE EJEUCÍON
 							</label>
 
 							<select name="anio" class="form-select">
@@ -110,9 +114,12 @@
 											<i class="bi bi-eye"></i>
 										</a>
 
-										<a href="{{ path('app_encabezado_edit', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" class="pta-action-btn pta-action-edit">
-											<i class="bi bi-pencil-square"></i>
-										</a>
+										{% if encabezado.responsable and encabezado.responsable.user == app.user %}
+											<a href="{{ path('app_encabezado_edit', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" class="pta-action-btn pta-action-edit" title="Capturar avances">
+												<i class="bi bi-pencil-square"></i>
+											</a>
+										{% endif %}
+
 
 									</div>
 								</td>

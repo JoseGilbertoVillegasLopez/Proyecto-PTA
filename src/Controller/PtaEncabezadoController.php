@@ -363,71 +363,43 @@ public function edit(
 {
     /**
      * =====================================================
-     * BLOQUE POST
+     * SEGURIDAD — CAPTURA DE AVANCES
+     * -----------------------------------------------------
+     * SOLO el responsable del PTA puede capturar avances
+     * El rol (ADMIN o no) NO importa aquí
      * =====================================================
-     * Este bloque se ejecuta únicamente cuando el usuario
-     * envía el formulario de captura de avance mensual.
-     *
-     * Responsabilidad:
-     *  - Validar CSRF
-     *  - Leer valores enviados por acción y mes
-     *  - Normalizar valores vacíos
-     *  - Guardar el avance (JSON) en cada acción
-     *  - Retornar al index manteniendo el año seleccionado
+     */
+    $user = $this->getUser();
+    $responsable = $encabezado->getResponsable();
+
+    if (!$responsable || $responsable->getUser() !== $user) {
+        throw $this->createAccessDeniedException(
+            'No puedes capturar avances de un PTA que no es tuyo.'
+        );
+    }
+
+    /**
+     * =====================================================
+     * BLOQUE POST
      * =====================================================
      */
     if ($request->isMethod('POST')) {
 
-        /**
-         * -------------------------------------------------
-         * 1. Determinar el año de ejecución
-         * -------------------------------------------------
-         * - Se usa el año actual como valor por defecto
-         * - Si viene un año por query (?anio=XXXX),
-         *   se respeta para mantener el contexto
-         */
+        // 1. Año de ejecución
         $anioActual = (int) date('Y');
         $anioEjecucion = $request->query->getInt('anio', $anioActual);
 
-        /**
-         * -------------------------------------------------
-         * (EXTRA) Preservar filtros actuales
-         * -------------------------------------------------
-         * Estos valores viajan por querystring para que
-         * al volver al index NO se reseteen los filtros.
-         */
+        // 2. Preservar filtros
         $departamentoSeleccionado = $request->query->get('departamento');
         $puestoSeleccionado       = $request->query->get('puesto');
 
-        /**
-         * -------------------------------------------------
-         * 2. Obtener encabezados del año seleccionado
-         * -------------------------------------------------
-         * Estos datos NO afectan la edición.
-         * Se usan únicamente para renderizar correctamente
-         * la vista index después de guardar el avance.
-         */
-        $encabezados = $encabezadoRepository->createQueryBuilder('e')
-            ->andWhere('e.anioEjecucion = :anio')
-            ->setParameter('anio', $anioEjecucion)
-            ->orderBy('e.fechaCreacion', 'DESC')
-            ->getQuery()
-            ->getResult();
-
-        /**
-         * -------------------------------------------------
-         * 3. Validación de token CSRF
-         * -------------------------------------------------
-         * Protege el formulario contra ataques CSRF.
-         * El token está ligado al ID del encabezado.
-         */
+        // 3. Validación CSRF
         if (
             !$this->isCsrfTokenValid(
                 'edit' . $encabezado->getId(),
                 $request->request->get('_token')
             )
         ) {
-            // ⬅️ IMPORTANTE: volver al index preservando filtros
             return $this->redirectToRoute('app_encabezado_index', [
                 'anio'         => $anioEjecucion,
                 'departamento' => $departamentoSeleccionado,
@@ -435,80 +407,33 @@ public function edit(
             ]);
         }
 
-        /**
-         * -------------------------------------------------
-         * 4. Obtener valores enviados del formulario
-         * -------------------------------------------------
-         * Estructura esperada:
-         * [
-         *   accion_id => [
-         *     'Enero' => valor,
-         *     'Febrero' => valor,
-         *     ...
-         *   ]
-         * ]
-         */
+        // 4. Valores enviados
         $valoresAlcanzados = $request->request->all('valor_alcanzado');
 
-        /**
-         * -------------------------------------------------
-         * 5. Recorrer acciones del encabezado
-         * -------------------------------------------------
-         * Solo se procesan acciones que pertenecen
-         * al encabezado actual.
-         */
+        // 5. Guardar avances por acción
         foreach ($encabezado->getAcciones() as $accion) {
 
             $accionId = $accion->getId();
 
-            // Si la acción no viene en el POST, se omite
             if (!isset($valoresAlcanzados[$accionId])) {
                 continue;
             }
 
             $meses = $valoresAlcanzados[$accionId];
 
-            /**
-             * -------------------------------------------------
-             * 6. Normalización de valores
-             * -------------------------------------------------
-             * Convierte strings vacíos ("") a null para:
-             *  - Diferenciar entre "sin captura" y "valor 0"
-             *  - Evitar datos inconsistentes en el JSON
-             */
             foreach ($meses as $mes => $valor) {
                 if ($valor === '') {
                     $meses[$mes] = null;
                 }
             }
 
-            /**
-             * -------------------------------------------------
-             * 7. Guardar avance mensual en la acción
-             * -------------------------------------------------
-             * El avance se guarda como JSON asociado
-             * directamente a la acción.
-             */
             $accion->setValorAlcanzado($meses);
         }
 
-        /**
-         * -------------------------------------------------
-         * 8. Persistir cambios en base de datos
-         * -------------------------------------------------
-         * No se usa persist() porque las acciones ya
-         * están administradas por Doctrine.
-         */
+        // 6. Persistir
         $entityManager->flush();
 
-        /**
-         * -------------------------------------------------
-         * 9. Retornar a la vista index
-         * -------------------------------------------------
-         * Se renderiza directamente la vista index
-         * manteniendo el año seleccionado.
-         * (No se usa redirect por diseño del flujo)
-         */
+        // 7. Regresar al index con filtros
         return $this->redirectToRoute('app_encabezado_index', [
             'anio'         => $anioEjecucion,
             'departamento' => $departamentoSeleccionado,
@@ -516,22 +441,23 @@ public function edit(
         ]);
     }
 
-    // (GET) Preservar filtros actuales para el botón "Volver"
+    /**
+     * =====================================================
+     * GET — Render de la vista
+     * =====================================================
+     */
     $filtros = [
         'anio'         => $request->query->get('anio'),
         'departamento' => $request->query->get('departamento'),
         'puesto'       => $request->query->get('puesto'),
     ];
 
-    if ($encabezado->getResponsables() === null) {
-        $encabezado->setResponsables(new \App\Entity\Responsables());
-    }
-
     return $this->render('pta/encabezado/edit.html.twig', [
         'encabezado' => $encabezado,
         'filtros'    => $filtros,
     ]);
 }
+
 
     #[Route('/{id}/delete', name: 'app_encabezado_delete', methods: ['POST'])]
     public function delete(Request $request, Encabezado $encabezado, EntityManagerInterface $entityManager): Response
@@ -659,21 +585,34 @@ public function edit(
 
             if ($tendencia === 'POSITIVA') {
 
-                // Tendencia positiva → acumulado
-                $acumulado = 0;
+    $acumulado = 0;
+    $serieTemp = [];
 
-                foreach ($meses as $mes) {
-                    $acumulado += $valoresMensuales[$mes];
-                    $serie[$mes] = $acumulado;
-                }
+    foreach ($meses as $mes) {
+        $acumulado += $valoresMensuales[$mes];
+        $serieTemp[$mes] = $acumulado;
+    }
 
-                // Porcentaje de avance respecto a la meta
-                $avanceFinal = end($serie);
-                $porcentaje = ($meta > 0)
-                    ? round(($avanceFinal / $meta) * 100, 1)
-                    : 0;
+    /**
+     * 🎯 AJUSTE VISUAL:
+     * Si Enero tiene valor > 0, forzamos un arranque en 0
+     * para que la gráfica "nazca" desde cero.
+     */
+    $primerMes = $meses[0];
+    if ($serieTemp[$primerMes] > 0) {
+        $serie = [
+            $primerMes . ' (inicio)' => 0,
+        ] + $serieTemp;
+    } else {
+        $serie = $serieTemp;
+    }
 
-            } else {
+    $avanceFinal = end($serieTemp);
+    $porcentaje = ($meta > 0)
+        ? round(($avanceFinal / $meta) * 100, 1)
+        : 0;
+}
+else {
 
                 // Tendencia negativa → valor real (no acumulado)
                 foreach ($meses as $mes) {

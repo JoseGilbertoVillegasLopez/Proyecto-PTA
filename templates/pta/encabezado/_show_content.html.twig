@@ -212,10 +212,21 @@
        ========================================================= #}
 <div class="card pta-card mb-4">
 
-	<h4 class="pta-title">
-		<i class="bi bi-people-fill"></i>
-		Responsables del Proyecto
-	</h4>
+	<div class="d-flex justify-content-between align-items-center mb-3">
+
+		<h4 class="pta-title mb-0">
+			<i class="bi bi-people-fill"></i>
+			Responsables del Proyecto
+		</h4>
+
+		{% if is_granted('ROLE_ADMIN') %}
+			<a href="{{ path('app_encabezado_responsables_edit', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-frame="content" class="pta-action-btn pta-action-edit" title="Cambiar responsables del proyecto">
+				<i class="bi bi-pencil-square"></i>
+			</a>
+		{% endif %}
+
+	</div>
+
 
 	<table class="table table-dark table-bordered align-middle">
 

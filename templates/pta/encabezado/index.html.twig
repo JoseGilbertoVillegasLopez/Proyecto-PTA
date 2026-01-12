@@ -24,7 +24,7 @@
 			<div class="pta-toolbar-right">
 				<form method="get" action="{{ path('app_encabezado_index') }}" data-turbo-frame="content" class="pta-filter-form">
 
-					<label class="form-label mb-0">Año de ejecución</label>
+					<label class="form-label mb-0">AÑO DE EJEUCÍON</label>
 					<select name="anio" class="form-select">
 						{% for anio in aniosFiltro %}
 							<option value="{{ anio }}" {{ anio == anioSeleccionado ? 'selected' }}>
@@ -114,9 +114,11 @@
 								</a>
 
 
-								<a href="{{ path('app_encabezado_edit', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" data-turbo-frame="content" class="pta-action-btn pta-action-edit">
-									<i class="bi bi-pencil-square"></i>
-								</a>
+								{% if encabezado.responsable and encabezado.responsable.user == app.user %}
+									<a href="{{ path('app_encabezado_edit', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" class="pta-action-btn pta-action-edit" title="Capturar avances">
+										<i class="bi bi-pencil-square"></i>
+									</a>
+								{% endif %}
 
 
 							</div>

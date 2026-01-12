@@ -1,88 +1,76 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Dashboard
+{% endblock %}
 
 {% block body %}
-<script>
-document.addEventListener("turbo:render", function () {
-    if (typeof Sfjs !== "undefined") {
-        Sfjs.loadToolbar();
-    }
+	<script>
+		document.addEventListener("turbo:render", function () {
+if (typeof Sfjs !== "undefined") {
+Sfjs.loadToolbar();
+}
 });
-</script>
+	</script>
 
-<div style="display: flex; height: 94.8vh; background: #1e242b; color: white;">
+	<div
+		style="display: flex; height: 94.8vh; background: #1e242b;">
 
-    <!-- ASIDE / MENU -->
-    <aside style="width: 250px; background: #11161c; padding: 20px;">
+		<!-- ASIDE -->
+		<aside
+			class="pta-dashboard-aside">
 
-        <!-- HEADER MENU -->
-        <div style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        ">
-            <h2 style="margin: 0;">Menú</h2>
+			<!-- BLOQUE CENTRADO -->
+			<div
+				class="pta-dashboard-menu-wrapper">
 
-            <!-- CERRAR SESIÓN -->
-            <a
-                href="{{ path('app_logout') }}"
-                title="Cerrar sesión"
-                style="
-                    color: #dc3545;
-                    font-size: 1.8rem;
-                    text-decoration: none;
-                "
-            >
-                <i class="bi bi-box-arrow-right"></i>
-            </a>
+				<!-- HEADER -->
+				<div class="pta-dashboard-header">
+					<i class="bi bi-speedometer2 pta-dashboard-icon"></i>
+					<h2 class="pta-dashboard-title">Menú</h2>
+				</div>
 
-        </div>
+				<!-- MENU -->
+				<ul class="pta-dashboard-menu">
 
-        <ul style="list-style: none; padding: 0;">
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_personal_index') }}" data-turbo-frame="content" class="pta-dashboard-link">
+							Personal
+						</a>
+					</li>
 
-            <li style="margin-bottom: 15px;">
-                <a href="{{ path('app_personal_index') }}"
-                   data-turbo-frame="content"
-                   style="color: #0dcaf0; text-decoration: none;">
-                    Personal
-                </a>
-            </li>
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_departamento_index') }}" data-turbo-frame="content" class="pta-dashboard-link">
+							Departamentos
+						</a>
+					</li>
 
-            <li style="margin-bottom: 15px;">
-                <a href="{{ path('app_departamento_index') }}"
-                   data-turbo-frame="content"
-                   style="color: #0dcaf0; text-decoration: none;">
-                    Departamentos
-                </a>
-            </li>
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_puesto_index') }}" data-turbo-frame="content" class="pta-dashboard-link">
+							Puestos
+						</a>
+					</li>
 
-            <li style="margin-bottom: 15px;">
-                <a href="{{ path('app_puesto_index') }}"
-                   data-turbo-frame="content"
-                   style="color: #0dcaf0; text-decoration: none;">
-                    Puestos
-                </a>
-            </li>
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_encabezado_index') }}" data-turbo-frame="content" class="pta-dashboard-link">
+							PTA
+						</a>
+					</li>
 
-            <li style="margin-bottom: 15px;">
-                <a href="{{ path('app_encabezado_index') }}"
-                   data-turbo-frame="content"
-                   style="color: #0dcaf0; text-decoration: none;">
-                    PTA
-                </a>
-            </li>
+				</ul>
+			</div>
 
-        </ul>
+			<!-- LOGOUT -->
+			<a href="{{ path('app_logout') }}" class="pta-dashboard-logout" title="Cerrar sesión">
+				<i class="bi bi-door-open-fill"></i>
+				Salir
+			</a>
 
-    </aside>
+		</aside>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main style="flex: 1; padding: 30px; overflow-y: auto;">
-        <turbo-frame id="content" src="{{ path('app_personal_index') }}">
-        </turbo-frame>
-    </main>
+		<!-- CONTENIDO -->
+		<main style="flex: 1; padding: 30px; overflow-y: auto;">
+			<turbo-frame id="content" src="{{ path('app_personal_index') }}"></turbo-frame>
+		</main>
 
-</div>
+	</div>
 {% endblock %}

@@ -1,0 +1,141 @@
+<turbo-frame id="content">
+
+	<div
+		class="container py-4">
+
+		{# =========================
+																		       TOP BAR
+																		       ========================= #}
+		<div class="pta-topbar mb-4">
+
+			<div class="pta-topbar-left">
+				<a href="{{ path('app_encabezado_show', { id: encabezado.id }) }}" data-turbo-frame="content" class="pta-back-btn">
+					<i class="bi bi-arrow-left"></i>
+					<span>Volver</span>
+				</a>
+			</div>
+
+		</div>
+
+		{# =========================
+														   ENCABEZADO PTA (SOLO LECTURA)
+														   ========================= #}
+		<div class="pta-card pta-header-box mb-4">
+
+			<div class="pta-header-row">
+				<div class="pta-header-label">
+					NOMBRE DEL PROYECTO
+				</div>
+				<div class="pta-header-value">
+					{{ encabezado.nombre }}
+				</div>
+			</div>
+
+			<div class="pta-header-row">
+
+				<div class="pta-header-col-numero">
+					<div class="pta-header-label small">
+						NÚMERO DE PROYECTO
+					</div>
+					<div class="pta-header-value small">
+						{{ encabezado.id }}
+					</div>
+				</div>
+
+				<div class="pta-header-col-objetivo">
+					<div class="pta-header-objetivo-label">
+						OBJETIVO
+					</div>
+					<div class="pta-header-objetivo-value">
+						{{ encabezado.objetivo }}
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+
+
+		{# =========================
+																		       FORM RESPONSABLES
+																		       ========================= #}
+		<form method="post" action="{{ path('app_encabezado_responsables_edit', { id: encabezado.id }) }}" data-turbo-frame="content" id="responsables-form">
+
+			<div class="card pta-card mb-4">
+
+				<div class="d-flex justify-content-between align-items-center">
+					<h4 class="pta-title mb-0">
+						<i class="bi bi-people-fill"></i>
+						Responsables del Proyecto
+					</h4>
+				</div>
+
+				<div
+					class="row g-3 mt-2">
+
+					{# RESPONSABLE #}
+					<div class="col-md-4 position-relative">
+						<label class="form-label">Responsable</label>
+						<input type="hidden" name="responsable_id" value="{{ encabezado.responsable.id ?? '' }}">
+						<input type="text" class="form-control responsable-search" autocomplete="off" value="{{ encabezado.responsable ?? '' }}">
+						<div class="responsable-results search-results"></div>
+					</div>
+
+					{# SUPERVISOR #}
+					<div class="col-md-4 position-relative">
+						<label class="form-label">Supervisor</label>
+						<input type="hidden" name="supervisor_id" value="{{ encabezado.responsables.supervisor.id ?? '' }}">
+						<input type="text" class="form-control supervisor-search" autocomplete="off" value="{{ encabezado.responsables.supervisor ?? '' }}">
+						<div class="supervisor-results search-results"></div>
+					</div>
+
+					{# AVAL #}
+					<div class="col-md-4 position-relative">
+						<label class="form-label">Aval</label>
+						<input type="hidden" name="aval_id" value="{{ encabezado.responsables.aval.id ?? '' }}">
+						<input type="text" class="form-control aval-search" autocomplete="off" value="{{ encabezado.responsables.aval ?? '' }}">
+						<div class="aval-results search-results"></div>
+					</div>
+
+				</div>
+			</div>
+
+			<input type="hidden" name="_token" value="{{ csrf_token('responsables_' ~ encabezado.id) }}">
+
+			<div class="text-center">
+				<button type="button" class="btn btn-primary px-5" id="btn-confirmar">
+					<i class="bi bi-save me-2"></i>
+					Guardar cambios
+				</button>
+
+			</div>
+
+		</form>
+	</div>
+
+	{# =========================
+									   MODAL CONFIRMACIÓN
+									   ========================= #}
+	<div class="modal fade" id="confirmModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content bg-dark text-light">
+				<div class="modal-header">
+					<h5 class="modal-title">Confirmar cambios</h5>
+				</div>
+				<div class="modal-body">
+					<p>Estás a punto de modificar:</p>
+					<ul id="lista-cambios"></ul>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" data-bs-dismiss="modal">
+						Cancelar
+					</button>
+					<button class="btn btn-danger" id="btn-guardar-final">
+						Confirmar
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</turbo-frame>
