@@ -4,7 +4,7 @@
 
 .login-wrapper {
     position: relative;
-    min-height: 100vh;
+    height: 100vh;
 
     display: flex;
     align-items: center;
@@ -21,6 +21,7 @@
     color: #e9ecef;
     overflow: hidden; /* 👈 necesario para burbujas */
 }
+
 
 /* =========================================================
    LOGIN — TARJETA
@@ -186,14 +187,12 @@
     font-weight: 500;
 }
 
-
 /* =========================================================
    BURBUJAS FLOTANTES — BACKGROUND
    ========================================================= */
 
 .login-bubble {
     position: absolute;
-    bottom: -120px;
 
     background: radial-gradient(
         circle at 30% 30%,
@@ -206,15 +205,22 @@
     filter: blur(1px);
     opacity: 0.6;
 
-    animation: floatBubble linear infinite;
-    z-index: 1; /* 👈 detrás del login */
+    animation-name: floatBubble;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+
+    will-change: transform;
+    backface-visibility: hidden;
+
+    z-index: 1;
 }
 
 @keyframes floatBubble {
     from {
-        transform: translateY(0) translateX(0);
+        transform: translateY(0);
     }
     to {
-        transform: translateY(-120vh) translateX(40px);
+        transform: translateY(-160vh);
     }
 }
+

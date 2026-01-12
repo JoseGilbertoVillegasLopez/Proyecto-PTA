@@ -72,26 +72,57 @@ final class PersonalApiController extends AbstractController
 
         /**
          * =================================================
-         * CONSULTA A LA BASE DE DATOS
+         * FLAG PARA INCLUIR PERSONAL INACTIVO
+         * -------------------------------------------------
+         * - Por defecto: NO se incluyen inactivos
+         * - Si viene ?inactivos=1 → incluye inactivos
+         *
+         * Ejemplos:
+         *   /api/personal/buscar?q=juan
+         *   /api/personal/buscar?q=juan&inactivos=1
+         * =================================================
+         */
+        $incluirInactivos = (bool) $request->query->get('inactivos', false);
+
+        /**
+         * =================================================
+         * CONSTRUCCIÓN DE LA CONSULTA
          * -------------------------------------------------
          * - Búsqueda case-insensitive
-         * - Se buscan coincidencias parciales en:
+         * - Coincidencias parciales en:
          *   - nombre
          *   - apellido paterno
          *   - apellido materno
          * - Máximo 10 resultados
          * =================================================
          */
-        $result = $personalRepository->createQueryBuilder('p')
+        $qb = $personalRepository->createQueryBuilder('p')
             ->andWhere(
                 'LOWER(p.nombre) LIKE :q 
                 OR LOWER(p.ap_paterno) LIKE :q 
                 OR LOWER(p.ap_materno) LIKE :q'
             )
             ->setParameter('q', '%' . mb_strtolower($q) . '%')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
+            ->setMaxResults(10);
+
+        /**
+         * =================================================
+         * FILTRO POR ESTADO (ACTIVO / INACTIVO)
+         * -------------------------------------------------
+         * - Si NO se solicita incluir inactivos:
+         *     → solo personal activo
+         * =================================================
+         */
+        if (!$incluirInactivos) {
+            $qb->andWhere('p.activo = true');
+        }
+
+        /**
+         * =================================================
+         * EJECUCIÓN DE LA CONSULTA
+         * =================================================
+         */
+        $result = $qb->getQuery()->getResult();
 
         /**
          * =================================================
