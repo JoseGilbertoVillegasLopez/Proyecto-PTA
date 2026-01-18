@@ -201,6 +201,13 @@ function initPtaNew(frame, ptaForm) {
         hiddenSelector: 'input[name$="[aval]"]',
         resultsSelector: ".aval-results"
     });
+    // Inicialización del buscador de Responsable del PTA
+initPersonalSearch({
+    inputSelector: ".responsable-search",
+    hiddenSelector: 'input[name="responsable_id"]',
+    resultsSelector: ".responsable-results"
+});
+
 
     /**
      * =====================================================

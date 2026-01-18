@@ -11,11 +11,7 @@
    THEAD
    ====================== */
 .pta-card table thead th {
-    background: linear-gradient(
-        180deg,
-        #0b3c6f,
-        #062a4f
-    );
+    background: linear-gradient(180deg, #0b3c6f, #062a4f);
     color: #ffffff;
     font-weight: 600;
     text-transform: uppercase;
@@ -52,8 +48,6 @@
 .pta-card table thead th:last-child {
     border-right: none;
 }
-
-
 
 /* ======================
    OBJETIVO (mejor lectura)
@@ -283,11 +277,11 @@
 }
 
 .pta-toolbar-right .form-label {
-    font-size: 0.95rem;     /* más grande */
+    font-size: 0.95rem; /* más grande */
     font-weight: 600;
-    color: #cfd8dc;         /* claro en dark */
-    margin-bottom: 0;       /* evita que se baje */
-    white-space: nowrap;   /* no se parte en 2 líneas */
+    color: #cfd8dc; /* claro en dark */
+    margin-bottom: 0; /* evita que se baje */
+    white-space: nowrap; /* no se parte en 2 líneas */
 }
 .pta-badge-periodo {
     background: rgba(13, 110, 253, 0.15);
@@ -297,4 +291,44 @@
     border-radius: 999px;
     font-weight: 600;
     font-size: 0.85rem;
+}
+/* =========================================================
+   LOGOUT — INDEX GENERAL (NO ADMIN)
+   ========================================================= */
+
+.pta-general-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 56px;
+    height: 56px;
+
+    margin-bottom: 20px; /* aire con el card */
+
+    border-radius: 14px;
+    background: rgba(13, 202, 240, 0.1);
+    border: 1px solid rgba(13, 202, 240, 0.35);
+
+    color: #0dcaf0;
+    font-size: 2.1rem;
+    text-decoration: none;
+
+    transition: background 0.15s ease, box-shadow 0.15s ease,
+        transform 0.15s ease;
+}
+
+.pta-general-logout:hover {
+    background: rgba(13, 202, 240, 0.22);
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.35);
+    transform: translateY(-2px);
+}
+/* =========================
+   LOGOUT WRAPPER — DERECHA
+   ========================= */
+
+.pta-general-logout-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
 }

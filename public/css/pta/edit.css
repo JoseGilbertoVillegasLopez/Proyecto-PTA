@@ -323,10 +323,14 @@
 
 /* Ajuste de columnas */
 .pta-indicadores-table th:nth-child(1),
-.pta-indicadores-table td:nth-child(1) { width: 35%; }
+.pta-indicadores-table td:nth-child(1) {
+    width: 35%;
+}
 
 .pta-indicadores-table th:nth-child(2),
-.pta-indicadores-table td:nth-child(2) { width: 35%; }
+.pta-indicadores-table td:nth-child(2) {
+    width: 35%;
+}
 
 .pta-indicadores-table th:nth-child(3),
 .pta-indicadores-table td:nth-child(3),
@@ -413,9 +417,9 @@
 /* Badge base de tendencia */
 .pta-indicadores-table .badge,
 .pta-indicador-table .badge {
-    font-size: 0.95rem;          /* 👈 más grande */
-    padding: 0.45rem 0.85rem;    /* 👈 más aire */
-    border-radius: 999px;        /* estilo píldora */
+    font-size: 0.95rem; /* 👈 más grande */
+    padding: 0.45rem 0.85rem; /* 👈 más aire */
+    border-radius: 999px; /* estilo píldora */
     font-weight: 600;
     letter-spacing: 0.3px;
 }
@@ -425,9 +429,61 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 70px;             /* 👈 tamaño visual consistente */
+    min-width: 70px; /* 👈 tamaño visual consistente */
 }
 
+/* =========================================================
+   PTA — INPUTS DE MESES (EDIT)
+   Paleta institucional PTA (cian)
+   ========================================================= */
 
+.pta-acciones-table .mes-input {
+    width: 100px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 10px;
 
+    background-image: none !important;
+    box-shadow: none !important;
+}
 
+/* ===============================
+   MES INACTIVO
+   =============================== */
+.pta-acciones-table .mes-input.mes-inactivo {
+    background-color: #1b1f24 !important;
+    border: 1px solid #2b3036 !important;
+    color: #6c757d !important;
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* ===============================
+   MES ACTIVO (SIN VALOR)
+   =============================== */
+.pta-acciones-table .mes-input.mes-activo {
+    background-color: rgba(13, 202, 240, 0.18) !important;
+    border: 1px solid rgba(13, 202, 240, 0.55) !important;
+    color: #e7faff !important;
+    opacity: 1;
+    cursor: text;
+}
+
+/* ===============================
+   MES ACTIVO CON VALOR
+   =============================== */
+.pta-acciones-table .mes-input.mes-activo.mes-con-valor {
+    background-color: rgba(13, 202, 240, 0.35) !important;
+    border: 1px solid #0dcaf0 !important;
+    color: #082f35 !important;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.35) !important;
+}
+
+/* ===============================
+   FOCUS SOLO ACTIVO
+   =============================== */
+.pta-acciones-table .mes-input.mes-activo:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.55) !important;
+}

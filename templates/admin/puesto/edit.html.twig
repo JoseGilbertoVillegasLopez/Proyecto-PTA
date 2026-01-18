@@ -1,34 +1,31 @@
 <turbo-frame id="content">
-    <section class="puesto-form puesto-form--edit">
+	<section
+		class="puesto-form puesto-form--edit">
 
-        <!-- HEADER -->
-        <header class="puesto-form__header">
+		<!-- HEADER -->
+		<header
+			class="puesto-form__header">
 
-            <!-- VOLVER -->
-            <a
-                href="{{ path('app_puesto_index') }}"
-                data-turbo-frame="content"
-                class="puesto-form__icon-btn puesto-form__icon-btn--back"
-                title="Volver"
-            >
-                <i class="bi bi-arrow-left"></i>
-            </a>
+			<!-- VOLVER -->
+			<a href="{{ path('app_puesto_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="puesto-form__icon-btn puesto-form__icon-btn--back" title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
 
-            <!-- TÍTULO + SUB -->
-            <div class="puesto-form__header-center">
-                <h1 class="puesto-form__title">
-                    Editar puesto
-                </h1>
+			<!-- TÍTULO + SUB -->
+			<div class="puesto-form__header-center">
+				<h1 class="puesto-form__title">
+					Editar puesto
+				</h1>
 
-                <p class="puesto-form__subtitle">
-                    Edita solo los campos necesarios
-                </p>
-            </div>
+				<p class="puesto-form__subtitle">
+					Edita solo los campos necesarios
+				</p>
+			</div>
 
-        </header>
+		</header>
 
-        <!-- FORM -->
-        {{ form_start(form, {
+		<!-- FORM -->
+		{{ form_start(form, {
             action: path('app_puesto_edit', { id: puesto.id }),
             attr: {
                 'data-turbo-frame': 'content',
@@ -36,31 +33,33 @@
             }
         }) }}
 
-            <div class="puesto-form__group">
-                {{ form_label(form.nombre) }}
-                {{ form_widget(form.nombre) }}
-                {{ form_errors(form.nombre) }}
-            </div>
+		<div class="puesto-form__group">
+			{{ form_label(form.nombre) }}
+			{{ form_widget(form.nombre) }}
+			{{ form_errors(form.nombre) }}
+		</div>
+		<div class="puesto-form__group">
+			{{ form_label(form.supervisorDirecto) }}
+			{{ form_widget(form.supervisorDirecto) }}
+			{{ form_errors(form.supervisorDirecto) }}
+		</div>
 
-            <div class="puesto-form__group">
-                {{ form_label(form.activo) }}
-                {{ form_widget(form.activo) }}
-                {{ form_errors(form.activo) }}
-            </div>
 
-            <!-- GUARDAR -->
-            <div class="puesto-form__submit-proxy">
-                <button
-                    type="submit"
-                    class="puesto-form__icon-btn puesto-form__icon-btn--save"
-                    title="Guardar cambios"
-                >
-                    <i class="bi bi-check-lg"></i>
-                </button>
-            </div>
+		<div class="puesto-form__group">
+			{{ form_label(form.activo) }}
+			{{ form_widget(form.activo) }}
+			{{ form_errors(form.activo) }}
+		</div>
 
-            {{ form_rest(form) }}
-        {{ form_end(form) }}
+		<!-- GUARDAR -->
+		<div class="puesto-form__submit-proxy">
+			<button type="submit" class="puesto-form__icon-btn puesto-form__icon-btn--save" title="Guardar cambios">
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
 
-    </section>
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
+
+	</section>
 </turbo-frame>

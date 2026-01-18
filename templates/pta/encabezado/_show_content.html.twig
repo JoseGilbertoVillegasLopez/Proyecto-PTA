@@ -11,15 +11,16 @@
 
 	<div class="pta-topbar-left">
 
-		<a href="{{ path('app_encabezado_index') }}" data-turbo-frame="content" class="pta-back-btn">
+		<a href="{{ path('app_encabezado_index', { anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-frame="content" data-turbo-action="replace" class="pta-back-btn">
 			<i class="bi bi-arrow-left"></i>
 			<span>Volver</span>
 		</a>
 
-		<a href="{{ path('app_encabezado_graficas', { id: encabezado.id }) }}" data-turbo-frame="content" class="pta-graph-btn">
+		<a href="{{ path('app_encabezado_graficas', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" {% if app.user and 'ROLE_ADMIN' in app.user.roles %} data-turbo-frame="content" data-turbo-action="advance" {% endif %} class="pta-graph-btn">
 			<i class="bi bi-bar-chart-line"></i>
 			<span>Gráficas</span>
 		</a>
+
 
 		<a href="{{ path('app_encabezado_export_excel', { id: encabezado.id }) }}" data-turbo="false" class="pta-graph-btn">
 			<i class="bi bi-file-earmark-excel"></i>
@@ -211,10 +212,21 @@
        ========================================================= #}
 <div class="card pta-card mb-4">
 
-	<h4 class="pta-title">
-		<i class="bi bi-people-fill"></i>
-		Responsables del Proyecto
-	</h4>
+	<div class="d-flex justify-content-between align-items-center mb-3">
+
+		<h4 class="pta-title mb-0">
+			<i class="bi bi-people-fill"></i>
+			Responsables del Proyecto
+		</h4>
+
+		{% if is_granted('ROLE_ADMIN') %}
+			<a href="{{ path('app_encabezado_responsables_edit', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-edit" title="Cambiar responsables del proyecto">
+				<i class="bi bi-pencil-square"></i>
+			</a>
+		{% endif %}
+
+	</div>
+
 
 	<table class="table table-dark table-bordered align-middle">
 

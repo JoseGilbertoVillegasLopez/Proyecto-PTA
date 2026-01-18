@@ -79,8 +79,9 @@ final class DepartamentoController extends AbstractController
             );
             // Redirige al listado usando el patrón Post/Redirect/Get
         }
-
-        // Si el formulario no fue enviado o tiene errores
+        $isTurbo = $request->headers->get('Turbo-Frame');
+        if($isTurbo){
+            // Si el formulario no fue enviado o tiene errores
         return $this->render('admin/departamento/new.html.twig', [
             'departamento' => $departamento,
             // Se envía la entidad (útil para la vista)
@@ -88,17 +89,34 @@ final class DepartamentoController extends AbstractController
             'form' => $form,
             // Se envía el formulario para renderizarlo
         ]);
+        }
+        return $this->render('admin/dashboard/index.html.twig',[
+            'section' => 'departamentos',
+            'content_url' => $this->generateUrl('app_departamento_new',[
+            ]),
+        ]);
+        
     }
 
     #[Route('/{id}', name: 'app_departamento_show', methods: ['GET'])]
     // Ruta GET /admin/departamento/{id}
     // Muestra el detalle de un departamento
-    public function show(Departamento $departamento): Response
+    public function show(Request $request, Departamento $departamento): Response
     {
-        // Symfony convierte automáticamente {id} en una entidad Departamento
+
+        $isTurbo = $request->headers->get('Turbo-Frame');
+        if($isTurbo){
+            // Symfony convierte automáticamente {id} en una entidad Departamento
         return $this->render('admin/departamento/show.html.twig', [
             'departamento' => $departamento,
             // Pasa la entidad a la vista de detalle
+        ]);
+        }
+        return $this->render('admin/dashboard/index.html.twig',[
+            'section' => 'departamentos',
+            'content_url' => $this->generateUrl('app_departamento_show',[
+                'id' => $departamento->getId(),
+            ]),
         ]);
     }
 
@@ -131,14 +149,22 @@ final class DepartamentoController extends AbstractController
             );
             // Redirige al listado después de guardar
         }
-
-        // Si no se envió el formulario o tiene errores
+        $isTurbo = $request->headers->get('Turbo-Frame');
+        if($isTurbo){
+            // Si no se envió el formulario o tiene errores
         return $this->render('admin/departamento/edit.html.twig', [
             'departamento' => $departamento,
             // Entidad actual
 
             'form' => $form,
             // Formulario de edición
+        ]);
+        }
+        return $this->render('admin/dashboard/index.html.twig',[
+            'section' => 'departamentos',
+            'content_url' => $this->generateUrl('app_departamento_edit',[
+                'id' => $departamento->getId(),
+            ]),
         ]);
     }
 

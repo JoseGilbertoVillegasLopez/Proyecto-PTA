@@ -79,8 +79,9 @@ final class PuestoController extends AbstractController
             );
             // Redirige al listado aplicando el patrón Post/Redirect/Get
         }
-
-        // Si el formulario no fue enviado o tiene errores
+        $isTurbo = $request->headers->get('Turbo-Frame');
+        if($isTurbo){
+            // Si el formulario no fue enviado o tiene errores
         return $this->render('admin/puesto/new.html.twig', [
             'puesto' => $puesto,
             // Se envía la entidad a la vista (útil para valores por defecto)
@@ -88,18 +89,38 @@ final class PuestoController extends AbstractController
             'form' => $form,
             // Se envía el formulario para renderizarlo
         ]);
+        }
+        return $this->render('admin/dashboard/index.html.twig',[
+            'section' => 'puestos',
+            'content_url' => $this->generateUrl('app_puesto_new',[
+            ]),
+        ]);
+        
     }
 
     #[Route('/{id}', name: 'app_puesto_show', methods: ['GET'])]
     // Ruta GET /admin/puesto/{id}
     // Muestra el detalle de un puesto
-    public function show(Puesto $puesto): Response
+    public function show(Request $request, Puesto $puesto): Response
     {
+
+    $isTurbo = $request->headers->get('Turbo-Frame');
+
+    if ($isTurbo){
         // Symfony convierte automáticamente {id} en una entidad Puesto
         return $this->render('admin/puesto/show.html.twig', [
             'puesto' => $puesto,
             // Pasa la entidad completa a la vista
         ]);
+    }
+    return $this->render('admin/dashboard/index.html.twig',[
+        'section' => 'puestos',
+        'content_url' => $this->generateUrl('app_puesto_show',[
+            'id' => $puesto->getId(),
+        ]),
+    ]);
+
+        
     }
 
     #[Route('/{id}/edit', name: 'app_puesto_edit', methods: ['GET', 'POST'])]
@@ -131,15 +152,25 @@ final class PuestoController extends AbstractController
             );
             // Redirige al listado después de guardar los cambios
         }
+        $isTurbo = $request->headers->get('Turbo-Frame');
 
-        // Si no se envió el formulario o tiene errores
-        return $this->render('admin/puesto/edit.html.twig', [
+        if ($isTurbo){
+            // Si no se envió el formulario o tiene errores
+            return $this->render('admin/puesto/edit.html.twig', [
             'puesto' => $puesto,
             // Entidad actual a editar
 
             'form' => $form,
             // Formulario de edición
+            ]);
+        }
+        return $this->render('admin/dashboard/index.html.twig',[
+            'section' => 'puestos',
+            'content_url' => $this->generateUrl('app_puesto_edit',[
+                'id' => $puesto->getId(),
+            ]),
         ]);
+        
     }
 
     #[Route('/{id}', name: 'app_puesto_delete', methods: ['POST'])]

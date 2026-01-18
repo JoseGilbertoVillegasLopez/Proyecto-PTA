@@ -24,13 +24,12 @@ use App\Entity\User;
 public function index(
     Request $request,
     EncabezadoRepository $encabezadoRepository,
-    DepartamentoRepository $departamentoRepository,
     PuestoRepository $puestoRepository,
     \App\Service\Pta\PtaAccessResolver $ptaAccessResolver
 ): Response {
 
     /* =====================================================
-     * 1. FILTRO COMÚN: AÑO DE EJECUCIÓN
+     * 1. AÑO ACTUAL (DEFAULT)
      * ===================================================== */
     $anioActual    = (int) date('Y');
     $anioEjecucion = $request->query->getInt('anio', $anioActual);
@@ -39,135 +38,87 @@ public function index(
      * 2. USUARIO + ACCESO
      * ===================================================== */
     /** @var \App\Entity\User $usuario */
-    $usuario = $this->getUser();
+    $usuario  = $this->getUser();
     $personal = $usuario->getPersonal();
 
     $access = $ptaAccessResolver->resolve($usuario);
 
     /* =====================================================
-     * 3. QUERY BASE
+     * 3. FILTROS REQUEST
      * ===================================================== */
-    $qb = $encabezadoRepository->createQueryBuilder('e')
-        ->andWhere('e.anioEjecucion = :anio')
-        ->setParameter('anio', $anioEjecucion)
-        ->orderBy('e.fechaCreacion', 'DESC');
+    $filters = [
+        'anio'         => $anioEjecucion,
+        'puesto'       => $request->query->get('puesto'),
+        'departamento' => $request->query->get('departamento'),
+        'personal_id'  => $personal?->getId(),
+    ];
 
     /* =====================================================
-     * 4. JOIN BASE (SI NO ES PROPIO)
+     * 4. PTA VISIBLES
      * ===================================================== */
-    if ($access['scope'] !== 'PROPIO') {
-        $qb->join('e.responsable', 'p');
-    }
+    $encabezados = $encabezadoRepository->findVisiblePta($access, $filters);
 
     /* =====================================================
-     * 5. ALCANCE MÁXIMO
+     * 5. FILTROS DISPONIBLES
      * ===================================================== */
 
-    if ($access['scope'] === 'PROPIO') {
-        $qb->andWhere('e.responsable = :personal')
-           ->setParameter('personal', $personal);
-    }
-
-    if ($access['scope'] === 'DEPARTAMENTAL') {
-        $qb->andWhere('p.departamento = :departamentoBase')
-           ->setParameter('departamentoBase', $personal->getDepartamento()->getId());
-    }
-
-    if ($access['scope'] === 'MULTI_DEPARTAMENTAL') {
-        $qb->andWhere('p.departamento IN (:departamentos)')
-           ->setParameter('departamentos', $access['departamentos']);
-    }
-
-    // GLOBAL → sin restricción
-
-    /* =====================================================
-     * 6. FILTROS REDUCTIVOS
-     * ===================================================== */
-
-    if (
-        $access['filters']['departamento'] &&
-        $request->query->get('departamento')
-    ) {
-        $qb->andWhere('p.departamento = :departamentoFiltro')
-           ->setParameter(
-               'departamentoFiltro',
-               (int) $request->query->get('departamento')
-           );
-    }
-
-    if (
-        $access['filters']['puesto'] &&
-        $request->query->get('puesto')
-    ) {
-        $qb->andWhere('p.puesto = :puestoFiltro')
-           ->setParameter(
-               'puestoFiltro',
-               (int) $request->query->get('puesto')
-           );
-    }
-
-    /* =====================================================
-     * 7. EJECUTAR QUERY
-     * ===================================================== */
-    $encabezados = $qb->getQuery()->getResult();
-
-    /* =====================================================
-     * 8. CONSTRUIR FILTROS PARA LA VISTA
-     * ===================================================== */
-
-    // ---------- DEPARTAMENTOS ----------
-    $departamentosFiltro = [];
-
-    if ($access['filters']['departamento']) {
-
-        if ($access['scope'] === 'GLOBAL') {
-            $departamentos = $departamentoRepository->findAll();
-        } else {
-            $departamentos = $departamentoRepository->findBy([
-                'id' => $access['departamentos']
-            ]);
-        }
-
-        foreach ($departamentos as $departamento) {
-            $departamentosFiltro[$departamento->getId()] = $departamento->getNombre();
-        }
-    }
+    // ---------- AÑOS ----------
+    $aniosFiltro = $encabezadoRepository->findAniosDisponibles(
+        $access,
+        $personal?->getId() ?? 0
+    );
 
     // ---------- PUESTOS ----------
     $puestosFiltro = [];
+    if ($access['filters']['puesto']) {
 
-if ($access['filters']['puesto']) {
-    $puestos = $puestoRepository->findAll();
+        $puestos = $access['scope'] === 'GLOBAL'
+            ? $puestoRepository->findBy(['activo' => true], ['nombre' => 'ASC'])
+            : $puestoRepository->findBy(['id' => $access['puestos_visibles']], ['nombre' => 'ASC']);
 
-    foreach ($puestos as $puesto) {
-        $puestosFiltro[$puesto->getId()] = $puesto->getNombre();
+        foreach ($puestos as $p) {
+            $puestosFiltro[$p->getId()] = $p->getNombre();
+        }
     }
-}
 
-$isAdmin = in_array('ROLE_ADMIN', $usuario->getRoles(), true);
+    // ---------- DEPARTAMENTOS ----------
+    $departamentosFiltro = [];
+    if ($access['filters']['departamento']) {
 
-$view = $isAdmin
-    ? 'pta/encabezado/index.html.twig'        // UI ADMIN (Turbo)
-    : 'pta/encabezado/indexGeneral.html.twig'; // UI GENERAL
+        $departamentos = $access['scope'] === 'GLOBAL'
+            ? $puestoRepository->findBy(['activo' => true], ['nombre' => 'ASC'])
+            : $puestoRepository->findBy(['id' => $access['departamentos_visibles']], ['nombre' => 'ASC']);
+
+        foreach ($departamentos as $d) {
+            if ($d->getSubordinados()->count() > 0) {
+                $departamentosFiltro[$d->getId()] = $d->getNombre();
+            }
+        }
+    }
 
     /* =====================================================
-     * 10. RENDER
+     * 6. VISTA
+     * ===================================================== */
+    $view = in_array('ROLE_ADMIN', $usuario->getRoles(), true)
+        ? 'pta/encabezado/index.html.twig'
+        : 'pta/encabezado/indexGeneral.html.twig';
+
+    /* =====================================================
+     * 7. RENDER
      * ===================================================== */
     return $this->render($view, [
-    'encabezados'      => $encabezados,
-    'anioSeleccionado' => $anioEjecucion,
-    'access'           => $access,
-    'departamentosFiltro' => $departamentosFiltro,
-    'puestosFiltro'       => $puestosFiltro,
-    'filtrosActivos' => [
-        'departamento' => $request->query->get('departamento'),
-        'puesto'       => $request->query->get('puesto'),
-    ],
-]);
-
+        'encabezados'         => $encabezados,
+        'anioSeleccionado'    => $anioEjecucion,
+        'aniosFiltro'         => $aniosFiltro,
+        'access'              => $access,
+        'puestosFiltro'       => $puestosFiltro,
+        'departamentosFiltro' => $departamentosFiltro,
+        'filtrosActivos' => [
+            'puesto'       => $filters['puesto'],
+            'departamento' => $filters['departamento'],
+        ],
+    ]);
 }
-
-
 
 
 
@@ -269,7 +220,6 @@ $view = $isAdmin
                  */
                 $responsables = $encabezado->getResponsables();
 
-                $responsables = $encabezado->getResponsables();
 
                 if ($responsables) {
 
@@ -373,182 +323,210 @@ $view = $isAdmin
              * RENDER DE LA VISTA NEW (GET o FORM INVÁLIDO)
              * =========================================================
              */
-            return $this->render('pta/encabezado/new.html.twig', [
-                'encabezado' => $encabezado,
-                'form' => $form,
-            ]);
+            $isTurbo = $request->headers->get('Turbo-Frame');
+
+if ($isTurbo) {
+    // Navegación desde dashboard (Turbo)
+    return $this->render('pta/encabezado/new.html.twig', [
+        'encabezado' => $encabezado,
+        'form' => $form,
+    ]);
+}
+
+// NO Turbo → acceso directo o F5
+if ($this->isGranted('ROLE_ADMIN')) {
+    return $this->render('admin/dashboard/index.html.twig', [
+        'section' => 'pta',
+        'content_url' => $this->generateUrl('app_encabezado_new', [
+            'anio' => $anioEjecucion,
+        ]),
+    ]);
+}
+
+// Usuario normal → layout completo
+return $this->render('pta/encabezado/new.html.twig', [
+    'encabezado' => $encabezado,
+    'form' => $form,
+]);
+
         }
 
 
-    #[Route('/{id}', name: 'app_encabezado_show', methods: ['GET'])]
-    public function show(Encabezado $encabezado): Response
-    {
+
+
+#[Route('/{id}', name: 'app_encabezado_show', methods: ['GET'])]
+public function show(
+    Request $request,
+    Encabezado $encabezado
+): Response {
+
+    // Preservar filtros actuales
+    $filtros = [
+        'anio'         => $request->query->get('anio'),
+        'departamento' => $request->query->get('departamento'),
+        'puesto'       => $request->query->get('puesto'),
+    ];
+
+    $isTurbo = $request->headers->get('Turbo-Frame');
+
+    // ============================
+    // Turbo → solo fragmento
+    // ============================
+    if ($isTurbo) {
         return $this->render('pta/encabezado/show.html.twig', [
             'encabezado' => $encabezado,
+            'filtros'    => $filtros,
         ]);
     }
+
+    // ============================
+    // Admin sin Turbo → dashboard
+    // ============================
+    if ($this->isGranted('ROLE_ADMIN')) {
+        return $this->render('admin/dashboard/index.html.twig', [
+            'section' => 'pta',
+            'content_url' => $this->generateUrl('app_encabezado_show', [
+                'id' => $encabezado->getId(),
+            ] + $filtros),
+        ]);
+    }
+
+    // ============================
+    // Usuario normal → layout base
+    // ============================
+    return $this->render('pta/encabezado/show.html.twig', [
+        'encabezado' => $encabezado,
+        'filtros'    => $filtros,
+    ]);
+}
+
 
 
 
     #[Route('/{id}/edit', name: 'app_encabezado_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        Request $request,
-        Encabezado $encabezado,
-        EntityManagerInterface $entityManager,
-        EncabezadoRepository $encabezadoRepository
-    ): Response
-    {
-        /**
-         * =====================================================
-         * BLOQUE POST
-         * =====================================================
-         * Este bloque se ejecuta únicamente cuando el usuario
-         * envía el formulario de captura de avance mensual.
-         *
-         * Responsabilidad:
-         *  - Validar CSRF
-         *  - Leer valores enviados por acción y mes
-         *  - Normalizar valores vacíos
-         *  - Guardar el avance (JSON) en cada acción
-         *  - Retornar al index manteniendo el año seleccionado
-         * =====================================================
-         */
-        if ($request->isMethod('POST')) {
+public function edit(
+    Request $request,
+    Encabezado $encabezado,
+    EntityManagerInterface $entityManager,
+    EncabezadoRepository $encabezadoRepository
+): Response
+{
+    /**
+     * =====================================================
+     * SEGURIDAD — CAPTURA DE AVANCES
+     * -----------------------------------------------------
+     * SOLO el responsable del PTA puede capturar avances
+     * El rol (ADMIN o no) NO importa aquí
+     * =====================================================
+     */
+    $user = $this->getUser();
+    $responsable = $encabezado->getResponsable();
 
-            /**
-             * -------------------------------------------------
-             * 1. Determinar el año de ejecución
-             * -------------------------------------------------
-             * - Se usa el año actual como valor por defecto
-             * - Si viene un año por query (?anio=XXXX),
-             *   se respeta para mantener el contexto
-             */
-            $anioActual = (int) date('Y');
+    if (!$responsable || $responsable->getUser() !== $user) {
+        throw $this->createAccessDeniedException(
+            'No puedes capturar avances de un PTA que no es tuyo.'
+        );
+    }
 
-            $anioEjecucion = $request->query->getInt('anio', $anioActual);
+    /**
+     * =====================================================
+     * BLOQUE POST
+     * =====================================================
+     */
+    if ($request->isMethod('POST')) {
 
-            /**
-             * -------------------------------------------------
-             * 2. Obtener encabezados del año seleccionado
-             * -------------------------------------------------
-             * Estos datos NO afectan la edición.
-             * Se usan únicamente para renderizar correctamente
-             * la vista index después de guardar el avance.
-             */
-            $encabezados = $encabezadoRepository->createQueryBuilder('e')
-                ->andWhere('e.anioEjecucion = :anio')
-                ->setParameter('anio', $anioEjecucion)
-                ->orderBy('e.fechaCreacion', 'DESC')
-                ->getQuery()
-                ->getResult();
+        // 1. Año de ejecución
+        $anioActual = (int) date('Y');
+        $anioEjecucion = $request->query->getInt('anio', $anioActual);
 
-            /**
-             * -------------------------------------------------
-             * 3. Validación de token CSRF
-             * -------------------------------------------------
-             * Protege el formulario contra ataques CSRF.
-             * El token está ligado al ID del encabezado.
-             */
-            if (
-                !$this->isCsrfTokenValid(
-                    'edit' . $encabezado->getId(),
-                    $request->request->get('_token')
-                )
-            ) {
-                return $this->redirectToRoute('app_encabezado_index');
+        // 2. Preservar filtros
+        $departamentoSeleccionado = $request->query->get('departamento');
+        $puestoSeleccionado       = $request->query->get('puesto');
 
-            }
-
-            /**
-             * -------------------------------------------------
-             * 4. Obtener valores enviados del formulario
-             * -------------------------------------------------
-             * Estructura esperada:
-             * [
-             *   accion_id => [
-             *     'Enero' => valor,
-             *     'Febrero' => valor,
-             *     ...
-             *   ]
-             * ]
-             */
-            $valoresAlcanzados = $request->request->all('valor_alcanzado');
-
-            /**
-             * -------------------------------------------------
-             * 5. Recorrer acciones del encabezado
-             * -------------------------------------------------
-             * Solo se procesan acciones que pertenecen
-             * al encabezado actual.
-             */
-            foreach ($encabezado->getAcciones() as $accion) {
-
-                $accionId = $accion->getId();
-
-                // Si la acción no viene en el POST, se omite
-                if (!isset($valoresAlcanzados[$accionId])) {
-                    continue;
-                }
-
-                $meses = $valoresAlcanzados[$accionId];
-
-                /**
-                 * -------------------------------------------------
-                 * 6. Normalización de valores
-                 * -------------------------------------------------
-                 * Convierte strings vacíos ("") a null para:
-                 *  - Diferenciar entre "sin captura" y "valor 0"
-                 *  - Evitar datos inconsistentes en el JSON
-                 */
-                foreach ($meses as $mes => $valor) {
-                    if ($valor === '') {
-                        $meses[$mes] = null;
-                    }
-                }
-
-                /**
-                 * -------------------------------------------------
-                 * 7. Guardar avance mensual en la acción
-                 * -------------------------------------------------
-                 * El avance se guarda como JSON asociado
-                 * directamente a la acción.
-                 */
-                $accion->setValorAlcanzado($meses);
-            }
-
-            /**
-             * -------------------------------------------------
-             * 8. Persistir cambios en base de datos
-             * -------------------------------------------------
-             * No se usa persist() porque las acciones ya
-             * están administradas por Doctrine.
-             */
-            $entityManager->flush();
-
-            /**
-             * -------------------------------------------------
-             * 9. Retornar a la vista index
-             * -------------------------------------------------
-             * Se renderiza directamente la vista index
-             * manteniendo el año seleccionado.
-             * (No se usa redirect por diseño del flujo)
-             */
-            return $this->redirectToRoute(
-        'app_encabezado_index',
-    ['anio' => $anioEjecucion]
-            );
+        // 3. Validación CSRF
+        if (
+            !$this->isCsrfTokenValid(
+                'edit' . $encabezado->getId(),
+                $request->request->get('_token')
+            )
+        ) {
+            return $this->redirectToRoute('app_encabezado_index', [
+                'anio'         => $anioEjecucion,
+                'departamento' => $departamentoSeleccionado,
+                'puesto'       => $puestoSeleccionado,
+            ]);
         }
 
+        // 4. Valores enviados
+        $valoresAlcanzados = $request->request->all('valor_alcanzado');
 
+        // 5. Guardar avances por acción
+        foreach ($encabezado->getAcciones() as $accion) {
 
-            if ($encabezado->getResponsables() === null) {
-                $encabezado->setResponsables(new \App\Entity\Responsables());
+            $accionId = $accion->getId();
+
+            if (!isset($valoresAlcanzados[$accionId])) {
+                continue;
             }
 
-            return $this->render('pta/encabezado/edit.html.twig', [
-                'encabezado' => $encabezado,
-            ]);
+            $meses = $valoresAlcanzados[$accionId];
+
+            foreach ($meses as $mes => $valor) {
+                if ($valor === '') {
+                    $meses[$mes] = null;
+                }
+            }
+
+            $accion->setValorAlcanzado($meses);
+        }
+
+        // 6. Persistir
+        $entityManager->flush();
+
+        // 7. Regresar al index con filtros
+        return $this->redirectToRoute('app_encabezado_index', [
+            'anio'         => $anioEjecucion,
+            'departamento' => $departamentoSeleccionado,
+            'puesto'       => $puestoSeleccionado,
+        ]);
     }
+
+    /**
+     * =====================================================
+     * GET — Render de la vista
+     * =====================================================
+     */
+    $filtros = [
+        'anio'         => $request->query->get('anio'),
+        'departamento' => $request->query->get('departamento'),
+        'puesto'       => $request->query->get('puesto'),
+    ];
+
+    $isTurbo = $request->headers->get('Turbo-Frame');
+
+if ($isTurbo) {
+    return $this->render('pta/encabezado/edit.html.twig', [
+        'encabezado' => $encabezado,
+        'filtros'    => $filtros,
+    ]);
+}
+
+if ($this->isGranted('ROLE_ADMIN')) {
+    return $this->render('admin/dashboard/index.html.twig', [
+        'section' => 'pta',
+        'content_url' => $this->generateUrl('app_encabezado_edit', [
+            'id' => $encabezado->getId(),
+        ] + $filtros),
+    ]);
+}
+
+return $this->render('pta/encabezado/edit.html.twig', [
+    'encabezado' => $encabezado,
+    'filtros'    => $filtros,
+]);
+
+}
+
 
     #[Route('/{id}/delete', name: 'app_encabezado_delete', methods: ['POST'])]
     public function delete(Request $request, Encabezado $encabezado, EntityManagerInterface $entityManager): Response
@@ -562,7 +540,7 @@ $view = $isAdmin
     }
 
     #[Route('/graficas/{id}', name: 'app_encabezado_graficas', methods: ['GET'])]
-    public function graficas(Encabezado $encabezado): Response
+    public function graficas(Request $request,Encabezado $encabezado): Response
     {
         /**
          * =====================================================
@@ -676,21 +654,34 @@ $view = $isAdmin
 
             if ($tendencia === 'POSITIVA') {
 
-                // Tendencia positiva → acumulado
-                $acumulado = 0;
+    $acumulado = 0;
+    $serieTemp = [];
 
-                foreach ($meses as $mes) {
-                    $acumulado += $valoresMensuales[$mes];
-                    $serie[$mes] = $acumulado;
-                }
+    foreach ($meses as $mes) {
+        $acumulado += $valoresMensuales[$mes];
+        $serieTemp[$mes] = $acumulado;
+    }
 
-                // Porcentaje de avance respecto a la meta
-                $avanceFinal = end($serie);
-                $porcentaje = ($meta > 0)
-                    ? round(($avanceFinal / $meta) * 100, 1)
-                    : 0;
+    /**
+     * 🎯 AJUSTE VISUAL:
+     * Si Enero tiene valor > 0, forzamos un arranque en 0
+     * para que la gráfica "nazca" desde cero.
+     */
+    $primerMes = $meses[0];
+    if ($serieTemp[$primerMes] > 0) {
+        $serie = [
+            $primerMes . ' (inicio)' => 0,
+        ] + $serieTemp;
+    } else {
+        $serie = $serieTemp;
+    }
 
-            } else {
+    $avanceFinal = end($serieTemp);
+    $porcentaje = ($meta > 0)
+        ? round(($avanceFinal / $meta) * 100, 1)
+        : 0;
+}
+else {
 
                 // Tendencia negativa → valor real (no acumulado)
                 foreach ($meses as $mes) {
@@ -783,10 +774,37 @@ $view = $isAdmin
         /**
          * Render de la vista de gráficas
          */
-        return $this->render('pta/encabezado/graficas.html.twig', [
-            'encabezado' => $encabezado,
-            'graficas'   => $graficas,
-        ]);
+        $filtros = [
+    'anio'         => $request->query->get('anio'),
+    'departamento' => $request->query->get('departamento'),
+    'puesto'       => $request->query->get('puesto'),
+];
+
+$isTurbo = $request->headers->get('Turbo-Frame');
+
+if ($isTurbo) {
+    return $this->render('pta/encabezado/graficas.html.twig', [
+        'encabezado' => $encabezado,
+        'graficas'   => $graficas,
+        'filtros'    => $filtros,
+    ]);
+}
+
+if ($this->isGranted('ROLE_ADMIN')) {
+    return $this->render('admin/dashboard/index.html.twig', [
+        'section' => 'pta',
+        'content_url' => $this->generateUrl('app_encabezado_graficas', [
+            'id' => $encabezado->getId(),
+        ] + $filtros),
+    ]);
+}
+
+return $this->render('pta/encabezado/graficas.html.twig', [
+    'encabezado' => $encabezado,
+    'graficas'   => $graficas,
+    'filtros'    => $filtros,
+]);
+
     }
 
 }

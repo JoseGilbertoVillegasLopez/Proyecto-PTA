@@ -1,32 +1,29 @@
 <turbo-frame id="content">
-    <section class="puesto-form puesto-form--new">
+	<section
+		class="puesto-form puesto-form--new">
 
-        <!-- ===============================
-             HEADER
-        ================================ -->
-        <header class="puesto-form__header">
+		<!-- ===============================
+						             HEADER
+						        ================================ -->
+		<header
+			class="puesto-form__header">
 
-            <!-- VOLVER -->
-            <a
-                href="{{ path('app_puesto_index') }}"
-                data-turbo-frame="content"
-                class="puesto-form__icon-btn puesto-form__icon-btn--back"
-                title="Volver"
-            >
-                <i class="bi bi-arrow-left"></i>
-            </a>
+			<!-- VOLVER -->
+			<a href="{{ path('app_puesto_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="puesto-form__icon-btn puesto-form__icon-btn--back" title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
 
-            <!-- TÍTULO -->
-            <h1 class="puesto-form__title">
-                Crear nuevo puesto
-            </h1>
+			<!-- TÍTULO -->
+			<h1 class="puesto-form__title">
+				Crear nuevo puesto
+			</h1>
 
-        </header>
+		</header>
 
-        <!-- ===============================
-             FORM
-        ================================ -->
-        {{ form_start(form, {
+		<!-- ===============================
+						             FORM
+						        ================================ -->
+		{{ form_start(form, {
             action: path('app_puesto_new'),
             attr: {
                 'data-turbo-frame': 'content',
@@ -34,24 +31,26 @@
             }
         }) }}
 
-            <div class="puesto-form__group">
-                {{ form_label(form.nombre) }}
-                {{ form_widget(form.nombre) }}
-                {{ form_errors(form.nombre) }}
-            </div>
+		<div class="puesto-form__group">
+			{{ form_label(form.nombre) }}
+			{{ form_widget(form.nombre) }}
+			{{ form_errors(form.nombre) }}
+		</div>
+		<div class="puesto-form__group">
+			{{ form_label(form.supervisorDirecto) }}
+			{{ form_widget(form.supervisorDirecto) }}
+			{{ form_errors(form.supervisorDirecto) }}
+		</div>
 
-            <!-- GUARDAR CENTRADO -->
-            <div class="puesto-form__actions">
-                <button
-                    type="submit"
-                    class="puesto-form__submit puesto-form__submit--icon"
-                    title="Guardar"
-                >
-                    <i class="bi bi-check-lg"></i>
-                </button>
-            </div>
 
-        {{ form_end(form) }}
+		<!-- GUARDAR CENTRADO -->
+		<div class="puesto-form__actions">
+			<button type="submit" class="puesto-form__submit puesto-form__submit--icon" title="Guardar">
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
 
-    </section>
+		{{ form_end(form) }}
+
+	</section>
 </turbo-frame>

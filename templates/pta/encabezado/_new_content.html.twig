@@ -6,7 +6,7 @@
    - Si el ID cambia, el JS NO se ejecutará
    ============================================================ #}
 <div class="pta-back-wrapper">
-	<a href="{{ volver_path }}" {% if usar_turbo %} data-turbo-frame="content" {% endif %} class="pta-back-btn">
+	<a href="{{ volver_path }}" {% if usar_turbo %} data-turbo-frame="content" data-turbo-action="replace" {% endif %} class="pta-back-btn">
 		<i class="bi bi-arrow-left"></i>
 		<span>Volver</span>
 	</a>
@@ -135,12 +135,12 @@
 		</thead>
 
 		{# ====================================================
-					                    BODY DE INDICADORES
-					                    ------------------------------------------------
-					                    - data-collection-holder: identificador para JS
-					                    - data-prototype: HTML base generado por Symfony
-					                    - El tbody inicia vacío a propósito
-					                    ==================================================== #}
+									                    BODY DE INDICADORES
+									                    ------------------------------------------------
+									                    - data-collection-holder: identificador para JS
+									                    - data-prototype: HTML base generado por Symfony
+									                    - El tbody inicia vacío a propósito
+									                    ==================================================== #}
 		<tbody data-collection-holder="indicadores" data-prototype="{{ form_widget(form.indicadores.vars.prototype)|e('html_attr') }}"></tbody>
 	</table>
 
@@ -194,11 +194,11 @@
 		</thead>
 
 		{# ====================================================
-					                    BODY DE ACCIONES
-					                    ------------------------------------------------
-					                    - Manejado 100% por JS
-					                    - Relaciona acciones ↔ indicadores por índice lógico
-					                    ==================================================== #}
+									                    BODY DE ACCIONES
+									                    ------------------------------------------------
+									                    - Manejado 100% por JS
+									                    - Relaciona acciones ↔ indicadores por índice lógico
+									                    ==================================================== #}
 		<tbody data-collection-holder="acciones" data-prototype="{{ form_widget(form.acciones.vars.prototype)|e('html_attr') }}"></tbody>
 	</table>
 
@@ -229,8 +229,8 @@
 		class="row mb-3">
 
 		{# ===========================
-					                    SUPERVISOR
-					                    =========================== #}
+									                    SUPERVISOR
+									                    =========================== #}
 		<div class="col-md-6">
 			<div class="position-relative">
 				<label class="form-label">Supervisor del Proyecto</label>
@@ -252,8 +252,8 @@
 		</div>
 
 		{# ===========================
-					                    AVAL
-					                    =========================== #}
+									                    AVAL
+									                    =========================== #}
 		<div class="col-md-6">
 			<div class="position-relative">
 				<label class="form-label">Aval del Proyecto</label>

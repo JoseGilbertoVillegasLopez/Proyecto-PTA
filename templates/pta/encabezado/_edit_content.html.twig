@@ -17,13 +17,18 @@
        ========================================================= #}
     <div class="pta-back-wrapper">
         <a
-            href="{{ path('app_encabezado_index') }}"
-            data-turbo-frame="content"
-            class="pta-back-btn"
-        >
-            <i class="bi bi-arrow-left"></i>
-            <span>Volver</span>
-        </a>
+    href="{{ path('app_encabezado_index', {
+        anio: filtros.anio,
+        departamento: filtros.departamento,
+        puesto: filtros.puesto
+    }) }}"
+    data-turbo-frame="content"
+data-turbo-action="replace"
+    class="pta-back-btn"
+>
+    <i class="bi bi-arrow-left"></i>
+    <span>Volver</span>
+</a>
     </div>
 
     {# =========================================================
@@ -239,7 +244,11 @@
                                         <input
                                             type="number"
                                             name="valor_alcanzado[{{ accion.id }}][{{ mes }}]"
-                                            class="mes-input {{ activo ? 'mes-activo' : 'mes-inactivo' }}"
+                                            class="mes-input
+    {{ activo ? 'mes-activo' : 'mes-inactivo' }}
+    {{ valor is not empty ? 'mes-con-valor' : '' }}
+"
+
                                             placeholder="{{ mes }}"
                                             min="0"
                                             {{ not activo ? 'readonly' }}

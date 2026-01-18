@@ -10,10 +10,8 @@ class PuestoEditType extends PuestoType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // Campos base
         parent::buildForm($builder, $options);
 
-        // SOLO EN EDIT
         $builder->add('activo', ChoiceType::class, [
             'label' => 'Estado',
             'choices' => [
