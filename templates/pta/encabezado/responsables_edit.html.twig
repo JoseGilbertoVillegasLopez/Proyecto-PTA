@@ -4,12 +4,12 @@
 		class="container py-4">
 
 		{# =========================
-																		       TOP BAR
-																		       ========================= #}
+																						       TOP BAR
+																						       ========================= #}
 		<div class="pta-topbar mb-4">
 
 			<div class="pta-topbar-left">
-				<a href="{{ path('app_encabezado_show', { id: encabezado.id }) }}" data-turbo-frame="content" class="pta-back-btn">
+				<a href="{{ path('app_encabezado_show', { id: encabezado.id }) }}" data-turbo-frame="content" data-turbo-action="replace" class="pta-back-btn">
 					<i class="bi bi-arrow-left"></i>
 					<span>Volver</span>
 				</a>
@@ -18,8 +18,8 @@
 		</div>
 
 		{# =========================
-														   ENCABEZADO PTA (SOLO LECTURA)
-														   ========================= #}
+																		   ENCABEZADO PTA (SOLO LECTURA)
+																		   ========================= #}
 		<div class="pta-card pta-header-box mb-4">
 
 			<div class="pta-header-row">
@@ -57,8 +57,8 @@
 
 
 		{# =========================
-																		       FORM RESPONSABLES
-																		       ========================= #}
+																						       FORM RESPONSABLES
+																						       ========================= #}
 		<form method="post" action="{{ path('app_encabezado_responsables_edit', { id: encabezado.id }) }}" data-turbo-frame="content" id="responsables-form">
 
 			<div class="card pta-card mb-4">
@@ -114,8 +114,8 @@
 	</div>
 
 	{# =========================
-									   MODAL CONFIRMACIÓN
-									   ========================= #}
+											   MODAL CONFIRMACIÓN
+											   ========================= #}
 	<div class="modal fade" id="confirmModal" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content bg-dark text-light">

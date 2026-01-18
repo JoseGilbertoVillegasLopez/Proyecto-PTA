@@ -41,6 +41,8 @@
     }) }}"
     {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
         data-turbo-frame="content"
+data-turbo-action="replace"
+
     {% endif %}
     class="pta-back-btn"
 >

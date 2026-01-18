@@ -6,7 +6,7 @@
 		</div>
 
 		<div class="puesto-index__table-actions">
-			<a href="{{ path('app_puesto_new') }}" class="puesto-index__add-btn">
+			<a href="{{ path('app_puesto_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="puesto-index__add-btn">
 				<i class="bi bi-briefcase-fill"></i>
 				Crear nuevo
 			</a>
@@ -42,11 +42,11 @@
 
 							<td>
 								<div class="puesto-index__actions">
-									<a href="{{ path('app_puesto_show', {'id': puesto.id}) }}" data-turbo-frame="content" class="puesto-index__action puesto-index__action--view">
+									<a href="{{ path('app_puesto_show', {'id': puesto.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="puesto-index__action puesto-index__action--view">
 										<i class="bi bi-eye"></i>
 									</a>
 
-									<a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}" data-turbo-frame="content" class="puesto-index__action puesto-index__action--edit">
+									<a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="puesto-index__action puesto-index__action--edit">
 										<i class="bi bi-pencil"></i>
 									</a>
 								</div>

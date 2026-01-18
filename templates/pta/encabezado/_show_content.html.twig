@@ -11,12 +11,12 @@
 
 	<div class="pta-topbar-left">
 
-		<a href="{{ path('app_encabezado_index', { anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-frame="content" class="pta-back-btn">
+		<a href="{{ path('app_encabezado_index', { anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-frame="content" data-turbo-action="replace" class="pta-back-btn">
 			<i class="bi bi-arrow-left"></i>
 			<span>Volver</span>
 		</a>
 
-		<a href="{{ path('app_encabezado_graficas', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" {% if app.user and 'ROLE_ADMIN' in app.user.roles %} data-turbo-frame="content" {% endif %} class="pta-graph-btn">
+		<a href="{{ path('app_encabezado_graficas', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" {% if app.user and 'ROLE_ADMIN' in app.user.roles %} data-turbo-frame="content" data-turbo-action="advance" {% endif %} class="pta-graph-btn">
 			<i class="bi bi-bar-chart-line"></i>
 			<span>Gráficas</span>
 		</a>
@@ -220,7 +220,7 @@
 		</h4>
 
 		{% if is_granted('ROLE_ADMIN') %}
-			<a href="{{ path('app_encabezado_responsables_edit', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-frame="content" class="pta-action-btn pta-action-edit" title="Cambiar responsables del proyecto">
+			<a href="{{ path('app_encabezado_responsables_edit', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-edit" title="Cambiar responsables del proyecto">
 				<i class="bi bi-pencil-square"></i>
 			</a>
 		{% endif %}

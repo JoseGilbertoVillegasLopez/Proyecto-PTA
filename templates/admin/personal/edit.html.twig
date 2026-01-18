@@ -1,102 +1,96 @@
 <turbo-frame id="content">
-    <section class="personal-form personal-form--edit">
+	<section
+		class="personal-form personal-form--edit">
 
-        <!-- ===============================
-             HEADER
-        ================================ -->
-        <header class="personal-form__header">
+		<!-- ===============================
+				             HEADER
+				        ================================ -->
+		<header
+			class="personal-form__header">
 
-            <!-- VOLVER -->
-            <a
-                href="{{ path('app_personal_index') }}"
-                data-turbo-frame="content"
-                class="personal-form__icon-btn personal-form__icon-btn--back"
-                title="Volver"
-            >
-                <i class="bi bi-arrow-left"></i>
-            </a>
+			<!-- VOLVER -->
+			<a href="{{ path('app_personal_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="personal-form__icon-btn personal-form__icon-btn--back" title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
 
-            <!-- TÍTULO + SUBTÍTULO -->
-            <div class="personal-form__header-center">
-                <h1 class="personal-form__title">
-                    Editar información de {{ personal }}
-                </h1>
+			<!-- TÍTULO + SUBTÍTULO -->
+			<div class="personal-form__header-center">
+				<h1 class="personal-form__title">
+					Editar información de
+					{{ personal }}
+				</h1>
 
-                <p class="personal-form__subtitle">
-                    Edita solo los campos necesarios
-                </p>
-            </div>
+				<p class="personal-form__subtitle">
+					Edita solo los campos necesarios
+				</p>
+			</div>
 
 
-        </header>
+		</header>
 
-        <!-- ===============================
-             FORM
-        ================================ -->
-        {{ form_start(form, {
+		<!-- ===============================
+				             FORM
+				        ================================ -->
+		{{ form_start(form, {
             action: path('app_personal_edit', { id: personal.id }),
             attr: {
                 'data-turbo-frame': 'content',
                 'class': 'personal-form__form'
             }
         }) }}
-           
 
-            <div class="personal-form__group">
-                {{ form_label(form.nombre) }}
-                {{ form_widget(form.nombre) }}
-                {{ form_errors(form.nombre) }}
-            </div>
 
-            <div class="personal-form__group">
-                {{ form_label(form.ap_paterno) }}
-                {{ form_widget(form.ap_paterno) }}
-                {{ form_errors(form.ap_paterno) }}
-            </div>
+		<div class="personal-form__group">
+			{{ form_label(form.nombre) }}
+			{{ form_widget(form.nombre) }}
+			{{ form_errors(form.nombre) }}
+		</div>
 
-            <div class="personal-form__group">
-                {{ form_label(form.ap_materno) }}
-                {{ form_widget(form.ap_materno) }}
-                {{ form_errors(form.ap_materno) }}
-            </div>
+		<div class="personal-form__group">
+			{{ form_label(form.ap_paterno) }}
+			{{ form_widget(form.ap_paterno) }}
+			{{ form_errors(form.ap_paterno) }}
+		</div>
 
-            <div class="personal-form__group">
-                {{ form_label(form.correo) }}
-                {{ form_widget(form.correo) }}
-                {{ form_errors(form.correo) }}
-            </div>
+		<div class="personal-form__group">
+			{{ form_label(form.ap_materno) }}
+			{{ form_widget(form.ap_materno) }}
+			{{ form_errors(form.ap_materno) }}
+		</div>
 
-            <div class="personal-form__group">
-                {{ form_label(form.puesto) }}
-                {{ form_widget(form.puesto) }}
-                {{ form_errors(form.puesto) }}
-            </div>
+		<div class="personal-form__group">
+			{{ form_label(form.correo) }}
+			{{ form_widget(form.correo) }}
+			{{ form_errors(form.correo) }}
+		</div>
 
-            <div class="personal-form__group">
-                {{ form_label(form.departamento) }}
-                {{ form_widget(form.departamento) }}
-                {{ form_errors(form.departamento) }}
-            </div>
+		<div class="personal-form__group">
+			{{ form_label(form.puesto) }}
+			{{ form_widget(form.puesto) }}
+			{{ form_errors(form.puesto) }}
+		</div>
 
-            <div class="personal-form__group">
-                {{ form_label(form.activo) }}
-                {{ form_widget(form.activo) }}
-                {{ form_errors(form.activo) }}
-            </div>
+		<div class="personal-form__group">
+			{{ form_label(form.departamento) }}
+			{{ form_widget(form.departamento) }}
+			{{ form_errors(form.departamento) }}
+		</div>
 
-            <!-- BOTÓN GUARDAR  -->
-            <div class="personal-form__submit-proxy">
-                <button
-                    type="submit"
-                    class="personal-form__icon-btn personal-form__icon-btn--save"
-                    title="Guardar cambios"
-                >
-                    <i class="bi bi-check-lg"></i>
-                </button>
-            </div>
+		<div class="personal-form__group">
+			{{ form_label(form.activo) }}
+			{{ form_widget(form.activo) }}
+			{{ form_errors(form.activo) }}
+		</div>
 
-            {{ form_rest(form) }}
-        {{ form_end(form) }}
+		<!-- BOTÓN GUARDAR  -->
+		<div class="personal-form__submit-proxy">
+			<button type="submit" class="personal-form__icon-btn personal-form__icon-btn--save" title="Guardar cambios">
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
 
-    </section>
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
+
+	</section>
 </turbo-frame>

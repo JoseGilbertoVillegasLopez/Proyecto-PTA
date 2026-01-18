@@ -33,25 +33,26 @@ Sfjs.loadToolbar();
 				<ul class="pta-dashboard-menu">
 
 					<li class="pta-dashboard-menu-item">
-						<a href="{{ path('app_personal_index') }}" data-turbo-frame="content" class="pta-dashboard-link">
+						<a href="{{ path('app_admin_dashboard', { section: 'personal' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 							Personal
 						</a>
 					</li>
 
 					<li class="pta-dashboard-menu-item">
-						<a href="{{ path('app_departamento_index') }}" data-turbo-frame="content" class="pta-dashboard-link">
+						<a href="{{ path('app_admin_dashboard', { section: 'departamentos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 							Departamentos
 						</a>
 					</li>
 
 					<li class="pta-dashboard-menu-item">
-						<a href="{{ path('app_puesto_index') }}" data-turbo-frame="content" class="pta-dashboard-link">
+						<a href="{{ path('app_admin_dashboard', { section: 'puestos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 							Puestos
 						</a>
+
 					</li>
 
 					<li class="pta-dashboard-menu-item">
-						<a href="{{ path('app_encabezado_index') }}" data-turbo-frame="content" class="pta-dashboard-link">
+						<a href="{{ path('app_admin_dashboard', { section: 'pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 							PTA
 						</a>
 					</li>
@@ -69,7 +70,15 @@ Sfjs.loadToolbar();
 
 		<!-- CONTENIDO -->
 		<main style="flex: 1; padding: 30px; overflow-y: auto;">
-			<turbo-frame id="content" src="{{ path('app_personal_index') }}"></turbo-frame>
+			{% set srcMap = {
+  'personal': path('app_personal_index'),
+  'departamentos': path('app_departamento_index'),
+  'puestos': path('app_puesto_index'),
+  'pta': path('app_encabezado_index')
+} %}
+
+			<turbo-frame id="content" src="{{ content_url ?? srcMap[section]|default(path('app_personal_index')) }}"></turbo-frame>
+
 		</main>
 
 	</div>

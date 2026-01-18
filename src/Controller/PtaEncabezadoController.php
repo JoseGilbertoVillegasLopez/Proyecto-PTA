@@ -220,7 +220,6 @@ public function index(
                  */
                 $responsables = $encabezado->getResponsables();
 
-                $responsables = $encabezado->getResponsables();
 
                 if ($responsables) {
 
@@ -324,32 +323,83 @@ public function index(
              * RENDER DE LA VISTA NEW (GET o FORM INVÁLIDO)
              * =========================================================
              */
-            return $this->render('pta/encabezado/new.html.twig', [
-                'encabezado' => $encabezado,
-                'form' => $form,
-            ]);
+            $isTurbo = $request->headers->get('Turbo-Frame');
+
+if ($isTurbo) {
+    // Navegación desde dashboard (Turbo)
+    return $this->render('pta/encabezado/new.html.twig', [
+        'encabezado' => $encabezado,
+        'form' => $form,
+    ]);
+}
+
+// NO Turbo → acceso directo o F5
+if ($this->isGranted('ROLE_ADMIN')) {
+    return $this->render('admin/dashboard/index.html.twig', [
+        'section' => 'pta',
+        'content_url' => $this->generateUrl('app_encabezado_new', [
+            'anio' => $anioEjecucion,
+        ]),
+    ]);
+}
+
+// Usuario normal → layout completo
+return $this->render('pta/encabezado/new.html.twig', [
+    'encabezado' => $encabezado,
+    'form' => $form,
+]);
+
         }
 
 
 
 
-    #[Route('/{id}', name: 'app_encabezado_show', methods: ['GET'])]
+#[Route('/{id}', name: 'app_encabezado_show', methods: ['GET'])]
 public function show(
     Request $request,
     Encabezado $encabezado
-): Response
-{
-    return $this->render('pta/encabezado/show.html.twig', [
-        'encabezado' => $encabezado,
+): Response {
 
-        // 👇 preservar filtros actuales
-        'filtros' => [
-            'anio'         => $request->query->get('anio'),
-            'departamento' => $request->query->get('departamento'),
-            'puesto'       => $request->query->get('puesto'),
-        ],
+    // Preservar filtros actuales
+    $filtros = [
+        'anio'         => $request->query->get('anio'),
+        'departamento' => $request->query->get('departamento'),
+        'puesto'       => $request->query->get('puesto'),
+    ];
+
+    $isTurbo = $request->headers->get('Turbo-Frame');
+
+    // ============================
+    // Turbo → solo fragmento
+    // ============================
+    if ($isTurbo) {
+        return $this->render('pta/encabezado/show.html.twig', [
+            'encabezado' => $encabezado,
+            'filtros'    => $filtros,
+        ]);
+    }
+
+    // ============================
+    // Admin sin Turbo → dashboard
+    // ============================
+    if ($this->isGranted('ROLE_ADMIN')) {
+        return $this->render('admin/dashboard/index.html.twig', [
+            'section' => 'pta',
+            'content_url' => $this->generateUrl('app_encabezado_show', [
+                'id' => $encabezado->getId(),
+            ] + $filtros),
+        ]);
+    }
+
+    // ============================
+    // Usuario normal → layout base
+    // ============================
+    return $this->render('pta/encabezado/showGeneral.html.twig', [
+        'encabezado' => $encabezado,
+        'filtros'    => $filtros,
     ]);
 }
+
 
 
 
@@ -452,10 +502,29 @@ public function edit(
         'puesto'       => $request->query->get('puesto'),
     ];
 
+    $isTurbo = $request->headers->get('Turbo-Frame');
+
+if ($isTurbo) {
     return $this->render('pta/encabezado/edit.html.twig', [
         'encabezado' => $encabezado,
         'filtros'    => $filtros,
     ]);
+}
+
+if ($this->isGranted('ROLE_ADMIN')) {
+    return $this->render('admin/dashboard/index.html.twig', [
+        'section' => 'pta',
+        'content_url' => $this->generateUrl('app_encabezado_edit', [
+            'id' => $encabezado->getId(),
+        ] + $filtros),
+    ]);
+}
+
+return $this->render('pta/encabezado/editGeneral.html.twig', [
+    'encabezado' => $encabezado,
+    'filtros'    => $filtros,
+]);
+
 }
 
 
@@ -705,15 +774,37 @@ else {
         /**
          * Render de la vista de gráficas
          */
-        return $this->render('pta/encabezado/graficas.html.twig', [
+        $filtros = [
+    'anio'         => $request->query->get('anio'),
+    'departamento' => $request->query->get('departamento'),
+    'puesto'       => $request->query->get('puesto'),
+];
+
+$isTurbo = $request->headers->get('Turbo-Frame');
+
+if ($isTurbo) {
+    return $this->render('pta/encabezado/graficas.html.twig', [
         'encabezado' => $encabezado,
         'graficas'   => $graficas,
-        'filtros' => [
-            'anio'         => $request->query->get('anio'),
-            'departamento' => $request->query->get('departamento'),
-            'puesto'       => $request->query->get('puesto'),
-        ],
+        'filtros'    => $filtros,
     ]);
+}
+
+if ($this->isGranted('ROLE_ADMIN')) {
+    return $this->render('admin/dashboard/index.html.twig', [
+        'section' => 'pta',
+        'content_url' => $this->generateUrl('app_encabezado_graficas', [
+            'id' => $encabezado->getId(),
+        ] + $filtros),
+    ]);
+}
+
+return $this->render('pta/encabezado/graficasGeneral.html.twig', [
+    'encabezado' => $encabezado,
+    'graficas'   => $graficas,
+    'filtros'    => $filtros,
+]);
+
     }
 
 }

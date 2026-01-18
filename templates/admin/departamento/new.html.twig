@@ -1,32 +1,29 @@
 <turbo-frame id="content">
-    <section class="departamento-form departamento-form--new">
+	<section
+		class="departamento-form departamento-form--new">
 
-        <!-- ===============================
-             HEADER
-        ================================ -->
-        <header class="departamento-form__header">
+		<!-- ===============================
+				             HEADER
+				        ================================ -->
+		<header
+			class="departamento-form__header">
 
-            <!-- VOLVER -->
-            <a
-                href="{{ path('app_departamento_index') }}"
-                data-turbo-frame="content"
-                class="departamento-form__icon-btn departamento-form__icon-btn--back"
-                title="Volver"
-            >
-                <i class="bi bi-arrow-left"></i>
-            </a>
+			<!-- VOLVER -->
+			<a href="{{ path('app_departamento_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="departamento-form__icon-btn departamento-form__icon-btn--back" title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
 
-            <!-- TÍTULO -->
-            <h1 class="departamento-form__title">
-                Crear nuevo departamento
-            </h1>
+			<!-- TÍTULO -->
+			<h1 class="departamento-form__title">
+				Crear nuevo departamento
+			</h1>
 
-        </header>
+		</header>
 
-        <!-- ===============================
-             FORM
-        ================================ -->
-        {{ form_start(form, {
+		<!-- ===============================
+				             FORM
+				        ================================ -->
+		{{ form_start(form, {
             action: path('app_departamento_new'),
             attr: {
                 'data-turbo-frame': 'content',
@@ -34,24 +31,20 @@
             }
         }) }}
 
-            <div class="departamento-form__group">
-                {{ form_label(form.nombre) }}
-                {{ form_widget(form.nombre) }}
-                {{ form_errors(form.nombre) }}
-            </div>
+		<div class="departamento-form__group">
+			{{ form_label(form.nombre) }}
+			{{ form_widget(form.nombre) }}
+			{{ form_errors(form.nombre) }}
+		</div>
 
-            <!-- GUARDAR CENTRADO -->
-            <div class="departamento-form__actions">
-                <button
-                    type="submit"
-                    class="departamento-form__submit departamento-form__submit--icon"
-                    title="Guardar"
-                >
-                    <i class="bi bi-check-lg"></i>
-                </button>
-            </div>
+		<!-- GUARDAR CENTRADO -->
+		<div class="departamento-form__actions">
+			<button type="submit" class="departamento-form__submit departamento-form__submit--icon" title="Guardar">
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
 
-        {{ form_end(form) }}
+		{{ form_end(form) }}
 
-    </section>
+	</section>
 </turbo-frame>

@@ -12,7 +12,7 @@
 			{# IZQUIERDA — BOTÓN AGREGAR #}
 			<div class="pta-toolbar-left">
 				<div class="pta-toolbar-left">
-					<a href="{{ path('app_encabezado_new') }}" data-turbo-frame="content" class="pta-add-btn">
+					<a href="{{ path('app_encabezado_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-add-btn">
 						<i class="bi bi-plus-circle"></i>
 						<span>Agregar</span>
 					</a>
@@ -109,13 +109,13 @@
 						<td class="text-center">
 							<div class="pta-actions">
 
-								<a href="{{ path('app_encabezado_show', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" data-turbo-frame="content" class="pta-action-btn pta-action-view">
+								<a href="{{ path('app_encabezado_show', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-view">
 									<i class="bi bi-eye"></i>
 								</a>
 
 
 								{% if encabezado.responsable and encabezado.responsable.user == app.user %}
-									<a href="{{ path('app_encabezado_edit', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" class="pta-action-btn pta-action-edit" title="Capturar avances">
+									<a href="{{ path('app_encabezado_edit', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-edit" title="Capturar avances">
 										<i class="bi bi-pencil-square"></i>
 									</a>
 								{% endif %}

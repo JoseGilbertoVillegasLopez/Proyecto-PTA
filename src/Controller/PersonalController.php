@@ -107,31 +107,47 @@ final class PersonalController extends AbstractController
             // Llama al servicio que crea automáticamente un usuario
             // asociado a este registro de Personal
 
-            return $this->render('admin/personal/index.html.twig', [
-                'personals' => $personalRepository->findAll(),
-                // Regresa al listado actualizado
-            ]);
+            return $this->redirectToRoute('app_personal_index');
         }
 
-        // Si no se envió el formulario o tiene errores
-        return $this->render('admin/personal/new.html.twig', [
+        $isTurbo = $request->headers->get('Turbo-Frame');
+        if ($isTurbo){
+            return $this->render('admin/personal/new.html.twig', [
             'personal' => $personal,
             // Se envía la entidad (útil para la vista)
 
             'form' => $form,
             // Se envía el formulario para renderizarlo
         ]);
+        }
+        return $this->render('admin/dashboard/index.html.twig', [
+            'section' => 'personal',
+            'content_url' => $this->generateUrl('app_personal_new',[            
+            ]),
+        ]);
+
+        // Si no se envió el formulario o tiene errores
+        
     }
 
     #[Route('/{id}', name: 'app_personal_show', methods: ['GET'])]
     // Ruta para ver el detalle de un Personal
-    public function show(Personal $personal): Response
+    public function show(Request $request, Personal $personal): Response
     {
-        // Symfony hace autowiring del Personal usando el {id}
-        return $this->render('admin/personal/show.html.twig', [
-            'personal' => $personal,
-            // Envía la entidad a la vista
-        ]);
+        $isTurbo = $request ->headers->get('Turbo-Frame');
+        if ($isTurbo) {
+            return $this->render('admin/personal/show.html.twig', [
+                'personal' => $personal,
+                // Envía la entidad a la vista
+            ]);
+        }
+        // Acceso directo / F5 → renderizar dashboard completo
+    return $this->render('admin/dashboard/index.html.twig', [
+        'section' => 'personal',
+        'content_url' => $this->generateUrl('app_personal_show', [
+            'id' => $personal->getId(),
+        ]),
+    ]);
     }
 
     #[Route('/{id}/edit', name: 'app_personal_edit', methods: ['GET', 'POST'])]
@@ -166,20 +182,25 @@ final class PersonalController extends AbstractController
             // Sincroniza el usuario asociado (correo, activo, etc.)
             // usando los datos actuales de Personal
 
-            return $this->render('admin/personal/index.html.twig', [
-                'personals' => $personalRepository->findAll(),
-                // Regresa al listado actualizado
-            ]);
-        }
+            return $this->redirectToRoute('app_personal_index');
 
-        // Si no se envió o hay errores
+        }
+        $isTurbo = $request->headers->get('Turbo-Frame');
+        if ($isTurbo) {
+        // Navegación interna (dashboard ya existe)
         return $this->render('admin/personal/edit.html.twig', [
             'personal' => $personal,
-            // Entidad actual
-
             'form' => $form,
-            // Formulario de edición
         ]);
+    }
+
+    // Acceso directo / F5
+    return $this->render('admin/dashboard/index.html.twig', [
+        'section' => 'personal',
+        'content_url' => $this->generateUrl('app_personal_edit', [
+            'id' => $personal->getId(),
+        ]),
+    ]);
     }
 
     #[Route('/{id}', name: 'app_personal_delete', methods: ['POST'])]
