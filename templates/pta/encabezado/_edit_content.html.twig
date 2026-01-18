@@ -244,7 +244,11 @@ data-turbo-action="replace"
                                         <input
                                             type="number"
                                             name="valor_alcanzado[{{ accion.id }}][{{ mes }}]"
-                                            class="mes-input {{ activo ? 'mes-activo' : 'mes-inactivo' }}"
+                                            class="mes-input
+    {{ activo ? 'mes-activo' : 'mes-inactivo' }}
+    {{ valor is not empty ? 'mes-con-valor' : '' }}
+"
+
                                             placeholder="{{ mes }}"
                                             min="0"
                                             {{ not activo ? 'readonly' }}

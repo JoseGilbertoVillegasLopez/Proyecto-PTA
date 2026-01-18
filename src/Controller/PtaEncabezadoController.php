@@ -394,7 +394,7 @@ public function show(
     // ============================
     // Usuario normal → layout base
     // ============================
-    return $this->render('pta/encabezado/showGeneral.html.twig', [
+    return $this->render('pta/encabezado/show.html.twig', [
         'encabezado' => $encabezado,
         'filtros'    => $filtros,
     ]);
@@ -520,7 +520,7 @@ if ($this->isGranted('ROLE_ADMIN')) {
     ]);
 }
 
-return $this->render('pta/encabezado/editGeneral.html.twig', [
+return $this->render('pta/encabezado/edit.html.twig', [
     'encabezado' => $encabezado,
     'filtros'    => $filtros,
 ]);
@@ -799,7 +799,7 @@ if ($this->isGranted('ROLE_ADMIN')) {
     ]);
 }
 
-return $this->render('pta/encabezado/graficasGeneral.html.twig', [
+return $this->render('pta/encabezado/graficas.html.twig', [
     'encabezado' => $encabezado,
     'graficas'   => $graficas,
     'filtros'    => $filtros,
