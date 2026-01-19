@@ -63,7 +63,7 @@ final class PersonalController extends AbstractController
     {
         // Renderiza la vista index con todos los registros de Personal
         return $this->render('admin/personal/index.html.twig', [
-            'personals' => $personalRepository->findAll(),
+            'personals' => $personalRepository->findAllOrderByNombre(),
             // Obtiene todos los registros desde la BD
         ]);
     }
