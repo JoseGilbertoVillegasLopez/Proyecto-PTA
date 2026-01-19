@@ -1,20 +1,29 @@
 {# templates/emails/bienvenida.txt.twig #}
-{{ appName }} — Bienvenida
+{{ appName }}
+— Bienvenida
 {{ fecha|date('d/m/Y H:i') }}
 
-Hola, {{ nombreCompleto|default('Usuario') }}
+Hola,
+{{ nombreCompleto|default('Usuario') }}
 
-Bienvenid@ a {{ appName }}.Se a creado un usuario para ti en el sistema para la gestion de PTA.
-- Puesto: {{ puesto|default('N/D') }}
-- Departamento: {{ departamento|default('N/D') }}
-- Usuario: {{ usuario }}
-{% if passwordTemporal is defined and passwordTemporal -%}
-- Contraseña temporal: {{ passwordTemporal }}
+Bienvenid@ a
+{{ appName }}.
+Se ha creado un usuario para ti en el sistema para la gestión de PTA.
+
+- Usuario:
+{{ usuario }}
+- Puesto:
+{{ puesto|default('N/D') }}
+- Departamento:
+{{ departamento|default('N/D') }}
+
+{% if passwordTemporal %}
+	- Contraseña temporal:
+	{{ passwordTemporal }}
 {% endif %}
 
-Accede aquí: {{ loginUrl }}
+Accede al sistema desde:
+{{ loginUrl }}
 
-{% if passwordTemporal is defined and passwordTemporal -%}
-{% endif %}
-
-Soporte: {{ soporteEmail }}
+Soporte:
+{{ soporteEmail }}
