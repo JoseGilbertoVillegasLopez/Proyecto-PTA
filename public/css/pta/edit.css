@@ -487,3 +487,9 @@
     outline: none;
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.55) !important;
 }
+
+.mes-warning-float {
+    margin-top: 6px;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+}

@@ -185,7 +185,8 @@ data-turbo-action="replace"
            - Cada input representa el avance de un mes
            - Solo los meses activos son editables
            ========================================================= #}
-        <div class="pta-card mb-4">
+        
+
 
             <h4 class="pta-title">
                 <i class="bi bi-list-task"></i>
@@ -244,6 +245,7 @@ data-turbo-action="replace"
                                         <input
                                             type="number"
                                             name="valor_alcanzado[{{ accion.id }}][{{ mes }}]"
+                                            data-mes="{{ mes }}"
                                             class="mes-input
     {{ activo ? 'mes-activo' : 'mes-inactivo' }}
     {{ valor is not empty ? 'mes-con-valor' : '' }}
@@ -285,4 +287,63 @@ data-turbo-action="replace"
         </div>
 
     </form>
+
+<script>
+function initMesWarning() {
+    const mesActual = '{{ mesActual }}';
+
+    document.querySelectorAll('.mes-input').forEach(input => {
+
+        // 🔒 Evita doble inicialización
+        if (input.dataset.mesWarningInit === '1') {
+            return;
+        }
+        input.dataset.mesWarningInit = '1';
+
+        input.addEventListener('focus', () => {
+            const mesInput = input.dataset.mes;
+
+            // ✅ Si es el mes actual o el input ya es readonly → no mostrar nada
+            if (mesInput === mesActual || input.hasAttribute('readonly')) {
+                return;
+            }
+
+            // 🔥 Tomamos el contenedor real del grid
+            const contenedorMeses = input.closest('.meses-grid');
+            if (!contenedorMeses) {
+                return;
+            }
+
+            // 🧹 Eliminar mensaje previo SOLO de ese bloque (arriba del grid)
+            const anterior = contenedorMeses.previousElementSibling;
+            if (anterior && anterior.classList.contains('mes-warning-float')) {
+                anterior.remove();
+            }
+
+            // 🟨 Crear warning
+            const warning = document.createElement('div');
+            warning.className = 'alert alert-warning mes-warning-float';
+            warning.innerHTML = `
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>Restricción:</strong> Solo puedes registrar avances en el mes correspondiente.
+            `;
+
+            // ✅ Insertar ARRIBA del bloque de meses
+            contenedorMeses.insertAdjacentElement('beforebegin', warning);
+
+            // Quitar foco para evitar que “se quede intentando escribir”
+            input.blur();
+
+            // ⏳ Auto eliminar
+            setTimeout(() => {
+                warning.remove();
+            }, 3000);
+        });
+    });
+}
+
+// Turbo lifecycle correcto
+document.addEventListener('turbo:load', initMesWarning);
+document.addEventListener('turbo:frame-load', initMesWarning);
+</script>
 

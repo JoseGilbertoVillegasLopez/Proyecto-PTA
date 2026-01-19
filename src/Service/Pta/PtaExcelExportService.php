@@ -231,17 +231,27 @@ class PtaExcelExportService
 
             $valores = $accion->getValorAlcanzado() ?? [];
 
+            $periodoAccion = $accion->getPeriodo() ?? [];
+
             foreach ($meses as $i => $mes) {
                 $col = chr(ord('F') + $i);
-                if (!empty($valores[$mes])) {
+
+                // 1️⃣ Valor (si existe)
+                if (array_key_exists($mes, $valores) && $valores[$mes] !== null) {
                     $sheet->setCellValue("{$col}{$row}", $valores[$mes]);
                     $this->centerRange($sheet, "{$col}{$row}");
+                }
+
+                // 2️⃣ Color amarillo SOLO depende del periodo
+                if (in_array($mes, $periodoAccion, true)) {
                     $sheet->getStyle("{$col}{$row}")
                         ->getFill()
                         ->setFillType(Fill::FILL_SOLID)
-                        ->getStartColor()->setRGB($amarillo);
+                        ->getStartColor()
+                        ->setRGB($amarillo);
                 }
             }
+
 
             $sheet->getStyle("A{$row}:Q{$row}")
                 ->getBorders()->getAllBorders()
