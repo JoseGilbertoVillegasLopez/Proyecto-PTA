@@ -460,6 +460,29 @@ public function edit(
         // 4. Valores enviados
         $valoresAlcanzados = $request->request->all('valor_alcanzado');
 
+        $fechaActual = new \DateTimeImmutable();
+        $anioActual  = (int) $fechaActual->format('Y');
+        $mesActualNumero = (int) date('n'); // 1-12
+
+        $mesesES = [
+            1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+            5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+            9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
+        ];
+
+        $mesActual = $mesesES[$mesActualNumero];
+
+        if ($anioActual !== $encabezado->getAnioEjecucion()) {
+    // Año incorrecto → no se guarda ningún avance
+    return $this->redirectToRoute('app_encabezado_index', [
+        'anio'         => $anioEjecucion,
+        'departamento' => $departamentoSeleccionado,
+        'puesto'       => $puestoSeleccionado,
+    ]);
+}
+
+
+
         // 5. Guardar avances por acción
         foreach ($encabezado->getAcciones() as $accion) {
 
@@ -472,10 +495,25 @@ public function edit(
             $meses = $valoresAlcanzados[$accionId];
 
             foreach ($meses as $mes => $valor) {
-                if ($valor === '') {
-                    $meses[$mes] = null;
-                }
-            }
+
+    // ❌ Si NO es el mes actual → ignorar
+    if ($mes !== $mesActual) {
+        unset($meses[$mes]);
+        continue;
+    }
+
+    // ❌ Si el mes NO está en el periodo de la acción → ignorar
+    if (!in_array($mes, $accion->getPeriodo(), true)) {
+        unset($meses[$mes]);
+        continue;
+    }
+
+    // Normalización de valor vacío
+    if ($valor === '') {
+        $meses[$mes] = null;
+    }
+}
+
 
             $accion->setValorAlcanzado($meses);
         }
@@ -501,6 +539,15 @@ public function edit(
         'departamento' => $request->query->get('departamento'),
         'puesto'       => $request->query->get('puesto'),
     ];
+    $fechaActual = new \DateTimeImmutable();
+$mesesES = [
+    1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
+    5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
+    9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
+];
+
+$mesActual = $mesesES[(int) $fechaActual->format('n')];
+
 
     $isTurbo = $request->headers->get('Turbo-Frame');
 
@@ -508,6 +555,7 @@ if ($isTurbo) {
     return $this->render('pta/encabezado/edit.html.twig', [
         'encabezado' => $encabezado,
         'filtros'    => $filtros,
+        'mesActual'  => $mesActual,
     ]);
 }
 
@@ -517,12 +565,14 @@ if ($this->isGranted('ROLE_ADMIN')) {
         'content_url' => $this->generateUrl('app_encabezado_edit', [
             'id' => $encabezado->getId(),
         ] + $filtros),
+        'mesActual'  => $mesActual,
     ]);
 }
 
 return $this->render('pta/encabezado/edit.html.twig', [
     'encabezado' => $encabezado,
     'filtros'    => $filtros,
+    'mesActual'  => $mesActual,
 ]);
 
 }

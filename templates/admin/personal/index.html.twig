@@ -1,9 +1,8 @@
 <turbo-frame id="content">
-	<section class="personal-index">
+	<section class="personal-index" data-page="personal-index">
 
 		<div class="personal-index__toolbar">
 			<h1 class="personal-index__title">Lista de personal</h1>
-
 		</div>
 
 		<div class="personal-index__table-actions">
@@ -11,6 +10,13 @@
 				<i class="bi bi-person-plus-fill"></i>
 				Crear nuevo
 			</a>
+
+			<div class="personal-index__spacer"></div>
+
+			<div class="personal-index__search">
+				<i class="bi bi-search"></i>
+				<input type="text" id="personal-search" placeholder="Buscar personal..." autocomplete="off">
+			</div>
 		</div>
 
 		<div class="personal-index__table-wrapper">
@@ -27,8 +33,8 @@
 				</thead>
 				<tbody>
 					{% for personal in personals %}
-						<tr>
-							<td>{{ personal }}</td>
+						<tr class="personal-row">
+							<td class="personal-nombre">{{ personal }}</td>
 							<td>{{ personal.correo }}</td>
 							<td>{{ personal.puesto.nombre }}</td>
 							<td>{{ personal.departamento.nombre }}</td>
