@@ -288,62 +288,260 @@ data-turbo-action="replace"
 
     </form>
 
+    <div class="modal fade" id="modalAtraso" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content pta-modal">
+
+                <div class="modal-header pta-modal__header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-clock-history"></i>
+                        Registro fuera de tiempo
+                    </h5>
+                    <button type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body pta-modal__body">
+
+                    <p class="pta-modal__info">
+                        Este mes ya no está habilitado para su registro.
+                        El avance se guardará como <strong>atraso</strong>
+                        y deberá justificarse.
+                    </p>
+
+                    <div class="mb-3">
+                        <label class="form-label">Valor del avance</label>
+                        <input type="number"
+                            class="form-control pta-input"
+                            id="atraso-valor"
+                            min="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Motivo del atraso</label>
+                        <textarea class="form-control pta-input"
+                                id="atraso-motivo"
+                                rows="3"
+                                placeholder="Describe el motivo del atraso..."></textarea>
+
+                        <div id="error-motivo-atraso"
+                            class="pta-error-text d-none">
+                            Debes indicar el motivo del atraso.
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer pta-modal__footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary">
+                        Cancelar
+                    </button>
+                    <button type="button"
+                            class="btn pta-btn-primary"
+                            id="btnConfirmarAtraso">
+                        Confirmar atraso
+                    </button>
+                </div>
+
+            </div>
+
+
+        
+        </div>
+    </div>
+
+
+
+
 <script>
-function initMesWarning() {
+function initPtaEdit() {
+
+    // =====================================================
+    // GUARD PARA EVITAR DOBLE INICIALIZACIÓN (TURBO)
+    // =====================================================
+    const root = document.querySelector('form[action*="encabezado"][method="post"]');
+    if (!root) return;
+
+    if (root.dataset.ptaEditInit === '1') return;
+    root.dataset.ptaEditInit = '1';
+
+    // =====================================================
+    // VARIABLES GLOBALES DEL EDIT
+    // =====================================================
     const mesActual = '{{ mesActual }}';
 
-    document.querySelectorAll('.mes-input').forEach(input => {
+    const mesesMap = {
+        'Enero': 1, 'Febrero': 2, 'Marzo': 3, 'Abril': 4,
+        'Mayo': 5, 'Junio': 6, 'Julio': 7, 'Agosto': 8,
+        'Septiembre': 9, 'Octubre': 10, 'Noviembre': 11, 'Diciembre': 12
+    };
 
-        // 🔒 Evita doble inicialización
-        if (input.dataset.mesWarningInit === '1') {
-            return;
-        }
-        input.dataset.mesWarningInit = '1';
+    const mesActualNumero = mesesMap[mesActual];
+    let inputActivo = null;
 
-        input.addEventListener('focus', () => {
-            const mesInput = input.dataset.mes;
+    // =====================================================
+    // MANEJO DE INPUTS DE MESES
+    // =====================================================
+    function initMeses() {
 
-            // ✅ Si es el mes actual o el input ya es readonly → no mostrar nada
-            if (mesInput === mesActual || input.hasAttribute('readonly')) {
+        document.querySelectorAll('.mes-input').forEach(input => {
+
+            // Evitar doble binding por input
+            if (input.dataset.mesInit === '1') return;
+            input.dataset.mesInit = '1';
+
+            input.addEventListener('mousedown', (e) => {
+
+            const mes = input.dataset.mes;
+            const mesNumero = mesesMap[mes];
+            if (!mesNumero) return;
+
+            // ===============================
+            // MES FUTURO → BLOQUEO
+            // ===============================
+            if (mesNumero > mesActualNumero) {
+                e.preventDefault();
+
+                const contenedor = input.closest('.meses-grid');
+                if (!contenedor) return;
+
+                const anterior = contenedor.previousElementSibling;
+                if (anterior && anterior.classList.contains('mes-warning-float')) {
+                    anterior.remove();
+                }
+
+                const warning = document.createElement('div');
+                warning.className = 'alert alert-warning mes-warning-float';
+                warning.innerHTML = `
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Restricción:</strong>
+                    No se pueden registrar avances en meses futuros.
+                `;
+
+                contenedor.insertAdjacentElement('beforebegin', warning);
+                setTimeout(() => warning.remove(), 3000);
                 return;
             }
 
-            // 🔥 Tomamos el contenedor real del grid
-            const contenedorMeses = input.closest('.meses-grid');
-            if (!contenedorMeses) {
+            // ===============================
+            // MES PASADO → MODAL
+            // ===============================
+            if (mesNumero < mesActualNumero) {
+                e.preventDefault();
+
+                inputActivo = input;
+
+                document.getElementById('atraso-valor').value = input.value ?? '';
+                document.getElementById('atraso-motivo').value = '';
+                document.getElementById('error-motivo-atraso').classList.add('d-none');
+                document.getElementById('atraso-motivo').classList.remove('is-invalid');
+
+                new bootstrap.Modal(
+                    document.getElementById('modalAtraso')
+                ).show();
                 return;
             }
 
-            // 🧹 Eliminar mensaje previo SOLO de ese bloque (arriba del grid)
-            const anterior = contenedorMeses.previousElementSibling;
-            if (anterior && anterior.classList.contains('mes-warning-float')) {
-                anterior.remove();
-            }
-
-            // 🟨 Crear warning
-            const warning = document.createElement('div');
-            warning.className = 'alert alert-warning mes-warning-float';
-            warning.innerHTML = `
-                <i class="bi bi-exclamation-triangle"></i>
-                <strong>Restricción:</strong> Solo puedes registrar avances en el mes correspondiente.
-            `;
-
-            // ✅ Insertar ARRIBA del bloque de meses
-            contenedorMeses.insertAdjacentElement('beforebegin', warning);
-
-            // Quitar foco para evitar que “se quede intentando escribir”
-            input.blur();
-
-            // ⏳ Auto eliminar
-            setTimeout(() => {
-                warning.remove();
-            }, 3000);
+            // ===============================
+            // MES ACTUAL → COMPORTAMIENTO NATIVO
+            // ===============================
+            // NO hacemos preventDefault
+            // el navegador da foco y permite escribir
         });
-    });
+
+        });
+    }
+
+    // =====================================================
+    // BOTÓN CONFIRMAR ATRASO (RESETEADO)
+    // =====================================================
+    const btnConfirmar = document.getElementById('btnConfirmarAtraso');
+    if (!btnConfirmar.dataset.listenerAttached) {
+        btnConfirmar.dataset.listenerAttached = '1';
+        btnConfirmar.addEventListener('click', () => {
+            // lógica
+        });
+    }
+
+    if (btnConfirmar) {
+    }
+
+    const btnNuevo = document.getElementById('btnConfirmarAtraso');
+
+    if (btnNuevo) {
+        btnNuevo.addEventListener('click', () => {
+
+            if (!inputActivo) return;
+
+            const valor = document.getElementById('atraso-valor').value;
+            const motivoInput = document.getElementById('atraso-motivo');
+            const motivo = motivoInput.value.trim();
+            const errorBox = document.getElementById('error-motivo-atraso');
+
+            // reset error visual
+            errorBox.classList.add('d-none');
+            motivoInput.classList.remove('is-invalid');
+
+            // validación
+            if (motivo === '') {
+                errorBox.classList.remove('d-none');
+                motivoInput.classList.add('is-invalid');
+                motivoInput.focus();
+                return;
+            }
+
+            // asignar valor real
+            inputActivo.value = valor;
+            inputActivo.classList.add('mes-atraso');
+            inputActivo.dataset.atraso = '1';
+            inputActivo.dataset.motivo = motivo;
+
+            // =================================================
+            // CREAR / ACTUALIZAR INPUT HIDDEN
+            // =================================================
+            const form = inputActivo.closest('form');
+            const accionId = inputActivo.name.match(/\[(\d+)\]/)[1];
+            const mes = inputActivo.dataset.mes;
+            const hiddenId = `atraso_${accionId}_${mes}`;
+
+            let hidden = document.getElementById(hiddenId);
+
+            if (!hidden) {
+                hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.id = hiddenId;
+                hidden.name = `atrasos[${accionId}][${mes}][motivo]`;
+                form.appendChild(hidden);
+            }
+
+            hidden.value = motivo;
+
+            // cerrar modal
+            bootstrap.Modal.getInstance(
+                document.getElementById('modalAtraso')
+            ).hide();
+
+            inputActivo = null;
+        });
+    }
+
+    // =====================================================
+    // INICIALIZACIÓN FINAL
+    // =====================================================
+    initMeses();
 }
 
-// Turbo lifecycle correcto
-document.addEventListener('turbo:load', initMesWarning);
-document.addEventListener('turbo:frame-load', initMesWarning);
-</script>
+// =========================================================
+// ENTRADAS ÚNICAS (TURBO)
+// =========================================================
+document.addEventListener('turbo:load', initPtaEdit);
 
+document.addEventListener('turbo:frame-load', (e) => {
+    if (e.target.id === 'content') {
+        initPtaEdit();
+    }
+});
+</script>

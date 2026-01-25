@@ -772,14 +772,3 @@ frame.querySelectorAll('.fixed-textarea').forEach(textarea => {
 
 }// fin de la funcion de contencion
 
-
-
-
-
-
-
-
-    
-
-    
-

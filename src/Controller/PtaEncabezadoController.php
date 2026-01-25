@@ -14,6 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
+use App\Entity\HistorialAcciones;
+use App\Entity\HistorialAccionesAtrasos;
+
 
     #[Route('/pta/encabezado')]
     final class PtaEncabezadoController extends AbstractController
@@ -409,8 +412,7 @@ public function edit(
     Encabezado $encabezado,
     EntityManagerInterface $entityManager,
     EncabezadoRepository $encabezadoRepository
-): Response
-{
+): Response {
     /**
      * =====================================================
      * SEGURIDAD — CAPTURA DE AVANCES
@@ -430,20 +432,40 @@ public function edit(
 
     /**
      * =====================================================
-     * BLOQUE POST
+     * MAPEO MESES (ES)
+     * =====================================================
+     */
+    $mesesES = [
+        1  => 'Enero',
+        2  => 'Febrero',
+        3  => 'Marzo',
+        4  => 'Abril',
+        5  => 'Mayo',
+        6  => 'Junio',
+        7  => 'Julio',
+        8  => 'Agosto',
+        9  => 'Septiembre',
+        10 => 'Octubre',
+        11 => 'Noviembre',
+        12 => 'Diciembre',
+    ];
+
+    /**
+     * =====================================================
+     * POST — Guardado de avances
      * =====================================================
      */
     if ($request->isMethod('POST')) {
 
-        // 1. Año de ejecución
-        $anioActual = (int) date('Y');
-        $anioEjecucion = $request->query->getInt('anio', $anioActual);
+        // 1) Año de ejecución (para regresar con filtros)
+        $anioSistema   = (int) date('Y');
+        $anioEjecucion = $request->query->getInt('anio', $anioSistema);
 
-        // 2. Preservar filtros
+        // 2) Preservar filtros
         $departamentoSeleccionado = $request->query->get('departamento');
         $puestoSeleccionado       = $request->query->get('puesto');
 
-        // 3. Validación CSRF
+        // 3) Validación CSRF
         if (
             !$this->isCsrfTokenValid(
                 'edit' . $encabezado->getId(),
@@ -457,33 +479,34 @@ public function edit(
             ]);
         }
 
-        // 4. Valores enviados
+        // 4) Valores enviados
         $valoresAlcanzados = $request->request->all('valor_alcanzado');
+        $atrasos = $request->request->all('atrasos'); // puede venir null
 
-        $fechaActual = new \DateTimeImmutable();
-        $anioActual  = (int) $fechaActual->format('Y');
-        $mesActualNumero = (int) date('n'); // 1-12
+        // 5) Fecha y mes actuales
+        $fechaActual     = new \DateTimeImmutable();
+        $anioActual      = (int) $fechaActual->format('Y');
+        $mesActualNumero = 5; // SIMULAMOS MARZO// 1-12
 
-        $mesesES = [
-            1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
-            5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
-            9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
-        ];
+        // ⚠️ Seguridad extra: solo guardar si coincide el año del encabezado
+        if ($anioActual !== (int) $encabezado->getAnioEjecucion()) {
+            return $this->redirectToRoute('app_encabezado_index', [
+                'anio'         => $anioEjecucion,
+                'departamento' => $departamentoSeleccionado,
+                'puesto'       => $puestoSeleccionado,
+            ]);
+        }
 
-        $mesActual = $mesesES[$mesActualNumero];
-
-        if ($anioActual !== $encabezado->getAnioEjecucion()) {
-    // Año incorrecto → no se guarda ningún avance
-    return $this->redirectToRoute('app_encabezado_index', [
-        'anio'         => $anioEjecucion,
-        'departamento' => $departamentoSeleccionado,
-        'puesto'       => $puestoSeleccionado,
-    ]);
-}
-
-
-
-        // 5. Guardar avances por acción
+        /**
+         * =====================================================
+         * 6) Guardar avances por acción
+         * -----------------------------------------------------
+         * PASO 1:
+         * - Permitir MES ACTUAL y MESES PASADOS
+         * - Bloquear MESES FUTUROS
+         * - Ignorar meses fuera del periodo de la acción
+         * =====================================================
+         */
         foreach ($encabezado->getAcciones() as $accion) {
 
             $accionId = $accion->getId();
@@ -492,36 +515,88 @@ public function edit(
                 continue;
             }
 
-            $meses = $valoresAlcanzados[$accionId];
+            // Lo que viene del form (solo meses con inputs)
+            $mesesForm = $valoresAlcanzados[$accionId];
 
-            foreach ($meses as $mes => $valor) {
+            // Tomar lo ya guardado para no perder meses no enviados
+            $valoresActuales = $accion->getValorAlcanzado() ?? [];
 
-    // ❌ Si NO es el mes actual → ignorar
-    if ($mes !== $mesActual) {
-        unset($meses[$mes]);
-        continue;
+            foreach ($mesesForm as $mes => $valor) {
+
+                // Convertir mes string → número (1-12)
+                $mesNumero = array_search($mes, $mesesES, true);
+
+                // ❌ Mes inválido
+                if ($mesNumero === false) {
+                    continue;
+                }
+
+                // ❌ Mes FUTURO → bloquear
+                if ($mesNumero > $mesActualNumero) {
+                    continue;
+                }
+
+                // ❌ Mes NO contemplado en el periodo de la acción → ignorar
+                if (!in_array($mes, $accion->getPeriodo(), true)) {
+                    continue;
+                }
+
+                // Normalización de valor vacío
+                if ($valor === '') {
+                    $valor = null;
+                }
+
+                // ✅ Mes actual o pasado → permitido
+                $valoresActuales[$mes] = $valor;
+                $fechaEvento = new \DateTimeImmutable();
+
+// ===============================
+// HISTORIAL
+// ===============================
+
+// 👉 MES PASADO = ATRASO
+if ($mesNumero < $mesActualNumero) {
+
+    $motivo = $atrasos[$accionId][$mes]['motivo'] ?? null;
+
+    if ($motivo !== null) {
+        $histAtraso = new HistorialAccionesAtrasos();
+        $histAtraso->setAccion($accion);
+        $histAtraso->setMes($mesNumero);
+        $histAtraso->setValor((int) $valor);
+        $histAtraso->setMotivo($motivo);
+        $histAtraso->setFecha($fechaEvento);
+
+        $entityManager->persist($histAtraso);
     }
 
-    // ❌ Si el mes NO está en el periodo de la acción → ignorar
-    if (!in_array($mes, $accion->getPeriodo(), true)) {
-        unset($meses[$mes]);
-        continue;
-    }
+}
+// 👉 MES ACTUAL = HISTORIAL NORMAL
+elseif ($mesNumero === $mesActualNumero) {
 
-    // Normalización de valor vacío
-    if ($valor === '') {
-        $meses[$mes] = null;
+    // ❗ SOLO guardar historial si el usuario capturó algo
+    if ($valor !== null && $valor !== '') {
+
+        $hist = new HistorialAcciones();
+        $hist->setAccion($accion);
+        $hist->setMes($mesNumero);
+        $hist->setValor((int) $valor);
+        $hist->setFecha($fechaEvento);
+
+        $entityManager->persist($hist);
     }
 }
 
 
-            $accion->setValorAlcanzado($meses);
+            }
+
+            $accion->setValorAlcanzado($valoresActuales);
         }
 
-        // 6. Persistir
+        // 7) Persistir
         $entityManager->flush();
 
-        // 7. Regresar al index con filtros
+        // 8) Regresar al index con filtros
         return $this->redirectToRoute('app_encabezado_index', [
             'anio'         => $anioEjecucion,
             'departamento' => $departamentoSeleccionado,
@@ -539,19 +614,33 @@ public function edit(
         'departamento' => $request->query->get('departamento'),
         'puesto'       => $request->query->get('puesto'),
     ];
+
     $fechaActual = new \DateTimeImmutable();
-$mesesES = [
-    1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
-    5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
-    9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
-];
-
-$mesActual = $mesesES[(int) $fechaActual->format('n')];
-
+    $mesActual = $mesesES[5]; // SIMULAMOS MARZO
 
     $isTurbo = $request->headers->get('Turbo-Frame');
 
-if ($isTurbo) {
+    // Turbo frame directo
+    if ($isTurbo) {
+        return $this->render('pta/encabezado/edit.html.twig', [
+            'encabezado' => $encabezado,
+            'filtros'    => $filtros,
+            'mesActual'  => $mesActual,
+        ]);
+    }
+
+    // Admin dashboard wrapper
+    if ($this->isGranted('ROLE_ADMIN')) {
+        return $this->render('admin/dashboard/index.html.twig', [
+            'section'     => 'pta',
+            'content_url' => $this->generateUrl('app_encabezado_edit', [
+                'id' => $encabezado->getId(),
+            ] + $filtros),
+            'mesActual'   => $mesActual,
+        ]);
+    }
+
+    // No-admin normal
     return $this->render('pta/encabezado/edit.html.twig', [
         'encabezado' => $encabezado,
         'filtros'    => $filtros,
@@ -559,23 +648,6 @@ if ($isTurbo) {
     ]);
 }
 
-if ($this->isGranted('ROLE_ADMIN')) {
-    return $this->render('admin/dashboard/index.html.twig', [
-        'section' => 'pta',
-        'content_url' => $this->generateUrl('app_encabezado_edit', [
-            'id' => $encabezado->getId(),
-        ] + $filtros),
-        'mesActual'  => $mesActual,
-    ]);
-}
-
-return $this->render('pta/encabezado/edit.html.twig', [
-    'encabezado' => $encabezado,
-    'filtros'    => $filtros,
-    'mesActual'  => $mesActual,
-]);
-
-}
 
 
     #[Route('/{id}/delete', name: 'app_encabezado_delete', methods: ['POST'])]
