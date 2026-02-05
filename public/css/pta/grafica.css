@@ -1,101 +1,102 @@
 /* =====================================================
    PTA — GRÁFICAS
    -----------------------------------------------------
-   Estilos exclusivos para la vista de gráficas del PTA.
-   Se aplican únicamente cuando:
-   data-pta-view="graficas"
+   Vista aislada de gráficas
+   SIN Bootstrap card
    ===================================================== */
 
 /* =====================================================
-   GRÁFICA (CANVAS)
+   CONTENEDOR PRINCIPAL
    ===================================================== */
+.pta-module[data-pta-view="graficas"] {
+    --pta-primary: #0dcaf0;
+    --pta-success: #1dd1a1;
+    --pta-danger: #ff6b6b;
 
-/**
- * El alto fijo es CLAVE para Chart.js cuando:
- * - responsive = true
- * - maintainAspectRatio = false
- * Sin esta altura, la gráfica colapsa.
- */
-.pta-chart {
-    width: 100%;
-    height: 300px;
+    --pta-border: rgba(13, 202, 240, 0.35);
+    --pta-border-soft: rgba(13, 202, 240, 0.18);
+
+    color: #e6f1ff;
 }
-/* =====================================================
-   CONTENEDOR DE LA GRÁFICA (CRÍTICO)
-   ===================================================== */
 
-.pta-card__body {
-    position: relative;
-    width: 100%;
-    height: 320px; /* 👈 CLAVE */
+/* =====================================================
+   CARD DEL INDICADOR (YA SIN GRIS)
+   ===================================================== */
+.pta-grafica-card {
+    background: transparent;
+    border: 1px solid var(--pta-border);
+    border-radius: 16px;
+    box-shadow:
+        inset 0 0 0 1px var(--pta-border-soft),
+        0 18px 40px rgba(0, 0, 0, 0.75);
 }
 
 /* =====================================================
    HEADER DEL INDICADOR
    ===================================================== */
-
-/* Contenedor superior del indicador */
 .pta-indicador-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 2rem;
+
+    padding: 1.2rem 1.4rem;
+
+    background: transparent;
+    border-bottom: 1px solid var(--pta-border-soft);
 }
 
-/* Título del indicador */
+/* Título */
 .pta-indicador-title {
     margin: 0;
     font-size: 1.25rem;
-    font-weight: 600;
-}
-
-/* (Reservado) Fórmula del indicador */
-.pta-indicador-formula {
-    margin: 0.25rem 0 0;
-    font-size: 0.9rem;
-    color: #adb5bd;
-}
-
-/* Contenedor de estadísticas (meta, tendencia, avance) */
-.pta-indicador-stats {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
+    font-weight: 700;
+    color: #ffffff;
 }
 
 /* =====================================================
-   ESTADÍSTICAS DEL INDICADOR
+   ESTADÍSTICAS
    ===================================================== */
+.pta-indicador-stats {
+    display: flex;
+    gap: 1.6rem;
+    align-items: center;
+}
 
-/* Bloque genérico de estadística */
 .pta-stat {
     text-align: center;
 }
 
-/* Etiqueta de la estadística */
 .pta-stat-label {
     display: block;
     font-size: 0.75rem;
-    color: #adb5bd;
+    color: #9fb3c8;
 }
 
-/* Valor de la estadística */
 .pta-stat-value {
     font-size: 1.1rem;
     font-weight: 600;
+    color: #ffffff;
 }
 
 /* =====================================================
-   PTA — RESUMEN DE ACCIONES
-   (SOLO VISTA GRÁFICAS)
+   BODY DE GRÁFICA
    ===================================================== */
+.pta-card__body {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    padding: 1.2rem 1.4rem;
+}
 
-/**
- * Contenedor general del resumen de acciones.
- * Se usa el selector por data-attribute para:
- * - Aislar estilos
- * - Evitar colisiones con otras vistas
- */
+.pta-chart {
+    width: 100%;
+    height: 300px;
+}
+
+/* =====================================================
+   RESUMEN DE ACCIONES
+   ===================================================== */
 .pta-module[data-pta-view="graficas"] .pta-actions {
     margin-top: 1.5rem;
     display: flex;
@@ -103,36 +104,32 @@
     gap: 1rem;
 }
 
-/* Card individual de cada acción */
 .pta-module[data-pta-view="graficas"] .pta-action-card {
     background: linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.05),
-        rgba(255, 255, 255, 0.02)
+        rgba(13, 202, 240, 0.08),
+        rgba(6, 15, 22, 0.85)
     );
     border-radius: 14px;
     padding: 1rem 1.25rem;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 0 1px var(--pta-border-soft);
 }
 
-/* Header de la acción (nombre + porcentaje) */
-.pta-module[data-pta-view="graficas"] .pta-action-header {
+.pta-action-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.9rem;
-    font-weight: 500;
-    color: #f1f3f5; /* texto claro para dark mode */
-}
-
-/* Porcentaje de contribución de la acción */
-.pta-module[data-pta-view="graficas"] .pta-action-header span:last-child {
-    color: #20c997;
     font-weight: 600;
+    color: #ffffff;
 }
 
-/* Barra base de progreso */
-.pta-module[data-pta-view="graficas"] .pta-action-bar {
+.pta-action-header span:last-child {
+    color: var(--pta-success);
+}
+
+/* Barra */
+.pta-action-bar {
     margin: 0.6rem 0 0.4rem;
     height: 8px;
     background: rgba(255, 255, 255, 0.12);
@@ -140,28 +137,70 @@
     overflow: hidden;
 }
 
-/* Relleno de la barra de progreso */
-.pta-module[data-pta-view="graficas"] .pta-action-bar-fill {
+.pta-action-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, #198754, #20c997);
-    box-shadow: 0 0 6px rgba(32, 201, 151, 0.6);
+    background: linear-gradient(90deg, #0dcaf0, #1dd1a1);
+    box-shadow: 0 0 6px rgba(13, 202, 240, 0.6);
 }
 
-/* Contenedor de meses y valores */
-.pta-module[data-pta-view="graficas"] .pta-action-months {
+/* Meses */
+.pta-action-months {
     display: flex;
     flex-wrap: wrap;
     gap: 0.7rem;
     font-size: 0.85rem;
-    color: #e9ecef;
+    color: #e6f1ff;
 }
 
-/* Píldora individual de mes */
-.pta-module[data-pta-view="graficas"] .pta-action-months span {
-    background: rgba(255, 255, 255, 0.08);
+.pta-action-months span {
+    background: rgba(13, 202, 240, 0.12);
     padding: 0.35rem 0.65rem;
     border-radius: 8px;
-    font-weight: 500;
-    line-height: 1.2;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    box-shadow: inset 0 0 0 1px var(--pta-border-soft);
+}
+
+/* ================= HEADER DEL INDICADOR ================= */
+.pta-grafica-card .pta-card__header {
+    border-bottom: 1px solid rgba(13, 202, 240, 0.35);
+    box-shadow: inset 0 -1px 0 rgba(13, 202, 240, 0.15);
+}
+/* ================= BODY DE GRÁFICA ================= */
+.pta-grafica-card .pta-card__body {
+    background: radial-gradient(
+        120% 120% at 50% 0%,
+        rgba(13, 202, 240, 0.08),
+        rgba(6, 15, 22, 0.95)
+    );
+
+    border-bottom: 1px solid rgba(13, 202, 240, 0.25);
+}
+/* ================= RESUMEN DE ACCIONES ================= */
+.pta-module[data-pta-view="graficas"] .pta-actions {
+    width: 100%;
+}
+
+.pta-module[data-pta-view="graficas"] .pta-action-card {
+    width: 100%;
+}
+/* =====================================================
+   PTA — HEADER DE INDICADOR COMO CARD
+   ===================================================== */
+
+.pta-grafica-card .pta-card__header.pta-indicador-header {
+    background: radial-gradient(
+        140% 140% at 50% 0%,
+        rgba(13, 202, 240, 0.1),
+        rgba(6, 15, 22, 0.92)
+    );
+
+    border: 1px solid rgba(13, 202, 240, 0.45);
+    border-radius: 14px;
+
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+
+    box-shadow:
+        0 0 0 1px rgba(13, 202, 240, 0.18),
+        0 12px 30px rgba(0, 0, 0, 0.45);
+    margin-bottom: 1.25rem;
 }

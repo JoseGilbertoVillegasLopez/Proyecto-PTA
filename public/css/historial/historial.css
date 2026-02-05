@@ -1,0 +1,545 @@
+/* =========================================================
+   PTA — HISTORIAL (NAMESPACE AISLADO)
+   ========================================================= */
+
+.pta-historial {
+    padding: 28px 34px 60px;
+    background: radial-gradient(circle at top, #0f1c26, #0b1117 60%);
+    color: #e6f1ff;
+
+    --pta-primary: #0dcaf0;
+    --pta-ok: #1dd1a1;
+    --pta-warning: #feca57;
+    --pta-danger: #ff6b6b;
+    --pta-muted: #9fb3c8;
+
+    --pta-border: rgba(13, 202, 240, 0.25);
+    --pta-border-soft: rgba(13, 202, 240, 0.15);
+
+    --pta-card: #121b23;
+    --pta-card-soft: #16222d;
+}
+
+/* =========================================================
+   HEADER DEL PTA (HISTORIAL)
+   ========================================================= */
+
+.pta-historial .pta-historial-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    padding: 32px 36px;
+    margin-bottom: 42px;
+
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.08),
+        rgba(0, 0, 0, 0.85)
+    );
+
+    border-radius: 22px;
+    border: 1px solid var(--pta-border);
+}
+
+/* BOTÓN VOLVER ARRIBA (sin mezclarse con títulos largos) */
+.pta-historial .pta-historial-header__back {
+    width: 100%;
+}
+
+.pta-historial .pta-historial-header__back .pta-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 14px;
+    border-radius: 10px;
+
+    background: rgba(13, 202, 240, 0.12);
+    color: var(--pta-primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.pta-historial .pta-historial-header__back .pta-back-btn:hover {
+    background: rgba(13, 202, 240, 0.22);
+}
+
+/* INFO PRINCIPAL */
+.pta-historial .pta-historial-header__info {
+    max-width: 980px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.pta-historial .pta-historial-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    margin-bottom: 12px;
+}
+
+.pta-historial .pta-historial-objetivo {
+    font-size: 16px;
+    color: var(--pta-muted);
+    margin-bottom: 18px;
+}
+
+/* META */
+.pta-historial .pta-historial-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.pta-historial .pta-historial-meta span {
+    background: var(--pta-card);
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+}
+
+.pta-historial .pta-historial-meta strong {
+    color: var(--pta-primary);
+    font-weight: 600;
+}
+
+/* =========================================================
+   CARD DE INDICADOR
+   ========================================================= */
+
+.pta-historial .pta-indicador-card {
+    background: radial-gradient(
+        circle at top left,
+        rgba(13, 202, 240, 0.22),
+        rgba(6, 15, 22, 0.96) 55%
+    );
+
+    border-radius: 26px;
+    border: 1px solid rgba(13, 202, 240, 0.35);
+
+    padding: 34px 40px 40px;
+    margin-bottom: 48px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.18),
+        0 20px 50px rgba(0, 0, 0, 0.75);
+}
+
+/* HEADER INDICADOR */
+.pta-historial .pta-historial-indicador-header {
+    margin-bottom: 30px;
+}
+
+.pta-historial .pta-historial-indicador-header .pta-indicador-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.pta-historial .pta-historial-indicador-header .pta-indicador-title {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+    color: #fff;
+}
+
+/* BADGES */
+.pta-historial .pta-badge {
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+}
+
+.pta-historial .pta-badge-ok {
+    background: rgba(29, 209, 161, 0.15);
+    color: var(--pta-ok);
+}
+
+.pta-historial .pta-badge-bad {
+    background: rgba(255, 107, 107, 0.15);
+    color: var(--pta-danger);
+}
+
+/* DATOS INDICADOR */
+.pta-historial .pta-historial-indicador-header .pta-indicador-data {
+    display: grid;
+    grid-template-columns: 3fr 0.9fr 0.9fr;
+    gap: 16px;
+}
+
+.pta-historial
+    .pta-historial-indicador-header
+    .pta-indicador-data
+    span:first-child {
+    background: transparent;
+    border-left: 4px solid var(--pta-primary);
+    padding: 14px 18px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #cfefff;
+}
+
+.pta-historial
+    .pta-historial-indicador-header
+    .pta-indicador-data
+    span:not(:first-child) {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 13px;
+    text-align: center;
+    color: var(--pta-muted);
+}
+
+.pta-historial .pta-historial-indicador-header strong {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+    color: var(--pta-primary);
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+
+.pta-historial .pta-acciones {
+    margin-top: 26px;
+}
+
+.pta-historial .pta-accion {
+    margin-bottom: 18px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.pta-historial .pta-accion summary {
+    cursor: pointer;
+    padding: 14px 18px;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.pta-historial .pta-accion-body {
+    padding: 18px;
+}
+
+/* =========================================================
+   GRID DE MESES (IGUAL QUE ANTES)
+   ========================================================= */
+
+.pta-historial .pta-meses-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+
+@media (max-width: 1200px) {
+    .pta-historial .pta-meses-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .pta-historial .pta-meses-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   CARD MES (🔥 LOOK COMPLETO RESTAURADO 🔥)
+   ========================================================= */
+
+.pta-historial .pta-mes-card {
+    min-height: 165px;
+    padding: 18px 20px;
+    border-radius: 20px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(8, 20, 30, 0.95),
+        rgba(0, 0, 0, 0.85)
+    );
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25),
+        0 12px 28px rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+}
+
+/* HEADER MES */
+.pta-historial .pta-mes-head {
+    margin-bottom: 10px;
+}
+
+.pta-historial .pta-mes-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+/* BODY MES */
+.pta-historial .pta-mes-body {
+    font-size: 1.05rem;
+    line-height: 1.45;
+}
+
+.pta-historial .pta-mes-muted {
+    opacity: 0.75;
+}
+
+.pta-historial .pta-mes-alert {
+    color: #ff6b6b;
+    font-weight: 600;
+}
+
+/* EVENTO MINI */
+.pta-historial .pta-eventos-mini {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pta-historial .pta-evento-mini__row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.pta-historial .pta-evento-mini__label {
+    opacity: 0.85;
+}
+
+.pta-historial .pta-evento-mini__valor {
+    color: var(--pta-primary);
+}
+
+.pta-historial .pta-evento-mini__date {
+    font-size: 0.9rem;
+    opacity: 0.75;
+}
+
+.pta-historial .pta-evento-mini__motivo {
+    margin-top: 6px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    background: rgba(220, 53, 69, 0.15);
+    color: #ffb3b3;
+}
+
+/* =========================================================
+   CHIPS (ESTADO)
+   ========================================================= */
+
+.pta-historial .pta-chip {
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.pta-historial .pta-chip-ok {
+    background: rgba(25, 135, 84, 0.25);
+    color: #3ddc97;
+}
+
+.pta-historial .pta-chip-atraso {
+    background: rgba(255, 193, 7, 0.25);
+    color: #ffc107;
+}
+
+.pta-historial .pta-chip-critico {
+    background: rgba(220, 53, 69, 0.3);
+    color: #ff6b6b;
+}
+
+.pta-historial .pta-chip-pendiente {
+    background: rgba(13, 110, 253, 0.25);
+    color: #6ea8fe;
+}
+
+.pta-historial .pta-chip-naplica {
+    background: rgba(108, 117, 125, 0.25);
+    color: #adb5bd;
+}
+
+/* =========================================================
+   ESTADOS BORDE (IGUAL QUE ANTES)
+   ========================================================= */
+
+.pta-historial .pta-mes-ok {
+    box-shadow: inset 0 0 0 1px rgba(25, 135, 84, 0.6);
+}
+
+.pta-historial .pta-mes-atraso {
+    box-shadow: inset 0 0 0 1px rgba(255, 193, 7, 0.7);
+}
+
+.pta-historial .pta-mes-atraso_critico {
+    box-shadow: inset 0 0 0 1px rgba(220, 53, 69, 0.8);
+}
+
+.pta-historial .pta-mes-pendiente {
+    box-shadow: inset 0 0 0 1px rgba(13, 110, 253, 0.6);
+}
+
+.pta-historial .pta-mes-fuera_periodo {
+    opacity: 0.55;
+}
+
+/* =========================================================
+   GRÁFICA
+   ========================================================= */
+
+.pta-historial .pta-indicador-chart {
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--pta-border-soft);
+}
+
+/* RESUMEN DE GRÁFICA */
+.pta-historial .pta-chart-summary {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    background: transparent;
+    text-align: center;
+}
+
+.pta-historial .pta-chart-summary__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pta-historial .pta-chart-summary__label {
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #adb5bd;
+}
+
+.pta-historial .pta-chart-summary__value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #e9ecef;
+}
+
+.pta-historial .pta-chart-summary__value--accent {
+    color: #20c997;
+}
+
+/* Placeholder */
+.pta-historial .pta-chart-placeholder {
+    text-align: center;
+    color: var(--pta-muted);
+    padding: 26px;
+    font-size: 14px;
+}
+
+/* =========================================================
+   PTA — HOVER FINO PARA CARDS DE MESES
+   ========================================================= */
+
+.pta-mes-card {
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
+}
+
+/* ===== HOVER BASE ===== */
+.pta-mes-card:hover {
+    transform: translateY(-4px) scale(1.015);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.45),
+        0 18px 40px rgba(0, 0, 0, 0.85);
+}
+
+/* =========================================================
+   AJUSTES POR ESTADO
+   ========================================================= */
+
+/* OK — limpio y positivo */
+.pta-mes-ok:hover {
+    box-shadow:
+        inset 0 0 0 1px rgba(25, 135, 84, 0.75),
+        0 18px 40px rgba(0, 0, 0, 0.85);
+}
+
+/* ATRASO — advertencia suave */
+.pta-mes-atraso:hover {
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 193, 7, 0.85),
+        0 18px 42px rgba(0, 0, 0, 0.9);
+}
+
+/* ATRASO CRÍTICO — más peso visual */
+.pta-mes-atraso_critico:hover {
+    transform: translateY(-3px) scale(1.012); /* un poco más firme */
+    box-shadow:
+        inset 0 0 0 1px rgba(220, 53, 69, 0.95),
+        0 20px 46px rgba(0, 0, 0, 0.95);
+}
+
+/* PENDIENTE — discreto */
+.pta-mes-pendiente:hover {
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 110, 253, 0.75),
+        0 16px 36px rgba(0, 0, 0, 0.8);
+}
+
+/* =========================================================
+   FUERA DE PERIODO — SIN HOVER
+   ========================================================= */
+
+.pta-mes-fuera_periodo:hover {
+    transform: none;
+    box-shadow: none;
+    cursor: default;
+}
+
+/* =========================================================
+   FUERA DE PERIODO — HOVER PASIVO (NO INTERACTIVO)
+   ========================================================= */
+
+.pta-mes-fuera_periodo {
+    opacity: 0.55;
+    transition:
+        box-shadow 0.35s ease,
+        background 0.35s ease;
+}
+
+.pta-mes-fuera_periodo:hover {
+    box-shadow:
+        inset 0 0 0 1px rgba(173, 181, 189, 0.35),
+        0 10px 24px rgba(0, 0, 0, 0.6);
+
+    background: linear-gradient(
+        145deg,
+        rgba(8, 20, 30, 0.85),
+        rgba(0, 0, 0, 0.75)
+    );
+
+    cursor: default; /* sigue sin ser clickeable */
+}

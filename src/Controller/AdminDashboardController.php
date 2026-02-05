@@ -8,10 +8,24 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminDashboardController extends AbstractController
 {
-    #[Route('/admin/dashboard/{section}', name: 'app_admin_dashboard', defaults: ['section' => 'personal'])]
+    #[Route('/dashboard/{section}', name: 'app_admin_dashboard', defaults: ['section' => 'personal'])]
 public function index(string $section): Response
 {
-    return $this->render('admin/dashboard/index.html.twig', [
+    // Si NO es admin y pide secciones prohibidas
+    if (
+        !$this->isGranted('ROLE_ADMIN')
+        && in_array($section, ['personal', 'departamentos', 'puestos'], true)
+    ) {
+        // Fuerza PTA
+        $section = 'pta';
+    }
+
+    // Si viene vacío o null
+    if ($section === null) {
+        $section = $this->isGranted('ROLE_ADMIN') ? 'personal' : 'pta';
+    }
+
+    return $this->render('dashboard/index.html.twig', [
         'section' => $section,
     ]);
 }

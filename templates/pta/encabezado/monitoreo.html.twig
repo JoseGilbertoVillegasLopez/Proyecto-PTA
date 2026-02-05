@@ -1,0 +1,301 @@
+{# ============================================================
+   PTA — MONITOREO (CONTENIDO)
+   ------------------------------------------------------------
+   Vista estratégica de supervisión.
+   NO captura, NO edita.
+   ============================================================ #}
+
+{# ============================================================
+   1. BREADCRUMB JERÁRQUICO
+   ============================================================ #}
+   
+<nav class="pta-monitoreo-breadcrumb mb-4">
+    <ul class="pta-monitoreo-breadcrumb__list">
+        {% for crumb in resultado.contexto.breadcrumb %}
+            <li class="pta-monitoreo-breadcrumb__item">
+                <a
+                    href="{{ path('pta_monitoreo_index', {
+                        root_type: crumb.root_type,
+                        root_id: crumb.root_id,
+                        anio: anio
+                    }) }}"
+                    class="pta-monitoreo-breadcrumb__link"
+                >
+                    {{ crumb.label }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
+
+
+{# ============================================================
+   2. RESUMEN GLOBAL
+   ============================================================ #}
+{% if resultado.contexto.nivel == 'GLOBAL' %}
+<section class="pta-monitoreo-summary mb-4">
+    <div class="pta-report-card pta-report-card--global pta-status-{{ resultado.resumen_global.estado|lower }}">
+
+        <h3 class="pta-report-card__title">
+            Reporte general del PTA — {{ anio }}
+        </h3>
+
+        <div class="pta-report-metrics">
+            <div class="pta-metric pta-metric--total">
+                <div class="pta-metric__label">Total de proyectos PTA</div>
+                <div class="pta-metric__value">{{ resultado.resumen_global.total_ptas }}</div>
+            </div>
+
+            <div class="pta-metric pta-metric--ok">
+                <div class="pta-metric__label">
+                    <i class="bi bi-check-circle"></i> En tiempo
+                </div>
+                <div class="pta-metric__value">{{ resultado.resumen_global.ptas_ok }}</div>
+            </div>
+
+            <div class="pta-metric pta-metric--atencion">
+                <div class="pta-metric__label">
+                    <i class="bi bi-exclamation-triangle"></i> Atención
+                </div>
+                <div class="pta-metric__value">{{ resultado.resumen_global.ptas_atencion }}</div>
+            </div>
+
+            <div class="pta-metric pta-metric--critico">
+                <div class="pta-metric__label">
+                    <i class="bi bi-x-octagon"></i> Crítico
+                </div>
+                <div class="pta-metric__value">{{ resultado.resumen_global.ptas_critico }}</div>
+            </div>
+        </div>
+
+        {# ===== Gráfica (inspirada en tu imagen) ===== #}
+        <div class="pta-report-chart pta-report-chart--global">
+            {% set g = resultado.resumen_global.grafica %}
+
+            <div class="pta-meter">
+                <div class="pta-meter__row">
+                    <span class="pta-meter__name">En tiempo</span>
+                    <div class="pta-meter__track">
+                        <div class="pta-meter__fill pta-meter__fill--ok" style="width: {{ g.en_tiempo.pct }}%"></div>
+                        <span class="pta-meter__bubble" style="left: calc({{ g.en_tiempo.pct }}% - 18px);">
+                            {{ g.en_tiempo.pct }}%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="pta-meter__row">
+                    <span class="pta-meter__name">Atención</span>
+                    <div class="pta-meter__track">
+                        <div class="pta-meter__fill pta-meter__fill--atencion" style="width: {{ g.atencion.pct }}%"></div>
+                        <span class="pta-meter__bubble" style="left: calc({{ g.atencion.pct }}% - 18px);">
+                            {{ g.atencion.pct }}%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="pta-meter__row">
+                    <span class="pta-meter__name">Crítico</span>
+                    <div class="pta-meter__track">
+                        <div class="pta-meter__fill pta-meter__fill--critico" style="width: {{ g.critico.pct }}%"></div>
+                        <span class="pta-meter__bubble" style="left: calc({{ g.critico.pct }}% - 18px);">
+                            {{ g.critico.pct }}%
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endif %}
+
+
+
+{# ============================================================
+   3. CARDS DE NIVELES INFERIORES
+   ============================================================ #}
+{% if resultado.cards is not empty %}
+
+{% if resultado.contexto.nivel == 'GLOBAL' %}
+    <h3 class="pta-title pta-title--monitoreo mb-4">
+        <i class="bi bi-diagram-3"></i>
+        Monitoreo por departamento
+    </h3>
+{% elseif resultado.contexto.nivel == 'DEPARTAMENTO' %}
+    <h3 class="pta-title pta-title--monitoreo mb-4">
+        <i class="bi bi-people"></i>
+        Monitoreo por puestos
+    </h3>
+{% endif %}
+
+
+<section class="pta-monitoreo-cards mb-5">
+    <div class="pta-monitoreo-cards__grid">
+
+        {% for card in resultado.cards %}
+            {% set tipo = card.type|lower %}
+
+            <a
+                href="{{ path('pta_monitoreo_index', {
+                    root_type: card.link.root_type,
+                    root_id: card.link.root_id,
+                    anio: anio
+                }) }}"
+                class="pta-report-card pta-report-card--{{ tipo }} pta-status-{{ card.estado_global|lower }}"
+            >
+                <h4 class="pta-report-card__subtitle">
+                    {{ card.nombre }}
+                </h4>
+
+                <div class="pta-report-metrics pta-report-metrics--compact">
+                    <div class="pta-metric pta-metric--total">
+                        <div class="pta-metric__label">Total</div>
+                        <div class="pta-metric__value">{{ card.resumen.total_ptas }}</div>
+                    </div>
+
+                    <div class="pta-metric pta-metric--ok">
+                        <div class="pta-metric__label"><i class="bi bi-check-circle"></i> En tiempo</div>
+                        <div class="pta-metric__value">{{ card.resumen.ok }}</div>
+                    </div>
+
+                    <div class="pta-metric pta-metric--atencion">
+                        <div class="pta-metric__label"><i class="bi bi-exclamation-triangle"></i> Atención</div>
+                        <div class="pta-metric__value">{{ card.resumen.atencion }}</div>
+                    </div>
+
+                    <div class="pta-metric pta-metric--critico">
+                        <div class="pta-metric__label"><i class="bi bi-x-octagon"></i> Crítico</div>
+                        <div class="pta-metric__value">{{ card.resumen.critico }}</div>
+                    </div>
+                </div>
+
+                <div class="pta-report-chart">
+                    {% set g = card.grafica %}
+
+                    <div class="pta-meter pta-meter--compact">
+                        <div class="pta-meter__row">
+                            <span class="pta-meter__name">En tiempo</span>
+                            <div class="pta-meter__track">
+                                <div class="pta-meter__fill pta-meter__fill--ok" style="width: {{ g.en_tiempo.pct }}%"></div>
+                                <span class="pta-meter__bubble" style="left: calc({{ g.en_tiempo.pct }}% - 18px);">
+                                    {{ g.en_tiempo.pct }}%
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="pta-meter__row">
+                            <span class="pta-meter__name">Atención</span>
+                            <div class="pta-meter__track">
+                                <div class="pta-meter__fill pta-meter__fill--atencion" style="width: {{ g.atencion.pct }}%"></div>
+                                <span class="pta-meter__bubble" style="left: calc({{ g.atencion.pct }}% - 18px);">
+                                    {{ g.atencion.pct }}%
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="pta-meter__row">
+                            <span class="pta-meter__name">Crítico</span>
+                            <div class="pta-meter__track">
+                                <div class="pta-meter__fill pta-meter__fill--critico" style="width: {{ g.critico.pct }}%"></div>
+                                <span class="pta-meter__bubble" style="left: calc({{ g.critico.pct }}% - 18px);">
+                                    {{ g.critico.pct }}%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </a>
+        {% endfor %}
+
+    </div>
+</section>
+{% endif %}
+
+
+{# ============================================================
+   4. TABLA FINAL DE PTAs (último nivel)
+   ============================================================ #}
+{% if resultado.contexto.nivel == 'FINAL' %}
+<section class="pta-monitoreo-ptas">
+
+    <table class="pta-monitoreo-table">
+
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Proyecto PTA</th>
+                <th>Departamento</th>
+                <th>Puesto</th>
+                <th>Estado</th>
+                <th></th>
+            </tr>
+        </thead>
+
+
+        <tbody>
+            {% for pta in resultado.ptas %}
+                <tr class="pta-status-{{ pta.estado_global|lower }}">
+                    <td class="pta-col-id">
+                        {{ pta.pta_id }}
+                    </td>
+
+                    <td class="pta-col-nombre">
+                        {{ pta.nombre }}
+                    </td>
+
+                    <td class="pta-col-departamento">
+                        {{ pta.departamento }}
+                    </td>
+
+                    <td class="pta-col-puesto">
+                        {{ pta.puesto ?? '—' }}
+                    </td>
+
+                    <td class="pta-col-estado">
+                        <span class="badge pta-badge-{{ pta.estado_global|lower }}">
+                            {{ pta.estado_global == 'OK' ? 'En tiempo' : pta.estado_global }}
+                        </span>
+                    </td>
+
+                    <td class="pta-col-accion">
+                        <span class="pta-actions">
+
+                            {# Ver PTA (SHOW) #}
+                            <a
+                                href="{{ path('app_encabezado_show', {
+                                    id: pta.pta_id,
+                                    from: 'monitoreo'
+                                }) }}"
+                                class="btn btn-sm btn-outline-info"
+                                data-turbo-frame="content"
+                                data-turbo-action="advance"
+                            >
+                                Ver PTA
+                            </a>
+
+                            {# Historial PTA #}
+                            <a
+                                href="{{ path('pta_historial', {
+                                    id: pta.pta_id,
+                                    from: 'monitoreo',
+                                    anio: anio
+                                }) }}"
+                                class="btn btn-sm btn-outline-warning"
+                                data-turbo-frame="content"
+                                data-turbo-action="advance"
+                            >
+                                Historial
+                            </a>
+                        </span>
+
+        </td>
+
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+</section>
+{% endif %}

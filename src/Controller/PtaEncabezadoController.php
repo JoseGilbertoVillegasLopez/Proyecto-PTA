@@ -14,6 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
+use App\Entity\HistorialAcciones;
+use App\Entity\HistorialAccionesAtrasos;
+
 
     #[Route('/pta/encabezado')]
     final class PtaEncabezadoController extends AbstractController
@@ -98,26 +101,24 @@ public function index(
 
     /* =====================================================
      * 6. VISTA
-     * ===================================================== */
-    $view = in_array('ROLE_ADMIN', $usuario->getRoles(), true)
-        ? 'pta/encabezado/index.html.twig'
-        : 'pta/encabezado/indexGeneral.html.twig';
+     * ===================================================== *
 
     /* =====================================================
      * 7. RENDER
      * ===================================================== */
-    return $this->render($view, [
-        'encabezados'         => $encabezados,
-        'anioSeleccionado'    => $anioEjecucion,
-        'aniosFiltro'         => $aniosFiltro,
-        'access'              => $access,
-        'puestosFiltro'       => $puestosFiltro,
-        'departamentosFiltro' => $departamentosFiltro,
-        'filtrosActivos' => [
-            'puesto'       => $filters['puesto'],
-            'departamento' => $filters['departamento'],
-        ],
-    ]);
+    return $this->render('pta/encabezado/index.html.twig', [
+    'encabezados'         => $encabezados,
+    'anioSeleccionado'    => $anioEjecucion,
+    'aniosFiltro'         => $aniosFiltro,
+    'access'              => $access,
+    'puestosFiltro'       => $puestosFiltro,
+    'departamentosFiltro' => $departamentosFiltro,
+    'filtrosActivos' => [
+        'puesto'       => $filters['puesto'],
+        'departamento' => $filters['departamento'],
+    ],
+]);
+
 }
 
 
@@ -317,37 +318,28 @@ public function index(
                 );
 
             }
+            
 
-            /**
-             * =========================================================
-             * RENDER DE LA VISTA NEW (GET o FORM INVÁLIDO)
-             * =========================================================
-             */
-            $isTurbo = $request->headers->get('Turbo-Frame');
+$isTurbo = $request->headers->has('Turbo-Frame');
 
 if ($isTurbo) {
-    // Navegación desde dashboard (Turbo)
-    return $this->render('pta/encabezado/new.html.twig', [
-        'encabezado' => $encabezado,
-        'form' => $form,
-    ]);
-}
-
-// NO Turbo → acceso directo o F5
-if ($this->isGranted('ROLE_ADMIN')) {
-    return $this->render('admin/dashboard/index.html.twig', [
-        'section' => 'pta',
-        'content_url' => $this->generateUrl('app_encabezado_new', [
+    return $this->render('pta/encabezado/new_page.html.twig', [
+        'encabezado'  => $encabezado,
+        'form'        => $form->createView(),
+        'volver_path' => $this->generateUrl('app_encabezado_index', [
             'anio' => $anioEjecucion,
         ]),
     ]);
 }
 
-// Usuario normal → layout completo
-return $this->render('pta/encabezado/new.html.twig', [
-    'encabezado' => $encabezado,
-    'form' => $form,
+return $this->render('dashboard/index.html.twig', [
+    'section'     => 'pta',
+    'content_url' => $this->generateUrl('app_encabezado_new', [
+        'anio' => $anioEjecucion,
+    ]),
 ]);
+
+
 
         }
 
@@ -359,46 +351,36 @@ public function show(
     Request $request,
     Encabezado $encabezado
 ): Response {
-
-    // Preservar filtros actuales
+    // Filtros (solo relevantes para index)
     $filtros = [
         'anio'         => $request->query->get('anio'),
         'departamento' => $request->query->get('departamento'),
         'puesto'       => $request->query->get('puesto'),
     ];
 
-    $isTurbo = $request->headers->get('Turbo-Frame');
+    // Origen de navegación
+    $from = $request->query->get('from', 'index');
 
-    // ============================
-    // Turbo → solo fragmento
-    // ============================
-    if ($isTurbo) {
-        return $this->render('pta/encabezado/show.html.twig', [
-            'encabezado' => $encabezado,
-            'filtros'    => $filtros,
-        ]);
-    }
+    $isTurbo = $request->headers->has('Turbo-Frame');
 
-    // ============================
-    // Admin sin Turbo → dashboard
-    // ============================
-    if ($this->isGranted('ROLE_ADMIN')) {
-        return $this->render('admin/dashboard/index.html.twig', [
-            'section' => 'pta',
-            'content_url' => $this->generateUrl('app_encabezado_show', [
-                'id' => $encabezado->getId(),
-            ] + $filtros),
-        ]);
-    }
-
-    // ============================
-    // Usuario normal → layout base
-    // ============================
-    return $this->render('pta/encabezado/show.html.twig', [
+if ($isTurbo) {
+    return $this->render('pta/encabezado/show_page.html.twig', [
         'encabezado' => $encabezado,
         'filtros'    => $filtros,
+        'from'       => $from,
     ]);
 }
+
+
+return $this->render('dashboard/index.html.twig', [
+    'section'     => 'pta',
+    'content_url' => $this->generateUrl('app_encabezado_show', [
+        'id' => $encabezado->getId(),
+    ] + array_filter($filtros)),
+]);
+
+}
+
 
 
 
@@ -409,8 +391,8 @@ public function edit(
     Encabezado $encabezado,
     EntityManagerInterface $entityManager,
     EncabezadoRepository $encabezadoRepository
-): Response
-{
+): Response {
+
     /**
      * =====================================================
      * SEGURIDAD — CAPTURA DE AVANCES
@@ -430,20 +412,40 @@ public function edit(
 
     /**
      * =====================================================
-     * BLOQUE POST
+     * MAPEO MESES (ES)
+     * =====================================================
+     */
+    $mesesES = [
+        1  => 'Enero',
+        2  => 'Febrero',
+        3  => 'Marzo',
+        4  => 'Abril',
+        5  => 'Mayo',
+        6  => 'Junio',
+        7  => 'Julio',
+        8  => 'Agosto',
+        9  => 'Septiembre',
+        10 => 'Octubre',
+        11 => 'Noviembre',
+        12 => 'Diciembre',
+    ];
+
+    /**
+     * =====================================================
+     * POST — Guardado de avances
      * =====================================================
      */
     if ($request->isMethod('POST')) {
 
-        // 1. Año de ejecución
-        $anioActual = (int) date('Y');
-        $anioEjecucion = $request->query->getInt('anio', $anioActual);
+        // 1) Año de ejecución (para regresar con filtros)
+        $anioSistema   = (int) date('Y');
+        $anioEjecucion = $request->query->getInt('anio', $anioSistema);
 
-        // 2. Preservar filtros
+        // 2) Preservar filtros
         $departamentoSeleccionado = $request->query->get('departamento');
         $puestoSeleccionado       = $request->query->get('puesto');
 
-        // 3. Validación CSRF
+        // 3) Validación CSRF
         if (
             !$this->isCsrfTokenValid(
                 'edit' . $encabezado->getId(),
@@ -457,33 +459,34 @@ public function edit(
             ]);
         }
 
-        // 4. Valores enviados
+        // 4) Valores enviados
         $valoresAlcanzados = $request->request->all('valor_alcanzado');
+        $atrasos = $request->request->all('atrasos'); // puede venir null
 
-        $fechaActual = new \DateTimeImmutable();
-        $anioActual  = (int) $fechaActual->format('Y');
-        $mesActualNumero = (int) date('n'); // 1-12
+        // 5) Fecha y mes actuales
+        $fechaActual     = new \DateTimeImmutable();
+        $anioActual      = (int) $fechaActual->format('Y');
+        $mesActualNumero = 5; // SIMULAMOS MARZO// 1-12
 
-        $mesesES = [
-            1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
-            5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
-            9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
-        ];
+        // ⚠️ Seguridad extra: solo guardar si coincide el año del encabezado
+        if ($anioActual !== (int) $encabezado->getAnioEjecucion()) {
+            return $this->redirectToRoute('app_encabezado_index', [
+                'anio'         => $anioEjecucion,
+                'departamento' => $departamentoSeleccionado,
+                'puesto'       => $puestoSeleccionado,
+            ]);
+        }
 
-        $mesActual = $mesesES[$mesActualNumero];
-
-        if ($anioActual !== $encabezado->getAnioEjecucion()) {
-    // Año incorrecto → no se guarda ningún avance
-    return $this->redirectToRoute('app_encabezado_index', [
-        'anio'         => $anioEjecucion,
-        'departamento' => $departamentoSeleccionado,
-        'puesto'       => $puestoSeleccionado,
-    ]);
-}
-
-
-
-        // 5. Guardar avances por acción
+        /**
+         * =====================================================
+         * 6) Guardar avances por acción
+         * -----------------------------------------------------
+         * PASO 1:
+         * - Permitir MES ACTUAL y MESES PASADOS
+         * - Bloquear MESES FUTUROS
+         * - Ignorar meses fuera del periodo de la acción
+         * =====================================================
+         */
         foreach ($encabezado->getAcciones() as $accion) {
 
             $accionId = $accion->getId();
@@ -492,36 +495,88 @@ public function edit(
                 continue;
             }
 
-            $meses = $valoresAlcanzados[$accionId];
+            // Lo que viene del form (solo meses con inputs)
+            $mesesForm = $valoresAlcanzados[$accionId];
 
-            foreach ($meses as $mes => $valor) {
+            // Tomar lo ya guardado para no perder meses no enviados
+            $valoresActuales = $accion->getValorAlcanzado() ?? [];
 
-    // ❌ Si NO es el mes actual → ignorar
-    if ($mes !== $mesActual) {
-        unset($meses[$mes]);
-        continue;
+            foreach ($mesesForm as $mes => $valor) {
+
+                // Convertir mes string → número (1-12)
+                $mesNumero = array_search($mes, $mesesES, true);
+
+                // ❌ Mes inválido
+                if ($mesNumero === false) {
+                    continue;
+                }
+
+                // ❌ Mes FUTURO → bloquear
+                if ($mesNumero > $mesActualNumero) {
+                    continue;
+                }
+
+                // ❌ Mes NO contemplado en el periodo de la acción → ignorar
+                if (!in_array($mes, $accion->getPeriodo(), true)) {
+                    continue;
+                }
+
+                // Normalización de valor vacío
+                if ($valor === '') {
+                    $valor = null;
+                }
+
+                // ✅ Mes actual o pasado → permitido
+                $valoresActuales[$mes] = $valor;
+                $fechaEvento = new \DateTimeImmutable();
+
+// ===============================
+// HISTORIAL
+// ===============================
+
+// 👉 MES PASADO = ATRASO
+if ($mesNumero < $mesActualNumero) {
+
+    $motivo = $atrasos[$accionId][$mes]['motivo'] ?? null;
+
+    if ($motivo !== null) {
+        $histAtraso = new HistorialAccionesAtrasos();
+        $histAtraso->setAccion($accion);
+        $histAtraso->setMes($mesNumero);
+        $histAtraso->setValor((int) $valor);
+        $histAtraso->setMotivo($motivo);
+        $histAtraso->setFecha($fechaEvento);
+
+        $entityManager->persist($histAtraso);
     }
 
-    // ❌ Si el mes NO está en el periodo de la acción → ignorar
-    if (!in_array($mes, $accion->getPeriodo(), true)) {
-        unset($meses[$mes]);
-        continue;
-    }
+}
+// 👉 MES ACTUAL = HISTORIAL NORMAL
+elseif ($mesNumero === $mesActualNumero) {
 
-    // Normalización de valor vacío
-    if ($valor === '') {
-        $meses[$mes] = null;
+    // ❗ SOLO guardar historial si el usuario capturó algo
+    if ($valor !== null && $valor !== '') {
+
+        $hist = new HistorialAcciones();
+        $hist->setAccion($accion);
+        $hist->setMes($mesNumero);
+        $hist->setValor((int) $valor);
+        $hist->setFecha($fechaEvento);
+
+        $entityManager->persist($hist);
     }
 }
 
 
-            $accion->setValorAlcanzado($meses);
+            }
+
+            $accion->setValorAlcanzado($valoresActuales);
         }
 
-        // 6. Persistir
+        // 7) Persistir
         $entityManager->flush();
 
-        // 7. Regresar al index con filtros
+        // 8) Regresar al index con filtros
         return $this->redirectToRoute('app_encabezado_index', [
             'anio'         => $anioEjecucion,
             'departamento' => $departamentoSeleccionado,
@@ -535,47 +590,36 @@ public function edit(
      * =====================================================
      */
     $filtros = [
-        'anio'         => $request->query->get('anio'),
-        'departamento' => $request->query->get('departamento'),
-        'puesto'       => $request->query->get('puesto'),
-    ];
-    $fechaActual = new \DateTimeImmutable();
-$mesesES = [
-    1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
-    5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
-    9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
+    'anio'         => $request->query->get('anio'),
+    'departamento' => $request->query->get('departamento'),
+    'puesto'       => $request->query->get('puesto'),
 ];
 
-$mesActual = $mesesES[(int) $fechaActual->format('n')];
+$fechaActual = new \DateTimeImmutable();
+$mesActual   = $mesesES[5]; // simulación
 
-
-    $isTurbo = $request->headers->get('Turbo-Frame');
+$isTurbo = $request->headers->has('Turbo-Frame');
 
 if ($isTurbo) {
-    return $this->render('pta/encabezado/edit.html.twig', [
-        'encabezado' => $encabezado,
-        'filtros'    => $filtros,
-        'mesActual'  => $mesActual,
-    ]);
-}
-
-if ($this->isGranted('ROLE_ADMIN')) {
-    return $this->render('admin/dashboard/index.html.twig', [
-        'section' => 'pta',
-        'content_url' => $this->generateUrl('app_encabezado_edit', [
+    return $this->render('pta/encabezado/edit_page.html.twig', [
+        'encabezado'  => $encabezado,
+        'filtros'     => $filtros,
+        'mesActual'   => $mesActual,
+        'volver_path' => $this->generateUrl('app_encabezado_show', [
             'id' => $encabezado->getId(),
-        ] + $filtros),
-        'mesActual'  => $mesActual,
+        ] + array_filter($filtros)),
     ]);
 }
 
-return $this->render('pta/encabezado/edit.html.twig', [
-    'encabezado' => $encabezado,
-    'filtros'    => $filtros,
-    'mesActual'  => $mesActual,
+return $this->render('dashboard/index.html.twig', [
+    'section'     => 'pta',
+    'content_url' => $this->generateUrl('app_encabezado_edit', [
+        'id' => $encabezado->getId(),
+    ] + array_filter($filtros)),
 ]);
 
 }
+
 
 
     #[Route('/{id}/delete', name: 'app_encabezado_delete', methods: ['POST'])]
@@ -590,271 +634,40 @@ return $this->render('pta/encabezado/edit.html.twig', [
     }
 
     #[Route('/graficas/{id}', name: 'app_encabezado_graficas', methods: ['GET'])]
-    public function graficas(Request $request,Encabezado $encabezado): Response
-    {
-        /**
-         * =====================================================
-         * MÓDULO GRÁFICAS PTA
-         * -----------------------------------------------------
-         * Este método construye TODA la información necesaria
-         * para la visualización gráfica de un PTA.
-         *
-         * Reglas clave:
-         * - TODOS los cálculos se hacen en PHP
-         * - El frontend (JS) solo dibuja
-         * - La vista recibe datos ya procesados
-         * =====================================================
-         */
+public function graficas(
+    Request $request,
+    Encabezado $encabezado,
+    \App\Service\Pta\PtaGraficaService $ptaGraficaService
+): Response {
 
-        /**
-         * -----------------------------------------------------
-         * ORDEN FIJO DE MESES
-         * -----------------------------------------------------
-         * Se define explícitamente el orden de los meses
-         * para:
-         * - Mantener consistencia visual
-         * - Evitar dependencias del orden en base de datos
-         * - Garantizar coherencia entre series
-         */
-        $meses = [
-            'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-            'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
-        ];
+    $graficas = $ptaGraficaService->build($encabezado);
 
-        /**
-         * Arreglo final que contendrá TODAS las gráficas
-         * (una por indicador)
-         */
-        $graficas = [];
+    $filtros = [
+        'anio'         => $request->query->get('anio'),
+        'departamento' => $request->query->get('departamento'),
+        'puesto'       => $request->query->get('puesto'),
+    ];
 
-        /**
-         * Acciones asociadas al encabezado
-         * Se reutilizan varias veces para:
-         * - Sumar valores
-         * - Generar resúmenes
-         */
-        $acciones = $encabezado->getAcciones();
+    $volverPath = $this->generateUrl('app_encabezado_show', [
+        'id' => $encabezado->getId(),
+    ] + array_filter($filtros));
 
-        /**
-         * =====================================================
-         * RECORRIDO PRINCIPAL POR INDICADORES
-         * =====================================================
-         * Cada indicador genera:
-         * - Una serie mensual
-         * - Un porcentaje de avance
-         * - Un resumen por acciones
-         */
-        foreach ($encabezado->getIndicadores() as $indicador) {
-
-            /**
-             * =================================================
-             * 1) SUMA MENSUAL REAL (BASE)
-             * =================================================
-             * Se calcula la suma REAL mensual considerando
-             * todas las acciones que pertenecen al indicador.
-             *
-             * Resultado:
-             * [
-             *   'Enero' => total,
-             *   'Febrero' => total,
-             *   ...
-             * ]
-             */
-            $valoresMensuales = array_fill_keys($meses, 0);
-
-            foreach ($acciones as $accion) {
-
-                // Ignorar acciones que no pertenecen al indicador
-                if ($accion->getIndicador() !== $indicador->getIndice()) {
-                    continue;
-                }
-
-                // Valores alcanzados por mes (JSON)
-                $valoresAccion = $accion->getValorAlcanzado() ?? [];
-
-                // Acumulación mensual
-                foreach ($meses as $mes) {
-                    if (isset($valoresAccion[$mes])) {
-                        $valoresMensuales[$mes] += (float) $valoresAccion[$mes];
-                    }
-                }
-            }
-
-            /**
-             * Meta y tipo de tendencia del indicador
-             */
-            $meta      = (float) $indicador->getValor();
-            $tendencia = $indicador->getTendencia();
-
-            /**
-             * =================================================
-             * 2) CONSTRUCCIÓN DE LA SERIE FINAL
-             * =================================================
-             * La serie depende del tipo de tendencia:
-             *
-             * POSITIVA:
-             * - Acumulado progresivo
-             *
-             * NEGATIVA:
-             * - Valor real más reciente
-             * - Mientras no haya valor, se conserva el último
-             */
-            $serie = [];
-            $ultimoValor = 0;
-
-            if ($tendencia === 'POSITIVA') {
-
-    $acumulado = 0;
-    $serieTemp = [];
-
-    foreach ($meses as $mes) {
-        $acumulado += $valoresMensuales[$mes];
-        $serieTemp[$mes] = $acumulado;
+    if ($request->headers->has('Turbo-Frame')) {
+        return $this->render('pta/encabezado/graficas_page.html.twig', [
+            'encabezado'  => $encabezado,
+            'graficas'    => $graficas,
+            'filtros'     => $filtros,
+            'volver_path' => $volverPath,
+        ]);
     }
 
-    /**
-     * 🎯 AJUSTE VISUAL:
-     * Si Enero tiene valor > 0, forzamos un arranque en 0
-     * para que la gráfica "nazca" desde cero.
-     */
-    $primerMes = $meses[0];
-    if ($serieTemp[$primerMes] > 0) {
-        $serie = [
-            $primerMes . ' (inicio)' => 0,
-        ] + $serieTemp;
-    } else {
-        $serie = $serieTemp;
-    }
-
-    $avanceFinal = end($serieTemp);
-    $porcentaje = ($meta > 0)
-        ? round(($avanceFinal / $meta) * 100, 1)
-        : 0;
-}
-else {
-
-                // Tendencia negativa → valor real (no acumulado)
-                foreach ($meses as $mes) {
-                    if ($valoresMensuales[$mes] > 0) {
-                        $ultimoValor = $valoresMensuales[$mes];
-                    }
-                    $serie[$mes] = $ultimoValor;
-                }
-
-                $avanceFinal = end($serie);
-
-                /**
-                 * En tendencia negativa:
-                 * - Llegar o bajar a la meta = 100%
-                 * - Si se excede, el porcentaje disminuye
-                 */
-                if ($meta > 0 && $avanceFinal > 0) {
-                    $porcentaje = ($avanceFinal <= $meta)
-                        ? 100
-                        : round(($meta / $avanceFinal) * 100, 1);
-                } else {
-                    $porcentaje = 0;
-                }
-            }
-
-            /**
-             * Limitar porcentaje a rango válido [0, 100]
-             */
-            $porcentaje = max(0, min(100, $porcentaje));
-
-            /**
-             * =================================================
-             * 3) RESUMEN POR ACCIONES
-             * =================================================
-             * Se calcula:
-             * - Total por acción
-             * - Distribución porcentual dentro del indicador
-             * - Detalle mensual por acción
-             */
-            $accionesResumen = [];
-            $totalIndicador = array_sum($valoresMensuales);
-
-            foreach ($acciones as $accion) {
-
-                // Filtrar solo acciones del indicador
-                if ($accion->getIndicador() !== $indicador->getIndice()) {
-                    continue;
-                }
-
-                $valoresAccion = $accion->getValorAlcanzado() ?? [];
-                $totalAccion = 0;
-                $mesesAccion = [];
-
-                foreach ($meses as $mes) {
-                    $valor = (float) ($valoresAccion[$mes] ?? 0);
-                    $mesesAccion[$mes] = $valor;
-                    $totalAccion += $valor;
-                }
-
-                // Porcentaje de contribución de la acción
-                $porcentajeAccion = $totalIndicador > 0
-                    ? round(($totalAccion / $totalIndicador) * 100, 1)
-                    : 0;
-
-                $accionesResumen[] = [
-                    'nombre'     => $accion->getAccion(),
-                    'meses'      => $mesesAccion,
-                    'total'      => $totalAccion,
-                    'porcentaje' => $porcentajeAccion,
-                ];
-            }
-
-            /**
-             * =================================================
-             * 4) ARMADO FINAL DE LA GRÁFICA
-             * =================================================
-             * Este arreglo es consumido directamente
-             * por la vista y el JS de Chart.js
-             */
-            $graficas[] = [
-                'indicador'  => $indicador->getIndicador(),
-                'meta'       => $meta,
-                'tendencia'  => $tendencia,
-                'meses'      => $serie,        // Serie FINAL
-                'porcentaje' => $porcentaje,   // Avance global
-                'acciones'   => $accionesResumen
-            ];
-        }
-
-        /**
-         * Render de la vista de gráficas
-         */
-        $filtros = [
-    'anio'         => $request->query->get('anio'),
-    'departamento' => $request->query->get('departamento'),
-    'puesto'       => $request->query->get('puesto'),
-];
-
-$isTurbo = $request->headers->get('Turbo-Frame');
-
-if ($isTurbo) {
-    return $this->render('pta/encabezado/graficas.html.twig', [
-        'encabezado' => $encabezado,
-        'graficas'   => $graficas,
-        'filtros'    => $filtros,
-    ]);
-}
-
-if ($this->isGranted('ROLE_ADMIN')) {
-    return $this->render('admin/dashboard/index.html.twig', [
-        'section' => 'pta',
+    return $this->render('dashboard/index.html.twig', [
+        'section'     => 'pta',
         'content_url' => $this->generateUrl('app_encabezado_graficas', [
             'id' => $encabezado->getId(),
-        ] + $filtros),
+        ] + array_filter($filtros)),
     ]);
 }
 
-return $this->render('pta/encabezado/graficas.html.twig', [
-    'encabezado' => $encabezado,
-    'graficas'   => $graficas,
-    'filtros'    => $filtros,
-]);
-
-    }
 
 }

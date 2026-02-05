@@ -54,6 +54,7 @@ security: # Sección principal de configuración de seguridad de Symfony
     # Note: Only the *first* access control that matches will be used
     access_control: # Reglas de autorización basadas en rutas y roles
         - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/dashboard, roles: ROLE_USER }
         - { path: ^/pta, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
