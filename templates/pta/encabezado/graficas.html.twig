@@ -1,5 +1,145 @@
-{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
-	{% include 'pta/encabezado/graficas_admin.html.twig' %}
-{% else %}
-	{% include 'pta/encabezado/graficas_general.html.twig' %}
-{% endif %}
+{# ============================================================
+   PTA — GRÁFICAS
+   ------------------------------------------------------------
+   Vista de visualización gráfica del PTA.
+   - Renderiza una gráfica por cada indicador
+   - Muestra meta, tendencia y porcentaje de avance
+   - Desglosa el aporte de cada acción
+   ------------------------------------------------------------
+   IMPORTANTE:
+   - Twig SOLO renderiza estructura y data-attributes
+   - Los cálculos ya vienen procesados desde el controlador
+   ============================================================ #}
+
+<section
+	class="pta-module" data-pta-view="graficas">
+
+	{# =========================================================
+						       HEADER SUPERIOR
+						       ========================================================= #}
+	<header class="pta-module__header">
+
+		<div class="pta-module__header-left">
+			<a href="{{ path('app_encabezado_show', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" {% if app.user and 'ROLE_ADMIN' in app.user.roles %} data-turbo-frame="content" data-turbo-action="replace" {% endif %} class="pta-back-btn">
+				<i class="bi bi-arrow-left"></i>
+				<span>Volver</span>
+			</a>
+		</div>
+
+		<h1 class="pta-module__title">
+			📊 Gráficas del PTA
+		</h1>
+
+	</header>
+
+	{# =========================================================
+						       CONTENIDO PRINCIPAL
+						       ========================================================= #}
+	<div class="pta-module__content">
+
+		{% for grafica in graficas %}
+
+			{# =================================================
+																		               CARD POR INDICADOR
+																		               ================================================= #}
+			<div
+				class="pta-card pta-grafica-card mb-4">
+
+
+				{# ================= HEADER INDICADOR ================= #}
+				<div class="pta-card__header pta-indicador-header">
+
+					<div class="pta-indicador-main">
+						<h3 class="pta-indicador-title">
+							{{ grafica.indicador }}
+						</h3>
+					</div>
+
+					<div class="pta-indicador-stats">
+						<div class="pta-stat">
+							<span class="pta-stat-label">Valor base</span>
+							<span class="pta-stat-value">
+								{{ grafica.valor_base }}
+							</span>
+						</div>
+
+
+						<div class="pta-stat">
+							<span class="pta-stat-label">Meta</span>
+							<span class="pta-stat-value">
+								{{ grafica.meta }}
+							</span>
+						</div>
+
+						<div class="pta-stat">
+							<span class="pta-stat-label">Tendencia</span>
+							{% if grafica.tendencia == 'POSITIVA' %}
+								<span class="pta-badge pta-badge-positiva">
+									Positiva
+								</span>
+							{% else %}
+								<span class="pta-badge pta-badge-negativa">
+									Negativa
+								</span>
+							{% endif %}
+						</div>
+
+						<div class="pta-stat">
+							<span class="pta-stat-label">Avance</span>
+							<span class="pta-stat-value">
+								{{ grafica.porcentaje }}%
+							</span>
+						</div>
+
+					</div>
+				</div>
+
+				{# ================= BODY GRÁFICA ================= #}
+				<div class="pta-card__body">
+					<canvas class="pta-chart" data-indicador="{{ grafica.indicador }}" data-meta="{{ grafica.meta }}" data-tendencia="{{ grafica.tendencia }}" data-serie='{{ grafica.serie|json_encode|raw }}'></canvas>
+				</div>
+
+				{# ================= RESUMEN ACCIONES ================= #}
+				<div class="pta-actions">
+
+					{% for accion in grafica.acciones %}
+
+						<div class="pta-action-card">
+
+							<div class="pta-action-header">
+								<strong>{{ accion.nombre }}</strong>
+								<span>{{ accion.porcentaje }}%</span>
+							</div>
+
+							<div class="pta-action-bar">
+								<div class="pta-action-bar-fill" style="width: {{ accion.porcentaje }}%"></div>
+							</div>
+
+							<div class="pta-action-months">
+								{% for mes, valor in accion.meses %}
+									<span>
+										<strong>{{ mes|slice(0,3) }}</strong>:
+										{{ valor }}
+									</span>
+								{% endfor %}
+							</div>
+
+						</div>
+
+					{% endfor %}
+
+				</div>
+
+			</div>
+
+		{% else %}
+
+			<div class="text-center text-muted">
+				No hay indicadores para mostrar.
+			</div>
+
+		{% endfor %}
+
+	</div>
+
+</section>

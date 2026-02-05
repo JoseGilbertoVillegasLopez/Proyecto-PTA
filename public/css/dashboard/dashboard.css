@@ -1,6 +1,6 @@
 /* =========================================================
    PTA — DASHBOARD
-   Menú lateral principal
+   Menú lateral principal (ESTILO PTA UNIFICADO)
    ========================================================= */
 
 /* ===============================
@@ -9,7 +9,15 @@
 .pta-dashboard-aside {
     position: relative;
     width: 250px;
-    background: #11161c;
+
+    background: radial-gradient(
+        120% 120% at 50% 0%,
+        rgba(13, 202, 240, 0.1),
+        rgba(6, 15, 22, 0.95)
+    );
+
+    border-right: 1px solid rgba(13, 202, 240, 0.35);
+
     padding: 20px;
 
     display: flex;
@@ -25,7 +33,7 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: center; /* centro vertical */
+    justify-content: center;
     align-items: center;
 }
 
@@ -37,12 +45,13 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    margin-bottom: 24px;
+    margin-bottom: 26px;
 }
 
 .pta-dashboard-icon {
     font-size: 2.6rem;
     color: #0dcaf0;
+    filter: drop-shadow(0 0 6px rgba(13, 202, 240, 0.45));
 }
 
 .pta-dashboard-title {
@@ -51,6 +60,7 @@
     font-weight: 700;
     letter-spacing: 1.2px;
     text-transform: uppercase;
+    color: #ffffff;
 }
 
 /* ===============================
@@ -75,27 +85,47 @@
     display: block;
     text-align: center;
 
-    padding: 10px 12px;
+    padding: 11px 12px;
     font-size: 1.05rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
 
-    color: #0dcaf0;
+    color: #e7faff;
     text-decoration: none;
 
-    border-radius: 8px;
-    background: rgba(13, 202, 240, 0.05);
-    border: 1px solid rgba(13, 202, 240, 0.18);
+    border-radius: 10px;
 
-    transition: transform 0.15s ease, background-color 0.15s ease,
+    background: linear-gradient(
+        180deg,
+        rgba(13, 202, 240, 0.12),
+        rgba(13, 202, 240, 0.04)
+    );
+
+    border: 1px solid rgba(13, 202, 240, 0.35);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.15),
+        0 8px 20px rgba(0, 0, 0, 0.45);
+
+    transition:
+        transform 0.15s ease,
+        background-color 0.15s ease,
         box-shadow 0.15s ease;
 }
 
 .pta-dashboard-link:hover {
-    background: rgba(13, 202, 240, 0.12);
-    box-shadow: 0 0 0 1px rgba(13, 202, 240, 0.35);
-    transform: translateY(-1.5px);
+    background: linear-gradient(
+        180deg,
+        rgba(13, 202, 240, 0.22),
+        rgba(13, 202, 240, 0.1)
+    );
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.35),
+        0 0 14px rgba(13, 202, 240, 0.45);
+
+    transform: translateY(-2px);
 }
 
 .pta-dashboard-link:active {
@@ -117,9 +147,11 @@
     color: #0dcaf0;
     font-size: 0.95rem;
     text-decoration: none;
-    opacity: 0.7;
+    opacity: 0.75;
 
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    transition:
+        opacity 0.15s ease,
+        transform 0.15s ease;
 }
 
 .pta-dashboard-logout i {
@@ -129,4 +161,15 @@
 .pta-dashboard-logout:hover {
     opacity: 1;
     transform: translateY(-1px);
+}
+
+/* ===============================
+   CONTENEDOR TURBO (MAIN)
+   =============================== */
+main {
+    background: radial-gradient(
+        140% 140% at 50% 0%,
+        rgba(13, 202, 240, 0.06),
+        rgba(6, 15, 22, 0.98)
+    );
 }

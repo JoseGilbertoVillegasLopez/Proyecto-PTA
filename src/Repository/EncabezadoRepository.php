@@ -134,4 +134,34 @@ public function findAniosDisponibles(array $access, int $personalId): array
 }
 
 
+
+public function findPtasForMonitoring(array $access, int $anio): array
+{
+    $qb = $this->createQueryBuilder('e')
+        ->join('e.responsable', 'r')
+        ->join('r.puesto', 'p')
+        ->andWhere('e.anioEjecucion = :anio')
+        ->setParameter('anio', $anio);
+
+    if ($access['scope'] === 'GLOBAL') {
+        // ve todo
+    }
+    elseif ($access['scope'] === 'JERARQUICO') {
+        $qb
+            ->andWhere('p.id IN (:puestos)')
+            ->setParameter('puestos', $access['puestos_visibles']);
+    }
+    else {
+        // PROPIO
+        $qb
+            ->andWhere('r.id = :personal')
+            ->setParameter('personal', $access['personal_id']);
+    }
+
+    return $qb
+        ->orderBy('e.fechaCreacion', 'DESC')
+        ->getQuery()
+        ->getResult();
+}
+
 }

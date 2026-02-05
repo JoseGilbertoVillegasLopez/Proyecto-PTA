@@ -560,3 +560,30 @@
     font-size: 0.85rem;
     color: #ff6b6b;
 }
+
+/* =========================================================
+   EDIT — INDICADORES: CENTRAR HEADER FAKE POR COLUMNA
+   (NO TOCA ESTRUCTURA, SOLO ALINEACIÓN)
+   ========================================================= */
+
+.pta-indicadores-head > div {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* ✅ centra dentro de SU columna */
+    text-align: center;
+}
+
+/* =========================================================
+   EDIT — INDICADORES: CENTRAR COLUMNA PERIODO (FORZADO)
+   ========================================================= */
+
+.pta-indicadores-table tbody td:nth-child(5) {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.pta-indicadores-table tbody td:nth-child(5) > * {
+    display: block;
+    width: 100%;
+    text-align: center !important;
+}

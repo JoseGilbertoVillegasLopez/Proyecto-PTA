@@ -13,7 +13,7 @@
             rgba(13, 202, 240, 0.08),
             transparent 55%
         ),
-        linear-gradient(180deg, #1b1f24, #171a1f);
+        linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.2rem;
     border-radius: 20px;
@@ -32,14 +32,14 @@
 .personal-form__title {
     font-size: 1.45rem;
     font-weight: 600;
-    color: #e9ecef;
+    color: #e6f1ff;
     letter-spacing: 0.3px;
 }
 
 .personal-form__subtitle {
     margin-top: 0.4rem;
     font-size: 0.9rem;
-    color: #adb5bd;
+    color: #9fb3c8;
 }
 
 .personal-form__form {
@@ -52,7 +52,7 @@
     display: block;
     margin-bottom: 0.35rem;
     font-size: 0.75rem;
-    color: #adb5bd;
+    color: #9fb3c8;
     font-weight: 700;
     letter-spacing: 0.4px;
     text-transform: uppercase;
@@ -64,7 +64,7 @@
     width: 100%;
 
     background: #1f2a36;
-    color: #e9ecef;
+    color: #e6f1ff;
 
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 10px;
@@ -101,9 +101,9 @@
 
     border-radius: 10px;
 
-    background: rgba(13, 110, 253, 0.15);
-    color: #0d6efd;
-    border: 1px solid rgba(13, 110, 253, 0.4);
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.4);
 
     font-weight: 600;
     font-size: 0.9rem;
@@ -113,10 +113,10 @@
 }
 
 .personal-form__back-link:hover {
-    background: rgba(13, 110, 253, 0.35);
+    background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
-    border-color: #0d6efd;
-    box-shadow: 0 8px 22px rgba(13, 110, 253, 0.25);
+    border-color: #0dcaf0;
+    box-shadow: 0 8px 22px rgba(13, 202, 240, 0.25);
 }
 
 /* =========================================================
@@ -131,7 +131,7 @@
             rgba(13, 202, 240, 0.08),
             transparent 55%
         ),
-        linear-gradient(180deg, #1b1f24, #171a1f);
+        linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.4rem;
     border-radius: 22px;
@@ -177,7 +177,7 @@
 
     font-size: 1.55rem;
     font-weight: 700;
-    color: #e9ecef;
+    color: #e6f1ff;
     letter-spacing: 0.4px;
     text-align: center;
     white-space: nowrap;
@@ -256,7 +256,7 @@
 /* THEAD */
 
 .personal-index__table thead th {
-    background: linear-gradient(180deg, #0b3c6f, #062a4f);
+    background: linear-gradient(135deg, #0b3c6f, #062a4f);
     color: #ffffff;
 
     font-size: 0.75rem;
@@ -275,14 +275,14 @@
 }
 
 .personal-index__table tbody tr:hover {
-    background-color: rgba(13, 110, 253, 0.08);
+    background-color: rgba(13, 202, 240, 0.08);
 }
 
 /* CELDAS */
 
 .personal-index__table tbody td {
     padding: 14px 18px;
-    color: #dee2e6;
+    color: #e6f1ff;
     vertical-align: middle;
 
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
@@ -387,7 +387,7 @@
 .personal-index__empty {
     text-align: center;
     padding: 2.2rem;
-    color: #adb5bd;
+    color: #9fb3c8;
     font-style: italic;
 }
 
@@ -403,7 +403,7 @@
             rgba(13, 202, 240, 0.08),
             transparent 55%
         ),
-        linear-gradient(180deg, #1b1f24, #171a1f);
+        linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.4rem;
     border-radius: 22px;
@@ -445,7 +445,7 @@
 
     font-size: 1.55rem;
     font-weight: 700;
-    color: #e9ecef;
+    color: #e6f1ff;
     letter-spacing: 0.4px;
 }
 
@@ -475,18 +475,18 @@
    ========================================================= */
 
 .personal-show__icon-btn--back {
-    background: rgba(13, 110, 253, 0.15);
-    color: #0d6efd;
-    border: 1px solid rgba(13, 110, 253, 0.45);
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
 .personal-show__icon-btn--back:hover {
-    background: rgba(13, 110, 253, 0.35);
+    background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 
     box-shadow:
-        0 10px 26px rgba(13, 110, 253, 0.35),
-        inset 0 0 0 1px rgba(13, 110, 253, 0.4);
+        0 10px 26px rgba(13, 202, 240, 0.35),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.4);
 }
 
 /* =========================================================
@@ -536,7 +536,7 @@
 
 .personal-show__table th {
     width: 35%;
-    background: linear-gradient(180deg, #0b3c6f, #062a4f);
+    background: linear-gradient(135deg, #0b3c6f, #062a4f);
     color: #ffffff;
 
     font-size: 0.75rem;
@@ -549,7 +549,7 @@
 
 .personal-show__table td {
     padding: 14px 18px;
-    color: #dee2e6;
+    color: #e6f1ff;
 
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.01);
@@ -567,7 +567,7 @@
             rgba(13, 202, 240, 0.08),
             transparent 55%
         ),
-        linear-gradient(180deg, #1b1f24, #171a1f);
+        linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.4rem;
     border-radius: 22px;
@@ -609,7 +609,7 @@
 
     font-size: 1.55rem;
     font-weight: 700;
-    color: #e9ecef;
+    color: #e6f1ff;
     letter-spacing: 0.4px;
 }
 
@@ -635,13 +635,13 @@
 }
 
 .personal-form__icon-btn--back {
-    background: rgba(13, 110, 253, 0.15);
-    color: #0d6efd;
-    border: 1px solid rgba(13, 110, 253, 0.45);
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
 .personal-form__icon-btn--back:hover {
-    background: rgba(13, 110, 253, 0.35);
+    background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 }
 
@@ -729,7 +729,7 @@
             rgba(13, 202, 240, 0.08),
             transparent 55%
         ),
-        linear-gradient(180deg, #1b1f24, #171a1f);
+        linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.4rem;
     border-radius: 22px;
@@ -773,7 +773,7 @@
 .personal-form__title {
     font-size: 1.55rem;
     font-weight: 700;
-    color: #e9ecef;
+    color: #e6f1ff;
     letter-spacing: 0.4px;
 }
 
@@ -785,7 +785,7 @@
     margin-top: 0.4rem;
     font-size: 0.9rem;
     font-weight: 500;
-    color: #adb5bd;
+    color: #9fb3c8;
     letter-spacing: 0.3px;
 }
 
@@ -812,13 +812,13 @@
 
 /* VOLVER (IZQUIERDA) */
 .personal-form__icon-btn--back {
-    background: rgba(13, 110, 253, 0.15);
-    color: #0d6efd;
-    border: 1px solid rgba(13, 110, 253, 0.45);
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
 .personal-form__icon-btn--back:hover {
-    background: rgba(13, 110, 253, 0.35);
+    background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 }
 

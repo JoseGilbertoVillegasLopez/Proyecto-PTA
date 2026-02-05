@@ -4,15 +4,19 @@
 
 .departamento-index {
     background:
-        radial-gradient(circle at top, rgba(13,202,240,0.08), transparent 55%),
-        linear-gradient(180deg, #1b1f24, #171a1f);
+        radial-gradient(
+            circle at top,
+            rgba(13, 202, 240, 0.08),
+            transparent 55%
+        ),
+        linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.4rem;
     border-radius: 22px;
 
     box-shadow:
-        0 28px 70px rgba(0,0,0,0.75),
-        inset 0 0 0 1px rgba(255,255,255,0.06);
+        0 28px 70px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 
     position: relative;
 }
@@ -23,7 +27,7 @@
     inset: 0;
     border-radius: 22px;
     pointer-events: none;
-    box-shadow: inset 0 0 22px rgba(13,202,240,0.08);
+    box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
 }
 
 /* =========================================================
@@ -39,7 +43,7 @@
     margin-bottom: 2.2rem;
     padding-bottom: 1.1rem;
 
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .departamento-index__title {
@@ -49,7 +53,7 @@
 
     font-size: 1.55rem;
     font-weight: 700;
-    color: #e9ecef;
+    color: #e6f1ff;
     letter-spacing: 0.4px;
     text-align: center;
     white-space: nowrap;
@@ -78,25 +82,25 @@
     padding: 0.6rem 1.1rem;
     border-radius: 12px;
 
-    background: rgba(25,135,84,0.15);
+    background: rgba(25, 135, 84, 0.15);
     color: #198754;
 
     font-weight: 700;
     font-size: 0.9rem;
     text-decoration: none;
 
-    border: 1px solid rgba(25,135,84,0.55);
+    border: 1px solid rgba(25, 135, 84, 0.55);
     transition: all 0.25s ease;
 }
 
 .departamento-index__add-btn:hover {
-    background: rgba(25,135,84,0.35);
+    background: rgba(25, 135, 84, 0.35);
     color: #ffffff;
     border-color: #198754;
 
     box-shadow:
-        0 10px 26px rgba(25,135,84,0.35),
-        inset 0 0 0 1px rgba(25,135,84,0.35);
+        0 10px 26px rgba(25, 135, 84, 0.35),
+        inset 0 0 0 1px rgba(25, 135, 84, 0.35);
 }
 
 /* =========================================================
@@ -115,12 +119,12 @@
     border-radius: 14px;
     overflow: hidden;
 
-    border: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.015);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.015);
 }
 
 .departamento-index__table thead th {
-    background: linear-gradient(180deg, #0b3c6f, #062a4f);
+    background: linear-gradient(135deg, #0b3c6f, #062a4f);
     color: #ffffff;
 
     font-size: 0.75rem;
@@ -129,7 +133,7 @@
     letter-spacing: 0.6px;
 
     padding: 14px 18px;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .departamento-index__table tbody tr {
@@ -137,16 +141,16 @@
 }
 
 .departamento-index__table tbody tr:hover {
-    background-color: rgba(13,110,253,0.08);
+    background-color: rgba(13, 202, 240, 0.08);
 }
 
 .departamento-index__table tbody td {
     padding: 14px 18px;
-    color: #dee2e6;
+    color: #e6f1ff;
     vertical-align: middle;
 
-    border-bottom: 1px solid rgba(255,255,255,0.12);
-    border-right: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .departamento-index__table tbody td:last-child,
@@ -157,7 +161,6 @@
 .departamento-index__table tbody tr:last-child td {
     border-bottom: none;
 }
-
 
 .departamento-index__badge {
     display: inline-block;
@@ -171,17 +174,16 @@
 }
 
 .departamento-index__badge.is-active {
-    background: rgba(25,135,84,0.20);
+    background: rgba(25, 135, 84, 0.2);
     color: #198754;
-    border: 1px solid rgba(25,135,84,0.50);
+    border: 1px solid rgba(25, 135, 84, 0.5);
 }
 
 .departamento-index__badge.is-inactive {
-    background: rgba(220,53,69,0.20);
+    background: rgba(220, 53, 69, 0.2);
     color: #dc3545;
-    border: 1px solid rgba(220,53,69,0.50);
+    border: 1px solid rgba(220, 53, 69, 0.5);
 }
-
 
 /* =========================================================
    ACCIONES
@@ -209,25 +211,25 @@
 }
 
 .departamento-index__action--view {
-    background: rgba(13,202,240,0.15);
+    background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
 }
 
 .departamento-index__action--view:hover {
-    background: rgba(13,202,240,0.35);
+    background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
-    box-shadow: 0 8px 20px rgba(13,202,240,0.35);
+    box-shadow: 0 8px 20px rgba(13, 202, 240, 0.35);
 }
 
 .departamento-index__action--edit {
-    background: rgba(255,193,7,0.15);
+    background: rgba(255, 193, 7, 0.15);
     color: #ffc107;
 }
 
 .departamento-index__action--edit:hover {
-    background: rgba(255,193,7,0.35);
+    background: rgba(255, 193, 7, 0.35);
     color: #ffffff;
-    box-shadow: 0 8px 20px rgba(255,193,7,0.35);
+    box-shadow: 0 8px 20px rgba(255, 193, 7, 0.35);
 }
 
 /* =========================================================
@@ -237,43 +239,9 @@
 .departamento-index__empty {
     text-align: center;
     padding: 2.2rem;
-    color: #adb5bd;
+    color: #9fb3c8;
     font-style: italic;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* =========================================================
    DEPARTAMENTO — SHOW
@@ -282,15 +250,19 @@
 
 .departamento-show {
     background:
-        radial-gradient(circle at top, rgba(13,202,240,0.08), transparent 55%),
-        linear-gradient(180deg, #1b1f24, #171a1f);
+        radial-gradient(
+            circle at top,
+            rgba(13, 202, 240, 0.08),
+            transparent 55%
+        ),
+        linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.4rem;
     border-radius: 22px;
 
     box-shadow:
-        0 28px 70px rgba(0,0,0,0.75),
-        inset 0 0 0 1px rgba(255,255,255,0.06);
+        0 28px 70px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 
     position: relative;
 }
@@ -301,9 +273,8 @@
     inset: 0;
     border-radius: 22px;
     pointer-events: none;
-    box-shadow: inset 0 0 22px rgba(13,202,240,0.08);
+    box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
 }
-
 
 /* =========================================================
    HEADER
@@ -317,7 +288,7 @@
     margin-bottom: 2rem;
     padding-bottom: 1.1rem;
 
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .departamento-show__title {
@@ -326,10 +297,9 @@
 
     font-size: 1.55rem;
     font-weight: 700;
-    color: #e9ecef;
+    color: #e6f1ff;
     letter-spacing: 0.4px;
 }
-
 
 /* =========================================================
    BOTONES SOLO ÍCONO (BASE)
@@ -352,26 +322,24 @@
     transition: all 0.25s ease;
 }
 
-
 /* =========================================================
    VOLVER
    ========================================================= */
 
 .departamento-show__icon-btn--back {
-    background: rgba(13,110,253,0.15);
-    color: #0d6efd;
-    border: 1px solid rgba(13,110,253,0.45);
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
 .departamento-show__icon-btn--back:hover {
-    background: rgba(13,110,253,0.35);
+    background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 
     box-shadow:
-        0 10px 26px rgba(13,110,253,0.35),
-        inset 0 0 0 1px rgba(13,110,253,0.4);
+        0 10px 26px rgba(13, 202, 240, 0.35),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.4);
 }
-
 
 /* =========================================================
    ACCIONES HEADER
@@ -383,26 +351,24 @@
     justify-self: end;
 }
 
-
 /* =========================================================
    EDITAR
    ========================================================= */
 
 .departamento-show__icon-btn--edit {
-    background: rgba(255,193,7,0.15);
+    background: rgba(255, 193, 7, 0.15);
     color: #ffc107;
-    border: 1px solid rgba(255,193,7,0.55);
+    border: 1px solid rgba(255, 193, 7, 0.55);
 }
 
 .departamento-show__icon-btn--edit:hover {
-    background: rgba(255,193,7,0.35);
+    background: rgba(255, 193, 7, 0.35);
     color: #ffffff;
 
     box-shadow:
-        0 10px 26px rgba(255,193,7,0.35),
-        inset 0 0 0 1px rgba(255,193,7,0.4);
+        0 10px 26px rgba(255, 193, 7, 0.35),
+        inset 0 0 0 1px rgba(255, 193, 7, 0.4);
 }
-
 
 /* =========================================================
    TABLA
@@ -416,13 +382,13 @@
     border-radius: 14px;
     overflow: hidden;
 
-    border: 1px solid rgba(255,255,255,0.15);
-    background: rgba(255,255,255,0.015);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.015);
 }
 
 .departamento-show__table th {
     width: 35%;
-    background: linear-gradient(180deg, #0b3c6f, #062a4f);
+    background: linear-gradient(135deg, #0b3c6f, #062a4f);
     color: #ffffff;
 
     font-size: 0.75rem;
@@ -435,46 +401,11 @@
 
 .departamento-show__table td {
     padding: 14px 18px;
-    color: #dee2e6;
+    color: #e6f1ff;
 
-    border-bottom: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.01);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.01);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* =========================================================
    DEPARTAMENTO — NEW
@@ -485,17 +416,17 @@
     background:
         radial-gradient(
             circle at top,
-            rgba(13,202,240,0.08),
+            rgba(13, 202, 240, 0.08),
             transparent 55%
         ),
-        linear-gradient(180deg, #1b1f24, #171a1f);
+        linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.4rem;
     border-radius: 22px;
 
     box-shadow:
-        0 26px 65px rgba(0,0,0,0.75),
-        inset 0 0 0 1px rgba(255,255,255,0.06);
+        0 26px 65px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 
     position: relative;
 }
@@ -506,9 +437,8 @@
     inset: 0;
     border-radius: 22px;
     pointer-events: none;
-    box-shadow: inset 0 0 22px rgba(13,202,240,0.08);
+    box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
 }
-
 
 /* =========================================================
    HEADER
@@ -522,7 +452,7 @@
     margin-bottom: 2rem;
     padding-bottom: 1.1rem;
 
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .departamento-form__title {
@@ -531,10 +461,9 @@
 
     font-size: 1.55rem;
     font-weight: 700;
-    color: #e9ecef;
+    color: #e6f1ff;
     letter-spacing: 0.4px;
 }
-
 
 /* =========================================================
    BOTÓN VOLVER
@@ -558,16 +487,15 @@
 }
 
 .departamento-form__icon-btn--back {
-    background: rgba(13,110,253,0.15);
-    color: #0d6efd;
-    border: 1px solid rgba(13,110,253,0.45);
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
 .departamento-form__icon-btn--back:hover {
-    background: rgba(13,110,253,0.35);
+    background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 }
-
 
 /* =========================================================
    FORM
@@ -602,7 +530,7 @@
     letter-spacing: 0.4px;
     text-transform: uppercase;
 
-    color: #adb5bd;
+    color: #9fb3c8;
 }
 
 /* =========================================================
@@ -613,9 +541,9 @@
     width: 100%;
 
     background: #1f2a36;
-    color: #e9ecef;
+    color: #e6f1ff;
 
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
 
     padding: 0.65rem 0.85rem;
@@ -625,7 +553,7 @@
 }
 
 .departamento-form__group input:hover {
-    border-color: rgba(13,202,240,0.35);
+    border-color: rgba(13, 202, 240, 0.35);
 }
 
 .departamento-form__group input:focus {
@@ -635,10 +563,9 @@
     border-color: #0dcaf0;
 
     box-shadow:
-        0 0 0 2px rgba(13,202,240,0.15),
-        inset 0 0 0 1px rgba(13,202,240,0.25);
+        0 0 0 2px rgba(13, 202, 240, 0.15),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25);
 }
-
 
 /* =========================================================
    GRUPOS
@@ -646,13 +573,12 @@
 
 .departamento-form--new .departamento-form__group {
     padding-bottom: 0.9rem;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .departamento-form--new .departamento-form__group:last-child {
     border-bottom: none;
 }
-
 
 /* =========================================================
    ACCIONES FORM
@@ -663,7 +589,6 @@
     justify-content: center;
     margin-top: 2.4rem;
 }
-
 
 /* =========================================================
    BOTÓN GUARDAR — SOLO ÍCONO
@@ -680,10 +605,10 @@
     align-items: center;
     justify-content: center;
 
-    background: rgba(25,135,84,0.15);
+    background: rgba(25, 135, 84, 0.15);
     color: #198754;
 
-    border: 1px solid rgba(25,135,84,0.55);
+    border: 1px solid rgba(25, 135, 84, 0.55);
     font-size: 1.3rem;
     font-weight: 700;
 
@@ -691,45 +616,19 @@
     transition: all 0.25s ease;
 
     box-shadow:
-        0 10px 26px rgba(0,0,0,0.35),
-        inset 0 0 0 1px rgba(25,135,84,0.25);
+        0 10px 26px rgba(0, 0, 0, 0.35),
+        inset 0 0 0 1px rgba(25, 135, 84, 0.25);
 }
 
 .departamento-form--new .departamento-form__submit:hover {
-    background: rgba(25,135,84,0.35);
+    background: rgba(25, 135, 84, 0.35);
     color: #ffffff;
     border-color: #198754;
 
     box-shadow:
-        0 12px 30px rgba(25,135,84,0.35),
-        inset 0 0 0 1px rgba(25,135,84,0.35);
+        0 12px 30px rgba(25, 135, 84, 0.35),
+        inset 0 0 0 1px rgba(25, 135, 84, 0.35);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* =========================================================
    DEPARTAMENTO — EDIT
@@ -737,15 +636,19 @@
 
 .departamento-form--edit {
     background:
-        radial-gradient(circle at top, rgba(13,202,240,0.08), transparent 55%),
-        linear-gradient(180deg, #1b1f24, #171a1f);
+        radial-gradient(
+            circle at top,
+            rgba(13, 202, 240, 0.08),
+            transparent 55%
+        ),
+        linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.4rem;
     border-radius: 22px;
 
     box-shadow:
-        0 26px 65px rgba(0,0,0,0.75),
-        inset 0 0 0 1px rgba(255,255,255,0.06);
+        0 26px 65px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 
     position: relative;
 }
@@ -756,7 +659,7 @@
     inset: 0;
     border-radius: 22px;
     pointer-events: none;
-    box-shadow: inset 0 0 22px rgba(13,202,240,0.08);
+    box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
 }
 
 /* =========================================================
@@ -770,7 +673,7 @@
 
     margin-bottom: 2rem;
     padding-bottom: 1.1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .departamento-form__header-center {
@@ -780,7 +683,7 @@
 .departamento-form__subtitle {
     margin-top: 0.4rem;
     font-size: 0.9rem;
-    color: #adb5bd;
+    color: #9fb3c8;
 }
 
 /* =========================================================
@@ -798,9 +701,9 @@
    ========================================================= */
 
 .departamento-form--edit .departamento-form__group {
-    margin-bottom: 1.6rem;          /* ⬅️ separación real entre campos */
-    padding-bottom: 1.2rem;         /* ⬅️ aire antes del divisor */
-    border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 1.6rem; /* ⬅️ separación real entre campos */
+    padding-bottom: 1.2rem; /* ⬅️ aire antes del divisor */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .departamento-form--edit .departamento-form__group:last-of-type {
@@ -820,7 +723,7 @@
     margin-top: 2.6rem;
     padding-top: 1.6rem;
 
-    border-top: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .departamento-form__icon-btn--save {
@@ -828,15 +731,15 @@
     height: 54px;
     font-size: 1.3rem;
 
-    background: rgba(25,135,84,0.15);
+    background: rgba(25, 135, 84, 0.15);
     color: #198754;
-    border: 1px solid rgba(25,135,84,0.55);
+    border: 1px solid rgba(25, 135, 84, 0.55);
 
     transition: all 0.25s ease;
 }
 
 .departamento-form__icon-btn--save:hover {
-    background: rgba(25,135,84,0.35);
+    background: rgba(25, 135, 84, 0.35);
     color: #ffffff;
 }
 
@@ -849,9 +752,9 @@
     width: 100%;
 
     background: #1f2a36;
-    color: #e9ecef;
+    color: #e6f1ff;
 
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
 
     padding: 0.65rem 0.85rem;
@@ -863,7 +766,7 @@
 /* HOVER */
 .departamento-form__group input:hover,
 .departamento-form__group select:hover {
-    border-color: rgba(13,202,240,0.35);
+    border-color: rgba(13, 202, 240, 0.35);
 }
 
 /* FOCUS */
@@ -875,6 +778,6 @@
     border-color: #0dcaf0;
 
     box-shadow:
-        0 0 0 2px rgba(13,202,240,0.15),
-        inset 0 0 0 1px rgba(13,202,240,0.25);
+        0 0 0 2px rgba(13, 202, 240, 0.15),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25);
 }

@@ -18,36 +18,30 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     ) {}
 
     public function onAuthenticationSuccess(
-    Request $request,
-    TokenInterface $token
-): RedirectResponse {
-    /** @var User $user */
-    $user = $this->tokenStorage->getToken()->getUser();
+        Request $request,
+        TokenInterface $token
+    ): RedirectResponse {
 
-    // Seguridad extra
-    if (!$user instanceof User) {
-        return new RedirectResponse(
-            $this->router->generate('app_login')
-        );
-    }
+        /** @var User $user */
+        $user = $this->tokenStorage->getToken()?->getUser();
 
-    // PRIMER LOGIN → cambiar contraseña
-    if ($user->isCambiarPassword()) {
-        return new RedirectResponse(
-            $this->router->generate('app_cambiar_password')
-        );
-    }
+        // Seguridad extra
+        if (!$user instanceof User) {
+            return new RedirectResponse(
+                $this->router->generate('app_login')
+            );
+        }
 
-    // ADMIN → dashboard admin
-    if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+        // 🔐 PRIMER LOGIN → cambiar contraseña (esto sí se mantiene)
+        if ($user->isCambiarPassword()) {
+            return new RedirectResponse(
+                $this->router->generate('app_cambiar_password')
+            );
+        }
+
+        // ✅ TODOS (admin y no-admin) → dashboard único
         return new RedirectResponse(
             $this->router->generate('app_admin_dashboard')
         );
     }
-
-    // 👉 TODOS LOS DEMÁS → PTA
-    return new RedirectResponse(
-        $this->router->generate('app_encabezado_index')
-    );
-}
 }

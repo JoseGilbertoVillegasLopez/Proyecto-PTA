@@ -1,62 +1,145 @@
-/* ========================================================= */
-/*  ESTILOS PTA - Formato institucional base                */
-/* --------------------------------------------------------- */
-/* Este archivo define el estilo visual del módulo PTA      */
-/* en la vista NEW.                                         */
-/*                                                          */
-/* IMPORTANTE:                                              */
-/* - No es solo estético                                   */
-/* - Está directamente ligado al JS de validación           */
-/* - Muchas clases se agregan dinámicamente desde JS        */
-/* ========================================================= */
+/* =========================================================
+   PTA — NEW (ESTILO ALINEADO A MONITOREO / HISTORIAL)
+   SOLO COLORES + BOTÓN VOLVER
+   ========================================================= */
 
-/* ========================================================= */
-/* ESTADOS DE ERROR (VALIDACIÓN JS)                          */
-/* --------------------------------------------------------- */
-/* Estas clases se aplican dinámicamente cuando el usuario   */
-/* intenta guardar el formulario con datos incompletos.     */
-/* El JS las agrega DESPUÉS de mostrar el modal de errores. */
-/* ========================================================= */
-.field-error {
-    border: 2px solid #ff4d4f !important;
-    box-shadow: 0 0 0 0.25rem rgba(255, 77, 79, 0.35),
-        inset 0 0 0 1px rgba(255, 77, 79, 0.6);
-    background-color: rgba(255, 77, 79, 0.08);
+/* =========================================================
+   VARIABLES LOCALES PTA
+   ========================================================= */
+:root {
+    --pta-primary: #0dcaf0;
+    --pta-ok: #1dd1a1;
+    --pta-warning: #feca57;
+    --pta-danger: #ff6b6b;
+    --pta-muted: #9fb3c8;
+
+    --pta-bg-main: radial-gradient(circle at top, #0f1c26, #0b1117 60%);
+    --pta-card-bg: #121b23;
+    --pta-card-soft: #16222d;
+
+    --pta-border: rgba(13, 202, 240, 0.25);
+    --pta-border-soft: rgba(13, 202, 240, 0.15);
+}
+
+/* =========================================================
+   FONDO GENERAL DE LA VISTA
+   ========================================================= */
+body {
+    background: var(--pta-bg-main);
+    color: #e6f1ff;
+}
+
+/* =========================================================
+   BOTÓN VOLVER (NUEVO ESTILO PTA)
+   ========================================================= */
+.pta-back-wrapper {
+    margin-bottom: 18px;
+}
+
+.pta-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 16px;
+    border-radius: 10px;
+
+    background: rgba(13, 202, 240, 0.12);
+    color: var(--pta-primary);
+    text-decoration: none;
+    font-weight: 600;
+
+    border: 1px solid var(--pta-border-soft);
+
+    transition:
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.2s ease;
+}
+
+.pta-back-btn:hover {
+    background: rgba(13, 202, 240, 0.22);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.45),
+        0 8px 20px rgba(0, 0, 0, 0.6);
+    transform: translateY(-1px);
+}
+
+.pta-back-btn i {
+    font-size: 1.1rem;
+}
+
+/* =========================================================
+   PTA INPUT OFICIAL (NUEVO)
+   - YA NO USAMOS form-control / form-select
+   - ESTA CLASE MANDA EN TODA LA VISTA
+   ========================================================= */
+.pta-input {
+    width: 100%;
+    height: 48px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+
+    background-color: #16222d;
+    border: 1px solid var(--pta-border-soft);
+    color: #e6f1ff;
+
     border-radius: 6px;
 }
 
-/* Versión específica para inputs pequeños (input/select) */
-input.field-error,
-select.field-error {
-    background-color: rgba(255, 77, 79, 0.12);
+.pta-input:focus {
+    outline: none;
+    background-color: #16222d;
+    color: #ffffff;
+
+    border-color: rgba(13, 202, 240, 0.75);
+    box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.35);
 }
 
-/* ========================================================= */
-/* TEXTAREAS DEL ENCABEZADO (NOMBRE / OBJETIVO)              */
-/* --------------------------------------------------------- */
-/* Estas textareas usan auto-grow manejado por JS            */
-/* Se desactiva el resize manual para mantener layout limpio*/
-/* ========================================================= */
+.pta-input::placeholder {
+    color: #9fb3c8;
+    opacity: 1;
+}
+
+/* =========================================================
+   ESTADOS DE ERROR
+   ========================================================= */
+.field-error {
+    border: 2px solid var(--pta-danger) !important;
+    box-shadow:
+        0 0 0 0.25rem rgba(255, 107, 107, 0.35),
+        inset 0 0 0 1px rgba(255, 107, 107, 0.6);
+    background-color: rgba(255, 107, 107, 0.08);
+    border-radius: 6px;
+}
+
+/* ✅ Ajuste: también aplica si el error cae sobre pta-input */
+input.field-error,
+select.field-error,
+textarea.field-error,
+.pta-input.field-error {
+    background-color: rgba(255, 107, 107, 0.12);
+}
+
+/* =========================================================
+   TEXTAREAS
+   ========================================================= */
 .fixed-textarea {
     width: 100%;
-    resize: none; /* ❌ el usuario no puede redimensionar */
-    overflow-y: auto; /* scroll solo al llegar al límite */
+    resize: none;
+    overflow-y: auto;
     line-height: 1.4;
-    background-color: #2d333b;
+    background-color: #16222d;
+    color: #e6f1ff;
 }
 
-/* ========================================================= */
-/* TEXTAREAS DE INDICADORES (INDICADOR / FÓRMULA)            */
-/* --------------------------------------------------------- */
-/* Diseño compacto para caber dentro de la tabla             */
-/* Mantiene legibilidad sin romper el layout                 */
-/* ========================================================= */
-.indicator-textarea {
+.indicator-textarea,
+.accion-textarea {
     width: 100%;
     resize: none;
     overflow-y: auto;
 
-    height: 48px; /* 🔥 altura fija */
+    height: 48px;
     min-height: 48px;
     max-height: 48px;
 
@@ -66,55 +149,90 @@ select.field-error {
     box-sizing: border-box;
 }
 
-/* ========================================================= */
-/* INPUT DE META (VALOR A ALCANZAR)                           */
-/* --------------------------------------------------------- */
-/* Campo numérico, centrado para mejor lectura               */
-/* ========================================================= */
-.indicator-valor {
-    max-width: 100%;
-    text-align: center;
-}
-.pta-indicadores-table input,
-.pta-indicadores-table select {
-    height: 48px; /* 🔥 igual que textareas */
-    padding: 6px 8px;
-    text-align: center;
-}
-
-.pta-indicadores-table td {
-    vertical-align: middle;
-}
-
-/* ========================================================= */
-/* TABLA DE INDICADORES                                      */
-/* --------------------------------------------------------- */
-/* Configuración crítica para evitar que la tabla se rompa  */
-/* con contenido dinámico                                   */
-/* ========================================================= */
-.pta-indicadores-table > :not(caption) > * > * {
-    padding: 2.5px !important; /* padding ultra compacto */
-}
-
+/* =========================================================
+   TABLA INDICADORES
+   ========================================================= */
 .pta-indicadores-table {
-    table-layout: fixed; /* 🔥 CLAVE para columnas estables */
+    table-layout: fixed;
     width: 100%;
-}
-
-.pta-indicadores-table {
-    width: 100%;
-    min-width: 0 !important; /* 🔥 rompe límites de bootstrap */
+    min-width: 0 !important;
     max-width: 100%;
     padding: 2px;
     text-align: center;
     box-sizing: border-box;
 }
 
-/* ========================================================= */
-/* TABLA DE ACCIONES                                         */
-/* --------------------------------------------------------- */
-/* Misma filosofía que indicadores                           */
-/* ========================================================= */
+.pta-indicadores-table > :not(caption) > * > * {
+    padding: 2.5px !important;
+    vertical-align: middle;
+}
+
+/* =========================================================
+   INPUTS Y SELECTS
+   ========================================================= */
+.pta-indicadores-table input,
+.pta-indicadores-table select {
+    height: 48px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+
+    background-color: #16222d !important;
+    border: 1px solid var(--pta-border-soft) !important;
+    color: #e6f1ff !important;
+}
+
+/* ✅ Focus para evitar “gris” residual del UA/Bootstrap */
+.pta-indicadores-table input:focus,
+.pta-indicadores-table select:focus {
+    outline: none;
+    background-color: #16222d !important;
+    border-color: rgba(13, 202, 240, 0.75) !important;
+    box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.35) !important;
+}
+
+/* =========================================================
+   INPUTS NUMÉRICOS
+   ========================================================= */
+.indicator-valor {
+    width: 100%;
+    min-width: 72px;
+    padding: 6px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   SELECTS PERIODO / TENDENCIA
+   ========================================================= */
+.pta-indicadores-table td:nth-child(5) select,
+.pta-indicadores-table td:nth-child(6) select {
+    width: 100%;
+    height: 48px;
+    padding: 6px 10px 6px 8px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   BOTONES ELIMINAR
+   ========================================================= */
+.remove-indicador,
+.remove-accion {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+
+    border-radius: 6px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================================================
+   TABLA ACCIONES
+   ========================================================= */
 .pta-acciones-table {
     width: 100%;
     min-width: 0 !important;
@@ -124,52 +242,51 @@ select.field-error {
     box-sizing: border-box;
 }
 
-/* ========================================================= */
-/* TEXTAREA DE ACCIONES                                      */
-/* --------------------------------------------------------- */
-/* Similar a indicadores, pero usado en otra tabla           */
-/* ========================================================= */
-.accion-textarea {
-    width: 100%;
-    resize: none;
-    overflow-y: auto;
-
-    height: 48px; /* 🔥 altura fija */
-    min-height: 48px;
-    max-height: 48px;
-
-    line-height: 1.3;
-    font-size: 0.9rem;
-    padding: 6px 8px;
-    box-sizing: border-box;
+.pta-acciones-table td {
+    vertical-align: middle;
 }
 
-/* ========================================================= */
-/* MESES DE EJECUCIÓN (ACCIONES)                              */
-/* --------------------------------------------------------- */
-/* Estos estilos funcionan junto con el JS que reenvuelve   */
-/* los checkboxes en labels visuales                         */
-/* ========================================================= */
+/* ✅ IMPORTANTE: inputs/selects dentro de acciones (ya sin bootstrap)
+   - Los elementos generados por Symfony/JS deben traer .pta-input
+   - Esto elimina el gris de una vez
+*/
+.pta-acciones-table .pta-input,
+.pta-acciones-table input,
+.pta-acciones-table select,
+.pta-acciones-table textarea {
+    background-color: #16222d !important;
+    border: 1px solid var(--pta-border-soft) !important;
+    color: #e6f1ff !important;
+}
 
-/* Contenedor general de meses */
+/* Focus en acciones */
+.pta-acciones-table .pta-input:focus,
+.pta-acciones-table input:focus,
+.pta-acciones-table select:focus,
+.pta-acciones-table textarea:focus {
+    outline: none;
+    background-color: #16222d !important;
+    border-color: rgba(13, 202, 240, 0.75) !important;
+    box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.35) !important;
+}
+
+/* =========================================================
+   MESES
+   ========================================================= */
 .pta-acciones-table .meses-col {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 🔥 4 meses por fila */
+    grid-template-columns: repeat(4, 1fr);
     gap: 5px;
     justify-items: center;
     align-items: center;
 }
 
-/* Etiqueta individual de cada mes */
-/* ===============================
-   MESES — ETIQUETAS UNIFORMES
-   =============================== */
 .pta-acciones-table .mes-label {
     display: flex;
     align-items: center;
     justify-content: center;
 
-    width: 46px; /* 🔥 ancho fijo real */
+    width: 46px;
     height: 30px;
 
     gap: 5px;
@@ -178,202 +295,255 @@ select.field-error {
     font-size: 1rem;
     text-align: center;
 
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    font-family:
+        ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
         "Liberation Mono", monospace;
+
+    color: #e6f1ff;
 }
 
 .pta-acciones-table .mes-label input[type="checkbox"] {
     margin: 0;
     transform: scale(1.05);
 }
-.pta-acciones-table td {
-    vertical-align: middle;
+
+/* =========================================================
+   CONTENEDOR PTA (CARDS)
+   ========================================================= */
+.pta-card {
+    background: radial-gradient(
+        circle at top left,
+        rgba(13, 202, 240, 0.18),
+        rgba(6, 15, 22, 0.96) 55%
+    );
+
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid var(--pta-border);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.18),
+        0 18px 46px rgba(0, 0, 0, 0.75);
 }
 
-/* Centrado del grid dentro de la celda */
-.pta-acciones-table td .meses-col {
-    margin: 0 auto;
-}
-/* ===============================
-   SELECT INDICADOR — ACCIONES
-   =============================== */
-.pta-acciones-table select {
-    height: 48px; /* 🔥 MISMA ALTURA que textarea */
-    padding: 6px 10px;
-    line-height: 1.3;
-    font-size: 0.9rem;
+.pta-title {
+    color: #ffffff;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
 
     display: flex;
     align-items: center;
+    gap: 6px;
+
+    text-shadow: 0 0 6px rgba(13, 202, 240, 0.25);
 }
 
-/* ========================================================= */
-/* TÍTULOS DE TARJETAS                                       */
-/* --------------------------------------------------------- */
-/* Centrado de texto + icono                                 */
-/* ========================================================= */
 .pta-card h4 {
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px; /* espacio entre icono y texto */
+    gap: 8px;
 }
 
-/* ========================================================= */
-/* CONTENEDOR PRINCIPAL PTA                                  */
-/* --------------------------------------------------------- */
-/* Tarjetas institucionales del módulo                       */
-/* ========================================================= */
-.pta-card {
-    background-color: #1f242b !important;
-    border-radius: 12px;
-    padding: 24px;
-    border: 1px solid #2b323a;
-}
-
-/* Título de sección */
-.pta-title {
-    color: #f0f0f0;
-    font-size: 1.2rem;
+/* =========================================================
+   LABELS
+   ========================================================= */
+.pta-card .form-label {
+    color: var(--pta-muted);
     font-weight: 600;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-/* Tabla base (si se reutiliza en otros módulos) */
-.pta-table {
-    background-color: #2a3038 !important;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-/* ========================================================= */
-/* INPUTS, SELECTS Y TEXTAREAS DENTRO DE PTA                 */
-/* --------------------------------------------------------- */
-/* Uniformidad visual en modo oscuro                         */
-/* ========================================================= */
-.pta-card input,
-.pta-card select,
-.pta-card textarea {
-    background-color: #2d333b !important;
-    border: 1px solid #3a424d !important;
-    color: #e6e6e6 !important;
-}
-
-/* ========================================================= */
-/* BOTONES DE ELIMINAR                                       */
-/* --------------------------------------------------------- */
-/* Usados tanto en indicadores como acciones                 */
-/* ========================================================= */
-.remove-indicador,
-.remove-accion {
-    border-radius: 6px;
-}
-
-/* ========================================================= */
-/* CHECKBOXES DE MESES (ESTILO ALTERNATIVO)                  */
-/* --------------------------------------------------------- */
-/* NOTA:                                                     */
-/* - Algunas clases no se usan directamente en esta vista   */
-/* - Se dejan para consistencia o reutilización futura      */
-/* ========================================================= */
-.meses-td label {
-    padding: 6px 10px;
-    background-color: #2f353d;
-    border-radius: 6px;
-    margin-right: 6px;
-    cursor: pointer;
-}
-
-.meses-td input[type="checkbox"] {
-    accent-color: #2ecc71; /* verde institucional */
-    transform: scale(1.2);
-}
-
-.pta-card .form-label {
-    color: #e9ecef; /* gris claro tipo Bootstrap dark */
-    font-weight: 500;
-}
-
-.pta-card .form-control::placeholder {
-    color: #adb5bd; /* gris claro */
-    opacity: 1; /* importante */
-}
-
-.pta-card .form-label {
     margin-bottom: 6px;
     letter-spacing: 0.3px;
 }
-/* =========================
-   RESULTADOS BUSCADOR RESPONSABLES
-   ========================= */
 
+/* =========================================================
+   PLACEHOLDERS
+   ✅ YA NO USAMOS .form-control::placeholder (HTML limpio)
+   ========================================================= */
+.pta-card .pta-input::placeholder,
+.pta-acciones-table .pta-input::placeholder,
+.pta-indicadores-table input::placeholder,
+.pta-indicadores-table textarea::placeholder,
+.fixed-textarea::placeholder {
+    color: #9fb3c8;
+    opacity: 1;
+}
+
+/* =========================================================
+   BUSCADOR RESPONSABLES
+   ========================================================= */
 .search-results {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
 
-    background: #1f252b;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: #121b23;
+    border: 1px solid var(--pta-border-soft);
     border-radius: 6px;
 
     max-height: 220px;
     overflow-y: auto;
 
     z-index: 1000;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
 }
 
-/* Item individual */
 .search-results div {
     padding: 8px 12px;
     cursor: pointer;
 
-    color: #f8f9fa;
+    color: #e6f1ff;
     font-size: 0.9rem;
 
     transition: background 0.15s ease;
 }
 
-/* Hover */
 .search-results div:hover {
-    background: rgba(13, 110, 253, 0.25);
+    background: rgba(13, 202, 240, 0.18);
 }
 
-/* Texto secundario (si usas spans) */
 .search-results small {
-    color: #adb5bd;
+    color: var(--pta-muted);
 }
 
-.fixed-textarea {
-    color: #fff;
+/* =========================================================
+   ALINEACIÓN INDICADORES
+   ========================================================= */
+.pta-indicadores-table td {
+    vertical-align: middle !important;
 }
 
-/* ===============================
-   SELECT — AÑO DE EJECUCIÓN
-   =============================== */
-
-.pta-select {
-    background-color: #2b3138;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #e9ecef;
-    padding: 0.65rem 0.75rem;
-    border-radius: 6px;
-    transition: border-color 0.2s, box-shadow 0.2s;
+.pta-indicadores-table td > * {
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
-.pta-select:focus {
-    background-color: #2b3138;
-    color: #ffffff;
-    border-color: #0dcaf0;
-    box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.25);
+/* TEXTAREAS PROTAGONISTAS */
+.pta-indicadores-table textarea {
+    height: 72px;
+    min-height: 72px;
+    max-height: 72px;
+
+    line-height: 1.4;
+    padding: 10px 8px;
+
+    resize: none;
+    box-sizing: border-box;
+
+    background-color: #16222d;
+    border: 1px solid var(--pta-border-soft);
+    color: #e6f1ff;
 }
 
-.pta-select option {
-    background-color: #1e242b;
-    color: #e9ecef;
+/* INPUTS Y SELECTS */
+.pta-indicadores-table input,
+.pta-indicadores-table select {
+    height: 48px;
+    line-height: 48px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* =========================================================
+   FIN DEL ARCHIVO
+   ========================================================= */
+
+/* =========================================================
+   PTA NEW — NEUTRALIZAR BOOTSTRAP EN TABLA ACCIONES
+   ========================================================= */
+
+/* Header */
+.pta-acciones-table thead th {
+    background: transparent !important;
+    color: #e6f1ff;
+    border-bottom: 1px solid rgba(13, 202, 240, 0.25);
+}
+
+/* Filas */
+.pta-acciones-table tbody tr {
+    background: transparent !important;
+}
+
+/* Celdas (Bootstrap mete bg aquí) */
+.pta-acciones-table > :not(caption) > * > * {
+    background: transparent !important;
+}
+
+/* Hover Bootstrap OFF */
+.pta-acciones-table tbody tr:hover {
+    background: transparent !important;
+}
+
+/* =========================================================
+   PTA NEW — ACCIONES COMO UNIDADES VISUALES
+   ========================================================= */
+
+/* Cada acción es una "card" horizontal */
+.pta-acciones-table tbody tr {
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    ) !important;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25),
+        0 10px 26px rgba(0, 0, 0, 0.65);
+
+    border-radius: 16px;
+}
+
+/* Separación entre acciones */
+.pta-acciones-table {
+    border-collapse: separate;
+    border-spacing: 0 16px; /* 🔥 espacio vertical */
+}
+
+/* Evitar que Bootstrap meta fondos internos */
+.pta-acciones-table > :not(caption) > * > * {
+    background: transparent !important;
+}
+
+/* Header más limpio */
+.pta-acciones-table thead th {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(13, 202, 240, 0.35);
+    color: #e6f1ff;
+    text-shadow: 0 0 6px rgba(13, 202, 240, 0.25);
+}
+
+/* Bordes redondeados reales */
+.pta-acciones-table tbody tr td:first-child {
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+}
+
+.pta-acciones-table tbody tr td:last-child {
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+/* Hover elegante (opcional pero recomendado) */
+.pta-acciones-table tbody tr:hover {
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.45),
+        0 14px 34px rgba(0, 0, 0, 0.8);
+}
+
+/* =========================================================
+   PTA NEW — AÑO DE EJECUCIÓN (ANCHO CONTROLADO)
+   ========================================================= */
+
+/* SOLO el select de año */
+select[name$="[anioEjecucion]"].pta-input {
+    max-width: 260px; /* ancho real visible */
+    width: 100%; /* sigue siendo responsive */
+}
+
+/* Opcional: que no se vea flotando raro */
+select[name$="[anioEjecucion]"].pta-input {
+    display: inline-block;
 }

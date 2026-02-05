@@ -80,6 +80,24 @@ document.addEventListener("DOMContentLoaded", () => {
 function initPtaNew(frame, ptaForm) {
     console.log("PTA NEW JS cargado ✔");
 
+    /**
+ * =====================================================
+ * SOLO DÍGITOS — INPUTS NUMÉRICOS (PTA)
+ * =====================================================
+ */
+function enforceOnlyDigits(input) {
+    if (!input) return;
+
+    // Teclado numérico en móviles
+    input.setAttribute("inputmode", "numeric");
+    input.setAttribute("pattern", "[0-9]*");
+
+    input.addEventListener("input", () => {
+        input.value = input.value.replace(/\D+/g, "");
+    });
+}
+
+
 /**
      * =====================================================
      * BUSCADOR GENÉRICO DE PERSONAL
@@ -365,6 +383,16 @@ initPersonalSearch({
             const temp = document.createElement("div");
             temp.innerHTML = prototype.replace(/__name__/g, index);
 
+            // ===============================
+// SOLO DÍGITOS — BASE Y META
+// ===============================
+const valorBaseInput = temp.querySelector('[name$="[valorBase]"]');
+const metaInput = temp.querySelector('[name$="[valor]"]');
+
+if (valorBaseInput) enforceOnlyDigits(valorBaseInput);
+if (metaInput) enforceOnlyDigits(metaInput);
+
+
             // Campo hidden de índice lógico
             const indiceInput = temp.querySelector('[name$="[indice]"]');
             if (indiceInput) {
@@ -382,6 +410,7 @@ initPersonalSearch({
                     ${indiceInput ? indiceInput.outerHTML : ''}
                 </td>
                 <td class="p-1">${temp.querySelector('[name$="[formula]"]').outerHTML}</td>
+                <td class="p-1">${temp.querySelector('[name$="[valorBase]"]').outerHTML}</td>
                 <td class="p-1">${temp.querySelector('[name$="[valor]"]').outerHTML}</td>
                 <td class="p-1">${temp.querySelector('[name$="[periodo]"]').outerHTML}</td>
                 <td class="p-1">${temp.querySelector('[name$="[tendencia]"]').outerHTML}</td>
@@ -441,7 +470,7 @@ initPersonalSearch({
              * (el real es un hidden)
              */
             const indicadorSelect = document.createElement("select");
-            indicadorSelect.classList.add("form-select", "form-select-sm");
+            indicadorSelect.classList.add("pta-input");
             indicadorSelect.innerHTML = `<option value="">Seleccione un indicador</option>`;
 
             // Poblar con indicadores existentes
@@ -769,6 +798,18 @@ frame.querySelectorAll('.fixed-textarea').forEach(textarea => {
         autoGrowLimited(textarea, 5);
     });
 });
+
+/**
+ * =====================================================
+ * APLICAR SOLO DÍGITOS A INPUTS EXISTENTES
+ * =====================================================
+ */
+frame.querySelectorAll(
+    '[name$="[valorBase]"], [name$="[valor]"]'
+).forEach(input => {
+    enforceOnlyDigits(input);
+});
+
 
 }// fin de la funcion de contencion
 

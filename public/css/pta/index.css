@@ -1,334 +1,353 @@
 /* =========================================================
-   TABLA INDEX PTA
+   PTA — INDEX PROYECTOS
    ========================================================= */
 
-.pta-card table {
-    border-collapse: separate;
-    border-spacing: 0;
-}
-
-/* ======================
-   THEAD
-   ====================== */
-.pta-card table thead th {
-    background: linear-gradient(180deg, #0b3c6f, #062a4f);
-    color: #ffffff;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
-    padding: 14px 16px;
-}
-
-/* ======================
-   FILAS
-   ====================== */
-.pta-card table tbody tr {
-    transition: background-color 0.2s ease;
-}
-
-/* Hover suave */
-.pta-card table tbody tr:hover {
-    background-color: rgba(13, 110, 253, 0.08);
-}
-
-/* ======================
-   CELDAS
-   ====================== */
-.pta-card table tbody td {
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
-    vertical-align: middle;
-}
-
-/* Quitar borde derecho de la última columna */
-.pta-card table tbody td:last-child,
-.pta-card table thead th:last-child {
-    border-right: none;
-}
-
-/* ======================
-   OBJETIVO (mejor lectura)
-   ====================== */
-.pta-card table tbody td:nth-child(3) {
-    color: #e2e8f0;
-    line-height: 1.4;
-}
-
-/* ======================
-   FECHA
-   ====================== */
-.pta-card table tbody td:last-child {
-    font-family: monospace;
-    font-size: 0.9rem;
-    color: #adb5bd;
-}
-
-/* ======================
-   ÚLTIMA FILA
-   ====================== */
-.pta-card table tbody tr:last-child td {
-    border-bottom: none;
-}
-/* ======================
-   BORDE EXTERNO TABLA
-   ====================== */
-
-.pta-card table {
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    overflow: hidden; /* clave para que el radio funcione */
-}
 /* =========================
-   BADGES STATUS PTA
+   VARIABLES BASE
    ========================= */
+:root {
+    --pta-primary: #0dcaf0;
+    --pta-success: #1dd1a1;
+    --pta-warning: #feca57;
+    --pta-danger: #ff6b6b;
+    --pta-muted: #9fb3c8;
 
-.pta-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    text-transform: uppercase;
+    --pta-border: rgba(13, 202, 240, 0.25);
+    --pta-border-soft: rgba(13, 202, 240, 0.15);
+
+    --pta-bg-main: #0b1117;
+    --pta-bg-card: #121b23;
+    --pta-bg-card-soft: #16222d;
 }
 
-/* 🟡 EN PROCESO */
-.pta-badge-proceso {
-    background-color: rgba(255, 193, 7, 0.15);
-    color: #ffc107;
-    border: 1px solid rgba(255, 193, 7, 0.5);
-}
-
-/* 🟢 TERMINADO */
-.pta-badge-terminado {
-    background-color: rgba(25, 135, 84, 0.15);
-    color: #198754;
-    border: 1px solid rgba(25, 135, 84, 0.5);
-}
-
-/* =========================
-   ACCIONES INDEX PTA
-   ========================= */
-
-.pta-actions {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-}
-
-.pta-action-btn {
-    width: 32px;
-    height: 32px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-}
-
-/* 👁 VER */
-.pta-action-view {
-    background-color: rgba(13, 202, 240, 0.15);
-    color: #0dcaf0;
-}
-
-.pta-action-view:hover {
-    background-color: rgba(13, 202, 240, 0.3);
-    color: #ffffff;
-}
-
-/* ✏️ EDITAR */
-.pta-action-edit {
-    background-color: rgba(255, 193, 7, 0.15);
-    color: #ffc107;
-}
-
-.pta-action-edit:hover {
-    background-color: rgba(255, 193, 7, 0.3);
-    color: #ffffff;
-}
-/* =========================
-   BOTÓN VOLVER PTA
-   ========================= */
-
-.pta-back-wrapper {
-    margin-bottom: 16px;
-}
-
-.pta-back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-
-    padding: 8px 14px;
-    border-radius: 8px;
-
-    background: rgba(13, 110, 253, 0.15);
-    color: #0d6efd;
-
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-
-    border: 1px solid rgba(13, 110, 253, 0.4);
-
-    transition: all 0.2s ease;
-}
-
-.pta-back-btn i {
-    font-size: 1.1rem;
-}
-
-/* Hover */
-.pta-back-btn:hover {
-    background: rgba(13, 110, 253, 0.35);
-    color: #ffffff;
-    border-color: #0d6efd;
-}
-/* =========================
-   BOTÓN AGREGAR PTA
-   ========================= */
-
-.pta-add-wrapper {
-    margin-bottom: 16px;
-    display: flex;
-    justify-content: flex-end; /* alineado a la derecha */
-}
-
-.pta-add-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-
-    padding: 8px 16px;
-    border-radius: 8px;
-
-    background: rgba(25, 135, 84, 0.15); /* verde */
-    color: #198754;
-
-    font-weight: 500;
-    font-size: 0.9rem;
-
-    border: 1px solid rgba(25, 135, 84, 0.5);
-    cursor: pointer;
-
-    transition: all 0.2s ease;
-}
-
-.pta-add-btn i {
-    font-size: 1.1rem;
-}
-
-/* Hover */
-.pta-add-btn:hover {
-    background: rgba(25, 135, 84, 0.35);
-    color: #ffffff;
-    border-color: #198754;
-}
-/* =========================
-   TOOLBAR SUPERIOR PTA
-   ========================= */
+/* =========================================================
+   TOOLBAR SUPERIOR
+   ========================================================= */
 
 .pta-toolbar {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-
-/* IZQUIERDA */
-.pta-toolbar-left {
-    display: flex;
     align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
-/* DERECHA */
-.pta-toolbar-right {
-    display: flex;
+/* =========================
+   BOTÓN AGREGAR
+   ========================= */
+.pta-add-btn {
+    display: inline-flex;
     align-items: center;
+    gap: 10px;
+
+    padding: 10px 18px;
+    border-radius: 14px;
+
+    background: rgba(29, 209, 161, 0.18);
+    color: var(--pta-success);
+
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+
+    border: 1px solid rgba(29, 209, 161, 0.55);
+
+    transition: all 0.25s ease;
 }
 
-/* FORM FILTRO */
-.pta-filter-form {
-    display: flex;
-    align-items: flex-end;
-    gap: 8px;
+.pta-add-btn i {
+    font-size: 1.2rem;
 }
 
-/* Ajuste label */
-.pta-filter-form .form-label {
-    font-size: 0.8rem;
-    color: #adb5bd;
-}
-/* ===============================
-   TOOLBAR — FILTRO AÑO EJECUCIÓN
-   =============================== */
-
-.pta-toolbar-right .pta-filter-form {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+.pta-add-btn:hover {
+    background: rgba(29, 209, 161, 0.35);
+    color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(29, 209, 161, 0.35);
+    transform: translateY(-2px);
 }
 
-.pta-toolbar-right .form-label {
-    font-size: 0.95rem; /* más grande */
-    font-weight: 600;
-    color: #cfd8dc; /* claro en dark */
-    margin-bottom: 0; /* evita que se baje */
-    white-space: nowrap; /* no se parte en 2 líneas */
-}
-.pta-badge-periodo {
-    background: rgba(13, 110, 253, 0.15);
-    color: #0d6efd;
-    border: 1px solid rgba(13, 110, 253, 0.35);
-    padding: 0.35rem 0.75rem;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
 /* =========================================================
-   LOGOUT — INDEX GENERAL (NO ADMIN)
+   FILTROS
    ========================================================= */
 
-.pta-general-logout {
+.pta-filter-form {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pta-filter-form .form-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--pta-muted);
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+/* Selects */
+.pta-filter-form select {
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+
+    color: #e6f1ff;
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 14px;
+
+    padding: 10px 14px;
+    min-width: 160px;
+
+    font-weight: 600;
+    font-size: 0.9rem;
+
+    appearance: none;
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--pta-primary) 50%),
+        linear-gradient(135deg, var(--pta-primary) 50%, transparent 50%);
+    background-position:
+        calc(100% - 20px) calc(50% - 4px),
+        calc(100% - 14px) calc(50% - 4px);
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+    /* Control de ancho en flex */
+    max-width: 220px;
+    width: 220px;
+    flex: 0 0 auto;
+}
+
+.pta-filter-form select:focus {
+    outline: none;
+    border-color: var(--pta-primary);
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
+}
+
+/* Botón filtrar */
+.pta-filter-form button {
+    width: 44px;
+    height: 44px;
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
-    width: 56px;
-    height: 56px;
-
-    margin-bottom: 20px; /* aire con el card */
-
     border-radius: 14px;
-    background: rgba(13, 202, 240, 0.1);
-    border: 1px solid rgba(13, 202, 240, 0.35);
+    border: 1px solid rgba(13, 202, 240, 0.45);
 
-    color: #0dcaf0;
-    font-size: 2.1rem;
-    text-decoration: none;
+    background: rgba(13, 202, 240, 0.18);
+    color: var(--pta-primary);
 
-    transition: background 0.15s ease, box-shadow 0.15s ease,
-        transform 0.15s ease;
+    transition: all 0.25s ease;
 }
 
-.pta-general-logout:hover {
-    background: rgba(13, 202, 240, 0.22);
+.pta-filter-form button:hover {
+    background: rgba(13, 202, 240, 0.35);
+    color: #ffffff;
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.35);
-    transform: translateY(-2px);
 }
+
+/* =========================================================
+   TABLA INDEX PTA (PREMIUM)
+   ========================================================= */
+
+.pta-index-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0 14px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(10, 18, 26, 0.95),
+        rgba(6, 12, 18, 0.9)
+    );
+
+    border-radius: 22px;
+    padding: 12px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.18),
+        0 18px 46px rgba(0, 0, 0, 0.85);
+}
+
 /* =========================
-   LOGOUT WRAPPER — DERECHA
+   THEAD
+   ========================= */
+.pta-index-table thead th {
+    background: rgba(0, 0, 0, 0.65);
+    color: #e6f1ff;
+
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+
+    padding: 14px 16px;
+    border: none;
+}
+
+/* =========================
+   FILAS
+   ========================= */
+.pta-index-table tbody tr {
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+
+    box-shadow:
+        inset 0 0 0 1px var(--pta-border-soft),
+        0 10px 26px rgba(0, 0, 0, 0.7);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.pta-index-table tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.45),
+        0 16px 36px rgba(0, 0, 0, 0.85);
+}
+
+/* =========================
+   CELDAS
+   ========================= */
+.pta-index-table td,
+.pta-index-table th {
+    padding: 8px 10px;
+    border: none;
+    vertical-align: middle;
+}
+
+/* =========================
+   DISTRIBUCIÓN COLUMNAS
    ========================= */
 
-.pta-general-logout-wrapper {
+.pta-index-table th:nth-child(1),
+.pta-index-table td:nth-child(1) {
+    width: 4%;
+    text-align: center;
+    font-weight: 800;
+    opacity: 0.85;
+}
+
+.pta-index-table th:nth-child(2),
+.pta-index-table td:nth-child(2) {
+    width: 32%;
+    color: #ffffff;
+    font-weight: 600;
+    line-height: 1.45;
+}
+
+.pta-index-table th:nth-child(3),
+.pta-index-table td:nth-child(3) {
+    width: 32%;
+    color: var(--pta-muted);
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.45;
+}
+
+.pta-index-table th:nth-child(4),
+.pta-index-table td:nth-child(4) {
+    width: 10%;
+    text-align: center;
+    font-family: monospace;
+    white-space: nowrap;
+}
+
+.pta-index-table th:nth-child(5),
+.pta-index-table td:nth-child(5) {
+    width: 10%;
+    text-align: center;
+}
+
+.pta-index-table th:nth-child(6),
+.pta-index-table td:nth-child(6) {
+    width: 12%;
+    text-align: center;
+}
+
+/* =========================
+   BADGE PERIODO
+   ========================= */
+.pta-badge-periodo {
+    background: rgba(13, 202, 240, 0.18);
+    color: var(--pta-primary);
+    border: 1px solid rgba(13, 202, 240, 0.45);
+
+    padding: 6px 16px;
+    border-radius: 999px;
+
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* =========================
+   ACCIONES
+   ========================= */
+.pta-actions {
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: 20px;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pta-action-btn {
+    width: 34px;
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    font-size: 1.05rem;
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+}
+
+.pta-action-view {
+    background: rgba(13, 202, 240, 0.18);
+    color: var(--pta-primary);
+}
+
+.pta-action-edit {
+    background: rgba(254, 202, 87, 0.18);
+    color: var(--pta-warning);
+}
+
+.pta-action-btn:hover {
+    transform: translateY(-1px);
+    color: #ffffff;
+}
+
+/* =========================================================
+   PTA — DROPDOWN SELECT (OPTIONS OSCURO)
+   ========================================================= */
+
+.pta-filter-form select option {
+    background-color: #121b23;
+    color: #e6f1ff;
+}
+
+/* Option seleccionada */
+.pta-filter-form select option:checked {
+    background-color: rgba(13, 202, 240, 0.25);
+    color: #ffffff;
+}
+
+/* Hover (algunos browsers lo soportan) */
+.pta-filter-form select option:hover {
+    background-color: rgba(13, 202, 240, 0.35);
+    color: #ffffff;
 }
