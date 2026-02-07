@@ -640,31 +640,46 @@ public function graficas(
     \App\Service\Pta\PtaGraficaService $ptaGraficaService
 ): Response {
 
-    $graficas = $ptaGraficaService->build($encabezado);
-
+    /* =====================================================
+     * CONTEXTO (MISMO PATRÓN QUE SHOW)
+     * ===================================================== */
     $filtros = [
         'anio'         => $request->query->get('anio'),
         'departamento' => $request->query->get('departamento'),
         'puesto'       => $request->query->get('puesto'),
     ];
 
-    $volverPath = $this->generateUrl('app_encabezado_show', [
-        'id' => $encabezado->getId(),
-    ] + array_filter($filtros));
+    // Origen de navegación (igual que show)
+    $from = $request->query->get('from', 'show');
 
-    if ($request->headers->has('Turbo-Frame')) {
+    /* =====================================================
+     * GRÁFICAS
+     * ===================================================== */
+    $graficas = $ptaGraficaService->build($encabezado);
+
+    /* =====================================================
+     * RENDER
+     * ===================================================== */
+    $isTurbo = $request->headers->has('Turbo-Frame');
+
+    if ($isTurbo) {
         return $this->render('pta/encabezado/graficas_page.html.twig', [
             'encabezado'  => $encabezado,
             'graficas'    => $graficas,
             'filtros'     => $filtros,
-            'volver_path' => $volverPath,
+            'from'        => $from,
+            'volver_path' => $this->generateUrl('app_encabezado_show', [
+                'id'   => $encabezado->getId(),
+                'from' => $from,
+            ] + array_filter($filtros)),
         ]);
     }
 
     return $this->render('dashboard/index.html.twig', [
         'section'     => 'pta',
         'content_url' => $this->generateUrl('app_encabezado_graficas', [
-            'id' => $encabezado->getId(),
+            'id'   => $encabezado->getId(),
+            'from' => $from,
         ] + array_filter($filtros)),
     ]);
 }

@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('admin/indicadores_basicos')]
+#[Route('pta/indicadores_basicos')]
 /**
  * =========================================================
  * CONTROLADOR ADMIN — INDICADORES BÁSICOS
@@ -36,12 +36,31 @@ final class IndicadoresBasicosController extends AbstractController
      * =====================================================
      */
     #[Route(name: 'app_indicadores_basicos_index', methods: ['GET'])]
-    public function index(IndicadoresBasicosRepository $repository): Response
-    {
-        return $this->render('admin/indicadores_basicos/index.html.twig', [
+public function index(
+    Request $request,
+    IndicadoresBasicosRepository $repository
+): Response {
+
+    $isTurbo = $request->headers->has('Turbo-Frame');
+
+    // ============================
+    // TURBO → SOLO CONTENIDO
+    // ============================
+    if ($isTurbo) {
+        return $this->render('indicadores_basicos/index.html.twig', [
             'indicadores_basicos' => $repository->findAllOrderByNombre(),
         ]);
     }
+
+    // ============================
+    // NO TURBO (F5 / URL DIRECTA)
+    // ============================
+    return $this->render('dashboard/index.html.twig', [
+        'section'     => 'indicadores_basicos',
+        'content_url' => $this->generateUrl('app_indicadores_basicos_index'),
+    ]);
+}
+
 
     /**
      * =====================================================
@@ -72,7 +91,7 @@ final class IndicadoresBasicosController extends AbstractController
 
         // Navegación interna con Turbo
         if ($request->headers->get('Turbo-Frame')) {
-            return $this->render('admin/indicadores_basicos/new.html.twig', [
+            return $this->render('indicadores_basicos/new.html.twig', [
                 'indicador' => $indicador,
                 'form' => $form,
             ]);
@@ -99,7 +118,7 @@ final class IndicadoresBasicosController extends AbstractController
     public function show(Request $request, IndicadoresBasicos $indicador): Response
     {
         if ($request->headers->get('Turbo-Frame')) {
-            return $this->render('admin/indicadores_basicos/show.html.twig', [
+            return $this->render('indicadores_basicos/show.html.twig', [
                 'indicador' => $indicador,
             ]);
         }
@@ -139,7 +158,7 @@ final class IndicadoresBasicosController extends AbstractController
         }
 
         if ($request->headers->get('Turbo-Frame')) {
-            return $this->render('admin/indicadores_basicos/edit.html.twig', [
+            return $this->render('indicadores_basicos/edit.html.twig', [
                 'indicador' => $indicador,
                 'form' => $form,
             ]);

@@ -36,17 +36,31 @@ use App\Form\departamento\DepartamentoEditType;
 final class DepartamentoController extends AbstractController
 {
     #[Route(name: 'app_departamento_index', methods: ['GET'])]
-    // Ruta GET /admin/departamento
-    // Muestra el listado de departamentos
-    public function index(DepartamentoRepository $departamentoRepository): Response
-    {
-        // Renderiza la vista index.html.twig
+public function index(
+    Request $request,
+    DepartamentoRepository $departamentoRepository
+): Response {
+
+    $isTurbo = $request->headers->has('Turbo-Frame');
+
+    // ============================
+    // TURBO → SOLO CONTENIDO
+    // ============================
+    if ($isTurbo) {
         return $this->render('admin/departamento/index.html.twig', [
             'departamentos' => $departamentoRepository->findAll(),
-            // Obtiene todos los registros de la tabla departamento
-            // y los pasa a la vista
         ]);
     }
+
+    // ============================
+    // NO TURBO (F5 / URL DIRECTA)
+    // ============================
+    return $this->render('dashboard/index.html.twig', [
+        'section'     => 'departamentos',
+        'content_url' => $this->generateUrl('app_departamento_index'),
+    ]);
+}
+
 
     #[Route('/new', name: 'app_departamento_new', methods: ['GET', 'POST'])]
     // Ruta para crear un nuevo departamento
@@ -90,7 +104,7 @@ final class DepartamentoController extends AbstractController
             // Se envía el formulario para renderizarlo
         ]);
         }
-        return $this->render('admin/dashboard/index.html.twig',[
+        return $this->render('dashboard/index.html.twig',[
             'section' => 'departamentos',
             'content_url' => $this->generateUrl('app_departamento_new',[
             ]),
@@ -112,7 +126,7 @@ final class DepartamentoController extends AbstractController
             // Pasa la entidad a la vista de detalle
         ]);
         }
-        return $this->render('admin/dashboard/index.html.twig',[
+        return $this->render('dashboard/index.html.twig',[
             'section' => 'departamentos',
             'content_url' => $this->generateUrl('app_departamento_show',[
                 'id' => $departamento->getId(),
@@ -160,7 +174,7 @@ final class DepartamentoController extends AbstractController
             // Formulario de edición
         ]);
         }
-        return $this->render('admin/dashboard/index.html.twig',[
+        return $this->render('dashboard/index.html.twig',[
             'section' => 'departamentos',
             'content_url' => $this->generateUrl('app_departamento_edit',[
                 'id' => $departamento->getId(),

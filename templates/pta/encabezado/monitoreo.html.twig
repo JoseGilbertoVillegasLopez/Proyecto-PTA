@@ -20,7 +20,10 @@
                         anio: anio
                     }) }}"
                     class="pta-monitoreo-breadcrumb__link"
-                >
+                    data-turbo-frame="content"
+                    data-turbo-action="advance"
+                    >
+
                     {{ crumb.label }}
                 </a>
             </li>
@@ -29,9 +32,7 @@
 </nav>
 
 
-{# ============================================================
-   2. RESUMEN GLOBAL
-   ============================================================ #}
+{# ============================================================2. RESUMEN GLOBAL============================================================ #}
 {% if resultado.contexto.nivel == 'GLOBAL' %}
 <section class="pta-monitoreo-summary mb-4">
     <div class="pta-report-card pta-report-card--global pta-status-{{ resultado.resumen_global.estado|lower }}">
@@ -142,7 +143,10 @@
                     anio: anio
                 }) }}"
                 class="pta-report-card pta-report-card--{{ tipo }} pta-status-{{ card.estado_global|lower }}"
-            >
+                data-turbo-frame="content"
+                data-turbo-action="advance"
+                >
+
                 <h4 class="pta-report-card__subtitle">
                     {{ card.nombre }}
                 </h4>
@@ -279,7 +283,9 @@
                                 href="{{ path('pta_historial', {
                                     id: pta.pta_id,
                                     from: 'monitoreo',
-                                    anio: anio
+                                    anio: anio,
+                                    root_type: resultado.contexto.root_type,
+                                    root_id: resultado.contexto.root_id
                                 }) }}"
                                 class="btn btn-sm btn-outline-warning"
                                 data-turbo-frame="content"
@@ -287,6 +293,7 @@
                             >
                                 Historial
                             </a>
+
                         </span>
 
         </td>
