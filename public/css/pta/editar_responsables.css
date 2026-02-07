@@ -1,0 +1,302 @@
+/* =========================================================
+   PTA — RESPONSABLES
+   AISLADO POR CONTENEDOR .pta-responsables
+   ========================================================= */
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+.pta-responsables {
+    --pta-primary: #0dcaf0;
+    --pta-success: #1dd1a1;
+    --pta-danger: #ff6b6b;
+    --pta-muted: #9fb3c8;
+
+    --pta-bg-main: radial-gradient(circle at top, #0f1c26, #0b1117 60%);
+    --pta-bg-card: #121b23;
+    --pta-bg-card-soft: #16222d;
+
+    --pta-border: rgba(13, 202, 240, 0.25);
+    --pta-border-soft: rgba(13, 202, 240, 0.15);
+}
+
+/* =========================================================
+   RESET BOOTSTRAP BÁSICO
+   ========================================================= */
+.pta-responsables *,
+.pta-responsables *::before,
+.pta-responsables *::after {
+    box-sizing: border-box;
+}
+
+/* =========================================================
+   CARD BASE (MISMO QUE SHOW)
+   ========================================================= */
+.pta-responsables .pta-card {
+    background: radial-gradient(
+        circle at top left,
+        rgba(13, 202, 240, 0.18),
+        rgba(6, 15, 22, 0.96) 55%
+    );
+
+    border-radius: 16px;
+    border: 1px solid var(--pta-border);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.18),
+        0 18px 46px rgba(0, 0, 0, 0.8);
+
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+.pta-responsables .pta-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+/* =========================================================
+   BOTÓN VOLVER
+   ========================================================= */
+.pta-responsables .pta-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 16px;
+    border-radius: 12px;
+
+    background: rgba(13, 202, 240, 0.15);
+    color: var(--pta-primary);
+    text-decoration: none;
+    font-weight: 600;
+
+    border: 1px solid var(--pta-border-soft);
+    transition: all 0.25s ease;
+}
+
+.pta-responsables .pta-back-btn:hover {
+    background: rgba(13, 202, 240, 0.3);
+    color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.35);
+}
+
+/* =========================================================
+   ENCABEZADO DEL PROYECTO (CLON SHOW)
+   ========================================================= */
+.pta-responsables .pta-header-box {
+    background: transparent;
+    padding: 0;
+}
+
+/* FILAS */
+.pta-responsables .pta-header-row {
+    display: flex;
+    border-bottom: 1px solid var(--pta-border-soft);
+}
+
+/* LABEL */
+.pta-responsables .pta-header-label,
+.pta-responsables .pta-header-objetivo-label {
+    background: linear-gradient(
+        145deg,
+        rgba(10, 35, 65, 0.95),
+        rgba(6, 25, 45, 0.9)
+    );
+
+    color: var(--pta-primary);
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    padding: 12px 16px;
+    min-width: 220px;
+    text-transform: uppercase;
+}
+
+/* VALUE */
+.pta-responsables .pta-header-value,
+.pta-responsables .pta-header-objetivo-value {
+    flex: 1;
+    padding: 14px 18px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+
+    color: #ffffff;
+    line-height: 1.5;
+}
+
+/* SEGUNDA FILA */
+.pta-responsables .pta-header-col-numero {
+    display: flex;
+    width: 220px;
+}
+
+.pta-responsables .pta-header-col-numero .pta-header-value {
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.pta-responsables .pta-header-col-objetivo {
+    display: flex;
+    flex: 1;
+}
+
+/* =========================================================
+   TITULOS
+   ========================================================= */
+.pta-responsables .pta-title {
+    color: #ffffff;
+    font-size: 1.05rem;
+    font-weight: 700;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 12px;
+}
+
+.pta-responsables .pta-title i {
+    color: var(--pta-primary);
+}
+
+/* =========================================================
+   FORMULARIO RESPONSABLES
+   ========================================================= */
+.pta-responsables form {
+    width: 100%;
+}
+
+.pta-responsables .pta-form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* LABELS */
+.pta-responsables label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--pta-primary);
+    text-transform: uppercase;
+}
+
+/* INPUTS */
+.pta-responsables input[type="text"] {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 12px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+
+    border: 1px solid var(--pta-border-soft);
+    color: #ffffff;
+
+    font-size: 0.95rem;
+}
+
+.pta-responsables input[type="text"]:focus {
+    outline: none;
+    border-color: var(--pta-primary);
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.35);
+}
+
+/* =========================================================
+   SEARCH RESULTS (AUTOCOMPLETE)
+   ========================================================= */
+.pta-responsables .search-results {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+
+    background: #0b1117;
+    border-radius: 12px;
+    border: 1px solid var(--pta-border-soft);
+
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.9);
+    z-index: 10;
+    overflow: hidden;
+}
+
+.pta-responsables .search-results div {
+    padding: 10px 14px;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.pta-responsables .search-results div:hover {
+    background: rgba(13, 202, 240, 0.18);
+}
+
+/* =========================================================
+   BOTÓN GUARDAR
+   ========================================================= */
+.pta-responsables .pta-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 28px;
+}
+
+.pta-responsables button#btn-confirmar {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 12px 36px;
+    border-radius: 999px;
+
+    background: linear-gradient(
+        145deg,
+        rgba(13, 202, 240, 0.35),
+        rgba(13, 202, 240, 0.18)
+    );
+
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 700;
+
+    border: 1px solid var(--pta-border);
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.pta-responsables button#btn-confirmar:hover {
+    background: rgba(13, 202, 240, 0.45);
+    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.35);
+}
+
+/* =========================================================
+   MODAL CONFIRMACIÓN
+   ========================================================= */
+.pta-responsables .modal-content {
+    background: #0b1117;
+    border-radius: 16px;
+    border: 1px solid var(--pta-border);
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.9);
+}
+
+.pta-responsables .modal-title {
+    color: var(--pta-primary);
+    font-weight: 700;
+}
+
+.pta-responsables .modal-footer button {
+    border-radius: 12px;
+}

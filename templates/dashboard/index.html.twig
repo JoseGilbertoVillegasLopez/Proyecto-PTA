@@ -54,12 +54,17 @@ Sfjs.loadToolbar();
 						</li>
 
 						<li class="pta-dashboard-menu-item">
-							<a href="{{ path('app_admin_dashboard', { section: 'indicadores_basicos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
-								Indicadores básicos
+							<a href="{{ path('app_admin_dashboard', { section: 'monitoreo' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Monitoreo PTA
 							</a>
 						</li>
 
 					{% endif %}
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_admin_dashboard', { section: 'indicadores_basicos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+							Indicadores básicos
+						</a>
+					</li>
 
 					{# ============================TODOS LOS USUARIOS============================ #}
 					<li class="pta-dashboard-menu-item">
@@ -71,12 +76,6 @@ Sfjs.loadToolbar();
 					<li class="pta-dashboard-menu-item">
 						<a href="{{ path('app_admin_dashboard', { section: 'historial_pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 							Historial PTA
-						</a>
-					</li>
-
-					<li class="pta-dashboard-menu-item">
-						<a href="{{ path('app_admin_dashboard', { section: 'monitoreo' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
-							Monitoreo PTA
 						</a>
 					</li>
 
@@ -105,7 +104,7 @@ Sfjs.loadToolbar();
 	'pta': path('app_encabezado_index'),
 	'monitoreo': path('pta_monitoreo_index'),
 	'indicadores_basicos': path('app_indicadores_basicos_index'),
-  'historial_pta': path('pta_historial_index')
+    'historial_pta': path('pta_historial_index')
 	} %}
 
 
@@ -116,7 +115,7 @@ Sfjs.loadToolbar();
 				{% set defaultSection = 'pta' %}
 			{% endif %}
 
-			<turbo-frame id="content" src="{{ content_url ?? srcMap[section] ?? srcMap[defaultSection] }}"></turbo-frame>
+			<turbo-frame id="content" src="{{ content_url is defined ? content_url : srcMap[section] ?? srcMap[defaultSection] }}"></turbo-frame>
 
 
 		</main>

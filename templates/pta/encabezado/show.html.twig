@@ -26,7 +26,7 @@
 			{% endif %}
 
 
-			<a href="{{ path('app_encabezado_graficas', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" {% if app.user and 'ROLE_ADMIN' in app.user.roles %} data-turbo-frame="content" data-turbo-action="advance" {% endif %} class="pta-graph-btn">
+			<a href="{{ path('app_encabezado_graficas', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-action="advance" {% if app.user and 'ROLE_ADMIN' in app.user.roles %} data-turbo-frame="content" data-turbo-action="advance" {% endif %} class="pta-graph-btn">
 				<i class="bi bi-bar-chart-line"></i>
 				<span>Gráficas</span>
 			</a>
@@ -52,8 +52,8 @@
 
 
 	{# =========================================================
-				       ENCABEZADO DEL PROYECTO (SOLO LECTURA)
-				       ========================================================= #}
+						       ENCABEZADO DEL PROYECTO (SOLO LECTURA)
+						       ========================================================= #}
 	<div class="card pta-card pta-header-box mb-4">
 
 		<div class="pta-header-row">
@@ -91,8 +91,8 @@
 
 
 	{# =========================================================
-				       INDICADORES (SOLO LECTURA)
-				       ========================================================= #}
+						       INDICADORES (SOLO LECTURA)
+						       ========================================================= #}
 	<div class="card pta-card mb-4">
 
 		<h4 class="pta-title">
@@ -151,8 +151,8 @@
 
 
 	{# =========================================================
-				       ACCIONES / AVANCE MENSUAL (SOLO LECTURA)
-				       ========================================================= #}
+						       ACCIONES / AVANCE MENSUAL (SOLO LECTURA)
+						       ========================================================= #}
 	<div class="card pta-card mb-4">
 
 		<h4 class="pta-title">
@@ -220,8 +220,8 @@
 
 
 	{# =========================================================
-				       RESPONSABLES DEL PROYECTO
-				       ========================================================= #}
+						       RESPONSABLES DEL PROYECTO
+						       ========================================================= #}
 	<div class="card pta-card mb-4">
 
 		<div class="d-flex justify-content-between align-items-center mb-3">
