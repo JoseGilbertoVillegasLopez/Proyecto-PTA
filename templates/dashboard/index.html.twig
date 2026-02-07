@@ -33,9 +33,7 @@ Sfjs.loadToolbar();
 				<ul
 					class="pta-dashboard-menu">
 
-					{# ============================
-																																																																																																																			       SOLO ADMIN
-																																																																																																																			       ============================ #}
+					{# ============================SOLO ADMIN============================ #}
 					{% if is_granted('ROLE_ADMIN') %}
 						<li class="pta-dashboard-menu-item">
 							<a href="{{ path('app_admin_dashboard', { section: 'personal' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
@@ -56,22 +54,23 @@ Sfjs.loadToolbar();
 						</li>
 
 						<li class="pta-dashboard-menu-item">
-							<a
-								href="{{ path('app_admin_dashboard', { section: 'indicadores_basicos' }) }}"
-								class="pta-dashboard-link"
-								data-turbo-action="advance">
+							<a href="{{ path('app_admin_dashboard', { section: 'indicadores_basicos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 								Indicadores básicos
 							</a>
 						</li>
 
 					{% endif %}
 
-					{# ============================
-																																																																																																																			       TODOS LOS USUARIOS
-																																																																																																																			       ============================ #}
+					{# ============================TODOS LOS USUARIOS============================ #}
 					<li class="pta-dashboard-menu-item">
 						<a href="{{ path('app_admin_dashboard', { section: 'pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 							PTA
+						</a>
+					</li>
+
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_admin_dashboard', { section: 'historial_pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+							Historial PTA
 						</a>
 					</li>
 
@@ -96,24 +95,21 @@ Sfjs.loadToolbar();
 		<!-- CONTENIDO -->
 		<main
 			style="flex: 1; padding: 30px; overflow-y: auto;">
-			{# ============================
-															   FIX GLOBAL SECTION
-															   ============================ #}
+			{# ============================FIX GLOBAL SECTION============================ #}
 			{% set section = section is defined ? section : null %}
 
-	{% set srcMap = {
+			{% set srcMap = {
 	'personal': path('app_personal_index'),
 	'departamentos': path('app_departamento_index'),
 	'puestos': path('app_puesto_index'),
 	'pta': path('app_encabezado_index'),
 	'monitoreo': path('pta_monitoreo_index'),
-	'indicadores_basicos': path('app_indicadores_basicos_index')
+	'indicadores_basicos': path('app_indicadores_basicos_index'),
+  'historial_pta': path('pta_historial_index')
 	} %}
 
 
-			{# ============================
-																																																															   SECCIÓN INICIAL POR ROL
-																																																															   ============================ #}
+			{# ============================SECCIÓN INICIAL POR ROL============================ #}
 			{% if is_granted('ROLE_ADMIN') %}
 				{% set defaultSection = 'personal' %}
 			{% else %}

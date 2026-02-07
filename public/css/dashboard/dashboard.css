@@ -167,9 +167,5 @@
    CONTENEDOR TURBO (MAIN)
    =============================== */
 main {
-    background: radial-gradient(
-        140% 140% at 50% 0%,
-        rgba(13, 202, 240, 0.06),
-        rgba(6, 15, 22, 0.98)
-    );
+    background: radial-gradient(circle at top, #0d2638, #0a1119 60%);
 }

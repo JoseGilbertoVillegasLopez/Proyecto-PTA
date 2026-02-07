@@ -164,4 +164,80 @@ public function findPtasForMonitoring(array $access, int $anio): array
         ->getResult();
 }
 
+
+/**
+ * =========================================================
+ * PTA — HISTORIAL INDEX
+ * ---------------------------------------------------------
+ * Caso de uso exclusivo para:
+ * /pta/historial (index)
+ * =========================================================
+ */
+/**
+ * =========================================================
+ * PTA — HISTORIAL INDEX
+ * =========================================================
+ */
+public function findForHistorialIndex(
+    array $access,
+    int $anio,
+    ?int $personalId,
+    ?int $puestoId
+): array {
+
+    $result = [
+        'propio' => [],
+        'puesto' => [],
+    ];
+
+    /* =====================================================
+     * PTA PROPIO
+     * ===================================================== */
+    if ($personalId) {
+
+        $qb = $this->createQueryBuilder('e')
+            ->leftJoin('e.responsable', 'p')
+            ->andWhere('e.anioEjecucion = :anio')
+            ->andWhere('p.id = :personalId')
+            ->setParameter('anio', $anio)
+            ->setParameter('personalId', $personalId)
+            ->orderBy('e.id', 'DESC');
+
+        // 🔒 Scope jerárquico
+        if ($access['scope'] === 'JERARQUICO') {
+            $qb->andWhere('p.puesto IN (:puestos)')
+               ->setParameter('puestos', $access['puestos_visibles']);
+        }
+
+        $result['propio'] = $qb->getQuery()->getResult();
+    }
+
+    /* =====================================================
+     * PTA DEL PUESTO (MISMO PUESTO, OTRO RESPONSABLE)
+     * ===================================================== */
+    if ($personalId && $puestoId) {
+
+        $qb = $this->createQueryBuilder('e')
+            ->leftJoin('e.responsable', 'p')
+            ->andWhere('e.anioEjecucion = :anio')
+            ->andWhere('p.puesto = :puestoId')
+            ->andWhere('p.id != :personalId')
+            ->setParameter('anio', $anio)
+            ->setParameter('puestoId', $puestoId)
+            ->setParameter('personalId', $personalId)
+            ->orderBy('e.id', 'DESC');
+
+        // 🔒 Scope jerárquico
+        if ($access['scope'] === 'JERARQUICO') {
+            $qb->andWhere('p.puesto IN (:puestos)')
+               ->setParameter('puestos', $access['puestos_visibles']);
+        }
+
+        $result['puesto'] = $qb->getQuery()->getResult();
+    }
+
+    return $result;
+}
+
+
 }
