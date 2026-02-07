@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Encabezado;
+use App\Repository\EncabezadoRepository;
+use App\Service\Pta\PtaAccessResolver;
 use App\Service\Pta\PtaHistorialService;
 use App\Service\Pta\PtaGraficaService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,6 +14,75 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PtaHistorialController extends AbstractController
 {
+    /* =====================================================
+     * INDEX — HISTORIAL PTA
+     * ===================================================== */
+    #[Route('/pta/historial', name: 'pta_historial_index', methods: ['GET'])]
+    public function index(
+        Request $request,
+        EncabezadoRepository $encabezadoRepository,
+        PtaAccessResolver $ptaAccessResolver
+    ): Response {
+
+        /* =============================================
+         * 1. AÑO (DEFAULT = ACTUAL)
+         * ============================================= */
+        $anioActual    = (int) date('Y');
+        $anioEjecucion = $request->query->getInt('anio', $anioActual);
+
+        /* =============================================
+         * 2. USUARIO + ACCESO
+         * ============================================= */
+        /** @var \App\Entity\User $usuario */
+        $usuario  = $this->getUser();
+        $personal = $usuario->getPersonal();
+
+        $access = $ptaAccessResolver->resolve($usuario);
+
+        /* =============================================
+         * 3. CONSULTA REPOSITORY
+         * ============================================= */
+        $data = $encabezadoRepository->findForHistorialIndex(
+            $access,
+            $anioEjecucion,
+            $personal?->getId(),
+            $personal?->getPuesto()?->getId()
+        );
+
+        /* =============================================
+         * 4. AÑOS DISPONIBLES
+         * ============================================= */
+        $aniosFiltro = $encabezadoRepository->findAniosDisponibles(
+            $access,
+            $personal?->getId() ?? 0
+        );
+
+        /* =============================================
+         * 5. RENDER
+         * ============================================= */
+        $isTurbo = $request->headers->has('Turbo-Frame');
+
+        if ($isTurbo) {
+            return $this->render('pta/historial/index_page.html.twig', [
+                'ptaPropio'        => $data['propio'],
+                'ptaPuesto'        => $data['puesto'],
+                'anioSeleccionado' => $anioEjecucion,
+                'aniosFiltro'      => $aniosFiltro,
+                'access'           => $access,
+            ]);
+        }
+
+        return $this->render('dashboard/index.html.twig', [
+            'section'     => 'pta',
+            'content_url' => $this->generateUrl('pta_historial_index', [
+                'anio' => $anioEjecucion,
+            ]),
+        ]);
+    }
+
+    /* =====================================================
+     * SHOW — HISTORIAL PTA (YA EXISTENTE)
+     * ===================================================== */
     #[Route('/pta/historial/{id}', name: 'pta_historial', methods: ['GET'])]
     public function historial(
         Request $request,
@@ -22,7 +93,6 @@ class PtaHistorialController extends AbstractController
 
         $from = $request->query->get('from', 'show');
 
-        // 🔥 params para volver exactamente al mismo lugar
         $anio     = $request->query->get('anio');
         $rootType = $request->query->get('root_type', 'GLOBAL');
         $rootId   = $request->query->get('root_id');
@@ -33,28 +103,21 @@ class PtaHistorialController extends AbstractController
                 'root_type' => $rootType,
                 'root_id'   => $rootId,
             ]));
+        } elseif ($from === 'historial_index') {
+            $volverPath = $this->generateUrl('pta_historial_index', array_filter([
+                'anio' => $anio,
+            ]));
         } else {
             $volverPath = $this->generateUrl('app_encabezado_show', [
                 'id' => $encabezado->getId(),
             ]);
         }
 
-        /* =====================================================
-           HISTORIAL (UI / EVENTOS)
-           ===================================================== */
         $historial = $ptaHistorialService->buildHistorial($encabezado);
+        $graficas  = $ptaGraficaService->build($encabezado);
 
-        /* =====================================================
-           GRÁFICAS (MISMAS QUE SHOW)
-           ===================================================== */
-        $graficas = $ptaGraficaService->build($encabezado);
-
-        /* =====================================================
-           UNIR GRÁFICA ↔ INDICADOR
-           ===================================================== */
         foreach ($historial as &$item) {
             foreach ($graficas as $grafica) {
-                // Se compara por nombre de indicador (misma fuente que show)
                 if (
                     isset($item['info']['indicador']) &&
                     $grafica['indicador'] === $item['info']['indicador']
@@ -66,9 +129,6 @@ class PtaHistorialController extends AbstractController
         }
         unset($item);
 
-        /* =====================================================
-           RENDER
-           ===================================================== */
         $isTurbo = $request->headers->has('Turbo-Frame');
 
         if ($isTurbo) {
@@ -80,7 +140,7 @@ class PtaHistorialController extends AbstractController
         }
 
         return $this->render('dashboard/index.html.twig', [
-            'section'     => 'pta', // 🔥 CLAVE
+            'section'     => 'pta',
             'content_url' => $this->generateUrl('pta_historial', array_filter([
                 'id'        => $encabezado->getId(),
                 'anio'      => $anio,

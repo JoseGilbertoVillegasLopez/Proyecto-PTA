@@ -1,0 +1,174 @@
+{# ============================================================
+   PTA — HISTORIAL | INDEX
+   ============================================================ #}
+
+<section class="pta-historial-index">
+
+	<div
+		class="card pta-card">
+
+		{# =====================================================
+								           TÍTULO
+								           ===================================================== #}
+		<h4 class="pta-title mb-4">
+			<i class="bi bi-clock-history"></i>
+			Historial de PTA
+		</h4>
+
+		{# =====================================================
+								           TOOLBAR (FILTROS)
+								           ===================================================== #}
+		<div class="pta-toolbar mb-4">
+
+			<div class="pta-toolbar-left">
+				<span class="text-muted">
+					Consulta histórica de proyectos PTA
+				</span>
+			</div>
+
+			<div class="pta-toolbar-right">
+				<form
+					method="get" data-turbo-frame="content" class="pta-filter-form">
+
+					{# AÑO (SIEMPRE) #}
+					<label class="form-label mb-0">
+						AÑO DE EJECUCIÓN
+					</label>
+
+					<select name="anio">
+						{% for anio in aniosFiltro %}
+							<option value="{{ anio }}" {{ anio == anioSeleccionado ? 'selected' }}>
+								{{ anio }}
+							</option>
+						{% endfor %}
+					</select>
+
+					<button type="submit" class="btn btn-primary">
+						<i class="bi bi-funnel"></i>
+					</button>
+				</form>
+			</div>
+
+		</div>
+
+		{# =====================================================
+								           TABLA — PTA PROPIO
+								           ===================================================== #}
+		<h5 class="mb-3">
+			<i class="bi bi-person-badge"></i>
+			PTA propio
+		</h5>
+
+		<table class="pta-monitoreo-table pta-index-table mb-5">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Proyecto</th>
+					<th>Objetivo</th>
+					<th class="text-center">Creado</th>
+					<th class="text-center">Periodo</th>
+					<th class="text-center">Historial</th>
+				</tr>
+			</thead>
+			<tbody>
+
+				{% for encabezado in ptaPropio %}
+					<tr>
+						<td>
+							<strong>{{ encabezado.id }}</strong>
+						</td>
+
+						<td>{{ encabezado.nombre }}</td>
+
+						<td class="text-truncate" style="max-width: 380px;">
+							{{ encabezado.objetivo }}
+						</td>
+
+						<td class="text-center">
+							{{ encabezado.fechaCreacion|date('d/m/Y') }}
+						</td>
+
+						<td class="text-center">
+							<span class="pta-badge pta-badge-periodo">
+								{{ encabezado.anioEjecucion }}
+							</span>
+						</td>
+
+						<td class="text-center">
+							<a href="{{ path('pta_historial', { id: encabezado.id, from: 'historial_index', anio: anioSeleccionado }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-view" title="Ver historial">
+								<i class="bi bi-clock-history"></i>
+							</a>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="6" class="text-center text-muted">
+							No tienes proyectos PTA registrados para este año.
+						</td>
+					</tr>
+				{% endfor %}
+
+			</tbody>
+		</table>
+
+		{# =====================================================
+								           TABLA — PTA DE PUESTO (CONDICIONAL)
+								           ===================================================== #}
+		{% if ptaPuesto is not empty %}
+
+			<h5 class="mb-3">
+				<i class="bi bi-diagram-3"></i>
+				PTA del puesto
+			</h5>
+
+			<table class="pta-monitoreo-table pta-index-table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Proyecto</th>
+						<th>Objetivo</th>
+						<th class="text-center">Responsable</th>
+						<th class="text-center">Periodo</th>
+						<th class="text-center">Historial</th>
+					</tr>
+				</thead>
+				<tbody>
+
+					{% for encabezado in ptaPuesto %}
+						<tr>
+							<td>
+								<strong>{{ encabezado.id }}</strong>
+							</td>
+
+							<td>{{ encabezado.nombre }}</td>
+
+							<td class="text-truncate" style="max-width: 360px;">
+								{{ encabezado.objetivo }}
+							</td>
+
+							<td class="text-center">
+								{{ encabezado.responsable is not null ? encabezado.responsable : '—' }}
+							</td>
+
+							<td class="text-center">
+								<span class="pta-badge pta-badge-periodo">
+									{{ encabezado.anioEjecucion }}
+								</span>
+							</td>
+
+							<td class="text-center">
+								<a href="{{ path('pta_historial', { id: encabezado.id, from: 'historial_index', anio: anioSeleccionado }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-view" title="Ver historial">
+									<i class="bi bi-clock-history"></i>
+								</a>
+							</td>
+						</tr>
+					{% endfor %}
+
+				</tbody>
+			</table>
+
+		{% endif %}
+
+	</div>
+
+</section>
