@@ -120,7 +120,7 @@ final class PersonalController extends AbstractController
             // Se envía el formulario para renderizarlo
         ]);
         }
-        return $this->render('admin/dashboard/index.html.twig', [
+        return $this->render('dashboard/index.html.twig', [
             'section' => 'personal',
             'content_url' => $this->generateUrl('app_personal_new',[            
             ]),
@@ -142,7 +142,7 @@ final class PersonalController extends AbstractController
             ]);
         }
         // Acceso directo / F5 → renderizar dashboard completo
-    return $this->render('admin/dashboard/index.html.twig', [
+    return $this->render('dashboard/index.html.twig', [
         'section' => 'personal',
         'content_url' => $this->generateUrl('app_personal_show', [
             'id' => $personal->getId(),
@@ -195,7 +195,7 @@ final class PersonalController extends AbstractController
     }
 
     // Acceso directo / F5
-    return $this->render('admin/dashboard/index.html.twig', [
+    return $this->render('dashboard/index.html.twig', [
         'section' => 'personal',
         'content_url' => $this->generateUrl('app_personal_edit', [
             'id' => $personal->getId(),
