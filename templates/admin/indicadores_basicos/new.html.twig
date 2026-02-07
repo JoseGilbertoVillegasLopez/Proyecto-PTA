@@ -1,0 +1,74 @@
+<turbo-frame id="content">
+	<section class="indicadores-basicos-form indicadores-basicos-form--new">
+
+		{# =====================================================
+		   HEADER
+		   ===================================================== #}
+		<header class="indicadores-basicos-form__header">
+
+			<!-- VOLVER -->
+			<a
+				href="{{ path('app_indicadores_basicos_index') }}"
+				data-turbo-frame="content"
+				data-turbo-action="replace"
+				class="indicadores-basicos-form__icon-btn indicadores-basicos-form__icon-btn--back"
+				title="Volver">
+
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<!-- TÍTULO -->
+			<h1 class="indicadores-basicos-form__title">
+				Crear indicador básico
+			</h1>
+
+		</header>
+
+
+		{# =====================================================
+		   FORMULARIO
+		   ===================================================== #}
+		{{ form_start(form, {
+			action: path('app_indicadores_basicos_new'),
+			attr: {
+				'data-turbo-frame': 'content',
+				'class': 'indicadores-basicos-form__form'
+			}
+		}) }}
+
+		<div class="indicadores-basicos-form__group">
+			{{ form_label(form.nombreIndicador) }}
+			{{ form_widget(form.nombreIndicador) }}
+			{{ form_errors(form.nombreIndicador) }}
+		</div>
+
+		<div class="indicadores-basicos-form__group">
+			{{ form_label(form.formula) }}
+			{{ form_widget(form.formula) }}
+			{{ form_errors(form.formula) }}
+		</div>
+
+		<div class="indicadores-basicos-form__group">
+			{{ form_label(form.observaciones) }}
+			{{ form_widget(form.observaciones) }}
+			{{ form_errors(form.observaciones) }}
+		</div>
+
+
+		{# =====================================================
+		   ACCIONES
+		   ===================================================== #}
+		<div class="indicadores-basicos-form__actions">
+			<button
+				type="submit"
+				class="indicadores-basicos-form__submit indicadores-basicos-form__submit--icon"
+				title="Guardar indicador">
+
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
+
+		{{ form_end(form) }}
+
+	</section>
+</turbo-frame>

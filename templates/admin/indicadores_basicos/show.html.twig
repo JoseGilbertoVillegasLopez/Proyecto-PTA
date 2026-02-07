@@ -1,0 +1,74 @@
+<turbo-frame id="content">
+	<section class="indicadores-basicos-show">
+
+		{# =====================================================
+		   HEADER
+		   -----------------------------------------------------
+		   - Volver al index
+		   - Título del módulo
+		   - Acción editar
+		   ===================================================== #}
+		<header class="indicadores-basicos-show__header">
+
+			<!-- IZQUIERDA: VOLVER -->
+			<a
+				href="{{ path('app_indicadores_basicos_index') }}"
+				data-turbo-frame="content"
+				data-turbo-action="replace"
+				class="indicadores-basicos-show__icon-btn indicadores-basicos-show__icon-btn--back"
+				title="Volver">
+
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<!-- CENTRO: TÍTULO -->
+			<h1 class="indicadores-basicos-show__title">
+				Detalle del indicador básico
+			</h1>
+
+			<!-- DERECHA: EDITAR -->
+			<div class="indicadores-basicos-show__header-actions">
+				<a
+					href="{{ path('app_indicadores_basicos_edit', { id: indicador.id }) }}"
+					data-turbo-frame="content"
+					data-turbo-action="advance"
+					class="indicadores-basicos-show__icon-btn indicadores-basicos-show__icon-btn--edit"
+					title="Editar">
+
+					<i class="bi bi-pencil"></i>
+				</a>
+			</div>
+
+		</header>
+
+
+		{# =====================================================
+		   TABLA DE DETALLE
+		   -----------------------------------------------------
+		   Vista solo lectura del indicador
+		   ===================================================== #}
+		<table class="indicadores-basicos-show__table">
+			<tbody>
+
+				<tr>
+					<th>Nombre del indicador</th>
+					<td>{{ indicador.nombreIndicador }}</td>
+				</tr>
+
+				<tr>
+					<th>Fórmula</th>
+					<td>{{ indicador.formula }}</td>
+				</tr>
+
+				<tr>
+					<th>Observaciones</th>
+					<td>
+						{{ indicador.observaciones ?: '—' }}
+					</td>
+				</tr>
+
+			</tbody>
+		</table>
+
+	</section>
+</turbo-frame>

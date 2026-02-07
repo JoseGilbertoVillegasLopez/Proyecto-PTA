@@ -1,12 +1,14 @@
+
 /* =========================================================
-   PERSONAL — FORM BASE (ESTRUCTURA)
-   (Alineado al estilo PTA: card + sombras + borde interno)
+   INDICADORES BÁSICOS — FORM BASE
+   (CLON VISUAL DE PERSONAL-FORM)
    ========================================================= */
 
-.personal-form {
+.indicadores-basicos-form {
     max-width: 720px;
     margin: 0 auto;
 
+    /* Fondo PTA (radial + gradiente oscuro) */
     background:
         radial-gradient(
             circle at top,
@@ -15,52 +17,127 @@
         ),
         linear-gradient(135deg, #0f1c26, #0b1117);
 
-    padding: 2.2rem;
-    border-radius: 20px;
+    padding: 2.4rem;
+    border-radius: 22px;
 
+    /* Sombra exterior + borde interno */
     box-shadow:
-        0 22px 55px rgba(0, 0, 0, 0.7),
+        0 26px 65px rgba(0, 0, 0, 0.75),
         inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 
     box-sizing: border-box;
+    position: relative;
 }
 
-.personal-form__header {
-    margin-bottom: 1.8rem;
+/* Glow interno sutil PTA */
+.indicadores-basicos-form::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    pointer-events: none;
+    box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
 }
 
-.personal-form__title {
-    font-size: 1.45rem;
-    font-weight: 600;
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.indicadores-basicos-form__header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+
+    margin-bottom: 2rem;
+    padding-bottom: 1.1rem;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Título centrado */
+.indicadores-basicos-form__title {
+    justify-self: center;
+    text-align: center;
+
+    font-size: 1.55rem;
+    font-weight: 700;
     color: #e6f1ff;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.4px;
 }
 
-.personal-form__subtitle {
-    margin-top: 0.4rem;
-    font-size: 0.9rem;
-    color: #9fb3c8;
+/* =========================================================
+   BOTÓN VOLVER (ICONO)
+   ========================================================= */
+
+.indicadores-basicos-form__icon-btn {
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    font-size: 1.15rem;
+
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
 }
 
-.personal-form__form {
+.indicadores-basicos-form__icon-btn--back {
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.45);
+}
+
+.indicadores-basicos-form__icon-btn--back:hover {
+    background: rgba(13, 202, 240, 0.35);
+    color: #ffffff;
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.indicadores-basicos-form__form {
     display: flex;
     flex-direction: column;
-    gap: 1.15rem;
+    gap: 1.35rem;
 }
 
-.personal-form__group label {
+/* =========================================================
+   GRUPOS (LABEL + INPUT)
+   ========================================================= */
+
+.indicadores-basicos-form__group {
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.indicadores-basicos-form__group:last-child {
+    border-bottom: none;
+}
+
+/* Label estilo PTA */
+.indicadores-basicos-form__group label {
     display: block;
     margin-bottom: 0.35rem;
+
     font-size: 0.75rem;
-    color: #9fb3c8;
     font-weight: 700;
     letter-spacing: 0.4px;
     text-transform: uppercase;
+
+    color: #9fb3c8;
 }
 
-/* ✅ INPUTS/SELECTS estilo PTA (solo colores PTA) */
-.personal-form__group input,
-.personal-form__group select {
+/* =========================================================
+   INPUTS / TEXTAREA (CLON PERSONAL)
+   ========================================================= */
+
+.indicadores-basicos-form__group input,
+.indicadores-basicos-form__group textarea {
     width: 100%;
 
     background: #1f2a36;
@@ -75,56 +152,87 @@
     transition: all 0.25s ease;
 }
 
-.personal-form__group input:hover,
-.personal-form__group select:hover {
+/* Hover */
+.indicadores-basicos-form__group input:hover,
+.indicadores-basicos-form__group textarea:hover {
     border-color: rgba(13, 202, 240, 0.35);
 }
 
-.personal-form__group input:focus,
-.personal-form__group select:focus {
+/* Focus PTA */
+.indicadores-basicos-form__group input:focus,
+.indicadores-basicos-form__group textarea:focus {
     outline: none;
+
     background: #263445;
     border-color: #0dcaf0;
+
     box-shadow:
         0 0 0 2px rgba(13, 202, 240, 0.15),
         inset 0 0 0 1px rgba(13, 202, 240, 0.25);
 }
 
-/* ✅ LINK VOLVER estilo PTA (mismo feeling que pta-back-btn) */
-.personal-form__back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+/* =========================================================
+   ACCIONES
+   ========================================================= */
 
-    margin-top: 1.8rem;
-    padding: 8px 16px;
-
-    border-radius: 10px;
-
-    background: rgba(13, 202, 240, 0.15);
-    color: #0dcaf0;
-    border: 1px solid rgba(13, 202, 240, 0.4);
-
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-decoration: none;
-
-    transition: all 0.25s ease;
-}
-
-.personal-form__back-link:hover {
-    background: rgba(13, 202, 240, 0.35);
-    color: #ffffff;
-    border-color: #0dcaf0;
-    box-shadow: 0 8px 22px rgba(13, 202, 240, 0.25);
+.indicadores-basicos-form__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.4rem;
 }
 
 /* =========================================================
-   PERSONAL — INDEX
-   (ya estaba alineado a PTA, no le cambio colores)
+   BOTÓN GUARDAR (ICONO PTA)
    ========================================================= */
 
-.personal-index {
+.indicadores-basicos-form__submit {
+    width: 52px;
+    height: 52px;
+
+    padding: 0;
+    border-radius: 12px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(25, 135, 84, 0.15);
+    color: #198754;
+
+    border: 1px solid rgba(25, 135, 84, 0.55);
+    font-size: 1.3rem;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    box-shadow:
+        0 10px 26px rgba(0, 0, 0, 0.35),
+        inset 0 0 0 1px rgba(25, 135, 84, 0.25);
+}
+
+.indicadores-basicos-form__submit:hover {
+    background: rgba(25, 135, 84, 0.35);
+    color: #ffffff;
+    border-color: #198754;
+
+    box-shadow:
+        0 12px 30px rgba(25, 135, 84, 0.35),
+        inset 0 0 0 1px rgba(25, 135, 84, 0.35);
+}
+
+
+
+
+
+/* =========================================================
+   INDICADORES BÁSICOS — INDEX
+   ---------------------------------------------------------
+   Estilo alineado a PTA / Personal
+   Clases 100% aisladas del módulo
+   ========================================================= */
+
+.indicadores-basicos-index {
     background:
         radial-gradient(
             circle at top,
@@ -143,7 +251,7 @@
     position: relative;
 }
 
-.personal-index::after {
+.indicadores-basicos-index::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -156,7 +264,7 @@
    TOOLBAR
    ========================================================= */
 
-.personal-index__toolbar {
+.indicadores-basicos-index__toolbar {
     position: relative;
     display: flex;
     align-items: center;
@@ -170,7 +278,7 @@
 
 /* TÍTULO CENTRADO REAL */
 
-.personal-index__title {
+.indicadores-basicos-index__title {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -184,10 +292,31 @@
 }
 
 /* =========================================================
+   ACCIONES SUPERIORES
+   ========================================================= */
+
+.indicadores-basicos-index__table-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    margin-top: 1.8rem;
+    margin-bottom: 3rem;
+
+    padding-left: 0.4rem;
+}
+
+/* ESPACIADOR FLEX */
+
+.indicadores-basicos-index__spacer {
+    flex: 1;
+}
+
+/* =========================================================
    BOTÓN AGREGAR
    ========================================================= */
 
-.personal-index__add-btn {
+.indicadores-basicos-index__add-btn {
     margin-left: 0.2rem;
 
     display: inline-flex;
@@ -208,7 +337,7 @@
     transition: all 0.25s ease;
 }
 
-.personal-index__add-btn:hover {
+.indicadores-basicos-index__add-btn:hover {
     background: rgba(25, 135, 84, 0.35);
     color: #ffffff;
     border-color: #198754;
@@ -219,29 +348,54 @@
 }
 
 /* =========================================================
+   BUSCADOR
+   ========================================================= */
+
+.indicadores-basicos-index__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.indicadores-basicos-index__search i {
+    position: absolute;
+    left: 12px;
+    color: #9fb3c8;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.indicadores-basicos-index__search input {
+    background: #1f2a36;
+    color: #e6f1ff;
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+
+    padding: 0.55rem 0.8rem 0.55rem 2.2rem;
+    font-size: 0.85rem;
+
+    transition: all 0.25s ease;
+}
+
+.indicadores-basicos-index__search input:focus {
+    outline: none;
+    background: #263445;
+    border-color: #0dcaf0;
+    box-shadow:
+        0 0 0 2px rgba(13, 202, 240, 0.15),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25);
+}
+
+/* =========================================================
    TABLA
    ========================================================= */
 
-/* =========================================================
-   ACCIONES SOBRE TABLA (LIMPIO, SIN CAJA)
-   ========================================================= */
-
-.personal-index__table-actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    margin-top: 1.8rem; /* separación del título */
-    margin-bottom: 3rem; /* separación clara de la tabla */
-
-    padding-left: 0.4rem; /* alineación óptica */
-}
-
-.personal-index__table-wrapper {
+.indicadores-basicos-index__table-wrapper {
     overflow-x: auto;
 }
 
-.personal-index__table {
+.indicadores-basicos-index__table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
@@ -255,7 +409,7 @@
 
 /* THEAD */
 
-.personal-index__table thead th {
+.indicadores-basicos-index__table thead th {
     background: linear-gradient(135deg, #0b3c6f, #062a4f);
     color: #ffffff;
 
@@ -270,17 +424,17 @@
 
 /* FILAS */
 
-.personal-index__table tbody tr {
+.indicadores-basicos-index__table tbody tr {
     transition: background-color 0.2s ease;
 }
 
-.personal-index__table tbody tr:hover {
+.indicadores-basicos-index__table tbody tr:hover {
     background-color: rgba(13, 202, 240, 0.08);
 }
 
 /* CELDAS */
 
-.personal-index__table tbody td {
+.indicadores-basicos-index__table tbody td {
     padding: 14px 18px;
     color: #e6f1ff;
     vertical-align: middle;
@@ -289,55 +443,26 @@
     border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.personal-index__table tbody td:last-child,
-.personal-index__table thead th:last-child {
+.indicadores-basicos-index__table tbody td:last-child,
+.indicadores-basicos-index__table thead th:last-child {
     border-right: none;
 }
 
-.personal-index__table tbody tr:last-child td {
+.indicadores-basicos-index__table tbody tr:last-child td {
     border-bottom: none;
-}
-
-/* =========================================================
-   BADGES
-   ========================================================= */
-
-.personal-index__badge {
-    display: inline-block;
-    padding: 0.35rem 0.85rem;
-    border-radius: 999px;
-
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* ACTIVO — VERDE */
-.personal-index__badge.is-active {
-    background: rgba(25, 135, 84, 0.2);
-    color: #198754;
-    border: 1px solid rgba(25, 135, 84, 0.5);
-}
-
-/* INACTIVO — ROJO */
-.personal-index__badge.is-inactive {
-    background: rgba(220, 53, 69, 0.2);
-    color: #dc3545;
-    border: 1px solid rgba(220, 53, 69, 0.5);
 }
 
 /* =========================================================
    ACCIONES
    ========================================================= */
 
-.personal-index__actions {
+.indicadores-basicos-index__actions {
     display: flex;
     justify-content: center;
     gap: 1rem;
 }
 
-.personal-index__action {
+.indicadores-basicos-index__action {
     width: 36px;
     height: 36px;
 
@@ -354,12 +479,12 @@
 
 /* VER */
 
-.personal-index__action--view {
+.indicadores-basicos-index__action--view {
     background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
 }
 
-.personal-index__action--view:hover {
+.indicadores-basicos-index__action--view:hover {
     background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 
@@ -368,12 +493,12 @@
 
 /* EDITAR */
 
-.personal-index__action--edit {
+.indicadores-basicos-index__action--edit {
     background: rgba(255, 193, 7, 0.15);
     color: #ffc107;
 }
 
-.personal-index__action--edit:hover {
+.indicadores-basicos-index__action--edit:hover {
     background: rgba(255, 193, 7, 0.35);
     color: #ffffff;
 
@@ -384,7 +509,7 @@
    EMPTY STATE
    ========================================================= */
 
-.personal-index__empty {
+.indicadores-basicos-index__empty {
     text-align: center;
     padding: 2.2rem;
     color: #9fb3c8;
@@ -395,12 +520,18 @@
 
 
 
+
+
+
+
 /* =========================================================
-   PERSONAL — SHOW
-   (alineado a PTA, solo iconos en acciones)
+   INDICADORES BÁSICOS — SHOW
+   ---------------------------------------------------------
+   Vista de solo lectura
+   Alineada a PTA / Personal
    ========================================================= */
 
-.personal-show {
+.indicadores-basicos-show {
     background:
         radial-gradient(
             circle at top,
@@ -419,7 +550,7 @@
     position: relative;
 }
 
-.personal-show::after {
+.indicadores-basicos-show::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -432,7 +563,7 @@
    HEADER
    ========================================================= */
 
-.personal-show__header {
+.indicadores-basicos-show__header {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -443,7 +574,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.personal-show__title {
+.indicadores-basicos-show__title {
     justify-self: center;
     text-align: center;
 
@@ -457,7 +588,7 @@
    BOTONES SOLO ÍCONO (BASE)
    ========================================================= */
 
-.personal-show__icon-btn {
+.indicadores-basicos-show__icon-btn {
     width: 42px;
     height: 42px;
 
@@ -478,13 +609,13 @@
    VOLVER (IZQUIERDA)
    ========================================================= */
 
-.personal-show__icon-btn--back {
+.indicadores-basicos-show__icon-btn--back {
     background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
     border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
-.personal-show__icon-btn--back:hover {
+.indicadores-basicos-show__icon-btn--back:hover {
     background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 
@@ -497,7 +628,7 @@
    ACCIONES HEADER (DERECHA)
    ========================================================= */
 
-.personal-show__header-actions {
+.indicadores-basicos-show__header-actions {
     display: flex;
     gap: 0.8rem;
     justify-self: end;
@@ -507,13 +638,13 @@
    EDITAR
    ========================================================= */
 
-.personal-show__icon-btn--edit {
+.indicadores-basicos-show__icon-btn--edit {
     background: rgba(255, 193, 7, 0.15);
     color: #ffc107;
     border: 1px solid rgba(255, 193, 7, 0.55);
 }
 
-.personal-show__icon-btn--edit:hover {
+.indicadores-basicos-show__icon-btn--edit:hover {
     background: rgba(255, 193, 7, 0.35);
     color: #ffffff;
 
@@ -526,7 +657,7 @@
    TABLA
    ========================================================= */
 
-.personal-show__table {
+.indicadores-basicos-show__table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
@@ -538,7 +669,7 @@
     background: rgba(255, 255, 255, 0.015);
 }
 
-.personal-show__table th {
+.indicadores-basicos-show__table th {
     width: 35%;
     background: linear-gradient(135deg, #0b3c6f, #062a4f);
     color: #ffffff;
@@ -551,7 +682,7 @@
     padding: 14px 18px;
 }
 
-.personal-show__table td {
+.indicadores-basicos-show__table td {
     padding: 14px 18px;
     color: #e6f1ff;
 
@@ -564,15 +695,14 @@
 
 
 
-
-
-
 /* =========================================================
-   PERSONAL — NEW
-   (solo cambia el radial, colores existentes en PTA)
+   INDICADORES BÁSICOS — NEW
+   ---------------------------------------------------------
+   Solo varía el contenedor y ajustes de layout
+   Usa colores base PTA
    ========================================================= */
 
-.personal-form--new {
+.indicadores-basicos-form--new {
     background:
         radial-gradient(
             circle at top,
@@ -591,7 +721,7 @@
     position: relative;
 }
 
-.personal-form--new::after {
+.indicadores-basicos-form--new::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -604,7 +734,7 @@
    HEADER
    ========================================================= */
 
-.personal-form__header {
+.indicadores-basicos-form__header {
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
@@ -615,7 +745,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.personal-form__title {
+.indicadores-basicos-form__title {
     justify-self: center;
     text-align: center;
 
@@ -629,7 +759,7 @@
    BOTÓN VOLVER (SOLO ÍCONO)
    ========================================================= */
 
-.personal-form__icon-btn {
+.indicadores-basicos-form__icon-btn {
     width: 42px;
     height: 42px;
 
@@ -646,13 +776,13 @@
     transition: all 0.25s ease;
 }
 
-.personal-form__icon-btn--back {
+.indicadores-basicos-form__icon-btn--back {
     background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
     border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
-.personal-form__icon-btn--back:hover {
+.indicadores-basicos-form__icon-btn--back:hover {
     background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 }
@@ -661,7 +791,7 @@
    FORM
    ========================================================= */
 
-.personal-form--new .personal-form__form {
+.indicadores-basicos-form--new .indicadores-basicos-form__form {
     gap: 1.35rem;
 }
 
@@ -669,12 +799,12 @@
    GRUPOS
    ========================================================= */
 
-.personal-form--new .personal-form__group {
+.indicadores-basicos-form--new .indicadores-basicos-form__group {
     padding-bottom: 0.9rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.personal-form--new .personal-form__group:last-child {
+.indicadores-basicos-form--new .indicadores-basicos-form__group:last-child {
     border-bottom: none;
 }
 
@@ -682,7 +812,7 @@
    ACCIONES DEL FORM (GUARDAR CENTRADO)
    ========================================================= */
 
-.personal-form__actions {
+.indicadores-basicos-form__actions {
     display: flex;
     justify-content: center;
 
@@ -690,15 +820,15 @@
 }
 
 /* =========================================================
-   BOTÓN GUARDAR — SOLO ÍCONO (CUADRADO)
+   BOTÓN GUARDAR — SOLO ÍCONO (CUADRADO PTA)
    ========================================================= */
 
-.personal-form--new .personal-form__submit {
+.indicadores-basicos-form--new .indicadores-basicos-form__submit {
     width: 52px;
     height: 52px;
 
-    padding: 0; /* sin padding de texto */
-    border-radius: 12px; /* ⬅️ cuadrado con esquinas PTA */
+    padding: 0;
+    border-radius: 12px;
 
     display: inline-flex;
     align-items: center;
@@ -708,7 +838,7 @@
     color: #198754;
 
     border: 1px solid rgba(25, 135, 84, 0.55);
-    font-size: 1.3rem; /* tamaño del ícono */
+    font-size: 1.3rem;
     font-weight: 700;
 
     cursor: pointer;
@@ -719,7 +849,7 @@
         inset 0 0 0 1px rgba(25, 135, 84, 0.25);
 }
 
-.personal-form--new .personal-form__submit:hover {
+.indicadores-basicos-form--new .indicadores-basicos-form__submit:hover {
     background: rgba(25, 135, 84, 0.35);
     color: #ffffff;
     border-color: #198754;
@@ -740,11 +870,13 @@
 
 
 /* =========================================================
-   PERSONAL — EDIT
-   (solo cambia el radial, colores existentes en PTA)
+   INDICADORES BÁSICOS — EDIT
+   ---------------------------------------------------------
+   Vista de edición
+   Alineada a PTA / Personal
    ========================================================= */
 
-.personal-form--edit {
+.indicadores-basicos-form--edit {
     background:
         radial-gradient(
             circle at top,
@@ -763,7 +895,7 @@
     position: relative;
 }
 
-.personal-form--edit::after {
+.indicadores-basicos-form--edit::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -776,7 +908,7 @@
    HEADER
    ========================================================= */
 
-.personal-form__header {
+.indicadores-basicos-form__header {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: start;
@@ -788,11 +920,11 @@
 }
 
 /* Centro del header (título + subtítulo) */
-.personal-form__header-center {
+.indicadores-basicos-form__header-center {
     text-align: center;
 }
 
-.personal-form__title {
+.indicadores-basicos-form__title {
     font-size: 1.55rem;
     font-weight: 700;
     color: #e6f1ff;
@@ -803,7 +935,7 @@
    SUBTÍTULO
    ========================================================= */
 
-.personal-form--edit .personal-form__subtitle {
+.indicadores-basicos-form--edit .indicadores-basicos-form__subtitle {
     margin-top: 0.4rem;
     font-size: 0.9rem;
     font-weight: 500;
@@ -815,7 +947,7 @@
    BOTONES SOLO ÍCONO (HEADER)
    ========================================================= */
 
-.personal-form__icon-btn {
+.indicadores-basicos-form__icon-btn {
     margin-top: 0.25rem;
     width: 42px;
     height: 42px;
@@ -833,13 +965,13 @@
 }
 
 /* VOLVER (IZQUIERDA) */
-.personal-form__icon-btn--back {
+.indicadores-basicos-form__icon-btn--back {
     background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
     border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
-.personal-form__icon-btn--back:hover {
+.indicadores-basicos-form__icon-btn--back:hover {
     background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 }
@@ -848,7 +980,7 @@
    FORM
    ========================================================= */
 
-.personal-form--edit .personal-form__form {
+.indicadores-basicos-form--edit .indicadores-basicos-form__form {
     gap: 1.35rem;
 }
 
@@ -856,31 +988,31 @@
    GRUPOS
    ========================================================= */
 
-.personal-form--edit .personal-form__group {
+.indicadores-basicos-form--edit .indicadores-basicos-form__group {
     padding-bottom: 0.9rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.personal-form--edit .personal-form__group:last-child {
+.indicadores-basicos-form--edit .indicadores-basicos-form__group:last-child {
     border-bottom: none;
 }
 
 /* =========================================================
    BOTÓN GUARDAR — ABAJO CENTRADO
    ========================================================= */
-/* vERDE */
-.personal-form__icon-btn--save {
+
+.indicadores-basicos-form__icon-btn--save {
     background: rgba(25, 135, 84, 0.15);
     color: #198754;
     border: 1px solid rgba(25, 135, 84, 0.55);
 }
 
-.personal-form__icon-btn--save:hover {
+.indicadores-basicos-form__icon-btn--save:hover {
     background: rgba(25, 135, 84, 0.35);
     color: #ffffff;
 }
 
-.personal-form__submit-proxy {
+.indicadores-basicos-form__submit-proxy {
     display: flex;
     justify-content: center;
 
@@ -890,89 +1022,10 @@
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* hacerlo un poco más protagonista que los icon-btn normales */
-.personal-form__submit-proxy .personal-form__icon-btn--save {
+/* Botón guardar más protagonista */
+.indicadores-basicos-form__submit-proxy
+.indicadores-basicos-form__icon-btn--save {
     width: 54px;
     height: 54px;
     font-size: 1.3rem;
-}
-
-.personal-index__table-actions {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 18px;
-}
-
-/* Contenedor del buscador */
-.personal-index__search {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    background: rgba(13, 202, 240, 0.08);
-    border: 1px solid rgba(13, 202, 240, 0.35);
-    border-radius: 12px;
-    padding: 10px 14px;
-}
-
-/* Icono */
-.personal-index__search i {
-    color: #0dcaf0;
-    font-size: 1.1rem;
-}
-
-/* Input */
-.personal-index__search input {
-    background: transparent;
-    border: none;
-    outline: none;
-
-    color: #ffffff;
-    font-size: 0.95rem;
-    min-width: 220px;
-}
-
-.personal-index__search input::placeholder {
-    color: rgba(255, 255, 255, 0.55);
-}
-.personal-index__table-actions {
-    display: flex;
-    align-items: center;
-    margin-bottom: 18px;
-}
-
-.personal-index__spacer {
-    flex: 1;
-}
-
-/* Buscador */
-.personal-index__search {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    background: rgba(13, 202, 240, 0.08);
-    border: 1px solid rgba(13, 202, 240, 0.35);
-    border-radius: 12px;
-    padding: 10px 14px;
-}
-
-.personal-index__search i {
-    color: #0dcaf0;
-    font-size: 1.1rem;
-}
-
-.personal-index__search input {
-    background: transparent;
-    border: none;
-    outline: none;
-
-    color: #fff;
-    font-size: 0.95rem;
-    min-width: 220px;
-}
-
-.personal-index__search input::placeholder {
-    color: rgba(255, 255, 255, 0.55);
 }

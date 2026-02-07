@@ -54,6 +54,16 @@ Sfjs.loadToolbar();
 								Puestos
 							</a>
 						</li>
+
+						<li class="pta-dashboard-menu-item">
+							<a
+								href="{{ path('app_admin_dashboard', { section: 'indicadores_basicos' }) }}"
+								class="pta-dashboard-link"
+								data-turbo-action="advance">
+								Indicadores básicos
+							</a>
+						</li>
+
 					{% endif %}
 
 					{# ============================
@@ -91,13 +101,15 @@ Sfjs.loadToolbar();
 															   ============================ #}
 			{% set section = section is defined ? section : null %}
 
-			{% set srcMap = {
-  'personal': path('app_personal_index'),
-  'departamentos': path('app_departamento_index'),
-  'puestos': path('app_puesto_index'),
-  'pta': path('app_encabezado_index'),
-  'monitoreo': path('pta_monitoreo_index')
-} %}
+	{% set srcMap = {
+	'personal': path('app_personal_index'),
+	'departamentos': path('app_departamento_index'),
+	'puestos': path('app_puesto_index'),
+	'pta': path('app_encabezado_index'),
+	'monitoreo': path('pta_monitoreo_index'),
+	'indicadores_basicos': path('app_indicadores_basicos_index')
+	} %}
+
 
 			{# ============================
 																																																															   SECCIÓN INICIAL POR ROL
