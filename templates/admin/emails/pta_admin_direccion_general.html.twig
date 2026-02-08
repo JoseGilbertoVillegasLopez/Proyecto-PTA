@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<title>{{ appName }}
+			— Aviso administrativo</title>
+	</head>
+
+	<body style="margin:0;padding:0;background:#f8fafc;font-family:Arial, Helvetica, sans-serif;color:#0f172a;">
+		<table width="100%" cellpadding="0" cellspacing="0" style="padding:24px 0;">
+			<tr>
+				<td align="center">
+
+					<table
+						width="700" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb;">
+
+						<!-- HEADER -->
+						<tr>
+							<td style="background:#0f172a;color:#ffffff;padding:18px 24px;">
+								<h1 style="margin:0;font-size:20px;font-weight:bold;">
+									Aviso administrativo — Dirección General
+								</h1>
+								<p style="margin:6px 0 0 0;font-size:13px;color:#94a3b8;">
+									Cierre de periodo sin avances ·
+									{{ mesNombre }}
+									{{ anio }}
+								</p>
+							</td>
+						</tr>
+
+						<!-- BODY -->
+						<tr>
+							<td style="padding:24px;">
+
+								<p style="margin:0 0 12px 0;font-size:13px;color:#475569;">
+									Fecha de notificación:
+									{{ fecha|date('d/m/Y H:i') }}
+								</p>
+
+								<p style="margin:0 0 20px 0;font-size:14px;line-height:1.6;">
+									El periodo para registrar avances correspondiente a
+									<strong>{{ mesNombre }}
+										{{ anio }}</strong>
+									ha concluido. A continuación se muestra el concentrado de PTAs que no registraron avances dentro del periodo establecido.
+								</p>
+
+								{% for item in items %}
+									<!-- PTA CARD -->
+									<table width="100%" cellpadding="0" cellspacing="0" style="background:#f0f9ff;border:1px solid #bae6fd; border-radius:8px;margin-bottom:20px;">
+										<tr>
+											<td style="padding:16px 18px;">
+
+												<h2 style="margin:0 0 6px 0;font-size:16px;color:#0f172a;">
+													PTA #{{ item.pta.id }}
+													—
+													{{ item.pta.nombre }}
+												</h2>
+
+												<p style="margin:0 0 8px 0;font-size:13px;color:#475569;">
+													Responsable:
+													<strong>{{ item.responsable.nombre }}</strong>
+												</p>
+
+												<p style="margin:0 0 12px 0;font-size:13px;color:#334155;">
+													{{ item.pta.objetivo }}
+												</p>
+
+												{% set indicadores = {} %}
+												{% for a in item.acciones %}
+													{% set key = a.indiceIndicador ~ '|' ~ a.indicadorNombre %}
+													{% set indicadores = indicadores|merge({
+                                    (key): (indicadores[key]|default([]))|merge([a.texto])
+                                }) %}
+												{% endfor %}
+
+												{% for key, acciones in indicadores %}
+													{% set parts = key|split('|') %}
+													<div style="margin-bottom:10px;">
+														<p style="margin:0 0 4px 0;font-size:14px; font-weight:bold;color:#0891b2;">
+															Indicador
+															{{ parts[0] }}:
+															{{ parts[1] }}
+														</p>
+														<ul style="margin:0 0 0 18px;padding:0;font-size:13px;color:#0f172a;">
+															{% for accion in acciones %}
+																<li style="margin-bottom:4px;">
+																	{{ accion }}
+																</li>
+															{% endfor %}
+														</ul>
+													</div>
+												{% endfor %}
+
+											</td>
+										</tr>
+									</table>
+								{% endfor %}
+
+								<p style="margin-top:24px;font-size:14px;line-height:1.6;color:#334155;">
+									Este correo tiene carácter informativo para fines de seguimiento administrativo y toma de decisiones.
+								</p>
+
+								<p style="margin-top:16px;font-size:14px;">
+									Atentamente,<br>
+									<strong>{{ appName }}</strong><br>
+									<span style="font-size:12px;color:#64748b;">Área de Sistemas</span>
+								</p>
+
+							</td>
+						</tr>
+
+						<!-- FOOTER -->
+						<tr>
+							<td style="background:#f1f5f9;color:#64748b;padding:12px 24px;font-size:12px;">
+								{{ appName }}
+								· Dirección General
+							</td>
+						</tr>
+
+					</table>
+
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>
