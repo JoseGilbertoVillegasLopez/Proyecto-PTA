@@ -78,10 +78,12 @@
 
 .pta-filter-form .form-label {
     font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--pta-muted);
+    font-weight: 700;
     margin-bottom: 0;
     white-space: nowrap;
+
+    /* Blindaje light/dark */
+    color: #64748b;
 }
 
 /* Selects */
@@ -251,10 +253,12 @@
 .pta-index-table th:nth-child(3),
 .pta-index-table td:nth-child(3) {
     width: 32%;
-    color: var(--pta-muted);
     white-space: normal;
     word-break: break-word;
-    line-height: 1.45;
+    line-height: 1.5;
+
+    /* Blindaje de lectura */
+    color: #475569;
 }
 
 .pta-index-table th:nth-child(4),
@@ -263,6 +267,10 @@
     text-align: center;
     font-family: monospace;
     white-space: nowrap;
+
+    /* NUEVO */
+    color: #334155;
+    font-weight: 600;
 }
 
 .pta-index-table th:nth-child(5),
@@ -350,4 +358,47 @@
 .pta-filter-form select option:hover {
     background-color: rgba(13, 202, 240, 0.35);
     color: #ffffff;
+}
+.pta-index-table thead th {
+    color: #e6f1ff;
+    text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+/* =========================================================
+   PTA — FIX LIGHT MODE (blindaje de colores)
+   ========================================================= */
+@media (prefers-color-scheme: light) {
+    /* ---------- Texto general ---------- */
+    .pta-card,
+    .pta-index-table,
+    .pta-index-table td,
+    .pta-index-table th {
+        color: #e6f1ff;
+    }
+
+    /* ---------- Label filtros ---------- */
+    .pta-filter-form .form-label {
+        color: #94a3b8 !important;
+    }
+
+    /* ---------- Objetivo ---------- */
+    .pta-index-table td:nth-child(3) {
+        color: #cbd5e1 !important;
+    }
+
+    /* ---------- Fecha creado ---------- */
+    .pta-index-table td:nth-child(4) {
+        color: #e2e8f0 !important;
+    }
+
+    /* ---------- Thead ---------- */
+    .pta-index-table thead th {
+        color: #f8fafc !important;
+    }
+
+    /* ---------- Badge periodo ---------- */
+    .pta-badge-periodo {
+        color: #67e8f9;
+        border-color: rgba(103, 232, 249, 0.6);
+        background: rgba(103, 232, 249, 0.18);
+    }
 }

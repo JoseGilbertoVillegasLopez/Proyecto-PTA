@@ -112,9 +112,7 @@
 
 
 
-{# ============================================================
-   3. CARDS DE NIVELES INFERIORES
-   ============================================================ #}
+{# ============================================================3. CARDS DE NIVELES INFERIORES============================================================ #}
 {% if resultado.cards is not empty %}
 
 {% if resultado.contexto.nivel == 'GLOBAL' %}
@@ -269,11 +267,14 @@
                             <a
                                 href="{{ path('app_encabezado_show', {
                                     id: pta.pta_id,
-                                    from: 'monitoreo'
+                                    from: 'monitoreo',
+                                    anio: anio,
+                                    root_type: resultado.contexto.root_type,
+                                    root_id: resultado.contexto.root_id
                                 }) }}"
-                                class="btn btn-sm btn-outline-info"
                                 data-turbo-frame="content"
                                 data-turbo-action="advance"
+                                class="btn btn-sm btn-outline-info"
                             >
                                 Ver PTA
                             </a>

@@ -542,3 +542,33 @@
 
     cursor: default; /* sigue sin ser clickeable */
 }
+
+/* =========================================================
+   PTA — HISTORIAL INDEX | ENFASIS TÍTULOS Y DESCRIPCIÓN
+   ========================================================= */
+
+/* Texto: "Consulta histórica de proyectos PTA" */
+.pta-historial-index .pta-toolbar-left .text-muted {
+    color: #cfefff !important; /* más brillante */
+    font-size: 1.05rem; /* un poco más grande */
+    font-weight: 500; /* más presencia */
+    letter-spacing: 0.2px;
+    opacity: 1 !important;
+}
+
+/* Título: "PTA propio" y "PTA del puesto" */
+.pta-historial-index h5 {
+    color: #ffffff !important;
+    font-size: 1.2rem; /* sube un escalón */
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    margin-bottom: 1rem;
+}
+
+/* Íconos de los títulos */
+.pta-historial-index h5 i {
+    color: var(--pta-primary, #0dcaf0);
+    font-size: 1.25rem;
+    margin-right: 6px;
+    vertical-align: -2px;
+}
