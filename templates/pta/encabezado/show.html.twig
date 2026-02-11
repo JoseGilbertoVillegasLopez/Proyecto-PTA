@@ -13,8 +13,8 @@
 
 		<div class="pta-topbar-left">
 
-			{% if from == 'monitoreo' %}
-				<a href="{{ path('pta_monitoreo_index') }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-back-btn">
+			{% if from in ['monitoreo', 'tabla'] %}
+				<a href="{{ path('pta_monitoreo_index', { root_type: app.request.get('root_type'), root_id: app.request.get('root_id'), anio: filtros.anio }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-back-btn">
 					<i class="bi bi-arrow-left"></i>
 					<span>Volver</span>
 				</a>
@@ -51,9 +51,7 @@
 	</div>
 
 
-	{# =========================================================
-						       ENCABEZADO DEL PROYECTO (SOLO LECTURA)
-						       ========================================================= #}
+	{# ==============ENCABEZADO DEL PROYECTO (SOLO LECTURA)=============== #}
 	<div class="card pta-card pta-header-box mb-4">
 
 		<div class="pta-header-row">
@@ -90,9 +88,7 @@
 	</div>
 
 
-	{# =========================================================
-						       INDICADORES (SOLO LECTURA)
-						       ========================================================= #}
+	{# =========================================================INDICADORES (SOLO LECTURA)========================================================= #}
 	<div class="card pta-card mb-4">
 
 		<h4 class="pta-title">
@@ -150,9 +146,7 @@
 	</div>
 
 
-	{# =========================================================
-						       ACCIONES / AVANCE MENSUAL (SOLO LECTURA)
-						       ========================================================= #}
+	{# =========================================================ACCIONES / AVANCE MENSUAL (SOLO LECTURA)========================================================= #}
 	<div class="card pta-card mb-4">
 
 		<h4 class="pta-title">
@@ -219,9 +213,7 @@
 	</div>
 
 
-	{# =========================================================
-						       RESPONSABLES DEL PROYECTO
-						       ========================================================= #}
+	{# =========================================================RESPONSABLES DEL PROYECTO========================================================= #}
 	<div class="card pta-card mb-4">
 
 		<div class="d-flex justify-content-between align-items-center mb-3">
