@@ -1,14 +1,12 @@
-
 /* =========================================================
    INDICADORES BÁSICOS — FORM BASE
-   (CLON VISUAL DE PERSONAL-FORM)
+   (Alineado estructuralmente a PERSONAL-FORM)
    ========================================================= */
 
 .indicadores-basicos-form {
     max-width: 720px;
     margin: 0 auto;
 
-    /* Fondo PTA (radial + gradiente oscuro) */
     background:
         radial-gradient(
             circle at top,
@@ -17,26 +15,14 @@
         ),
         linear-gradient(135deg, #0f1c26, #0b1117);
 
-    padding: 2.4rem;
-    border-radius: 22px;
+    padding: 2.2rem;
+    border-radius: 20px;
 
-    /* Sombra exterior + borde interno */
     box-shadow:
-        0 26px 65px rgba(0, 0, 0, 0.75),
+        0 22px 55px rgba(0, 0, 0, 0.7),
         inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 
     box-sizing: border-box;
-    position: relative;
-}
-
-/* Glow interno sutil PTA */
-.indicadores-basicos-form::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 22px;
-    pointer-events: none;
-    box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
 }
 
 /* =========================================================
@@ -44,56 +30,20 @@
    ========================================================= */
 
 .indicadores-basicos-form__header {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-
-    margin-bottom: 2rem;
-    padding-bottom: 1.1rem;
-
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 1.8rem;
 }
 
-/* Título centrado */
 .indicadores-basicos-form__title {
-    justify-self: center;
-    text-align: center;
-
-    font-size: 1.55rem;
-    font-weight: 700;
+    font-size: 1.45rem;
+    font-weight: 600;
     color: #e6f1ff;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.3px;
 }
 
-/* =========================================================
-   BOTÓN VOLVER (ICONO)
-   ========================================================= */
-
-.indicadores-basicos-form__icon-btn {
-    width: 42px;
-    height: 42px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-    font-size: 1.15rem;
-
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.25s ease;
-}
-
-.indicadores-basicos-form__icon-btn--back {
-    background: rgba(13, 202, 240, 0.15);
-    color: #0dcaf0;
-    border: 1px solid rgba(13, 202, 240, 0.45);
-}
-
-.indicadores-basicos-form__icon-btn--back:hover {
-    background: rgba(13, 202, 240, 0.35);
-    color: #ffffff;
+.indicadores-basicos-form__subtitle {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: #9fb3c8;
 }
 
 /* =========================================================
@@ -103,23 +53,13 @@
 .indicadores-basicos-form__form {
     display: flex;
     flex-direction: column;
-    gap: 1.35rem;
+    gap: 1.15rem;
 }
 
 /* =========================================================
-   GRUPOS (LABEL + INPUT)
+   LABELS
    ========================================================= */
 
-.indicadores-basicos-form__group {
-    padding-bottom: 0.9rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.indicadores-basicos-form__group:last-child {
-    border-bottom: none;
-}
-
-/* Label estilo PTA */
 .indicadores-basicos-form__group label {
     display: block;
     margin-bottom: 0.35rem;
@@ -133,11 +73,12 @@
 }
 
 /* =========================================================
-   INPUTS / TEXTAREA (CLON PERSONAL)
+   INPUTS / TEXTAREA / SELECT
    ========================================================= */
 
 .indicadores-basicos-form__group input,
-.indicadores-basicos-form__group textarea {
+.indicadores-basicos-form__group textarea,
+.indicadores-basicos-form__group select {
     width: 100%;
 
     background: #1f2a36;
@@ -152,17 +93,16 @@
     transition: all 0.25s ease;
 }
 
-/* Hover */
 .indicadores-basicos-form__group input:hover,
-.indicadores-basicos-form__group textarea:hover {
+.indicadores-basicos-form__group textarea:hover,
+.indicadores-basicos-form__group select:hover {
     border-color: rgba(13, 202, 240, 0.35);
 }
 
-/* Focus PTA */
 .indicadores-basicos-form__group input:focus,
-.indicadores-basicos-form__group textarea:focus {
+.indicadores-basicos-form__group textarea:focus,
+.indicadores-basicos-form__group select:focus {
     outline: none;
-
     background: #263445;
     border-color: #0dcaf0;
 
@@ -171,55 +111,22 @@
         inset 0 0 0 1px rgba(13, 202, 240, 0.25);
 }
 
-/* =========================================================
-   ACCIONES
-   ========================================================= */
 
-.indicadores-basicos-form__actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 2.4rem;
-}
 
-/* =========================================================
-   BOTÓN GUARDAR (ICONO PTA)
-   ========================================================= */
 
-.indicadores-basicos-form__submit {
-    width: 52px;
-    height: 52px;
 
-    padding: 0;
-    border-radius: 12px;
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
 
-    background: rgba(25, 135, 84, 0.15);
-    color: #198754;
 
-    border: 1px solid rgba(25, 135, 84, 0.55);
-    font-size: 1.3rem;
-    font-weight: 700;
 
-    cursor: pointer;
-    transition: all 0.25s ease;
 
-    box-shadow:
-        0 10px 26px rgba(0, 0, 0, 0.35),
-        inset 0 0 0 1px rgba(25, 135, 84, 0.25);
-}
 
-.indicadores-basicos-form__submit:hover {
-    background: rgba(25, 135, 84, 0.35);
-    color: #ffffff;
-    border-color: #198754;
 
-    box-shadow:
-        0 12px 30px rgba(25, 135, 84, 0.35),
-        inset 0 0 0 1px rgba(25, 135, 84, 0.35);
-}
+
+
+
+
+
 
 
 
@@ -516,6 +423,68 @@
     font-style: italic;
 }
 
+/* =========================================================
+   BADGES — ESTADO
+   ========================================================= */
+
+.indicadores-basicos-index__badge {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ACTIVO — VERDE */
+.indicadores-basicos-index__badge.is-active {
+    background: rgba(25, 135, 84, 0.2);
+    color: #198754;
+    border: 1px solid rgba(25, 135, 84, 0.5);
+}
+
+/* INACTIVO — ROJO */
+.indicadores-basicos-index__badge.is-inactive {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.5);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -689,6 +658,24 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.01);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1028,4 +1015,32 @@
     width: 54px;
     height: 54px;
     font-size: 1.3rem;
+}
+
+
+/* =========================================================
+   SELECT — ESTILO UNIFICADO
+   ========================================================= */
+
+.indicadores-basicos-form--edit select {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+
+    background: #1f2a36;
+    color: #e6f1ff;
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+}
+
+.indicadores-basicos-form--edit select:focus {
+    outline: none;
+    background: #263445;
+    border-color: #0dcaf0;
+    box-shadow:
+        0 0 0 2px rgba(13, 202, 240, 0.15),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25);
 }

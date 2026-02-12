@@ -1,0 +1,71 @@
+<turbo-frame id="content">
+	<section class="partidas-presupuestales-form partidas-presupuestales-form--edit">
+
+		<header class="partidas-presupuestales-form__header">
+
+			<a href="{{ path('app_partidas_presupuestales_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="partidas-presupuestales-form__icon-btn partidas-presupuestales-form__icon-btn--back"
+			   title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<div class="partidas-presupuestales-form__header-center">
+				<h1 class="partidas-presupuestales-form__title">
+					Editar partida
+					{{ partida.partida }}
+				</h1>
+
+				<p class="partidas-presupuestales-form__subtitle">
+					Edita solo los campos necesarios
+				</p>
+			</div>
+
+		</header>
+
+		{{ form_start(form, {
+			action: path('app_partidas_presupuestales_edit', { id: partida.id }),
+			attr: {
+				'data-turbo-frame': 'content',
+				'class': 'partidas-presupuestales-form__form'
+			}
+		}) }}
+
+		<div class="partidas-presupuestales-form__group">
+			{{ form_label(form.capitulo) }}
+			{{ form_widget(form.capitulo) }}
+			{{ form_errors(form.capitulo) }}
+		</div>
+
+		<div class="partidas-presupuestales-form__group">
+			{{ form_label(form.partida) }}
+			{{ form_widget(form.partida) }}
+			{{ form_errors(form.partida) }}
+		</div>
+
+		<div class="partidas-presupuestales-form__group">
+			{{ form_label(form.descripcion) }}
+			{{ form_widget(form.descripcion) }}
+			{{ form_errors(form.descripcion) }}
+		</div>
+
+		<div class="partidas-presupuestales-form__group">
+			{{ form_label(form.activo) }}
+			{{ form_widget(form.activo) }}
+			{{ form_errors(form.activo) }}
+		</div>
+
+		<div class="partidas-presupuestales-form__submit-proxy">
+			<button type="submit"
+			        class="partidas-presupuestales-form__icon-btn partidas-presupuestales-form__icon-btn--save"
+			        title="Guardar cambios">
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
+
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
+
+	</section>
+</turbo-frame>

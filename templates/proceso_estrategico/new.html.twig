@@ -1,0 +1,45 @@
+<turbo-frame id="content">
+	<section class="proceso-estrategico-form proceso-estrategico-form--new">
+
+		<header class="proceso-estrategico-form__header">
+
+			<a href="{{ path('app_proceso_estrategico_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="proceso-estrategico-form__icon-btn proceso-estrategico-form__icon-btn--back"
+			   title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<h1 class="proceso-estrategico-form__title">
+				Crear nuevo proceso estratégico
+			</h1>
+
+		</header>
+
+		{{ form_start(form, {
+			action: path('app_proceso_estrategico_new'),
+			attr: {
+				'data-turbo-frame': 'content',
+				'class': 'proceso-estrategico-form__form'
+			}
+		}) }}
+
+		<div class="proceso-estrategico-form__group">
+			{{ form_label(form.nombre) }}
+			{{ form_widget(form.nombre) }}
+			{{ form_errors(form.nombre) }}
+		</div>
+
+		<div class="proceso-estrategico-form__actions">
+			<button type="submit"
+			        class="proceso-estrategico-form__submit proceso-estrategico-form__submit--icon"
+			        title="Guardar proceso">
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
+
+		{{ form_end(form) }}
+
+	</section>
+</turbo-frame>

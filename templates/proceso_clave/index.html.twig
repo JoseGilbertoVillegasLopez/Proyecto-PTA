@@ -1,0 +1,86 @@
+<turbo-frame id="content">
+	<section class="proceso-clave-index" data-page="proceso-clave-index">
+
+		<div class="proceso-clave-index__toolbar">
+			<h1 class="proceso-clave-index__title">
+				Lista de procesos clave
+			</h1>
+		</div>
+
+		<div class="proceso-clave-index__table-actions">
+
+			<a href="{{ path('app_proceso_clave_new') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance"
+			   class="proceso-clave-index__add-btn">
+				<i class="bi bi-plus-circle-fill"></i>
+				Crear nuevo proceso
+			</a>
+
+			<div class="proceso-clave-index__spacer"></div>
+
+			<div class="proceso-clave-index__search">
+				<i class="bi bi-search"></i>
+				<input type="text"
+				       id="proceso-clave-search"
+				       placeholder="Buscar proceso clave..."
+				       autocomplete="off">
+			</div>
+
+		</div>
+
+		<div class="proceso-clave-index__table-wrapper">
+			<table class="proceso-clave-index__table">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>PEI</th>
+						<th>PAIG</th>
+						<th>Meta PDI/PTA</th>
+						<th>Estado</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for proceso in proceso_claves %}
+						<tr class="proceso-clave-row">
+							<td>{{ proceso.nombre }}</td>
+							<td>{{ proceso.pei }}</td>
+							<td>{{ proceso.paig }}</td>
+							<td>{{ proceso.metaPdiPta }}</td>
+							<td>
+								<span class="proceso-clave-index__badge {{ proceso.activo ? 'is-active' : 'is-inactive' }}">
+									{{ proceso.activo ? 'Activo' : 'Inactivo' }}
+								</span>
+							</td>
+							<td>
+								<div class="proceso-clave-index__actions">
+									<a href="{{ path('app_proceso_clave_show', {'id': proceso.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="proceso-clave-index__action proceso-clave-index__action--view">
+										<i class="bi bi-eye"></i>
+									</a>
+
+									<a href="{{ path('app_proceso_clave_edit', {'id': proceso.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="proceso-clave-index__action proceso-clave-index__action--edit">
+										<i class="bi bi-pencil"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="6" class="proceso-clave-index__empty">
+								No se encontraron procesos clave
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+	</section>
+</turbo-frame>

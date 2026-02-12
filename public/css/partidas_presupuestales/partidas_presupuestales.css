@@ -1,9 +1,9 @@
 /* =========================================================
-   PERSONAL — FORM BASE (ESTRUCTURA)
-   (Alineado al estilo PTA: card + sombras + borde interno)
+   PARTIDAS PRESUPUESTALES — FORM BASE
+   (Clon estructural de PERSONAL-FORM)
    ========================================================= */
 
-.personal-form {
+.partidas-presupuestales-form {
     max-width: 720px;
     margin: 0 auto;
 
@@ -25,30 +25,31 @@
     box-sizing: border-box;
 }
 
-.personal-form__header {
+.partidas-presupuestales-form__header {
     margin-bottom: 1.8rem;
 }
 
-.personal-form__title {
+.partidas-presupuestales-form__title {
     font-size: 1.45rem;
     font-weight: 600;
     color: #e6f1ff;
-    letter-spacing: 0.3px;
 }
 
-.personal-form__subtitle {
+.partidas-presupuestales-form__subtitle {
     margin-top: 0.4rem;
     font-size: 0.9rem;
     color: #9fb3c8;
 }
 
-.personal-form__form {
+.partidas-presupuestales-form__form {
     display: flex;
     flex-direction: column;
     gap: 1.15rem;
 }
 
-.personal-form__group label {
+/* LABEL */
+
+.partidas-presupuestales-form__group label {
     display: block;
     margin-bottom: 0.35rem;
     font-size: 0.75rem;
@@ -58,9 +59,11 @@
     text-transform: uppercase;
 }
 
-/* ✅ INPUTS/SELECTS estilo PTA (solo colores PTA) */
-.personal-form__group input,
-.personal-form__group select {
+/* INPUTS */
+
+.partidas-presupuestales-form__group input,
+.partidas-presupuestales-form__group textarea,
+.partidas-presupuestales-form__group select {
     width: 100%;
 
     background: #1f2a36;
@@ -75,48 +78,21 @@
     transition: all 0.25s ease;
 }
 
-.personal-form__group input:hover,
-.personal-form__group select:hover {
+.partidas-presupuestales-form__group input:hover,
+.partidas-presupuestales-form__group textarea:hover,
+.partidas-presupuestales-form__group select:hover {
     border-color: rgba(13, 202, 240, 0.35);
 }
 
-.personal-form__group input:focus,
-.personal-form__group select:focus {
+.partidas-presupuestales-form__group input:focus,
+.partidas-presupuestales-form__group textarea:focus,
+.partidas-presupuestales-form__group select:focus {
     outline: none;
     background: #263445;
     border-color: #0dcaf0;
     box-shadow:
         0 0 0 2px rgba(13, 202, 240, 0.15),
         inset 0 0 0 1px rgba(13, 202, 240, 0.25);
-}
-
-/* ✅ LINK VOLVER estilo PTA (mismo feeling que pta-back-btn) */
-.personal-form__back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-
-    margin-top: 1.8rem;
-    padding: 8px 16px;
-
-    border-radius: 10px;
-
-    background: rgba(13, 202, 240, 0.15);
-    color: #0dcaf0;
-    border: 1px solid rgba(13, 202, 240, 0.4);
-
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-decoration: none;
-
-    transition: all 0.25s ease;
-}
-
-.personal-form__back-link:hover {
-    background: rgba(13, 202, 240, 0.35);
-    color: #ffffff;
-    border-color: #0dcaf0;
-    box-shadow: 0 8px 22px rgba(13, 202, 240, 0.25);
 }
 
 
@@ -143,17 +119,13 @@
 
 
 /* =========================================================
-   PERSONAL — INDEX
-   (ya estaba alineado a PTA, no le cambio colores)
+   PARTIDAS PRESUPUESTALES — INDEX
+   (CLON EXACTO DE PERSONAL)
    ========================================================= */
 
-.personal-index {
+.partidas-presupuestales-index {
     background:
-        radial-gradient(
-            circle at top,
-            rgba(13, 202, 240, 0.08),
-            transparent 55%
-        ),
+        radial-gradient(circle at top, rgba(13, 202, 240, 0.08), transparent 55%),
         linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.4rem;
@@ -166,7 +138,7 @@
     position: relative;
 }
 
-.personal-index::after {
+.partidas-presupuestales-index::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -175,11 +147,9 @@
     box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
 }
 
-/* =========================================================
-   TOOLBAR
-   ========================================================= */
+/* ================= TOOLBAR ================= */
 
-.personal-index__toolbar {
+.partidas-presupuestales-index__toolbar {
     position: relative;
     display: flex;
     align-items: center;
@@ -191,9 +161,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* TÍTULO CENTRADO REAL */
-
-.personal-index__title {
+.partidas-presupuestales-index__title {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -206,13 +174,27 @@
     white-space: nowrap;
 }
 
-/* =========================================================
-   BOTÓN AGREGAR
-   ========================================================= */
+/* ================= TABLE ACTIONS ================= */
 
-.personal-index__add-btn {
+.partidas-presupuestales-index__table-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    margin-top: 1.8rem;
+    margin-bottom: 3rem;
+
+    padding-left: 0.4rem;
+}
+
+.partidas-presupuestales-index__spacer {
+    flex: 1;
+}
+
+/* ================= ADD BUTTON ================= */
+
+.partidas-presupuestales-index__add-btn {
     margin-left: 0.2rem;
-
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
@@ -231,183 +213,164 @@
     transition: all 0.25s ease;
 }
 
-.personal-index__add-btn:hover {
+.partidas-presupuestales-index__add-btn:hover {
     background: rgba(25, 135, 84, 0.35);
     color: #ffffff;
     border-color: #198754;
-
     box-shadow:
         0 10px 26px rgba(25, 135, 84, 0.35),
         inset 0 0 0 1px rgba(25, 135, 84, 0.35);
 }
 
-/* =========================================================
-   TABLA
-   ========================================================= */
+/* ================= SEARCH ================= */
 
-/* =========================================================
-   ACCIONES SOBRE TABLA (LIMPIO, SIN CAJA)
-   ========================================================= */
-
-.personal-index__table-actions {
+.partidas-presupuestales-index__search {
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-
-    margin-top: 1.8rem; /* separación del título */
-    margin-bottom: 3rem; /* separación clara de la tabla */
-
-    padding-left: 0.4rem; /* alineación óptica */
 }
 
-.personal-index__table-wrapper {
+.partidas-presupuestales-index__search i {
+    position: absolute;
+    left: 12px;
+    color: #9fb3c8;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.partidas-presupuestales-index__search input {
+    background: #1f2a36;
+    color: #e6f1ff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 0.55rem 0.8rem 0.55rem 2.2rem;
+    font-size: 0.85rem;
+    transition: all 0.25s ease;
+}
+
+.partidas-presupuestales-index__search input:focus {
+    outline: none;
+    background: #263445;
+    border-color: #0dcaf0;
+    box-shadow:
+        0 0 0 2px rgba(13, 202, 240, 0.15),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25);
+}
+
+/* ================= TABLE ================= */
+
+.partidas-presupuestales-index__table-wrapper {
     overflow-x: auto;
 }
 
-.personal-index__table {
+.partidas-presupuestales-index__table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-
     border-radius: 14px;
     overflow: hidden;
-
     border: 1px solid rgba(255, 255, 255, 0.15);
     background: rgba(255, 255, 255, 0.015);
 }
 
-/* THEAD */
-
-.personal-index__table thead th {
+.partidas-presupuestales-index__table thead th {
     background: linear-gradient(135deg, #0b3c6f, #062a4f);
     color: #ffffff;
-
     font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.6px;
-
     padding: 14px 18px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* FILAS */
-
-.personal-index__table tbody tr {
-    transition: background-color 0.2s ease;
-}
-
-.personal-index__table tbody tr:hover {
+.partidas-presupuestales-index__table tbody tr:hover {
     background-color: rgba(13, 202, 240, 0.08);
 }
 
-/* CELDAS */
-
-.personal-index__table tbody td {
+.partidas-presupuestales-index__table tbody td {
     padding: 14px 18px;
     color: #e6f1ff;
-    vertical-align: middle;
-
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.personal-index__table tbody td:last-child,
-.personal-index__table thead th:last-child {
+.partidas-presupuestales-index__table tbody td:last-child,
+.partidas-presupuestales-index__table thead th:last-child {
     border-right: none;
 }
 
-.personal-index__table tbody tr:last-child td {
+.partidas-presupuestales-index__table tbody tr:last-child td {
     border-bottom: none;
 }
 
-/* =========================================================
-   BADGES
-   ========================================================= */
+/* ================= BADGE ================= */
 
-.personal-index__badge {
+.partidas-presupuestales-index__badge {
     display: inline-block;
     padding: 0.35rem 0.85rem;
     border-radius: 999px;
-
     font-size: 0.72rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-/* ACTIVO — VERDE */
-.personal-index__badge.is-active {
+.partidas-presupuestales-index__badge.is-active {
     background: rgba(25, 135, 84, 0.2);
     color: #198754;
     border: 1px solid rgba(25, 135, 84, 0.5);
 }
 
-/* INACTIVO — ROJO */
-.personal-index__badge.is-inactive {
+.partidas-presupuestales-index__badge.is-inactive {
     background: rgba(220, 53, 69, 0.2);
     color: #dc3545;
     border: 1px solid rgba(220, 53, 69, 0.5);
 }
 
-/* =========================================================
-   ACCIONES
-   ========================================================= */
+/* ================= ACTIONS ================= */
 
-.personal-index__actions {
+.partidas-presupuestales-index__actions {
     display: flex;
     justify-content: center;
     gap: 1rem;
 }
 
-.personal-index__action {
+.partidas-presupuestales-index__action {
     width: 36px;
     height: 36px;
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 10px;
     font-size: 1.1rem;
     text-decoration: none;
-
     transition: all 0.25s ease;
 }
 
-/* VER */
-
-.personal-index__action--view {
+.partidas-presupuestales-index__action--view {
     background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
 }
 
-.personal-index__action--view:hover {
+.partidas-presupuestales-index__action--view:hover {
     background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
-
     box-shadow: 0 8px 20px rgba(13, 202, 240, 0.35);
 }
 
-/* EDITAR */
-
-.personal-index__action--edit {
+.partidas-presupuestales-index__action--edit {
     background: rgba(255, 193, 7, 0.15);
     color: #ffc107;
 }
 
-.personal-index__action--edit:hover {
+.partidas-presupuestales-index__action--edit:hover {
     background: rgba(255, 193, 7, 0.35);
     color: #ffffff;
-
     box-shadow: 0 8px 20px rgba(255, 193, 7, 0.35);
 }
 
-/* =========================================================
-   EMPTY STATE
-   ========================================================= */
-
-.personal-index__empty {
+.partidas-presupuestales-index__empty {
     text-align: center;
     padding: 2.2rem;
     color: #9fb3c8;
@@ -428,35 +391,14 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* =========================================================
-   PERSONAL — SHOW
-   (alineado a PTA, solo iconos en acciones)
+   PARTIDAS PRESUPUESTALES — SHOW
+   (CLON EXACTO DE PERSONAL)
    ========================================================= */
 
-.personal-show {
+.partidas-presupuestales-show {
     background:
-        radial-gradient(
-            circle at top,
-            rgba(13, 202, 240, 0.08),
-            transparent 55%
-        ),
+        radial-gradient(circle at top, rgba(13, 202, 240, 0.08), transparent 55%),
         linear-gradient(135deg, #0f1c26, #0b1117);
 
     padding: 2.4rem;
@@ -469,7 +411,7 @@
     position: relative;
 }
 
-.personal-show::after {
+.partidas-presupuestales-show::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -482,7 +424,7 @@
    HEADER
    ========================================================= */
 
-.personal-show__header {
+.partidas-presupuestales-show__header {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: center;
@@ -493,7 +435,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.personal-show__title {
+.partidas-presupuestales-show__title {
     justify-self: center;
     text-align: center;
 
@@ -507,7 +449,7 @@
    BOTONES SOLO ÍCONO (BASE)
    ========================================================= */
 
-.personal-show__icon-btn {
+.partidas-presupuestales-show__icon-btn {
     width: 42px;
     height: 42px;
 
@@ -525,16 +467,16 @@
 }
 
 /* =========================================================
-   VOLVER (IZQUIERDA)
+   VOLVER
    ========================================================= */
 
-.personal-show__icon-btn--back {
+.partidas-presupuestales-show__icon-btn--back {
     background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
     border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
-.personal-show__icon-btn--back:hover {
+.partidas-presupuestales-show__icon-btn--back:hover {
     background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 
@@ -544,10 +486,10 @@
 }
 
 /* =========================================================
-   ACCIONES HEADER (DERECHA)
+   ACCIONES HEADER
    ========================================================= */
 
-.personal-show__header-actions {
+.partidas-presupuestales-show__header-actions {
     display: flex;
     gap: 0.8rem;
     justify-self: end;
@@ -557,13 +499,13 @@
    EDITAR
    ========================================================= */
 
-.personal-show__icon-btn--edit {
+.partidas-presupuestales-show__icon-btn--edit {
     background: rgba(255, 193, 7, 0.15);
     color: #ffc107;
     border: 1px solid rgba(255, 193, 7, 0.55);
 }
 
-.personal-show__icon-btn--edit:hover {
+.partidas-presupuestales-show__icon-btn--edit:hover {
     background: rgba(255, 193, 7, 0.35);
     color: #ffffff;
 
@@ -576,7 +518,7 @@
    TABLA
    ========================================================= */
 
-.personal-show__table {
+.partidas-presupuestales-show__table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
@@ -588,7 +530,7 @@
     background: rgba(255, 255, 255, 0.015);
 }
 
-.personal-show__table th {
+.partidas-presupuestales-show__table th {
     width: 35%;
     background: linear-gradient(135deg, #0b3c6f, #062a4f);
     color: #ffffff;
@@ -601,7 +543,7 @@
     padding: 14px 18px;
 }
 
-.personal-show__table td {
+.partidas-presupuestales-show__table td {
     padding: 14px 18px;
     color: #e6f1ff;
 
@@ -617,12 +559,20 @@
 
 
 
+
+
+
+
+
+
+
+
 /* =========================================================
-   PERSONAL — NEW
-   (solo cambia el radial, colores existentes en PTA)
+   PARTIDAS PRESUPUESTALES — NEW
+   (clon exacto de personal-form--new)
    ========================================================= */
 
-.personal-form--new {
+.partidas-presupuestales-form--new {
     background:
         radial-gradient(
             circle at top,
@@ -641,7 +591,7 @@
     position: relative;
 }
 
-.personal-form--new::after {
+.partidas-presupuestales-form--new::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -650,11 +600,9 @@
     box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
 }
 
-/* =========================================================
-   HEADER
-   ========================================================= */
+/* HEADER */
 
-.personal-form__header {
+.partidas-presupuestales-form__header {
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
@@ -665,7 +613,7 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.personal-form__title {
+.partidas-presupuestales-form__title {
     justify-self: center;
     text-align: center;
 
@@ -675,11 +623,9 @@
     letter-spacing: 0.4px;
 }
 
-/* =========================================================
-   BOTÓN VOLVER (SOLO ÍCONO)
-   ========================================================= */
+/* BOTÓN VOLVER */
 
-.personal-form__icon-btn {
+.partidas-presupuestales-form__icon-btn {
     width: 42px;
     height: 42px;
 
@@ -696,59 +642,50 @@
     transition: all 0.25s ease;
 }
 
-.personal-form__icon-btn--back {
+.partidas-presupuestales-form__icon-btn--back {
     background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
     border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
-.personal-form__icon-btn--back:hover {
+.partidas-presupuestales-form__icon-btn--back:hover {
     background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 }
 
-/* =========================================================
-   FORM
-   ========================================================= */
+/* FORM */
 
-.personal-form--new .personal-form__form {
+.partidas-presupuestales-form--new .partidas-presupuestales-form__form {
     gap: 1.35rem;
 }
 
-/* =========================================================
-   GRUPOS
-   ========================================================= */
+/* GROUPS */
 
-.personal-form--new .personal-form__group {
+.partidas-presupuestales-form--new .partidas-presupuestales-form__group {
     padding-bottom: 0.9rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.personal-form--new .personal-form__group:last-child {
+.partidas-presupuestales-form--new .partidas-presupuestales-form__group:last-child {
     border-bottom: none;
 }
 
-/* =========================================================
-   ACCIONES DEL FORM (GUARDAR CENTRADO)
-   ========================================================= */
+/* ACTIONS */
 
-.personal-form__actions {
+.partidas-presupuestales-form__actions {
     display: flex;
     justify-content: center;
-
     margin-top: 2.4rem;
 }
 
-/* =========================================================
-   BOTÓN GUARDAR — SOLO ÍCONO (CUADRADO)
-   ========================================================= */
+/* SUBMIT */
 
-.personal-form--new .personal-form__submit {
+.partidas-presupuestales-form--new .partidas-presupuestales-form__submit {
     width: 52px;
     height: 52px;
 
-    padding: 0; /* sin padding de texto */
-    border-radius: 12px; /* ⬅️ cuadrado con esquinas PTA */
+    padding: 0;
+    border-radius: 12px;
 
     display: inline-flex;
     align-items: center;
@@ -758,8 +695,7 @@
     color: #198754;
 
     border: 1px solid rgba(25, 135, 84, 0.55);
-    font-size: 1.3rem; /* tamaño del ícono */
-    font-weight: 700;
+    font-size: 1.3rem;
 
     cursor: pointer;
     transition: all 0.25s ease;
@@ -769,7 +705,7 @@
         inset 0 0 0 1px rgba(25, 135, 84, 0.25);
 }
 
-.personal-form--new .personal-form__submit:hover {
+.partidas-presupuestales-form--new .partidas-presupuestales-form__submit:hover {
     background: rgba(25, 135, 84, 0.35);
     color: #ffffff;
     border-color: #198754;
@@ -778,6 +714,29 @@
         0 12px 30px rgba(25, 135, 84, 0.35),
         inset 0 0 0 1px rgba(25, 135, 84, 0.35);
 }
+
+/* ==========================================
+   Quitar flechas de input type="number"
+   SOLO para partidas presupuestales
+   ========================================== */
+
+.partidas-presupuestales-form input[type="number"]::-webkit-outer-spin-button,
+.partidas-presupuestales-form input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox + estándar */
+.partidas-presupuestales-form input[type="number"] {
+    appearance: textfield;        /* estándar */
+    -moz-appearance: textfield;   /* Firefox */
+}
+
+
+
+
+
+
 
 
 
@@ -790,11 +749,11 @@
 
 
 /* =========================================================
-   PERSONAL — EDIT
-   (solo cambia el radial, colores existentes en PTA)
+   PARTIDAS PRESUPUESTALES — EDIT
+   (clon exacto de personal-form--edit)
    ========================================================= */
 
-.personal-form--edit {
+.partidas-presupuestales-form--edit {
     background:
         radial-gradient(
             circle at top,
@@ -813,7 +772,7 @@
     position: relative;
 }
 
-.personal-form--edit::after {
+.partidas-presupuestales-form--edit::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -822,11 +781,9 @@
     box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
 }
 
-/* =========================================================
-   HEADER
-   ========================================================= */
+/* HEADER */
 
-.personal-form__header {
+.partidas-presupuestales-form__header {
     display: grid;
     grid-template-columns: auto 1fr auto;
     align-items: start;
@@ -837,35 +794,27 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Centro del header (título + subtítulo) */
-.personal-form__header-center {
+.partidas-presupuestales-form__header-center {
     text-align: center;
 }
 
-.personal-form__title {
+.partidas-presupuestales-form__title {
     font-size: 1.55rem;
     font-weight: 700;
     color: #e6f1ff;
     letter-spacing: 0.4px;
 }
 
-/* =========================================================
-   SUBTÍTULO
-   ========================================================= */
-
-.personal-form--edit .personal-form__subtitle {
+.partidas-presupuestales-form__subtitle {
     margin-top: 0.4rem;
     font-size: 0.9rem;
     font-weight: 500;
     color: #9fb3c8;
-    letter-spacing: 0.3px;
 }
 
-/* =========================================================
-   BOTONES SOLO ÍCONO (HEADER)
-   ========================================================= */
+/* BOTONES */
 
-.personal-form__icon-btn {
+.partidas-presupuestales-form__icon-btn {
     margin-top: 0.25rem;
     width: 42px;
     height: 42px;
@@ -876,61 +825,51 @@
 
     border-radius: 12px;
     font-size: 1.15rem;
-
     cursor: pointer;
     text-decoration: none;
     transition: all 0.25s ease;
 }
 
-/* VOLVER (IZQUIERDA) */
-.personal-form__icon-btn--back {
+.partidas-presupuestales-form__icon-btn--back {
     background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
     border: 1px solid rgba(13, 202, 240, 0.45);
 }
 
-.personal-form__icon-btn--back:hover {
+.partidas-presupuestales-form__icon-btn--back:hover {
     background: rgba(13, 202, 240, 0.35);
     color: #ffffff;
 }
 
-/* =========================================================
-   FORM
-   ========================================================= */
-
-.personal-form--edit .personal-form__form {
-    gap: 1.35rem;
-}
-
-/* =========================================================
-   GRUPOS
-   ========================================================= */
-
-.personal-form--edit .personal-form__group {
-    padding-bottom: 0.9rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.personal-form--edit .personal-form__group:last-child {
-    border-bottom: none;
-}
-
-/* =========================================================
-   BOTÓN GUARDAR — ABAJO CENTRADO
-   ========================================================= */
-/* vERDE */
-.personal-form__icon-btn--save {
+.partidas-presupuestales-form__icon-btn--save {
     background: rgba(25, 135, 84, 0.15);
     color: #198754;
     border: 1px solid rgba(25, 135, 84, 0.55);
 }
 
-.personal-form__icon-btn--save:hover {
+.partidas-presupuestales-form__icon-btn--save:hover {
     background: rgba(25, 135, 84, 0.35);
     color: #ffffff;
 }
 
-.personal-form__submit-proxy {
+/* FORM */
+
+.partidas-presupuestales-form--edit .partidas-presupuestales-form__form {
+    gap: 1.35rem;
+}
+
+.partidas-presupuestales-form--edit .partidas-presupuestales-form__group {
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.partidas-presupuestales-form--edit .partidas-presupuestales-form__group:last-child {
+    border-bottom: none;
+}
+
+/* SUBMIT PROXY */
+
+.partidas-presupuestales-form__submit-proxy {
     display: flex;
     justify-content: center;
 
@@ -940,89 +879,9 @@
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* hacerlo un poco más protagonista que los icon-btn normales */
-.personal-form__submit-proxy .personal-form__icon-btn--save {
+.partidas-presupuestales-form__submit-proxy
+.partidas-presupuestales-form__icon-btn--save {
     width: 54px;
     height: 54px;
     font-size: 1.3rem;
-}
-
-.personal-index__table-actions {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 18px;
-}
-
-/* Contenedor del buscador */
-.personal-index__search {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    background: rgba(13, 202, 240, 0.08);
-    border: 1px solid rgba(13, 202, 240, 0.35);
-    border-radius: 12px;
-    padding: 10px 14px;
-}
-
-/* Icono */
-.personal-index__search i {
-    color: #0dcaf0;
-    font-size: 1.1rem;
-}
-
-/* Input */
-.personal-index__search input {
-    background: transparent;
-    border: none;
-    outline: none;
-
-    color: #ffffff;
-    font-size: 0.95rem;
-    min-width: 220px;
-}
-
-.personal-index__search input::placeholder {
-    color: rgba(255, 255, 255, 0.55);
-}
-.personal-index__table-actions {
-    display: flex;
-    align-items: center;
-    margin-bottom: 18px;
-}
-
-.personal-index__spacer {
-    flex: 1;
-}
-
-/* Buscador */
-.personal-index__search {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    background: rgba(13, 202, 240, 0.08);
-    border: 1px solid rgba(13, 202, 240, 0.35);
-    border-radius: 12px;
-    padding: 10px 14px;
-}
-
-.personal-index__search i {
-    color: #0dcaf0;
-    font-size: 1.1rem;
-}
-
-.personal-index__search input {
-    background: transparent;
-    border: none;
-    outline: none;
-
-    color: #fff;
-    font-size: 0.95rem;
-    min-width: 220px;
-}
-
-.personal-index__search input::placeholder {
-    color: rgba(255, 255, 255, 0.55);
 }

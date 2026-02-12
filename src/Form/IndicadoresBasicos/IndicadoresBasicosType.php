@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\IndicadoresBasicos;
 
 use App\Entity\IndicadoresBasicos;
 use Symfony\Component\Form\AbstractType;
@@ -11,12 +11,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class IndicadoresBasicosType extends AbstractType
 {
-    // Formulario BASE para crear Indicadores Básicos
+    // FORM BASE - CREAR
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+
             ->add('nombreIndicador', TextType::class, [
-                'label' => 'Nombre del indicador',
+                'label' => 'Nombre del Indicador',
                 'required' => true,
                 'attr' => [
                     'placeholder' => 'Ej. % Atención a la demanda',
@@ -27,7 +28,7 @@ class IndicadoresBasicosType extends AbstractType
                 'label' => 'Fórmula',
                 'required' => true,
                 'attr' => [
-                    'placeholder' => 'Ej. Total alumnos egresados',
+                    'placeholder' => 'Ej. (Atendidos / Solicitados) * 100',
                 ],
             ])
 
@@ -36,7 +37,7 @@ class IndicadoresBasicosType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
-                    'placeholder' => 'Ej. Considerar el total de alumnos inscritos',
+                    'placeholder' => 'Notas adicionales del indicador',
                 ],
             ])
         ;

@@ -22,6 +22,10 @@ class IndicadoresBasicos
     #[ORM\Column(length: 255)]
     private ?string $observaciones = null;
 
+    #[ORM\Column(options: ['default' => true])]
+    private ?bool $activo = true;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,4 +66,17 @@ class IndicadoresBasicos
 
         return $this;
     }
+
+    public function isActivo(): ?bool
+    {
+        return $this->activo;
+    }
+
+    public function setActivo(bool $activo): static
+    {
+        $this->activo = $activo;
+
+        return $this;
+    }
+
 }

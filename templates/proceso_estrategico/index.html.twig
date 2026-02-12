@@ -1,0 +1,80 @@
+<turbo-frame id="content">
+	<section class="proceso-estrategico-index" data-page="proceso-estrategico-index">
+
+		<div class="proceso-estrategico-index__toolbar">
+			<h1 class="proceso-estrategico-index__title">
+				Lista de procesos estratégicos
+			</h1>
+		</div>
+
+		<div class="proceso-estrategico-index__table-actions">
+
+			<a href="{{ path('app_proceso_estrategico_new') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance"
+			   class="proceso-estrategico-index__add-btn">
+				<i class="bi bi-plus-circle-fill"></i>
+				Crear nuevo proceso
+			</a>
+
+			<div class="proceso-estrategico-index__spacer"></div>
+
+			<div class="proceso-estrategico-index__search">
+				<i class="bi bi-search"></i>
+				<input type="text"
+				       id="proceso-estrategico-search"
+				       placeholder="Buscar proceso estratégico..."
+				       autocomplete="off">
+			</div>
+
+		</div>
+
+		<div class="proceso-estrategico-index__table-wrapper">
+			<table class="proceso-estrategico-index__table">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Estado</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for proceso in proceso_estrategicos %}
+						<tr class="proceso-estrategico-row">
+							<td>{{ proceso.nombre }}</td>
+							<td>
+								<span class="proceso-estrategico-index__badge {{ proceso.activo ? 'is-active' : 'is-inactive' }}">
+									{{ proceso.activo ? 'Activo' : 'Inactivo' }}
+								</span>
+							</td>
+							<td>
+								<div class="proceso-estrategico-index__actions">
+									<a href="{{ path('app_proceso_estrategico_show', {'id': proceso.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="proceso-estrategico-index__action proceso-estrategico-index__action--view">
+										<i class="bi bi-eye"></i>
+									</a>
+
+									<a href="{{ path('app_proceso_estrategico_edit', {'id': proceso.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="proceso-estrategico-index__action proceso-estrategico-index__action--edit">
+										<i class="bi bi-pencil"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="3" class="proceso-estrategico-index__empty">
+								No se encontraron procesos estratégicos
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+	</section>
+</turbo-frame>

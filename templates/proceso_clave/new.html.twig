@@ -1,0 +1,69 @@
+<turbo-frame id="content">
+	<section class="proceso-clave-form proceso-clave-form--new">
+
+		<header class="proceso-clave-form__header">
+
+			<!-- VOLVER -->
+			<a href="{{ path('app_proceso_clave_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="proceso-clave-form__icon-btn proceso-clave-form__icon-btn--back"
+			   title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<!-- TÍTULO -->
+			<h1 class="proceso-clave-form__title">
+				Crear nuevo proceso clave
+			</h1>
+
+		</header>
+
+		{# ===============================
+		        FORMULARIO
+		   =============================== #}
+		{{ form_start(form, {
+			action: path('app_proceso_clave_new'),
+			attr: {
+				'data-turbo-frame': 'content',
+				'class': 'proceso-clave-form__form'
+			}
+		}) }}
+
+		<div class="proceso-clave-form__group">
+			{{ form_label(form.nombre) }}
+			{{ form_widget(form.nombre) }}
+			{{ form_errors(form.nombre) }}
+		</div>
+
+		<div class="proceso-clave-form__group">
+			{{ form_label(form.pei) }}
+			{{ form_widget(form.pei) }}
+			{{ form_errors(form.pei) }}
+		</div>
+
+		<div class="proceso-clave-form__group">
+			{{ form_label(form.paig) }}
+			{{ form_widget(form.paig) }}
+			{{ form_errors(form.paig) }}
+		</div>
+
+		<div class="proceso-clave-form__group">
+			{{ form_label(form.metaPdiPta) }}
+			{{ form_widget(form.metaPdiPta) }}
+			{{ form_errors(form.metaPdiPta) }}
+		</div>
+
+		{# GUARDAR CENTRADO — EXACTO A PERSONAL #}
+		<div class="proceso-clave-form__actions">
+			<button type="submit"
+			        class="proceso-clave-form__submit proceso-clave-form__submit--icon"
+			        title="Guardar proceso">
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
+
+		{{ form_end(form) }}
+
+	</section>
+</turbo-frame>
