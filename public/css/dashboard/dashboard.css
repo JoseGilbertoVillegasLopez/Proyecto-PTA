@@ -7,7 +7,6 @@
    ASIDE
    =============================== */
 .pta-dashboard-aside {
-    position: relative;
     width: 250px;
 
     background: radial-gradient(
@@ -22,6 +21,8 @@
 
     display: flex;
     flex-direction: column;
+    height: 100vh;
+
     color: #ffffff;
 }
 
@@ -30,11 +31,9 @@
    =============================== */
 .pta-dashboard-menu-wrapper {
     flex: 1;
-
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    overflow: hidden;
 }
 
 /* ===============================
@@ -46,6 +45,7 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 26px;
+    flex-shrink: 0;
 }
 
 .pta-dashboard-icon {
@@ -68,13 +68,17 @@
    =============================== */
 .pta-dashboard-menu {
     list-style: none;
-    padding: 0 0 60px;
+    padding: 10px 0 0 0;
     margin: 0;
-
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 16px;
+
+    overflow-y: auto;
+    flex: 1;
+
+    padding-right: 4px; /* espacio para scrollbar */
 }
 
 .pta-dashboard-menu-item {
@@ -136,10 +140,7 @@
    LOGOUT
    =============================== */
 .pta-dashboard-logout {
-    position: absolute;
-    bottom: 16px;
-    left: 16px;
-
+    margin-top: auto; /* 🔥 lo empuja hacia abajo */
     display: flex;
     align-items: center;
     gap: 6px;
@@ -168,4 +169,42 @@
    =============================== */
 main {
     background: radial-gradient(circle at top, #0d2638, #0a1119 60%);
+}
+
+/* =========================================================
+   SCROLL PERSONALIZADO PTA — FINO Y OSCURO
+   ========================================================= */
+
+/* Webkit (Chrome, Edge, Opera) */
+.pta-dashboard-menu::-webkit-scrollbar {
+    width: 4px; /* más angosto 🔥 */
+}
+
+.pta-dashboard-menu::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.55); /* oscuro elegante */
+    border-radius: 10px;
+}
+
+.pta-dashboard-menu::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        180deg,
+        rgba(13, 202, 240, 0.65),
+        rgba(13, 202, 240, 0.35)
+    );
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.pta-dashboard-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(13, 202, 240, 0.9);
+}
+
+/* Firefox */
+.pta-dashboard-menu {
+    scrollbar-width: thin; /* más delgado */
+    scrollbar-color: rgba(13, 202, 240, 0.6) rgba(0, 0, 0, 0.55);
+}
+
+.pta-dashboard-menu::-webkit-scrollbar-track {
+    background: transparent;
 }
