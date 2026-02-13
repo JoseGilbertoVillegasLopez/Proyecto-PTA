@@ -1,0 +1,86 @@
+<turbo-frame id="content">
+	<section class="partidas-presupuestales-index" data-page="partidas-presupuestales-index">
+
+		<div class="partidas-presupuestales-index__toolbar">
+			<h1 class="partidas-presupuestales-index__title">
+				Lista de partidas presupuestales
+			</h1>
+		</div>
+
+		<div class="partidas-presupuestales-index__table-actions">
+
+			<a href="{{ path('app_partidas_presupuestales_new') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance"
+			   class="partidas-presupuestales-index__add-btn">
+				<i class="bi bi-plus-circle-fill"></i>
+				Crear nueva partida
+			</a>
+
+			<div class="partidas-presupuestales-index__spacer"></div>
+
+			<div class="partidas-presupuestales-index__search">
+				<i class="bi bi-search"></i>
+				<input type="text"
+				       id="partidas-presupuestales-search"
+				       placeholder="Buscar partida..."
+				       autocomplete="off">
+			</div>
+
+		</div>
+
+		<div class="partidas-presupuestales-index__table-wrapper">
+			<table class="partidas-presupuestales-index__table">
+				<thead>
+					<tr>
+						<th>Capítulo</th>
+						<th>Partida</th>
+						<th>Descripción</th>
+						<th>Estado</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for partida in partidas_presupuestales %}
+						<tr class="partidas-presupuestales-row">
+							<td>{{ partida.capitulo }}</td>
+							<td>{{ partida.partida }}</td>
+							<td class="partidas-presupuestales-descripcion">
+								{{ partida.descripcion }}
+							</td>
+							<td>
+								<span class="partidas-presupuestales-index__badge {{ partida.activo ? 'is-active' : 'is-inactive' }}">
+									{{ partida.activo ? 'Activo' : 'Inactivo' }}
+								</span>
+							</td>
+							<td>
+								<div class="partidas-presupuestales-index__actions">
+									<a href="{{ path('app_partidas_presupuestales_show', {'id': partida.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="partidas-presupuestales-index__action partidas-presupuestales-index__action--view">
+										<i class="bi bi-eye"></i>
+									</a>
+
+									<a href="{{ path('app_partidas_presupuestales_edit', {'id': partida.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="partidas-presupuestales-index__action partidas-presupuestales-index__action--edit">
+										<i class="bi bi-pencil"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="5" class="partidas-presupuestales-index__empty">
+								No se encontraron partidas presupuestales
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+	</section>
+</turbo-frame>

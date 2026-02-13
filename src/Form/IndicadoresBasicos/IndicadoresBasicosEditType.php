@@ -2,21 +2,26 @@
 
 namespace App\Form\IndicadoresBasicos;
 
-
-use App\Form\IndicadoresBasicosType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class IndicadoresBasicosEditType extends IndicadoresBasicosType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // ✅ Hereda todos los campos base
         parent::buildForm($builder, $options);
 
-        // 🔒 De momento NO agregamos nada extra
-        // Este EditType existe para:
-        // - Escalabilidad futura
-        // - Mantener el mismo patrón que Personal
-        // - Evitar refactors después
+        $builder->add('activo', ChoiceType::class, [
+        'label' => 'Estado',
+        'choices' => [
+            'Activo' => true,
+            'Inactivo' => false,
+        ],
+        'expanded' => false,
+        'multiple' => false,
+        'attr' => [
+            'class' => 'indicadores-select-pta'
+        ]
+    ]);
     }
 }

@@ -25,6 +25,9 @@
 			<link rel="stylesheet" href="{{ asset('css/departamento/departamento.css') }}">
 			<link rel="stylesheet" href="{{ asset('css/puesto/puesto.css') }}">
 			<link rel="stylesheet" href="{{ asset('css/indicadores_basicos/indicadores_basicos.css') }}">
+			<link rel="stylesheet" href="{{ asset('css/partidas_presupuestales/partidas_presupuestales.css') }}">
+			<link rel="stylesheet" href="{{ asset('css/proceso_clave/proceso_clave.css') }}">
+			<link rel="stylesheet" href="{{ asset('css/proceso_estrategico/proceso_estrategico.css') }}">
 			<link rel="stylesheet" href="{{ asset('libs/bootstrap-icons/bootstrap-icons.css') }}">
 		{% endblock %}
 
@@ -32,9 +35,12 @@
 			<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 			<script src="{{ asset('js/pta/new.js') }}" defer></script>
 			<script src="{{ asset('js/pta/graficas.js') }}" defer></script>
-			<script src="{{ asset('js/pta/filtro-personal-index.js') }}" defer></script>
+			<script src="{{ asset('js/filtros/filtro-personal-index.js') }}" defer></script>
 			<script src="{{ asset('js/pta/pta-responsables.js') }}" defer></script>
-			<script src="{{ asset('js/pta/filtro-indicadores-index.js') }}" defer></script>
+			<script src="{{ asset('js/filtros/filtro-indicadores-index.js') }}" defer></script>
+			<script src="{{ asset('js/filtros/filtro-partidas_presupuestales_index.js') }}" defer></script>
+			<script src="{{ asset('js/filtros/filtro-proceso_clave_index.js') }}" defer></script>
+			<script src="{{ asset('js/filtros/filtro-proceso_estrategico_index.js') }}" defer></script>
 			<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 		{% endblock %}
 

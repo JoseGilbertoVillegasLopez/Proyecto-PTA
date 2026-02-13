@@ -8,7 +8,7 @@
 		   ===================================================== #}
 		<div class="indicadores-basicos-index__toolbar">
 			<h1 class="indicadores-basicos-index__title">
-				Indicadores básicos
+				Lista de indicadores básicos
 			</h1>
 		</div>
 
@@ -51,6 +51,7 @@
 						<th>Indicador</th>
 						<th>Fórmula</th>
 						<th>Observaciones</th>
+						<th>Estado</th>
 						<th>Acciones</th>
 					</tr>
 				</thead>
@@ -69,6 +70,12 @@
 
 							<td class="indicadores-basicos-observaciones">
 								{{ indicador.observaciones ?: '—' }}
+							</td>
+
+							<td>
+								<span class="indicadores-basicos-index__badge {{ indicador.isActivo() ? 'is-active' : 'is-inactive' }}">
+									{{ indicador.isActivo() ? 'Activo' : 'Inactivo' }}
+								</span>
 							</td>
 
 							<td>
@@ -99,7 +106,7 @@
 					{% else %}
 						<tr>
 							<td
-								colspan="4"
+								colspan="5"
 								class="indicadores-basicos-index__empty">
 
 								No se encontraron indicadores básicos
