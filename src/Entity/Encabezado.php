@@ -58,12 +58,20 @@ class Encabezado
     #[ORM\Column]
     private ?int $anioEjecucion = null;
 
+    /**
+     * @var Collection<int, ReportePtaIndicador>
+     */
+    #[ORM\OneToMany(targetEntity: ReportePtaIndicador::class, mappedBy: 'encabezado')]
+    private Collection $reportePtaIndicadors;
+
+
 
 
     public function __construct()
     {
         $this->indicadores = new ArrayCollection();
         $this->acciones = new ArrayCollection();
+        $this->reportePtaIndicadors = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -228,6 +236,36 @@ class Encabezado
     public function setAnioEjecucion(int $anioEjecucion): static
     {
         $this->anioEjecucion = $anioEjecucion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReportePtaIndicador>
+     */
+    public function getReportePtaIndicadors(): Collection
+    {
+        return $this->reportePtaIndicadors;
+    }
+
+    public function addReportePtaIndicador(ReportePtaIndicador $reportePtaIndicador): static
+    {
+        if (!$this->reportePtaIndicadors->contains($reportePtaIndicador)) {
+            $this->reportePtaIndicadors->add($reportePtaIndicador);
+            $reportePtaIndicador->setEncabezado($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReportePtaIndicador(ReportePtaIndicador $reportePtaIndicador): static
+    {
+        if ($this->reportePtaIndicadors->removeElement($reportePtaIndicador)) {
+            // set the owning side to null (unless already changed)
+            if ($reportePtaIndicador->getEncabezado() === $this) {
+                $reportePtaIndicador->setEncabezado(null);
+            }
+        }
 
         return $this;
     }
