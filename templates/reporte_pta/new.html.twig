@@ -1,0 +1,235 @@
+<turbo-frame id="content">
+
+	<div data-reporte-form="reporte-new" data-procesos-estrategicos='{{ datos.catalogos.procesos_estrategicos|json_encode|raw }}' data-procesos-clave='{{ datos.catalogos.procesos_clave|json_encode|raw }}' data-partidas-presupuestales='{{ datos.catalogos.partidas_presupuestales|json_encode|raw }}'>
+		<form method="POST" action="{{ path('app_reporte_pta_new', { id: datos.pta.id, trimestre: datos.trimestre }) }}" enctype="multipart/form-data">
+			<input type="hidden" name="_token" value="{{ csrf_token }}">
+			<div
+				class="container py-4">
+
+				{# ================= BOTÓN VOLVER ================= #}
+				<button type="button" class="btn btn-outline-secondary mb-3">
+					← Volver
+				</button>
+
+				{# ================= TÍTULO DINÁMICO ================= #}
+
+				{% set trimestreTexto = {
+                1: 'Enero - Marzo',
+                2: 'Enero - Junio',
+                3: 'Enero - Septiembre',
+                4: 'Enero - Diciembre'
+            } %}
+
+				<h2 class="mb-4">
+					Reporte PTA Trimestre
+					{{ trimestreTexto[datos.trimestre] }}
+				</h2>
+
+				{# ================= CARD INFORMACIÓN PTA ================= #}
+
+				<div class="card mb-4 shadow-sm">
+					<div class="card-body">
+						<p>
+							<strong># PTA:</strong>
+							{{ datos.pta.id ?? 'N/A' }}</p>
+						<p>
+							<strong>Nombre:</strong>
+							{{ datos.pta.nombre }}</p>
+						<p>
+							<strong>Objetivo:</strong>
+							{{ datos.pta.objetivo }}</p>
+					</div>
+				</div>
+
+				{# ================= ACCORDION INDICADORES ================= #}
+
+				<div class="accordion" id="accordionIndicadores">
+
+					{% for indice, data in datos.resultados %}
+						{% set isFirst = loop.first %}
+
+						<div class="accordion-item mb-4">
+
+							<h2 class="accordion-header">
+								<button class="accordion-button {{ not isFirst ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ indice }}" aria-expanded="{{ isFirst ? 'true' : 'false' }}">
+									{{ data.nombre }}
+								</button>
+							</h2>
+
+							<div id="collapse{{ indice }}" class="accordion-collapse collapse {{ isFirst ? 'show' : '' }}" data-bs-parent="#accordionIndicadores">
+
+								<div
+									class="accordion-body">
+
+									{# ================= CARD 1: DATOS ESTÁTICOS ================= #}
+
+									<div class="card mb-3">
+										<div class="card-header">Datos del Indicador</div>
+										<div class="card-body">
+
+											<p>
+												<strong>Meta del Año:</strong>
+												{{ data.meta }}</p>
+											<p>
+												<strong>Resultado al Trimestre:</strong>
+												{{ data.resultado }}</p>
+											<p>
+												<strong>Responsable (Puesto):</strong>
+												{{ datos.pta.puesto_responsable }}</p>
+
+											{% if data.porcentaje >= 100 %}
+												<p class="text-success fw-bold">
+													Meta cumplida al 100%
+												</p>
+											{% endif %}
+
+											<p>
+												<strong>Fórmula Descripción:</strong>
+												{{ data.formula_descripcion }}</p>
+
+										</div>
+									</div>
+
+									{# ================= CARD 2: DATOS DINÁMICOS ================= #}
+
+									<div class="card mb-3">
+										<div class="card-header">Información del Reporte</div>
+										<div class="card-body">
+
+											<div class="mb-3">
+												<label class="form-label">Indicador Básico que aplica</label>
+												<select class="form-select" name="reporte[indicadores][{{ indice }}][indicador_basico]">
+													<option value="">Seleccione...</option>
+													{% for ib in datos.catalogos.indicadores_basicos %}
+														<option value="{{ ib.id }}">
+															{{ ib.nombreIndicador }}
+														</option>
+													{% endfor %}
+												</select>
+											</div>
+
+											<div class="mb-3">
+												<label class="form-label">Unidad de Medida</label>
+												<input type="text" class="form-control" name="reporte[indicadores][{{ indice }}][unidad_medida]">
+											</div>
+
+											<div class="mb-3">
+												<label class="form-label">Medio de Verificación</label>
+												<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][medio_verificacion]"></textarea>
+											</div>
+
+											{% if data.porcentaje < 100 %}
+												<div class="mb-3">
+													<label class="form-label">Justificación de Meta</label>
+													<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][justificacion_meta]"></textarea>
+												</div>
+											{% endif %}
+
+											<div class="mb-3">
+												<label class="form-label">Fórmula (opcional)</label>
+												<textarea class="form-control" rows="2" name="reporte[indicadores][{{ indice }}][formula_opcional]"></textarea>
+											</div>
+
+										</div>
+									</div>
+
+									{# ================= CARD 3: ACCIONES ================= #}
+
+									<div class="card mb-3">
+										<div class="card-header text-center">
+											Acciones
+										</div>
+
+										<div class="card-body">
+
+											<div class="acciones-container" data-indicador-index="{{ indice }}" data-accion-index="0"></div>
+
+											<button type="button" class="btn btn-outline-primary add-accion mt-2">
+												Agregar Acción
+											</button>
+
+										</div>
+									</div>
+
+									{# ================= CARD 4: SOLICITUD DE GASTOS ================= #}
+
+									<div class="card mb-3">
+
+										<div class="card-header" style="cursor:pointer;" data-bs-toggle="collapse" data-bs-target="#collapseGastos{{ indice }}">
+
+											<strong>Solicitud de Gastos</strong>
+										</div>
+
+										<div id="collapseGastos{{ indice }}" class="collapse">
+
+											<div class="card-body">
+
+												<div class="gastos-container" data-indicador-index="{{ indice }}"></div>
+
+											</div>
+
+										</div>
+
+									</div>
+
+									{# ================= CARD 5: EVIDENCIAS ================= #}
+
+									<div class="card mb-3">
+
+										<div class="card-header" style="cursor:pointer;" data-bs-toggle="collapse" data-bs-target="#collapseEvidencias{{ indice }}">
+
+											<strong>Evidencias del Indicador</strong>
+										</div>
+
+										<div id="collapseEvidencias{{ indice }}" class="collapse">
+
+											<div class="card-body">
+
+												<div class="evidencias-container" data-indicador-index="{{ indice }}" data-bloque-index="0">
+
+													<button type="button" class="btn btn-outline-primary mt-3 add-evidencia">
+														Agregar Evidencia
+													</button>
+
+													<small class="text-muted d-block mt-2">
+														Máximo 3 bloques. Cada bloque puede contener hasta 4 imágenes (máx 5MB cada una).
+													</small>
+
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+								</div>
+
+							</div>
+
+						{% endfor %}
+
+					</div>
+
+				</div>
+			</div>
+			<div class="text-end mt-4">
+				<button type="submit" class="btn btn-success">
+					Guardar Reporte
+				</button>
+			</div>
+		</form>
+
+		<div class="modal fade" id="modalErroresReporte" tabindex="-1">
+			<div class="modal-dialog modal-lg modal-dialog-centered">
+				<div class="modal-content border-danger">
+					<div class="modal-header bg-danger text-white">
+						<h5 class="modal-title">Errores en el reporte</h5>
+						<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+					</div>
+					<div class="modal-body">
+						<ul id="listaErroresReporte" class="mb-0"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</turbo-frame>

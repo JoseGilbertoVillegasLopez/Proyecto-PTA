@@ -55,15 +55,6 @@ Sfjs.loadToolbar();
 
 					{% endif %}
 
-					{% if ptaAccess.scope in ['GLOBAL', 'JERARQUICO'] %}
-						<li class="pta-dashboard-menu-item">
-							<a href="{{ path('app_admin_dashboard', { section: 'monitoreo' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
-								Monitoreo PTA
-							</a>
-						</li>
-					{% endif %}
-
-
 					<li class="pta-dashboard-menu-item">
 						<a href="{{ path('app_admin_dashboard', { section: 'indicadores_basicos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 							Indicadores básicos
@@ -101,6 +92,14 @@ Sfjs.loadToolbar();
 							Historial PTA
 						</a>
 					</li>
+
+					{% if ptaAccess.scope in ['GLOBAL', 'JERARQUICO'] %}
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'monitoreo' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Monitoreo PTA
+							</a>
+						</li>
+					{% endif %}
 
 				</ul>
 

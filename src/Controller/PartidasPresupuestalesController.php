@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('admin/partidas_presupuestales')]
+#[Route('partidas_presupuestales')]
 final class PartidasPresupuestalesController extends AbstractController
 {
     #[Route(name: 'app_partidas_presupuestales_index', methods: ['GET'])]

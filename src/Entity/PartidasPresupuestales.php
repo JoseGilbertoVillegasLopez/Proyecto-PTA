@@ -13,11 +13,11 @@ class PartidasPresupuestales
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $capitulo = null;
+    #[ORM\Column (length: 255)]
+    private ?string $capitulo = null;
 
-    #[ORM\Column]
-    private ?int $partida = null;
+    #[ORM\Column (length: 255)]
+    private ?string $partida = null;
 
     #[ORM\Column(length: 255)]
     private ?string $descripcion = null;
@@ -31,7 +31,7 @@ class PartidasPresupuestales
         return $this->id;
     }
 
-    public function getCapitulo(): ?int
+    public function getCapitulo(): ?string
     {
         return $this->capitulo;
     }
@@ -43,7 +43,7 @@ class PartidasPresupuestales
         return $this;
     }
 
-    public function getPartida(): ?int
+    public function getPartida(): ?string
     {
         return $this->partida;
     }

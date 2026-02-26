@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('admin/proceso_clave')]
+#[Route('proceso_clave')]
 final class ProcesoClaveController extends AbstractController
 {
     #[Route(name: 'app_proceso_clave_index', methods: ['GET'])]

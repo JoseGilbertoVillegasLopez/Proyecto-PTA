@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('admin/indicadores_basicos')]
+#[Route('indicadores_basicos')]
 final class IndicadoresBasicosController extends AbstractController
 {
     #[Route(name: 'app_indicadores_basicos_index', methods: ['GET'])]
