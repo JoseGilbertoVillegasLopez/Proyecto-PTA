@@ -40,7 +40,12 @@ class ReportePtaTrimestre
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $entregadoFecha = null;
 
-    #[ORM\OneToMany(mappedBy: 'reporteTrimestre', targetEntity: ReportePtaIndicador::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(
+    mappedBy: 'reporteTrimestre',
+    targetEntity: ReportePtaIndicador::class,
+    cascade: ['persist', 'remove'],
+    orphanRemoval: true
+)]
     private Collection $reportePtaIndicadors;
 
     public function __construct()
@@ -65,8 +70,35 @@ class ReportePtaTrimestre
     public function getCreadoFecha(): ?\DateTime { return $this->creadoFecha; }
     public function setCreadoFecha(\DateTime $fecha): static { $this->creadoFecha = $fecha; return $this; }
 
-    public function getEntregadoFecha(): ?\DateTime { return $this->entregadoFecha; }
-    public function setEntregadoFecha(?\DateTime $fecha): static { $this->entregadoFecha = $fecha; return $this; }
+    public function getEntregadoFecha(): ?\DateTimeInterface
+{
+    return $this->entregadoFecha;
+}
+
+public function setEntregadoFecha(?\DateTimeInterface $entregadoFecha): self
+{
+    $this->entregadoFecha = $entregadoFecha;
+    return $this;
+}
 
     public function getReportePtaIndicadors(): Collection { return $this->reportePtaIndicadors; }
+
+    public function addReportePtaIndicador(ReportePtaIndicador $indicador): static
+{
+    if (!$this->reportePtaIndicadors->contains($indicador)) {
+        $this->reportePtaIndicadors->add($indicador);
+        $indicador->setReporteTrimestre($this);
+    }
+
+    return $this;
+}
+
+public function removeReportePtaIndicador(ReportePtaIndicador $indicador): static
+{
+    // orphanRemoval=true => al quitarlo de la colección, Doctrine lo elimina.
+    // No hacemos set null porque el JoinColumn del hijo es nullable=false.
+    $this->reportePtaIndicadors->removeElement($indicador);
+
+    return $this;
+}
 }

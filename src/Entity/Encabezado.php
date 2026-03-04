@@ -32,15 +32,24 @@ class Encabezado
     #[ORM\Column]
     private ?bool $status = null;
 
-    #[ORM\ManyToOne(inversedBy: 'pta')]
+    #[ORM\ManyToOne(inversedBy: 'pta', targetEntity: Personal::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Personal $responsable = null;
 
-    #[Assert\Count(min: 1, minMessage: 'Debe agregar al menos un indicador.')]
-    #[ORM\OneToMany(mappedBy: 'encabezado', targetEntity: Indicadores::class, cascade: ['persist', 'remove'])]
+    /**
+     * @var Collection<int, Indicadores>
+     */
+    #[Assert\Count(
+        min: 1,
+        minMessage: 'Debe agregar al menos un indicador.'
+    )]
+    #[ORM\OneToMany(targetEntity: Indicadores::class, mappedBy: 'encabezado', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $indicadores;
 
-    #[ORM\OneToMany(mappedBy: 'encabezado', targetEntity: Acciones::class, cascade: ['persist', 'remove'])]
+    /**
+     * @var Collection<int, Acciones>
+     */
+    #[ORM\OneToMany(targetEntity: Acciones::class, mappedBy: 'encabezado', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $acciones;
 
     #[ORM\OneToOne(mappedBy: 'encabezado', cascade: ['persist', 'remove'])]
@@ -49,6 +58,9 @@ class Encabezado
     #[ORM\Column]
     private ?int $anioEjecucion = null;
 
+    /**
+     * NUEVA RELACIÓN: ReportePtaTrimestre
+     */
     #[ORM\OneToMany(mappedBy: 'encabezado', targetEntity: ReportePtaTrimestre::class, cascade: ['persist', 'remove'])]
     private Collection $reportePtaTrimestres;
 
@@ -79,33 +91,71 @@ class Encabezado
     public function getResponsable(): ?Personal { return $this->responsable; }
     public function setResponsable(?Personal $responsable): static { $this->responsable = $responsable; return $this; }
 
+    /**
+     * @return Collection<int, Indicadores>
+     */
     public function getIndicadores(): Collection { return $this->indicadores; }
-    public function getAcciones(): Collection { return $this->acciones; }
+
+    public function addIndicadore(Indicadores $indicadore): static
+    {
+        if (!$this->indicadores->contains($indicadore)) {
+            $this->indicadores->add($indicadore);
+            $indicadore->setEncabezado($this);
+        }
+        return $this;
+    }
+
+    public function removeIndicadore(Indicadores $indicadore): static
+    {
+        if ($this->indicadores->removeElement($indicadore)) {
+            if ($indicadore->getEncabezado() === $this) {
+                $indicadore->setEncabezado(null);
+            }
+        }
+        return $this;
+    }
 
     /**
-     * ===============================
-     * RELACIÓN CON RESPONSABLES
-     * ===============================
+     * @return Collection<int, Acciones>
      */
-    public function getResponsables(): ?Responsables
+    public function getAcciones(): Collection { return $this->acciones; }
+
+    public function addAccione(Acciones $accione): static
     {
-        return $this->responsables;
+        if (!$this->acciones->contains($accione)) {
+            $this->acciones->add($accione);
+            $accione->setEncabezado($this);
+        }
+        return $this;
     }
+
+    public function removeAccione(Acciones $accione): static
+    {
+        if ($this->acciones->removeElement($accione)) {
+            if ($accione->getEncabezado() === $this) {
+                $accione->setEncabezado(null);
+            }
+        }
+        return $this;
+    }
+
+    public function getResponsables(): ?Responsables { return $this->responsables; }
 
     public function setResponsables(Responsables $responsables): static
     {
         if ($responsables->getEncabezado() !== $this) {
             $responsables->setEncabezado($this);
         }
-
         $this->responsables = $responsables;
-
         return $this;
     }
 
     public function getAnioEjecucion(): ?int { return $this->anioEjecucion; }
     public function setAnioEjecucion(int $anioEjecucion): static { $this->anioEjecucion = $anioEjecucion; return $this; }
 
+    /**
+     * MÉTODOS PARA REPORTE PTA TRIMESTRE
+     */
     public function getReportePtaTrimestres(): Collection { return $this->reportePtaTrimestres; }
 
     public function addReportePtaTrimestre(ReportePtaTrimestre $trimestre): static

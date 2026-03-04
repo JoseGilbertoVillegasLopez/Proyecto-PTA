@@ -20,7 +20,7 @@ class ReportePtaEvidencias
     #[ORM\Column(type: Types::TEXT)]
     private ?string $descripcion = null;
 
-    #[ORM\ManyToOne(inversedBy: 'repostePtaEvidencias')]
+    #[ORM\ManyToOne(inversedBy: 'reportePtaEvidencias')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ReportePtaIndicador $reportePtaIndicador = null;
 

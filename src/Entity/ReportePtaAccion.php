@@ -34,8 +34,13 @@ class ReportePtaAccion
     /**
      * @var Collection<int, ReportePtaAccionPartida>
      */
-    #[ORM\OneToMany(targetEntity: ReportePtaAccionPartida::class, mappedBy: 'reporteAccion')]
-    private Collection $reportePtaAccionPartidas;
+    #[ORM\OneToMany(
+    targetEntity: ReportePtaAccionPartida::class,
+    mappedBy: 'reporteAccion',
+    cascade: ['persist', 'remove'],
+    orphanRemoval: true
+)]
+private Collection $reportePtaAccionPartidas;
 
     public function __construct()
     {
@@ -114,14 +119,10 @@ class ReportePtaAccion
     }
 
     public function removeReportePtaAccionPartida(ReportePtaAccionPartida $reportePtaAccionPartida): static
-    {
-        if ($this->reportePtaAccionPartidas->removeElement($reportePtaAccionPartida)) {
-            // set the owning side to null (unless already changed)
-            if ($reportePtaAccionPartida->getReporteAccion() === $this) {
-                $reportePtaAccionPartida->setReporteAccion(null);
-            }
-        }
+{
+    // Con orphanRemoval=true NO necesitamos setear null (y nullable=false lo prohíbe).
+    $this->reportePtaAccionPartidas->removeElement($reportePtaAccionPartida);
 
-        return $this;
-    }
+    return $this;
+}
 }

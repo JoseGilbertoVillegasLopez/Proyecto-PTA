@@ -54,14 +54,19 @@ class ReportePtaIndicador
     #[ORM\JoinColumn(nullable: false)]
     private ?Puesto $responsablePuesto = null;
 
-    #[ORM\OneToMany(mappedBy: 'reporteIndicador', targetEntity: ReportePtaAccion::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'reporteIndicador', targetEntity: ReportePtaAccion::class, cascade: ['persist', 'remove'],orphanRemoval: true)]
     private Collection $reportePtaAccions;
 
     /**
      * @var Collection<int, ReportePtaEvidencias>
      */
-    #[ORM\OneToMany(targetEntity: ReportePtaEvidencias::class, mappedBy: 'reportePtaIndicador')]
-    private Collection $reportePtaEvidencias;
+    #[ORM\OneToMany(
+    targetEntity: ReportePtaEvidencias::class,
+    mappedBy: 'reportePtaIndicador',
+    cascade: ['persist', 'remove'],
+    orphanRemoval: true
+)]
+private Collection $reportePtaEvidencias;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $formulaDescripcion = null;
@@ -108,6 +113,23 @@ class ReportePtaIndicador
     public function setResponsablePuesto(?Puesto $puesto): static { $this->responsablePuesto = $puesto; return $this; }
 
     public function getReportePtaAccions(): Collection { return $this->reportePtaAccions; }
+    public function addReportePtaAccion(ReportePtaAccion $accion): static
+{
+    if (!$this->reportePtaAccions->contains($accion)) {
+        $this->reportePtaAccions->add($accion);
+        $accion->setReporteIndicador($this);
+    }
+
+    return $this;
+}
+
+public function removeReportePtaAccion(ReportePtaAccion $accion): static
+{
+    // Con orphanRemoval=true NO se debe setear null (nullable=false)
+    $this->reportePtaAccions->removeElement($accion);
+
+    return $this;
+}
 
     /**
      * @return Collection<int, ReportePtaEvidencias>
@@ -128,16 +150,12 @@ class ReportePtaIndicador
     }
 
     public function removeReportePtaEvidencia(ReportePtaEvidencias $reportePtaEvidencia): static
-    {
-        if ($this->reportePtaEvidencias->removeElement($reportePtaEvidencia)) {
-            // set the owning side to null (unless already changed)
-            if ($reportePtaEvidencia->getReportePtaIndicador() === $this) {
-                $reportePtaEvidencia->setReportePtaIndicador(null);
-            }
-        }
+{
+    // orphanRemoval=true => con quitarlo de la colección basta (y nullable=false prohíbe null)
+    $this->reportePtaEvidencias->removeElement($reportePtaEvidencia);
 
-        return $this;
-    }
+    return $this;
+}
 
     public function getFormulaDescripcion(): ?string
     {

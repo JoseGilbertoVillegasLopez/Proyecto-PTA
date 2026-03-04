@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\RepostePtaEvidencias;
+use App\Entity\ReportePtaEvidencias;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<RepostePtaEvidencias>
+ * @extends ServiceEntityRepository<ReportePtaEvidencias>
  */
-class RepostePtaEvidenciasRepository extends ServiceEntityRepository
+class ReportePtaEvidenciasRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, RepostePtaEvidencias::class);
+        parent::__construct($registry, ReportePtaEvidencias::class);
     }
 
     //    /**
-    //     * @return RepostePtaEvidencias[] Returns an array of RepostePtaEvidencias objects
+    //     * @return ReportePtaEvidencias[] Returns an array of ReportePtaEvidencias objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class RepostePtaEvidenciasRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?RepostePtaEvidencias
+    //    public function findOneBySomeField($value): ?ReportePtaEvidencias
     //    {
     //        return $this->createQueryBuilder('r')
     //            ->andWhere('r.exampleField = :val')

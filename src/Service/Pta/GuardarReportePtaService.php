@@ -11,6 +11,7 @@ use App\Entity\ReportePtaEvidencias;
 
 use App\Repository\ReportePtaTrimestreRepository;
 use App\Repository\IndicadoresBasicosRepository;
+use App\Repository\IndicadoresRepository;
 use App\Repository\ProcesoEstrategicoRepository;
 use App\Repository\ProcesoClaveRepository;
 use App\Repository\PartidasPresupuestalesRepository;
@@ -23,6 +24,7 @@ class GuardarReportePtaService
         private EntityManagerInterface $em,
         private ReportePtaTrimestreRepository $trimestreRepo,
         private IndicadoresBasicosRepository $indicadorBasicoRepo,
+        private IndicadoresRepository $indicadorRepo,
         private ProcesoEstrategicoRepository $procesoEstrategicoRepo,
         private ProcesoClaveRepository $procesoClaveRepo,
         private PartidasPresupuestalesRepository $partidaRepo,
@@ -52,6 +54,7 @@ class GuardarReportePtaService
 
             $this->crearIndicadores(
                 $trimestre,
+                $encabezado,
                 $requestData,
                 $files,
                 $datosCalculados,
@@ -67,6 +70,125 @@ class GuardarReportePtaService
             throw $e;
         }
     }
+
+        /**
+     * =========================================================
+     * ACTUALIZAR REPORTE (EDIT)
+     * ---------------------------------------------------------
+     * Elimina hijos y vuelve a crear todo limpio
+     * Mantiene el mismo trimestre (mismo ID)
+     * =========================================================
+     */
+    public function actualizar(
+    Encabezado $encabezado,
+    int $numeroTrimestre,
+    array $requestData,
+    array $files,
+    array $datosCalculados
+): void {
+
+    $this->em->beginTransaction();
+
+    try {
+
+        // =================================================
+        // 1️⃣ Buscar trimestre existente
+        // =================================================
+        $trimestre = $this->trimestreRepo->findOneBy([
+            'encabezado' => $encabezado,
+            'trimestre'  => $numeroTrimestre
+        ]);
+
+        if (!$trimestre) {
+            throw new \DomainException('No existe el reporte para este trimestre.');
+        }
+
+        // =================================================
+        // 2️⃣ Preparar ruta base de uploads
+        // =================================================
+        $rutaBase = $this->projectDir . '/public/uploads/pta/' . $trimestre->getId() . '/';
+
+        if (!is_dir($rutaBase)) {
+            mkdir($rutaBase, 0777, true);
+        }
+
+        // =================================================
+        // 3️⃣ LIMPIAR IMÁGENES FÍSICAS ELIMINADAS (ANTES de borrar BD)
+        // =================================================
+        $this->limpiarImagenesEliminadas($trimestre, $requestData, $rutaBase);
+
+        // =================================================
+        // 4️⃣ Eliminar indicadores hijos (cascade elimina acciones, partidas, evidencias)
+        // =================================================
+        foreach ($trimestre->getReportePtaIndicadors() as $indicador) {
+            $this->em->remove($indicador);
+        }
+
+        $this->em->flush();
+
+        // =================================================
+        // 5️⃣ Volver a crear hijos con datos nuevos
+        // =================================================
+        $this->crearIndicadores(
+            $trimestre,
+            $encabezado,
+            $requestData,
+            $files,
+            $datosCalculados,
+            $rutaBase
+        );
+
+        $this->em->flush();
+        $this->em->commit();
+
+    } catch (\Throwable $e) {
+
+        $this->em->rollback();
+        throw $e;
+    }
+}
+
+
+    private function limpiarImagenesEliminadas(
+    ReportePtaTrimestre $trimestre,
+    array $requestData,
+    string $rutaBase
+): void {
+
+    $imagenesActuales = [];
+
+    // 1️⃣ Obtener todas las imágenes actuales en BD
+    foreach ($trimestre->getReportePtaIndicadors() as $indicador) {
+        foreach ($indicador->getReportePtaEvidencias() as $evidencia) {
+            foreach ($evidencia->getImagenes() ?? [] as $nombre) {
+                $imagenesActuales[] = $nombre;
+            }
+        }
+    }
+
+    // 2️⃣ Obtener imágenes que el usuario decidió conservar
+    $imagenesConservadas = [];
+
+    foreach ($requestData['evidencias'] ?? [] as $indicadorData) {
+        foreach ($indicadorData as $bloque) {
+            foreach ($bloque['imagenes_existentes'] ?? [] as $nombre) {
+                $imagenesConservadas[] = $nombre;
+            }
+        }
+    }
+
+    // 3️⃣ Calcular cuáles eliminar
+    $imagenesAEliminar = array_diff($imagenesActuales, $imagenesConservadas);
+
+    // 4️⃣ Eliminar físicamente
+    foreach ($imagenesAEliminar as $nombre) {
+        $ruta = $rutaBase . $nombre;
+        if (file_exists($ruta)) {
+            unlink($ruta);
+        }
+    }
+}
+
 
     private function verificarNoExisteTrimestre(Encabezado $encabezado, int $numero): void
     {
@@ -105,6 +227,7 @@ class GuardarReportePtaService
 
     private function crearIndicadores(
         ReportePtaTrimestre $trimestre,
+        Encabezado $encabezado,
         array $requestData,
         array $files,
         array $datosCalculados,
@@ -119,21 +242,62 @@ class GuardarReportePtaService
             $indicador = new ReportePtaIndicador();
             $indicador->setReporteTrimestre($trimestre);
 
+            // Indicador Básico
             $indicadorBasico = $this->indicadorBasicoRepo
-                ->find($requestIndicador['indicador_basico']);
+                ->find($requestIndicador['indicador_basico'] ?? null);
+
+            if (!$indicadorBasico) {
+                throw new \DomainException("Indicador básico inválido en índice {$indice}");
+            }
 
             $indicador->setIndicadorBasico($indicadorBasico);
-            $indicador->setIndicadorPta($datosIndicador['indicadorPta']);
-            $indicador->setUnidadMedida($requestIndicador['unidad_medida']);
-            $indicador->setMeta($datosIndicador['meta']);
-            $indicador->setResultado($datosIndicador['resultado']);
-            $indicador->setPorcentajeAvance($datosIndicador['porcentaje']);
-            $indicador->setFormulaDescripcion($datosIndicador['formula_descripcion']);
-            $indicador->setMedioVerificacion($requestIndicador['medio_verificacion']);
-            $indicador->setMetaCumplida(
-                $datosIndicador['porcentaje'] >= 100 ? 'Sí' : 'No'
-            );
-            $indicador->setResponsablePuesto($datosIndicador['responsablePuesto']);
+
+            // Indicador PTA (Entidad real)
+            $indicadorPtaId = $datosIndicador['id'] ?? null;
+            $indicadorPta = $indicadorPtaId
+                ? $this->indicadorRepo->find($indicadorPtaId)
+                : null;
+
+            if (!$indicadorPta) {
+                throw new \DomainException("Indicador PTA inválido (id={$indicadorPtaId})");
+            }
+
+            $indicador->setIndicadorPta($indicadorPta);
+
+            // Responsable Puesto
+            $responsable = $encabezado->getResponsable();
+            $puesto = $responsable ? $responsable->getPuesto() : null;
+
+            if (!$puesto) {
+                throw new \DomainException("No se pudo obtener el Puesto responsable.");
+            }
+
+            $indicador->setResponsablePuesto($puesto);
+
+            // Campos simples
+            $indicador->setUnidadMedida($requestIndicador['unidad_medida'] ?? '');
+            $indicador->setMeta($datosIndicador['meta'] ?? '0');
+            $indicador->setResultado($datosIndicador['resultado'] ?? '0');
+            $indicador->setPorcentajeAvance((string)($datosIndicador['porcentaje'] ?? '0'));
+            $indicador->setFormulaDescripcion($datosIndicador['formula_descripcion'] ?? '');
+            $indicador->setMedioVerificacion($requestIndicador['medio_verificacion'] ?? '');
+
+            // Formula opcional
+            $formulaOpcional = trim($requestIndicador['formula_opcional'] ?? '');
+            if ($formulaOpcional !== '') {
+                $indicador->setFormula($formulaOpcional);
+            }
+
+            // Meta cumplida
+            $porcentaje = (float)($datosIndicador['porcentaje'] ?? 0);
+            if ($porcentaje >= 100) {
+                $indicador->setMetaCumplida('Sí');
+            } else {
+                $justificacion = trim($requestIndicador['justificacion_meta'] ?? '');
+                $indicador->setMetaCumplida(
+                    $justificacion !== '' ? $justificacion : 'No'
+                );
+            }
 
             $this->em->persist($indicador);
 
@@ -154,13 +318,22 @@ class GuardarReportePtaService
 
             $accion = new ReportePtaAccion();
             $accion->setReporteIndicador($indicador);
-            $accion->setAccion($accionData['descripcion']);
+            $accion->setAccion($accionData['descripcion'] ?? '');
+
+            $gastoAccion = $requestData['gastos'][$indice][$accionIndex] ?? null;
+            if (!$gastoAccion) {
+                throw new \DomainException("Faltan datos de gastos para indicador {$indice}, acción {$accionIndex}");
+            }
 
             $procesoE = $this->procesoEstrategicoRepo
-                ->find($requestData['gastos'][$indice][$accionIndex]['proceso_estrategico']);
+                ->find($gastoAccion['proceso_estrategico'] ?? null);
 
             $procesoC = $this->procesoClaveRepo
-                ->find($requestData['gastos'][$indice][$accionIndex]['proceso_clave']);
+                ->find($gastoAccion['proceso_clave'] ?? null);
+
+            if (!$procesoE || !$procesoC) {
+                throw new \DomainException("Proceso estratégico o clave inválido.");
+            }
 
             $accion->setProcesoEstrategico($procesoE);
             $accion->setProcesoClave($procesoC);
@@ -182,14 +355,15 @@ class GuardarReportePtaService
 
         foreach ($partidas as $partidaData) {
 
+            $entidadPartida = $this->partidaRepo
+                ->find($partidaData['partida_id'] ?? null);
+
+            if (!$entidadPartida) continue;
+
             $partida = new ReportePtaAccionPartida();
             $partida->setReporteAccion($accion);
-
-            $entidadPartida = $this->partidaRepo
-                ->find($partidaData['partida_id']);
-
             $partida->setPartidaPresupuestal($entidadPartida);
-            $partida->setCantidad($partidaData['monto']);
+            $partida->setCantidad($partidaData['monto'] ?? 0);
 
             $this->em->persist($partida);
         }
@@ -208,23 +382,45 @@ class GuardarReportePtaService
 
         foreach ($bloquesDescripcion as $bloqueIndex => $bloqueData) {
 
-            $imagenesGuardadas = [];
+            // ======================================================
+// 1️⃣ Imágenes existentes (EDIT)
+// ======================================================
+$imagenesGuardadas = $bloqueData['imagenes_existentes'] ?? [];
 
-            if (isset($bloquesFiles[$bloqueIndex]['imagenes'])) {
+if (!is_array($imagenesGuardadas)) {
+    $imagenesGuardadas = [];
+}
 
-                foreach ($bloquesFiles[$bloqueIndex]['imagenes'] as $file) {
+// Seguridad básica (evitar rutas raras)
+$imagenesGuardadas = array_values(array_filter(array_map(function ($n) {
+    return basename((string)$n);
+}, $imagenesGuardadas)));
 
-                    if (!$file) continue;
 
-                    $extension = $file->guessExtension() ?: 'jpg';
+// ======================================================
+// 2️⃣ Imágenes nuevas subidas
+// ======================================================
+if (isset($bloquesFiles[$bloqueIndex]['imagenes'])) {
 
-                    // 🔥 UUID nativo sin dependencias
-                    $nombre = bin2hex(random_bytes(16)) . '.' . $extension;
+    foreach ($bloquesFiles[$bloqueIndex]['imagenes'] as $file) {
 
-                    $file->move($rutaBase, $nombre);
-                    $imagenesGuardadas[] = $nombre;
-                }
-            }
+        if (!$file) continue;
+
+        $extension = $file->guessExtension() ?: 'jpg';
+        $nombre = bin2hex(random_bytes(16)) . '.' . $extension;
+
+        $file->move($rutaBase, $nombre);
+        $imagenesGuardadas[] = $nombre;
+    }
+}
+
+
+// ======================================================
+// 3️⃣ Límite máximo 4 imágenes
+// ======================================================
+if (count($imagenesGuardadas) > 4) {
+    throw new \DomainException("Máximo 4 imágenes por bloque.");
+}
 
             $evidencia = new ReportePtaEvidencias();
             $evidencia->setReportePtaIndicador($indicador);
