@@ -628,8 +628,8 @@ function renderBotonAgregar(container, bloque, indicadorIndex, bloqueIndex) {
     const card = document.createElement("div");
     card.classList.add("evidencia-card", "add-button");
 
-    card.style.width = "120px";
-    card.style.height = "120px";
+    card.style.width = "200px";
+    card.style.height = "200px";
     card.style.border = "2px dashed #ccc";
     card.style.display = "flex";
     card.style.alignItems = "center";
@@ -675,8 +675,8 @@ function renderBotonAgregar(container, bloque, indicadorIndex, bloqueIndex) {
 function mostrarPreview(container, file, input) {
     const card = document.createElement("div");
     card.classList.add("evidencia-card");
-    card.style.width = "120px";
-    card.style.height = "120px";
+    card.style.width = "200px";
+    card.style.height = "200px";
     card.style.position = "relative";
     card.style.border = "1px solid #ddd";
 
