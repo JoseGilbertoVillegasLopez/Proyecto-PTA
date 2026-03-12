@@ -1,0 +1,182 @@
+{# templates/admin/emails/pta_acciones_sin_avance.html.twig #}
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<title>{{ appName }}
+			— Notificación PTA</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+
+	<body style="margin:0;padding:0;background:#f6f7fb;font-family:Arial, Helvetica, sans-serif;color:#111;">
+		<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f7fb;padding:24px 0;">
+			<tr>
+				<td align="center">
+
+					<table
+						role="presentation" width="600" cellspacing="0" cellpadding="0" style="background:#ffffff;border-radius:10px;overflow:hidden;">
+						<!-- HEADER -->
+						<tr>
+							<td style="background:#111827;color:#fff;padding:16px 24px;font-size:18px;font-weight:bold;">
+								{{ appName }}
+								— Notificación
+							</td>
+						</tr>
+
+						<!-- BODY -->
+						<tr>
+							<td style="padding:24px;">
+								<p style="margin:0 0 12px 0;font-size:13px;color:#6b7280;">
+									{{ fecha|date('d/m/Y H:i') }}
+								</p>
+
+								{# MENSAJE PRINCIPAL SEGÚN TIPO #}
+								{% set mensaje = '' %}
+								{% if tipoAviso == 'PRIMER_AVISO' %}
+									{% set mensaje = 'El siguiente PTA presenta acciones sin avance registrado en el periodo correspondiente. Registre avances antes de terminar el mes.' %}
+								{% elseif tipoAviso == 'SEGUNDO_AVISO' %}
+									{% set mensaje = 'El siguiente PTA presenta acciones sin avance registrado en el periodo correspondiente. Registre avances lo antes posible; el periodo establecido está por concluir.' %}
+								{% else %}
+									{% set mensaje = 'El siguiente PTA no registró avances en el periodo establecido. Por favor guarde información y documentos para justificar la falta de avances en ese periodo para posibles auditorías o justificación con su supervisor.' %}
+								{% endif %}
+
+								<!-- BLOQUE DE ADVERTENCIA -->
+								<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 16px 0;border-radius:8px;
+																														       {% if tipoAviso == 'PRIMER_AVISO' %}
+																														           background:#ecfeff;border:1px solid #67e8f9;
+																														       {% elseif tipoAviso == 'SEGUNDO_AVISO' %}
+																														           background:#fff7ed;border:1px solid #fdba74;
+																														       {% else %}
+																														           background:#fef2f2;border:1px solid #fca5a5;
+																														       {% endif %}
+																														       ">
+									<tr>
+										<td style="padding:14px 16px;">
+											<h2 style="margin:0 0 6px 0;font-size:18px;
+																																							      {% if tipoAviso == 'PRIMER_AVISO' %}
+																																							          color:#0e7490;
+																																							      {% elseif tipoAviso == 'SEGUNDO_AVISO' %}
+																																							          color:#9a3412;
+																																							      {% else %}
+																																							          color:#991b1b;
+																																							      {% endif %}
+																																							      ">
+												{% if tipoAviso == 'PRIMER_AVISO' %}
+													⚠️ Aviso preventivo
+												{% elseif tipoAviso == 'SEGUNDO_AVISO' %}
+													🚨 Advertencia de seguimiento
+												{% else %}
+													⛔ Aviso administrativo
+												{% endif %}
+											</h2>
+
+											<p style="margin:0;line-height:1.55;font-size:14px;
+																																							      {% if tipoAviso == 'PRIMER_AVISO' %}
+																																							          color:#155e75;
+																																							      {% elseif tipoAviso == 'SEGUNDO_AVISO' %}
+																																							          color:#7c2d12;
+																																							      {% else %}
+																																							          color:#7f1d1d;
+																																							      {% endif %}
+																																							      ">
+												{{ mensaje }}
+											</p>
+										</td>
+									</tr>
+								</table>
+
+
+								<!-- PTA INFO -->
+								<table role="presentation" cellspacing="0" cellpadding="0" style="width:100%;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;margin:8px 0 16px 0;">
+									<tr>
+										<td style="padding:12px 16px;color:#6b7280;width:180px;">Número de PTA</td>
+										<td style="padding:12px 16px;">
+											<strong>#{{ pta.id }}</strong>
+										</td>
+									</tr>
+									<tr>
+										<td style="padding:12px 16px;color:#6b7280;">Nombre</td>
+										<td style="padding:12px 16px;">
+											<strong>{{ pta.nombre }}</strong>
+										</td>
+									</tr>
+									<tr>
+										<td style="padding:12px 16px;color:#6b7280;">Objetivo</td>
+										<td style="padding:12px 16px;">{{ pta.objetivo }}</td>
+									</tr>
+								</table>
+
+								<!-- ACCIONES -->
+								<h3 style="margin:0 0 10px 0;font-size:16px;">Acciones sin registro de avance</h3>
+
+								<table role="presentation" cellspacing="0" cellpadding="0" style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+									<tr>
+										<th align="left" style="background:#f3f4f6;color:#374151;padding:10px 12px;font-size:13px;border-bottom:1px solid #e5e7eb;">
+											Indicador (índice / nombre)
+										</th>
+										<th align="left" style="background:#f3f4f6;color:#374151;padding:10px 12px;font-size:13px;border-bottom:1px solid #e5e7eb;">
+											Acción
+										</th>
+										<th align="left" style="background:#f3f4f6;color:#374151;padding:10px 12px;font-size:13px;border-bottom:1px solid #e5e7eb;">
+											Estado
+										</th>
+									</tr>
+
+									{% for a in acciones %}
+										<tr>
+											<td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;">
+												<strong>{{ a.indiceIndicador }}</strong>
+												—
+												{{ a.indicadorNombre }}
+												<div style="color:#6b7280;font-size:12px;margin-top:3px;">
+													Periodo:
+													{{ a.indicadorPeriodo }}
+												</div>
+											</td>
+											<td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;">
+												{{ a.texto }}
+											</td>
+											<td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;font-size:13px;">
+												<span style="display:inline-block;padding:4px 10px;border-radius:999px;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;font-weight:bold;">
+													Sin registro
+												</span>
+											</td>
+										</tr>
+									{% endfor %}
+								</table>
+
+								<!-- DESPEDIDA -->
+								<p style="margin:20px 0 0 0;line-height:1.6;color:#374151;font-size:14px;">
+									Agradecemos su atención y colaboración para mantener la información
+																		  del PTA actualizada dentro de los periodos establecidos.
+								</p>
+
+								<p style="margin:12px 0 0 0;line-height:1.6;color:#374151;font-size:14px;">
+									Para cualquier aclaración o seguimiento, puede coordinarse directamente
+																		  con su supervisor inmediato.
+								</p>
+
+								<p style="margin:18px 0 0 0;color:#111827;font-size:14px;">
+									Atentamente,<br>
+									<strong>{{ appName }}</strong><br>
+									<span style="color:#6b7280;font-size:13px;">Área de Sistemas</span>
+								</p>
+
+
+							</td>
+						</tr>
+
+						<!-- FOOTER -->
+						<tr>
+							<td style="background:#f3f4f6;color:#6b7280;padding:12px 24px;font-size:12px;">
+								{{ appName }}
+								— Área de Sistemas
+							</td>
+						</tr>
+					</table>
+
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

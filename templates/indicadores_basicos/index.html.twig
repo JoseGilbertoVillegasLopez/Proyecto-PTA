@@ -1,0 +1,122 @@
+<turbo-frame id="content">
+	<section
+		class="indicadores-basicos-index"
+		data-page="indicadores-basicos-index">
+
+		{# =====================================================
+		   TOOLBAR
+		   ===================================================== #}
+		<div class="indicadores-basicos-index__toolbar">
+			<h1 class="indicadores-basicos-index__title">
+				Lista de indicadores básicos
+			</h1>
+		</div>
+
+		{# =====================================================
+		   ACCIONES SUPERIORES
+		   ===================================================== #}
+		<div class="indicadores-basicos-index__table-actions">
+
+			<a
+				href="{{ path('app_indicadores_basicos_new') }}"
+				data-turbo-frame="content"
+				data-turbo-action="advance"
+				class="indicadores-basicos-index__add-btn">
+
+				<i class="bi bi-plus-circle-fill"></i>
+				Crear indicador
+			</a>
+
+			<div class="indicadores-basicos-index__spacer"></div>
+
+			<div class="indicadores-basicos-index__search">
+				<i class="bi bi-search"></i>
+				<input
+					type="text"
+					id="indicadores-basicos-search"
+					placeholder="Buscar indicador..."
+					autocomplete="off">
+			</div>
+
+		</div>
+
+		{# =====================================================
+		   TABLA
+		   ===================================================== #}
+		<div class="indicadores-basicos-index__table-wrapper">
+			<table class="indicadores-basicos-index__table">
+
+				<thead>
+					<tr>
+						<th>Indicador</th>
+						<th>Fórmula</th>
+						<th>Observaciones</th>
+						<th>Estado</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for indicador in indicadores_basicos %}
+						<tr class="indicadores-basicos-row">
+
+							<td class="indicadores-basicos-nombre">
+								{{ indicador.nombreIndicador }}
+							</td>
+
+							<td class="indicadores-basicos-formula">
+								{{ indicador.formula }}
+							</td>
+
+							<td class="indicadores-basicos-observaciones">
+								{{ indicador.observaciones ?: '—' }}
+							</td>
+
+							<td>
+								<span class="indicadores-basicos-index__badge {{ indicador.isActivo() ? 'is-active' : 'is-inactive' }}">
+									{{ indicador.isActivo() ? 'Activo' : 'Inactivo' }}
+								</span>
+							</td>
+
+							<td>
+								<div class="indicadores-basicos-index__actions">
+
+									<a
+										href="{{ path('app_indicadores_basicos_show', { id: indicador.id }) }}"
+										data-turbo-frame="content"
+										data-turbo-action="advance"
+										class="indicadores-basicos-index__action indicadores-basicos-index__action--view">
+
+										<i class="bi bi-eye"></i>
+									</a>
+
+									<a
+										href="{{ path('app_indicadores_basicos_edit', { id: indicador.id }) }}"
+										data-turbo-frame="content"
+										data-turbo-action="advance"
+										class="indicadores-basicos-index__action indicadores-basicos-index__action--edit">
+
+										<i class="bi bi-pencil"></i>
+									</a>
+
+								</div>
+							</td>
+
+						</tr>
+					{% else %}
+						<tr>
+							<td
+								colspan="5"
+								class="indicadores-basicos-index__empty">
+
+								No se encontraron indicadores básicos
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+
+			</table>
+		</div>
+
+	</section>
+</turbo-frame>

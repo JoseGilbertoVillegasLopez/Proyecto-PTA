@@ -32,4 +32,18 @@ class Departamento
 
         return $this;
     }
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $activo = true;
+
+    public function isActivo(): bool
+    {
+        return $this->activo;
+    }
+
+    public function setActivo(bool $activo): static
+    {
+        $this->activo = $activo;
+        return $this;
+    }
 }

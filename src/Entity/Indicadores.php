@@ -36,6 +36,9 @@ class Indicadores
     #[ORM\Column(length: 255)]
     private ?string $tendencia = null;
 
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
+    private ?string $valorBase = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +124,18 @@ class Indicadores
     public function setTendencia(string $tendencia): static
     {
         $this->tendencia = $tendencia;
+
+        return $this;
+    }
+
+    public function getValorBase(): ?string
+    {
+        return $this->valorBase;
+    }
+
+    public function setValorBase(string $valorBase): static
+    {
+        $this->valorBase = $valorBase;
 
         return $this;
     }

@@ -43,110 +43,58 @@ class Encabezado
         min: 1,
         minMessage: 'Debe agregar al menos un indicador.'
     )]
-    #[ORM\OneToMany(targetEntity: Indicadores::class, mappedBy: 'encabezado', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Indicadores::class, mappedBy: 'encabezado', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $indicadores;
 
     /**
      * @var Collection<int, Acciones>
      */
-    #[ORM\OneToMany(targetEntity: Acciones::class, mappedBy: 'encabezado', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Acciones::class, mappedBy: 'encabezado', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $acciones;
 
     #[ORM\OneToOne(mappedBy: 'encabezado', cascade: ['persist', 'remove'])]
     private ?Responsables $responsables = null;
 
+    #[ORM\Column]
+    private ?int $anioEjecucion = null;
 
+    /**
+     * NUEVA RELACIÓN: ReportePtaTrimestre
+     */
+    #[ORM\OneToMany(mappedBy: 'encabezado', targetEntity: ReportePtaTrimestre::class, cascade: ['persist', 'remove'])]
+    private Collection $reportePtaTrimestres;
 
     public function __construct()
     {
         $this->indicadores = new ArrayCollection();
         $this->acciones = new ArrayCollection();
+        $this->reportePtaTrimestres = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getObjetivo(): ?string
-    {
-        return $this->objetivo;
-    }
+    public function getObjetivo(): ?string { return $this->objetivo; }
+    public function setObjetivo(string $objetivo): static { $this->objetivo = $objetivo; return $this; }
 
-    public function setObjetivo(string $objetivo): static
-    {
-        $this->objetivo = $objetivo;
+    public function getNombre(): ?string { return $this->nombre; }
+    public function setNombre(string $nombre): static { $this->nombre = $nombre; return $this; }
 
-        return $this;
-    }
+    public function getFechaCreacion(): ?\DateTime { return $this->fechaCreacion; }
+    public function setFechaCreacion(\DateTime $fechaCreacion): static { $this->fechaCreacion = $fechaCreacion; return $this; }
 
-    public function getNombre(): ?string
-    {
-        return $this->nombre;
-    }
+    public function getFechaConcluido(): ?\DateTime { return $this->fechaConcluido; }
+    public function setFechaConcluido(?\DateTime $fechaConcluido): static { $this->fechaConcluido = $fechaConcluido; return $this; }
 
-    public function setNombre(string $nombre): static
-    {
-        $this->nombre = $nombre;
+    public function isStatus(): ?bool { return $this->status; }
+    public function setStatus(bool $status): static { $this->status = $status; return $this; }
 
-        return $this;
-    }
-
-    public function getFechaCreacion(): ?\DateTime
-    {
-        return $this->fechaCreacion;
-    }
-
-    public function setFechaCreacion(\DateTime $fechaCreacion): static
-    {
-        $this->fechaCreacion = $fechaCreacion;
-
-        return $this;
-    }
-
-    public function getFechaConcluido(): ?\DateTime
-    {
-        return $this->fechaConcluido;
-    }
-
-    public function setFechaConcluido(?\DateTime $fechaConcluido): static
-    {
-        $this->fechaConcluido = $fechaConcluido;
-
-        return $this;
-    }
-
-    public function isStatus(): ?bool
-    {
-        return $this->status;
-    }
-
-    public function setStatus(bool $status): static
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    public function getResponsable(): ?Personal
-    {
-        return $this->responsable;
-    }
-
-    public function setResponsable(?Personal $responsable): static
-    {
-        $this->responsable = $responsable;
-
-        return $this;
-    }
+    public function getResponsable(): ?Personal { return $this->responsable; }
+    public function setResponsable(?Personal $responsable): static { $this->responsable = $responsable; return $this; }
 
     /**
      * @return Collection<int, Indicadores>
      */
-    public function getIndicadores(): Collection
-    {
-        return $this->indicadores;
-    }
+    public function getIndicadores(): Collection { return $this->indicadores; }
 
     public function addIndicadore(Indicadores $indicadore): static
     {
@@ -154,29 +102,23 @@ class Encabezado
             $this->indicadores->add($indicadore);
             $indicadore->setEncabezado($this);
         }
-
         return $this;
     }
 
     public function removeIndicadore(Indicadores $indicadore): static
     {
         if ($this->indicadores->removeElement($indicadore)) {
-            // set the owning side to null (unless already changed)
             if ($indicadore->getEncabezado() === $this) {
                 $indicadore->setEncabezado(null);
             }
         }
-
         return $this;
     }
 
     /**
      * @return Collection<int, Acciones>
      */
-    public function getAcciones(): Collection
-    {
-        return $this->acciones;
-    }
+    public function getAcciones(): Collection { return $this->acciones; }
 
     public function addAccione(Acciones $accione): static
     {
@@ -184,37 +126,54 @@ class Encabezado
             $this->acciones->add($accione);
             $accione->setEncabezado($this);
         }
-
         return $this;
     }
 
     public function removeAccione(Acciones $accione): static
     {
         if ($this->acciones->removeElement($accione)) {
-            // set the owning side to null (unless already changed)
             if ($accione->getEncabezado() === $this) {
                 $accione->setEncabezado(null);
             }
         }
-
         return $this;
     }
 
-    public function getResponsables(): ?Responsables
-    {
-        return $this->responsables;
-    }
+    public function getResponsables(): ?Responsables { return $this->responsables; }
 
     public function setResponsables(Responsables $responsables): static
     {
-        // set the owning side of the relation if necessary
         if ($responsables->getEncabezado() !== $this) {
             $responsables->setEncabezado($this);
         }
-
         $this->responsables = $responsables;
-
         return $this;
     }
 
+    public function getAnioEjecucion(): ?int { return $this->anioEjecucion; }
+    public function setAnioEjecucion(int $anioEjecucion): static { $this->anioEjecucion = $anioEjecucion; return $this; }
+
+    /**
+     * MÉTODOS PARA REPORTE PTA TRIMESTRE
+     */
+    public function getReportePtaTrimestres(): Collection { return $this->reportePtaTrimestres; }
+
+    public function addReportePtaTrimestre(ReportePtaTrimestre $trimestre): static
+    {
+        if (!$this->reportePtaTrimestres->contains($trimestre)) {
+            $this->reportePtaTrimestres->add($trimestre);
+            $trimestre->setEncabezado($this);
+        }
+        return $this;
+    }
+
+    public function removeReportePtaTrimestre(ReportePtaTrimestre $trimestre): static
+    {
+        if ($this->reportePtaTrimestres->removeElement($trimestre)) {
+            if ($trimestre->getEncabezado() === $this) {
+                $trimestre->setEncabezado(null);
+            }
+        }
+        return $this;
+    }
 }

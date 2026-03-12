@@ -12,6 +12,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+
 
 /**
  * =========================================================
@@ -87,6 +89,16 @@ class IndicadoresType extends AbstractType
                 ],
             ])
 
+            ->add('valorBase', NumberType::class, [
+                'label' => 'Valor base',
+                'scale' => 2,
+                'attr' => [
+                    'class' => 'indicator-valor',
+                    'placeholder' => 'Ej. 700'
+                ],
+            ])
+
+
             /**
              * =============================================
              * VALOR A ALCANZAR (META)
@@ -130,8 +142,8 @@ class IndicadoresType extends AbstractType
              */
             ->add('tendencia', ChoiceType::class, [
                 'choices'  => [
-                    'POSITIVA' => 'POSITIVA',
-                    'NEGATIVA' => 'NEGATIVA',
+                    'Positiva' => 'POSITIVA',
+                    'Negativa' => 'NEGATIVA',
                 ],
             ]);
     }

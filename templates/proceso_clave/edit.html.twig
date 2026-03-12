@@ -1,0 +1,77 @@
+<turbo-frame id="content">
+	<section class="proceso-clave-form proceso-clave-form--edit">
+
+		<header class="proceso-clave-form__header">
+
+			<a href="{{ path('app_proceso_clave_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="proceso-clave-form__icon-btn proceso-clave-form__icon-btn--back"
+			   title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<div class="proceso-clave-form__header-center">
+				<h1 class="proceso-clave-form__title">
+					Editar proceso clave
+					{{ proceso.nombre }}
+				</h1>
+
+				<p class="proceso-clave-form__subtitle">
+					Edita solo los campos necesarios
+				</p>
+			</div>
+
+		</header>
+
+		{{ form_start(form, {
+			action: path('app_proceso_clave_edit', { id: proceso.id }),
+			attr: {
+				'data-turbo-frame': 'content',
+				'class': 'proceso-clave-form__form'
+			}
+		}) }}
+
+		<div class="proceso-clave-form__group">
+			{{ form_label(form.nombre) }}
+			{{ form_widget(form.nombre) }}
+			{{ form_errors(form.nombre) }}
+		</div>
+
+		<div class="proceso-clave-form__group">
+			{{ form_label(form.pei) }}
+			{{ form_widget(form.pei) }}
+			{{ form_errors(form.pei) }}
+		</div>
+
+		<div class="proceso-clave-form__group">
+			{{ form_label(form.paig) }}
+			{{ form_widget(form.paig) }}
+			{{ form_errors(form.paig) }}
+		</div>
+
+		<div class="proceso-clave-form__group">
+			{{ form_label(form.metaPdiPta) }}
+			{{ form_widget(form.metaPdiPta) }}
+			{{ form_errors(form.metaPdiPta) }}
+		</div>
+
+		<div class="proceso-clave-form__group">
+			{{ form_label(form.activo) }}
+			{{ form_widget(form.activo) }}
+			{{ form_errors(form.activo) }}
+		</div>
+
+		<div class="proceso-clave-form__submit-proxy">
+			<button type="submit"
+			        class="proceso-clave-form__icon-btn proceso-clave-form__icon-btn--save"
+			        title="Guardar cambios">
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
+
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
+
+	</section>
+</turbo-frame>

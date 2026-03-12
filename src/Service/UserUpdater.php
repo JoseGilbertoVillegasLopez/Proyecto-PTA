@@ -1,11 +1,19 @@
 <?php
 
 namespace App\Service;
+// Namespace del servicio encargado de lógica de dominio relacionada con usuarios
 
 use App\Entity\Personal;
+// Importa la entidad Personal, que es el origen de los cambios
+
 use App\Entity\User;
+// Importa la entidad User que será actualizada
+
 use Doctrine\ORM\EntityManagerInterface;
+// Permite interactuar con Doctrine para persistir cambios
+
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+// Servicio de Symfony para hashear contraseñas (inyectado aunque aquí no se use)
 
 /**
  * -------------------------------------------------------------
@@ -35,9 +43,16 @@ class UserUpdater
      */
     public function __construct(
         private readonly EntityManagerInterface $em,
+        // EntityManager para sincronizar cambios con la BD
+
         private readonly UserPasswordHasherInterface $passwordHasher,
+        // Servicio de hash (inyectado para futuras extensiones, no usado aquí)
+
         private readonly PasswordGenerator $passwordGenerator,
+        // Generador de contraseñas (inyectado para futuros flujos)
+
         private readonly AsignadorRol $asignadorRol,
+        // Servicio que encapsula la lógica de asignación de roles
     ) {}
 
     /**
@@ -55,24 +70,37 @@ class UserUpdater
      */
     public function updateFromPersonal(Personal $personal): void
     {
-        // 1️⃣ Buscar el Usuario asociado al Personal
-        /** @var User|null $usuario */
-        $usuario = $this->em->getRepository(User::class)
-            ->findOneBy(['personal' => $personal]);
+        // ✅ TOMAR EL USER DESDE LA RELACIÓN
+        $usuario = $personal->getUser();
+        // Obtiene el usuario asociado usando la relación bidireccional
+        // No se consulta el repositorio: se confía en el estado del objeto
 
-        // 2️⃣ Si no hay Usuario asociado, no hacemos nada
         if (!$usuario) {
+            // Si el Personal no tiene usuario asociado
+            // este servicio NO crea uno nuevo
             return;
+            // Se corta la ejecución silenciosamente
         }
 
-        // 3️⃣ Actualizar el correo y rol según el nuevo Personal
-        $correoAnterior = (string) $usuario->getUsuario();
-        $nuevoCorreo    = (string) $personal->getCorreo();
+        // correo
+        $usuario->setUsuario($personal->getCorreo());
+        // Sincroniza el nombre de usuario (login) con el correo del Personal
 
-        $usuario->setUsuario($nuevoCorreo);
+        // rol
         $this->asignadorRol->asignarRolSegunPuesto($usuario, $personal);
+        // Recalcula el rol en caso de que el puesto haya cambiado
 
-        // 5️⃣ Guardar los cambios en la base de datos
+        // 🔥 ACTIVO / INACTIVO
+        $usuario->setActivo($personal->isActivo() === true);
+        // Sincroniza el estado lógico del usuario
+        // Se fuerza comparación estricta para evitar null o valores ambiguos
+
+        // 🔥 FORZAR GUARDADO
+        $this->em->persist($usuario);
+        // Marca explícitamente el usuario como gestionado por Doctrine
+        // Aunque no siempre es necesario, deja la intención clara
+
         $this->em->flush();
+        // Ejecuta el UPDATE real en la base de datos
     }
 }

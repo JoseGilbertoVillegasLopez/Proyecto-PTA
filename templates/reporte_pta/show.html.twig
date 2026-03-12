@@ -1,0 +1,359 @@
+<turbo-frame id="content">
+
+	<div class="pta-reporte-new" data-reporte-form="reporte-show" data-uploads-base="{{ datos.uploads.base_url }}">
+
+		<div class="pta-reporte-container">
+
+			<div class="mb-4">
+				<a href="{{ volver_path|default('#') }}" class="btn btn-outline-light" data-turbo-frame="content" data-turbo-action="advance">
+					← Volver
+				</a>
+			</div>
+
+			{% set trimestreTexto = {
+                1: 'Enero - Marzo',
+                2: 'Enero - Junio',
+                3: 'Enero - Septiembre',
+                4: 'Enero - Diciembre'
+            } %}
+
+			<h1 class="pta-reporte-new__title">
+				Reporte PTA Trimestre
+				{{ trimestreTexto[datos.trimestre] }}
+			</h1>
+
+			<div class="pta-report-card pta-report-card--global mb-3 pta-reporte-headcard">
+				<div class="pta-reporte-headcard__grid">
+
+					<div class="pta-reporte-headcard__item pta-reporte-headcard__item--pta">
+						<div class="pta-reporte-headcard__label"># PTA:</div>
+						<div class="pta-reporte-headcard__value">{{ datos.pta.id ?? 'N/A' }}</div>
+					</div>
+
+					<div class="pta-reporte-headcard__item pta-reporte-headcard__item--nombre">
+						<div class="pta-reporte-headcard__label">Nombre:</div>
+						<div class="pta-reporte-headcard__value">{{ datos.pta.nombre }}</div>
+					</div>
+
+					<div class="pta-reporte-headcard__item pta-reporte-headcard__item--objetivo">
+						<div class="pta-reporte-headcard__label">Objetivo:</div>
+						<div class="pta-reporte-headcard__value">{{ datos.pta.objetivo }}</div>
+					</div>
+
+				</div>
+			</div>
+
+			{# Estado #}
+			<div class="pta-report-card mb-5">
+				<div class="pta-report-card__subtitle">Estado del Reporte</div>
+
+				{% if reporteTrimestre.estado %}
+					<div class="alert alert-success mb-0">
+						✅ Reporte entregado
+
+						{% if reporteTrimestre.fechaEntrega is defined and reporteTrimestre.fechaEntrega %}
+							—
+							{{ reporteTrimestre.fechaEntrega|date('d/m/Y H:i') }}
+						{% elseif reporteTrimestre.entregadoFecha is defined and reporteTrimestre.entregadoFecha %}
+							—
+							{{ reporteTrimestre.entregadoFecha|date('d/m/Y H:i') }}
+						{% elseif reporteTrimestre.entregadoEn is defined and reporteTrimestre.entregadoEn %}
+							—
+							{{ reporteTrimestre.entregadoEn|date('d/m/Y H:i') }}
+						{% endif %}
+					</div>
+				{% else %}
+					<div class="alert alert-warning mb-0">
+						⏳ Reporte pendiente de entrega
+					</div>
+				{% endif %}
+			</div>
+
+			<div class="pta-report-card mb-5">
+				<div class="pta-report-card__subtitle">
+					Exportación del Reporte
+				</div>
+
+				<div class="pta-rshow-export-actions">
+					<a href="{{ path('app_reporte_pta_export_word', { id: datos.pta.id, trimestre: datos.trimestre }) }}" class="btn btn-outline-info" data-turbo="false" target="_blank">
+						<i class="bi bi-file-earmark-word"></i>
+						Exportar Word
+					</a>
+
+					<a href="{{ path('app_reporte_pta_export_pdf', { id: datos.pta.id, trimestre: datos.trimestre }) }}" class="btn btn-outline-danger" data-turbo="false" target="_blank">
+						<i class="bi bi-file-earmark-pdf"></i>
+						Exportar PDF
+					</a>
+				</div>
+			</div>
+
+			<div
+				class="accordion" id="accordionIndicadores">
+
+				{# ✅ AQUÍ estaba el error: es datos.indicadores, no datos.resultados #}
+				{% for indice, data in datos.indicadores %}
+					{% set isFirst = loop.first %}
+
+					<div class="accordion-item mb-4">
+
+						<h2 class="accordion-header">
+							<button class="accordion-button {{ not isFirst ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ indice }}" aria-expanded="{{ isFirst ? 'true' : 'false' }}">
+								{{ data.nombre }}
+							</button>
+						</h2>
+
+						<div id="collapse{{ indice }}" class="accordion-collapse collapse {{ isFirst ? 'show' : '' }}" data-bs-parent="#accordionIndicadores">
+
+							<div
+								class="accordion-body">
+
+								{# Datos del indicador #}
+								<div class="pta-report-card pta-reporte-indicador-datos mb-4">
+
+									<div class="pta-report-card__subtitle">
+										Datos del Indicador
+									</div>
+
+									<div class="pta-rnew-indicador-grid">
+
+										<div class="pta-rnew-metric pta-rnew-metric--meta">
+											<div class="pta-rnew-metric__label">Meta Año</div>
+											<div class="pta-rnew-metric__value">{{ data.meta }}</div>
+										</div>
+
+										<div class="pta-rnew-metric pta-rnew-metric--resultado">
+											<div class="pta-rnew-metric__label">Resultado Trimestre</div>
+											<div class="pta-rnew-metric__value">{{ data.resultado }}</div>
+										</div>
+
+										<div class="pta-rnew-metric pta-rnew-metric--porcentaje">
+											<div class="pta-rnew-metric__label">Porcentaje</div>
+											<div class="pta-rnew-metric__value">{{ data.porcentaje }}%</div>
+										</div>
+
+										<div class="pta-rnew-metric pta-rnew-metric--formula">
+											<div class="pta-rnew-metric__label">Fórmula</div>
+											<div class="pta-rnew-metric__value pta-rnew-metric__value--wrap">
+												{{ data.formula_descripcion }}
+											</div>
+										</div>
+
+										<div class="pta-rnew-metric pta-rnew-metric--responsable">
+											<div class="pta-rnew-metric__label">Responsable</div>
+											<div class="pta-rnew-metric__value">
+												{{ datos.pta.puesto_responsable }}
+											</div>
+										</div>
+
+									</div>
+								</div>
+
+								{# Info del reporte #}
+								<div class="pta-report-card mb-4">
+									<div class="pta-report-card__subtitle">Información del Reporte</div>
+
+									<div class="mb-3">
+										<label class="form-label">Indicador Básico que aplica</label>
+										{# ✅ Tu service ya trae el NOMBRE en data.indicador_basico #}
+										<input class="form-control" value="{{ data.indicador_basico ?? '' }}" readonly>
+									</div>
+
+									<div class="mb-3">
+										<label class="form-label">Unidad de Medida</label>
+										<input class="form-control" value="{{ data.unidad_medida ?? '' }}" readonly>
+									</div>
+
+									<div class="mb-3">
+										<label class="form-label">Medio de Verificación</label>
+										<textarea class="form-control" rows="3" readonly>{{ data.medio_verificacion ?? '' }}</textarea>
+									</div>
+
+									<div class="mb-3">
+										<label class="form-label">Fórmula empleada</label>
+										<textarea class="form-control" rows="3" readonly>{{ data.formula ?? '' }}</textarea>
+									</div>
+
+									{% if (data.porcentaje|default(0)) < 100 %}
+										<div class="mb-3">
+											<label class="form-label">Justificación de Meta</label>
+											<textarea class="form-control" rows="3" readonly>{{ data.meta_cumplida ?? '' }}</textarea>
+										</div>
+									{% endif %}
+								</div>
+
+								{# Acciones #}
+								<div class="pta-report-card mb-4">
+									<div class="pta-report-card__subtitle text-center">Acciones</div>
+
+									{% if data.acciones is empty %}
+										<div class="alert alert-secondary mb-0">Sin acciones.</div>
+									{% else %}
+										{% for aIndex, accion in data.acciones %}
+											<div class="pta-rnew-accion-card" style="margin-bottom:12px;">
+												<label class="form-label">Acción
+													{{ aIndex }}</label>
+												<input class="form-control" value="{{ accion.descripcion }}" readonly>
+											</div>
+										{% endfor %}
+									{% endif %}
+								</div>
+
+								{# Gastos (solo lectura) #}
+								<div class="pta-report-card mb-4">
+									<div class="pta-report-card__subtitle">Solicitud de Gastos</div>
+
+									{% if data.acciones is empty %}
+										<div class="alert alert-secondary mb-0">Sin gastos.</div>
+									{% else %}
+										{% for aIndex, accion in data.acciones %}
+											<div class="pta-rnew-gasto-card" style="margin-bottom:14px;">
+												<div class="pta-rnew-gasto-header">
+													{{ accion.descripcion ?: ('Acción ' ~ aIndex) }}
+												</div>
+
+												<div class="pta-rnew-gasto-body">
+
+													<div class="mb-2">
+														<label class="form-label">Proceso Estratégico</label>
+														<input class="form-control" value="{{ accion.proceso_estrategico ?? '' }}" readonly>
+													</div>
+
+													<div class="mb-2">
+														<label class="form-label">Proceso Clave</label>
+														<input class="form-control" value="{{ accion.proceso_clave ?? '' }}" readonly>
+													</div>
+
+													<hr>
+
+													{% if accion.partidas is empty %}
+														<div class="alert alert-secondary mb-0">Sin partidas.</div>
+													{% else %}
+														{% for pIndex, partida in accion.partidas %}
+															<div class="row g-2 mb-2">
+																<div class="col-md-8">
+																	<label class="form-label">Partida Presupuestal</label>
+																	<input class="form-control" value="{{ partida.capitulo }} - {{ partida.partida }} - {{ partida.descripcion }}" readonly>
+																</div>
+																<div class="col-md-4">
+																	<label class="form-label">Monto</label>
+																	<input class="form-control" value="{{ partida.monto }}" readonly>
+																</div>
+															</div>
+														{% endfor %}
+													{% endif %}
+
+												</div>
+											</div>
+										{% endfor %}
+									{% endif %}
+								</div>
+
+								{# Evidencias #}
+								<div class="pta-report-card mb-4">
+									<div class="pta-report-card__subtitle">Evidencias</div>
+
+									{% if data.evidencias is empty %}
+										<div class="alert alert-secondary mb-0">Sin evidencias.</div>
+									{% else %}
+										{% for bIndex, ev in data.evidencias %}
+											<div class="pta-rnew-evidencia-card" style="margin-bottom:14px;">
+												<div class="d-flex justify-content-between align-items-center mb-2">
+													<strong>Evidencia
+														{{ bIndex }}</strong>
+												</div>
+
+												<div class="mb-3">
+													<label class="form-label">Descripción</label>
+													<textarea class="form-control" rows="3" readonly>{{ ev.descripcion }}</textarea>
+												</div>
+
+												<div class="mb-3">
+													<label class="form-label">Imágenes</label>
+													<div class="evidencia-preview-container d-flex gap-2 flex-wrap">
+														{% for img in ev.imagenes %}
+															<div class="evidencia-card" style="width:120px;height:120px;position:relative;border:1px solid #ddd;">
+																<img src="{{ datos.uploads.base_url ~ img }}" style="width:100%;height:100%;object-fit:cover;cursor:pointer;" onclick="window.__ptaPreview && window.__ptaPreview('{{ datos.uploads.base_url ~ img }}')">
+															</div>
+														{% endfor %}
+													</div>
+												</div>
+											</div>
+										{% endfor %}
+									{% endif %}
+								</div>
+
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+
+			{# Botón entregar #}
+			<div class="pta-rnew-submit-wrapper">
+				{% if reporteTrimestre.estado %}
+					<button type="button" class="pta-btn-primary" disabled>
+						Reporte Entregado
+					</button>
+				{% else %}
+					<form method="POST" action="{{ path('app_reporte_pta_entregar', { id: datos.pta.id, trimestre: datos.trimestre }) }}" data-turbo-action="advance" onsubmit="return confirm('¿Entregar el reporte? Ya no debería editarse después.');">
+						<input type="hidden" name="_token" value="{{ csrf_token_entregar }}">
+						<button type="submit" class="pta-btn-primary">
+							Entregar Reporte
+						</button>
+					</form>
+				{% endif %}
+			</div>
+
+		</div>
+	</div>
+
+	<script>
+		window.__ptaPreview = function (src) {
+const modalId = "modalPreviewEvidenciaShow";
+let modal = document.getElementById(modalId);
+
+if (! modal) {
+modal = document.createElement("div");
+modal.id = modalId;
+modal.style.position = "fixed";
+modal.style.top = "0";
+modal.style.left = "0";
+modal.style.width = "100%";
+modal.style.height = "100%";
+modal.style.background = "rgba(0,0,0,0.85)";
+modal.style.display = "none";
+modal.style.alignItems = "center";
+modal.style.justifyContent = "center";
+modal.style.zIndex = "9999";
+
+modal.innerHTML = `
+      <div style="position:relative;max-width:90vw;max-height:85vh;display:flex;align-items:center;justify-content:center;">
+        <button id="closePreviewShow"
+          style="position:absolute;top:-45px;right:0;background:red;color:white;border:none;width:35px;height:35px;font-size:18px;cursor:pointer;">
+          X
+        </button>
+        <img id="imgPreviewShow" style="max-width:85vw;max-height:85vh;object-fit:contain;border-radius:8px;">
+      </div>
+    `;
+
+document.body.appendChild(modal);
+
+modal.querySelector("#closePreviewShow").addEventListener("click", () => {
+modal.style.display = "none";
+});
+
+modal.addEventListener("click", (e) => {
+if (e.target === modal) 
+modal.style.display = "none";
+
+
+
+});
+}
+
+modal.querySelector("#imgPreviewShow").src = src;
+modal.style.display = "flex";
+}
+	</script>
+
+</turbo-frame>

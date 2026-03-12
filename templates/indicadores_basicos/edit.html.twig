@@ -1,0 +1,95 @@
+<turbo-frame id="content">
+	<section class="indicadores-basicos-form indicadores-basicos-form--edit">
+
+		{# =====================================================
+		   HEADER
+		   -----------------------------------------------------
+		   - Botón volver al index
+		   - Título con contexto
+		   ===================================================== #}
+		<header class="indicadores-basicos-form__header">
+
+			<!-- VOLVER -->
+			<a
+				href="{{ path('app_indicadores_basicos_index') }}"
+				data-turbo-frame="content"
+				data-turbo-action="replace"
+				class="indicadores-basicos-form__icon-btn indicadores-basicos-form__icon-btn--back"
+				title="Volver">
+
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<!-- TÍTULO + SUBTÍTULO -->
+			<div class="indicadores-basicos-form__header-center">
+				<h1 class="indicadores-basicos-form__title">
+					Editar indicador:
+					{{ indicador.nombreIndicador }}
+				</h1>
+
+				<p class="indicadores-basicos-form__subtitle">
+					Modifica únicamente los campos necesarios
+				</p>
+			</div>
+
+		</header>
+
+
+		{# =====================================================
+		   FORMULARIO
+		   -----------------------------------------------------
+		   Usa el EditType (hereda del Type base)
+		   ===================================================== #}
+		{{ form_start(form, {
+			action: path('app_indicadores_basicos_edit', { id: indicador.id }),
+			attr: {
+				'data-turbo-frame': 'content',
+				'class': 'indicadores-basicos-form__form'
+			}
+		}) }}
+
+		<div class="indicadores-basicos-form__group">
+			{{ form_label(form.nombreIndicador) }}
+			{{ form_widget(form.nombreIndicador) }}
+			{{ form_errors(form.nombreIndicador) }}
+		</div>
+
+		<div class="indicadores-basicos-form__group">
+			{{ form_label(form.formula) }}
+			{{ form_widget(form.formula) }}
+			{{ form_errors(form.formula) }}
+		</div>
+
+		<div class="indicadores-basicos-form__group">
+			{{ form_label(form.observaciones) }}
+			{{ form_widget(form.observaciones) }}
+			{{ form_errors(form.observaciones) }}
+		</div>
+
+		<div class="indicadores-basicos-form__group">
+			{{ form_label(form.activo) }}
+			{{ form_widget(form.activo) }}
+			{{ form_errors(form.activo) }}
+		</div>
+
+
+		{# =====================================================
+		   ACCIÓN GUARDAR
+		   -----------------------------------------------------
+		   Botón flotante / centrado (igual que Personal)
+		   ===================================================== #}
+		<div class="indicadores-basicos-form__submit-proxy">
+			<button
+				type="submit"
+				class="indicadores-basicos-form__icon-btn indicadores-basicos-form__icon-btn--save"
+				title="Guardar cambios">
+
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
+
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
+
+	</section>
+</turbo-frame>

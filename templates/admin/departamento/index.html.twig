@@ -1,31 +1,67 @@
 <turbo-frame id="content">
-    <h1>Departamento index</h1>
+	<section
+		class="departamento-index">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for departamento in departamentos %}
-            <tr>
-                <td>{{ departamento.id }}</td>
-                <td>{{ departamento.nombre }}</td>
-                <td>
-                    <a href="{{ path('app_departamento_show', {'id': departamento.id}) }}">show</a>
-                    <a href="{{ path('app_departamento_edit', {'id': departamento.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+		<!-- TOOLBAR -->
+		<div class="departamento-index__toolbar">
+			<h1 class="departamento-index__title">Lista de departamentos</h1>
+		</div>
 
-    <a href="{{ path('app_departamento_new') }}">Create new</a>
+		<!-- ACCIONES DE TABLA -->
+		<div class="departamento-index__table-actions">
+			<a href="{{ path('app_departamento_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="departamento-index__add-btn">
+				<i class="bi bi-building-add"></i>
+				Crear nuevo
+			</a>
+		</div>
+
+		<!-- TABLA -->
+		<div class="departamento-index__table-wrapper">
+			<table class="departamento-index__table">
+				<thead>
+					<tr>
+
+						<th>Nombre</th>
+						<th>Estado</th>
+						<th>Acciones</th>
+
+
+					</tr>
+				</thead>
+
+				<tbody>
+					{% for departamento in departamentos %}
+						<tr>
+
+							<td>{{ departamento.nombre }}</td>
+							<td>
+								<span class="departamento-index__badge {{ departamento.activo ? 'is-active' : 'is-inactive' }}">
+									{{ departamento.activo ? 'Activo' : 'Inactivo' }}
+								</span>
+							</td>
+
+							<td>
+								<div class="departamento-index__actions">
+									<a href="{{ path('app_departamento_show', {'id': departamento.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="departamento-index__action departamento-index__action--view">
+										<i class="bi bi-eye"></i>
+									</a>
+
+									<a href="{{ path('app_departamento_edit', {'id': departamento.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="departamento-index__action departamento-index__action--edit">
+										<i class="bi bi-pencil"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="3" class="departamento-index__empty">
+								No se encontraron registros
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+	</section>
 </turbo-frame>

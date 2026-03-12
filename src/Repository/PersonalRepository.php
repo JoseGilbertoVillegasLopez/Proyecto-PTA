@@ -40,4 +40,12 @@ class PersonalRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findAllOrderByNombre(): array
+{
+    return $this->createQueryBuilder('p')
+        ->orderBy('p.nombre', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
 }

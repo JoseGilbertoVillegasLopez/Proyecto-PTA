@@ -1,19 +1,32 @@
 <?php
 
 namespace App\Repository;
+// Namespace del repositorio dentro de la capa Repository
 
 use App\Entity\Puesto;
+// Importa la entidad Puesto que este repositorio va a manejar
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+// Clase base de Doctrine que provee métodos comunes como find(), findAll(), etc.
+
 use Doctrine\Persistence\ManagerRegistry;
+// Permite a Doctrine acceder al EntityManager adecuado
 
 /**
  * @extends ServiceEntityRepository<Puesto>
+ * Indica que este repositorio está tipado para la entidad Puesto
+ * Mejora autocompletado y análisis estático
  */
 class PuestoRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
+        // Constructor del repositorio
+
         parent::__construct($registry, Puesto::class);
+        // Llama al constructor padre indicando:
+        //  - qué EntityManager usar
+        //  - qué entidad maneja este repositorio (Puesto)
     }
 
     //    /**
@@ -30,6 +43,10 @@ class PuestoRepository extends ServiceEntityRepository
     //            ->getResult()
     //        ;
     //    }
+    //
+    // Método de ejemplo generado automáticamente por Symfony
+    // Sirve como plantilla para consultas personalizadas
+    // Actualmente no se utiliza
 
     //    public function findOneBySomeField($value): ?Puesto
     //    {
@@ -40,4 +57,14 @@ class PuestoRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function findByDepartamentoIds(array $departamentoIds): array
+{
+    return $this->createQueryBuilder('p')
+        ->andWhere('p.departamento IN (:departamentos)')
+        ->setParameter('departamentos', $departamentoIds)
+        ->orderBy('p.nombre', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
 }

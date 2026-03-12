@@ -1,0 +1,204 @@
+<turbo-frame id="content">
+
+	<div class="reporteptaindex">
+
+		<div class="reporteptaindex__layout">
+
+			{# ===================================================== #}
+			{# BOTÓN VOLVER #}
+			{# ===================================================== #}
+				<div class="reporteptaindex__volver-wrapper"> <a href="{{ volver_path|default('#') }}" class="reporteptaindex__volver-boton" data-turbo-action="advance">
+					<i class="bi bi-arrow-left"></i>
+					<span>Volver</span>
+				</a>
+			</div>
+
+			{# ===================================================== #}
+			{# HERO / TÍTULO #}
+			{# ===================================================== #}
+				<section class="reporteptaindex__hero"> <div class="reporteptaindex__hero-kicker">
+					Módulo de Reporte Trimestral
+				</div>
+
+				<h1 class="reporteptaindex__hero-titulo">
+					Reporte PTA periodo
+					{{ datos.anio_actual }}
+				</h1>
+
+				<p class="reporteptaindex__hero-subtitulo">
+					Revisa el estado de cada trimestre, consulta fechas clave y accede a las acciones disponibles.
+				</p>
+			</section>
+
+			{# ===================================================== #}
+			{# BLOQUE GENERAL DEL PTA #}
+			{# ===================================================== #}
+				<section class="reporteptaindex__bloque-pta"> <div class="reporteptaindex__bloque-cabecera">
+					<h2 class="reporteptaindex__bloque-titulo">
+						Información general del PTA
+					</h2>
+				</div>
+
+				<div class="reporteptaindex__bloque-pta-campos">
+
+					<article class="reporteptaindex__bloque-pta-campo reporteptaindex__bloque-pta-campo--identificador">
+						<div class="reporteptaindex__bloque-pta-etiqueta"># PTA</div>
+						<div class="reporteptaindex__bloque-pta-valor">
+							{{ datos.encabezado.id ?? 'N/A' }}
+						</div>
+					</article>
+
+					<article class="reporteptaindex__bloque-pta-campo reporteptaindex__bloque-pta-campo--nombre">
+						<div class="reporteptaindex__bloque-pta-etiqueta">Nombre</div>
+						<div class="reporteptaindex__bloque-pta-valor">
+							{{ datos.encabezado.nombre ?? '—' }}
+						</div>
+					</article>
+
+					<article class="reporteptaindex__bloque-pta-campo reporteptaindex__bloque-pta-campo--objetivo">
+						<div class="reporteptaindex__bloque-pta-etiqueta">Objetivo</div>
+						<div class="reporteptaindex__bloque-pta-valor">
+							{{ datos.encabezado.objetivo ?? '—' }}
+						</div>
+					</article>
+
+				</div>
+			</section>
+
+			{# ===================================================== #}
+			{# BLOQUE CALENDARIO #}
+			{# ===================================================== #}
+				<section class="reporteptaindex__bloque-calendario"> <div class="reporteptaindex__bloque-cabecera">
+					<h2 class="reporteptaindex__bloque-titulo">
+						Fechas en las que se debe realizar cada reporte
+					</h2>
+				</div>
+
+				<div class="reporteptaindex__bloque-calendario-listado">
+					{% for item in datos.fechas_reporte %}
+						<article class="reporteptaindex__bloque-calendario-item">
+							<div class="reporteptaindex__bloque-calendario-item-periodo">
+								{{ item.periodo }}
+							</div>
+
+							<div class="reporteptaindex__bloque-calendario-item-fecha">
+								{{ item.fecha }}
+							</div>
+						</article>
+					{% endfor %}
+				</div>
+			</section>
+
+			{# ===================================================== #}
+			{# BLOQUE TRIMESTRES #}
+			{# ===================================================== #}
+				<section class="reporteptaindex__bloque-trimestres"> <div class="reporteptaindex__bloque-trimestres-grid">
+					{% for trimestre in datos.trimestres %}
+						<article class="reporteptaindex__trimestre-card reporteptaindex__trimestre-card--{{ trimestre.estado_key }}">
+
+							<div class="reporteptaindex__trimestre-accent-line reporteptaindex__trimestre-accent-line--{{ trimestre.estado_key }}"></div>
+
+							{# ================= CABECERA ================= #}
+							<div class="reporteptaindex__trimestre-cabecera">
+
+								<div class="reporteptaindex__trimestre-cabecera-textos">
+									<div class="reporteptaindex__trimestre-cabecera-numero">
+										Trimestre
+										{{ trimestre.numero }}
+									</div>
+
+									<h3 class="reporteptaindex__trimestre-cabecera-titulo">
+										{{ trimestre.nombre }}
+									</h3>
+								</div>
+
+								<div class="reporteptaindex__trimestre-cabecera-estado reporteptaindex__trimestre-cabecera-estado--{{ trimestre.estado_key }}">
+									{{ trimestre.estado_label }}
+								</div>
+
+							</div>
+
+							{# ================= RESUMEN SUPERIOR ================= #}
+							<div class="reporteptaindex__trimestre-resumen">
+
+								<div class="reporteptaindex__trimestre-resumen-celda reporteptaindex__trimestre-resumen-celda--creacion">
+									<div class="reporteptaindex__trimestre-resumen-etiqueta">Creación</div>
+									<div class="reporteptaindex__trimestre-resumen-valor">
+										{{ trimestre.creado_fecha ? trimestre.creado_fecha|date('d/m/Y') : 'Pendiente' }}
+									</div>
+								</div>
+
+								<div class="reporteptaindex__trimestre-resumen-celda reporteptaindex__trimestre-resumen-celda--entrega">
+									<div class="reporteptaindex__trimestre-resumen-etiqueta">Entrega</div>
+									<div class="reporteptaindex__trimestre-resumen-valor">
+										{{ trimestre.entregado_fecha ? trimestre.entregado_fecha|date('d/m/Y') : 'No entregado' }}
+									</div>
+								</div>
+
+							</div>
+
+							{# ================= CUERPO ================= #}
+							<div class="reporteptaindex__trimestre-cuerpo">
+
+								<div class="reporteptaindex__trimestre-fila-info">
+									<div class="reporteptaindex__trimestre-fila-etiqueta">Periodo</div>
+									<div class="reporteptaindex__trimestre-fila-valor">
+										{{ trimestre.periodo_label }}
+									</div>
+								</div>
+
+								<div class="reporteptaindex__trimestre-fila-info">
+									<div class="reporteptaindex__trimestre-fila-etiqueta">Ventana de captura</div>
+									<div class="reporteptaindex__trimestre-fila-valor">
+										{{ trimestre.ventana_texto }}
+									</div>
+								</div>
+
+								<div class="reporteptaindex__trimestre-mensaje reporteptaindex__trimestre-mensaje--{{ trimestre.estado_key }}">
+									{{ trimestre.estado_mensaje }}
+								</div>
+
+							</div>
+
+							{# ================= ACCIONES ================= #}
+							<div class="reporteptaindex__trimestre-acciones">
+
+								{% if trimestre.puede_ver %}
+									<a href="{{ path('app_reporte_pta_show', { id: datos.encabezado.id, trimestre: trimestre.numero }) }}" class="reporteptaindex__trimestre-accion-boton reporteptaindex__trimestre-accion-boton--ver" data-turbo-action="advance" data-turbo-frame="content">
+										<i class="bi bi-eye"></i>
+										<span>Ver</span>
+									</a>
+								{% endif %}
+
+								{% if trimestre.puede_editar %}
+									<a href="{{ path('app_reporte_pta_edit', { id: datos.encabezado.id, trimestre: trimestre.numero }) }}" class="reporteptaindex__trimestre-accion-boton reporteptaindex__trimestre-accion-boton--editar" data-turbo-action="advance" data-turbo-frame="content">
+										<i class="bi bi-pencil-square"></i>
+										<span>Editar</span>
+									</a>
+								{% endif %}
+
+								{% if trimestre.puede_crear %}
+									<a href="{{ path('app_reporte_pta_new', { id: datos.encabezado.id, trimestre: trimestre.numero }) }}" class="reporteptaindex__trimestre-accion-boton reporteptaindex__trimestre-accion-boton--crear" data-turbo-action="advance" data-turbo-frame="content">
+										<i class="bi bi-plus-circle"></i>
+										<span>Crear reporte</span>
+									</a>
+								{% endif %}
+
+								{% if not trimestre.puede_ver and not trimestre.puede_editar and not trimestre.puede_crear %}
+									<div class="reporteptaindex__trimestre-acciones-vacio">
+										Sin acciones disponibles por el momento
+									</div>
+								{% endif %}
+
+							</div>
+
+						</article>
+					{% endfor %}
+				</div>
+
+			</section>
+
+		</div>
+	</div>
+
+</turbo-frame>

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AccionesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,6 +31,24 @@ class Acciones
 
     #[ORM\Column]
     private ?int $indicador = null;
+
+    /**
+     * @var Collection<int, HistorialAccionesAtrasos>
+     */
+    #[ORM\OneToMany(targetEntity: HistorialAccionesAtrasos::class, mappedBy: 'accion')]
+    private Collection $historialAccionesAtrasos;
+
+    /**
+     * @var Collection<int, HistorialAcciones>
+     */
+    #[ORM\OneToMany(targetEntity: HistorialAcciones::class, mappedBy: 'accion')]
+    private Collection $historialAcciones;
+
+    public function __construct()
+    {
+        $this->historialAccionesAtrasos = new ArrayCollection();
+        $this->historialAcciones = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -92,6 +112,66 @@ class Acciones
     public function setIndicador(int $indicador): static
     {
         $this->indicador = $indicador;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HistorialAccionesAtrasos>
+     */
+    public function getHistorialAccionesAtrasos(): Collection
+    {
+        return $this->historialAccionesAtrasos;
+    }
+
+    public function addHistorialAccionesAtraso(HistorialAccionesAtrasos $historialAccionesAtraso): static
+    {
+        if (!$this->historialAccionesAtrasos->contains($historialAccionesAtraso)) {
+            $this->historialAccionesAtrasos->add($historialAccionesAtraso);
+            $historialAccionesAtraso->setAccion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistorialAccionesAtraso(HistorialAccionesAtrasos $historialAccionesAtraso): static
+    {
+        if ($this->historialAccionesAtrasos->removeElement($historialAccionesAtraso)) {
+            // set the owning side to null (unless already changed)
+            if ($historialAccionesAtraso->getAccion() === $this) {
+                $historialAccionesAtraso->setAccion(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HistorialAcciones>
+     */
+    public function getHistorialAcciones(): Collection
+    {
+        return $this->historialAcciones;
+    }
+
+    public function addHistorialAccione(HistorialAcciones $historialAccione): static
+    {
+        if (!$this->historialAcciones->contains($historialAccione)) {
+            $this->historialAcciones->add($historialAccione);
+            $historialAccione->setAccion($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistorialAccione(HistorialAcciones $historialAccione): static
+    {
+        if ($this->historialAcciones->removeElement($historialAccione)) {
+            // set the owning side to null (unless already changed)
+            if ($historialAccione->getAccion() === $this) {
+                $historialAccione->setAccion(null);
+            }
+        }
 
         return $this;
     }

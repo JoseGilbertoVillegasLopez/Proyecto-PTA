@@ -1,0 +1,147 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard
+{% endblock %}
+
+{% block body %}
+	<script>
+		document.addEventListener("turbo:render", function () {
+if (typeof Sfjs !== "undefined") {
+Sfjs.loadToolbar();
+}
+});
+	</script>
+
+	<div
+		style="display: flex; height: 100vh; background: #1e242b;">
+
+		<!-- ASIDE -->
+		<aside
+			class="pta-dashboard-aside">
+
+			<!-- BLOQUE CENTRADO -->
+			<div
+				class="pta-dashboard-menu-wrapper">
+
+				<!-- HEADER -->
+				<div class="pta-dashboard-header">
+					<i class="bi bi-speedometer2 pta-dashboard-icon"></i>
+					<h2 class="pta-dashboard-title">Menú</h2>
+				</div>
+
+				<!-- MENU -->
+				<ul
+					class="pta-dashboard-menu">
+
+					{# ============================SOLO ADMIN============================ #}
+					{% if is_granted('ROLE_ADMIN') %}
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'personal' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Personal
+							</a>
+						</li>
+
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'departamentos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Departamentos
+							</a>
+						</li>
+
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'puestos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Puestos
+							</a>
+						</li>
+
+					{% endif %}
+
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_admin_dashboard', { section: 'indicadores_basicos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+							Indicadores básicos
+						</a>
+					</li>
+
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_admin_dashboard', { section: 'partidas_presupuestales' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+							Partidas presupuestales
+						</a>
+					</li>
+
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_admin_dashboard', { section: 'proceso_clave' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+							Proceso clave
+						</a>
+					</li>
+
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_admin_dashboard', { section: 'proceso_estrategico' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+							Proceso estratégico
+						</a>
+					</li>
+
+
+					{# ============================TODOS LOS USUARIOS============================ #}
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_admin_dashboard', { section: 'pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+							PTA
+						</a>
+					</li>
+
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_admin_dashboard', { section: 'historial_pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+							Historial PTA
+						</a>
+					</li>
+
+					{% if ptaAccess.scope in ['GLOBAL', 'JERARQUICO'] %}
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'monitoreo' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Monitoreo PTA
+							</a>
+						</li>
+					{% endif %}
+
+				</ul>
+
+			</div>
+
+			<!-- LOGOUT -->
+			<a href="{{ path('app_logout') }}" class="pta-dashboard-logout" title="Cerrar sesión">
+				<i class="bi bi-door-open-fill"></i>
+				Salir
+			</a>
+
+		</aside>
+
+		<!-- CONTENIDO -->
+		<main
+			style="flex: 1; padding: 30px; overflow-y: auto;">
+			{# ============================FIX GLOBAL SECTION============================ #}
+			{% set section = section is defined ? section : null %}
+
+			{% set srcMap = {
+	'personal': path('app_personal_index'),
+	'departamentos': path('app_departamento_index'),
+	'puestos': path('app_puesto_index'),
+	'pta': path('app_encabezado_index'),
+	'monitoreo': path('pta_monitoreo_index'),
+	'indicadores_basicos': path('app_indicadores_basicos_index'),
+	'partidas_presupuestales': path('app_partidas_presupuestales_index'),
+	'proceso_clave': path('app_proceso_clave_index'),
+	'proceso_estrategico': path('app_proceso_estrategico_index'),
+    'historial_pta': path('pta_historial_index')
+	} %}
+
+
+			{# ============================SECCIÓN INICIAL POR ROL============================ #}
+			{% if is_granted('ROLE_ADMIN') %}
+				{% set defaultSection = 'personal' %}
+			{% else %}
+				{% set defaultSection = 'pta' %}
+			{% endif %}
+
+			<turbo-frame id="content" src="{{ content_url is defined ? content_url : srcMap[section] ?? srcMap[defaultSection] }}"></turbo-frame>
+
+
+		</main>
+	{% endblock %}

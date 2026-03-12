@@ -1,0 +1,868 @@
+/* =========================================================
+   PROCESO ESTRATÉGICO — FORM BASE
+   ========================================================= */
+
+.proceso-estrategico-form {
+    max-width: 720px;
+    margin: 0 auto;
+
+    background:
+        radial-gradient(circle at top, rgba(13, 202, 240, 0.08), transparent 55%),
+        linear-gradient(135deg, #0f1c26, #0b1117);
+
+    padding: 2.2rem;
+    border-radius: 20px;
+
+    box-shadow:
+        0 22px 55px rgba(0, 0, 0, 0.7),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+    box-sizing: border-box;
+}
+
+.proceso-estrategico-form__header {
+    margin-bottom: 1.8rem;
+}
+
+.proceso-estrategico-form__title {
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: #e6f1ff;
+}
+
+.proceso-estrategico-form__subtitle {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: #9fb3c8;
+}
+
+.proceso-estrategico-form__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+
+.proceso-estrategico-form__group label {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-size: 0.75rem;
+    color: #9fb3c8;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.proceso-estrategico-form__group input,
+.proceso-estrategico-form__group textarea,
+.proceso-estrategico-form__group select {
+    width: 100%;
+    background: #1f2a36;
+    color: #e6f1ff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 0.65rem 0.8rem;
+    font-size: 0.9rem;
+    transition: all 0.25s ease;
+}
+
+.proceso-estrategico-form__group input:focus,
+.proceso-estrategico-form__group textarea:focus,
+.proceso-estrategico-form__group select:focus {
+    outline: none;
+    background: #263445;
+    border-color: #0dcaf0;
+    box-shadow:
+        0 0 0 2px rgba(13, 202, 240, 0.15),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   PROCESO ESTRATÉGICO — INDEX
+   (CLON EXACTO DE PERSONAL)
+   ========================================================= */
+
+.proceso-estrategico-index {
+    background:
+        radial-gradient(circle at top, rgba(13, 202, 240, 0.08), transparent 55%),
+        linear-gradient(135deg, #0f1c26, #0b1117);
+
+    padding: 2.4rem;
+    border-radius: 22px;
+
+    box-shadow:
+        0 28px 70px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+    position: relative;
+}
+
+.proceso-estrategico-index::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    pointer-events: none;
+    box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.proceso-estrategico-index__toolbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 2.2rem;
+    padding-bottom: 1.1rem;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.proceso-estrategico-index__title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #e6f1ff;
+    letter-spacing: 0.4px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   ACCIONES SUPERIORES
+   ========================================================= */
+
+.proceso-estrategico-index__table-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    margin-top: 1.8rem;
+    margin-bottom: 3rem;
+
+    padding-left: 0.4rem;
+}
+
+.proceso-estrategico-index__spacer {
+    flex: 1;
+}
+
+/* =========================================================
+   BOTÓN AGREGAR
+   ========================================================= */
+
+.proceso-estrategico-index__add-btn {
+    margin-left: 0.2rem;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    padding: 0.6rem 1.1rem;
+    border-radius: 12px;
+
+    background: rgba(25, 135, 84, 0.15);
+    color: #198754;
+
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+
+    border: 1px solid rgba(25, 135, 84, 0.55);
+    transition: all 0.25s ease;
+}
+
+.proceso-estrategico-index__add-btn:hover {
+    background: rgba(25, 135, 84, 0.35);
+    color: #ffffff;
+    border-color: #198754;
+
+    box-shadow:
+        0 10px 26px rgba(25, 135, 84, 0.35),
+        inset 0 0 0 1px rgba(25, 135, 84, 0.35);
+}
+
+/* =========================================================
+   BUSCADOR
+   ========================================================= */
+
+.proceso-estrategico-index__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.proceso-estrategico-index__search i {
+    position: absolute;
+    left: 12px;
+    color: #9fb3c8;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.proceso-estrategico-index__search input {
+    background: #1f2a36;
+    color: #e6f1ff;
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+
+    padding: 0.55rem 0.8rem 0.55rem 2.2rem;
+    font-size: 0.85rem;
+
+    transition: all 0.25s ease;
+}
+
+.proceso-estrategico-index__search input:focus {
+    outline: none;
+    background: #263445;
+    border-color: #0dcaf0;
+
+    box-shadow:
+        0 0 0 2px rgba(13, 202, 240, 0.15),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25);
+}
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.proceso-estrategico-index__table-wrapper {
+    overflow-x: auto;
+}
+
+.proceso-estrategico-index__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    border-radius: 14px;
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.015);
+}
+
+/* THEAD */
+
+.proceso-estrategico-index__table thead th {
+    background: linear-gradient(135deg, #0b3c6f, #062a4f);
+    color: #ffffff;
+
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* FILAS */
+
+.proceso-estrategico-index__table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.proceso-estrategico-index__table tbody tr:hover {
+    background-color: rgba(13, 202, 240, 0.08);
+}
+
+/* CELDAS */
+
+.proceso-estrategico-index__table tbody td {
+    padding: 14px 18px;
+    color: #e6f1ff;
+    vertical-align: middle;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.proceso-estrategico-index__table tbody td:last-child,
+.proceso-estrategico-index__table thead th:last-child {
+    border-right: none;
+}
+
+.proceso-estrategico-index__table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.proceso-estrategico-index__badge {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.proceso-estrategico-index__badge.is-active {
+    background: rgba(25, 135, 84, 0.2);
+    color: #198754;
+    border: 1px solid rgba(25, 135, 84, 0.5);
+}
+
+.proceso-estrategico-index__badge.is-inactive {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.5);
+}
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+
+.proceso-estrategico-index__actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.proceso-estrategico-index__action {
+    width: 36px;
+    height: 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    font-size: 1.1rem;
+    text-decoration: none;
+
+    transition: all 0.25s ease;
+}
+
+.proceso-estrategico-index__action--view {
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+}
+
+.proceso-estrategico-index__action--view:hover {
+    background: rgba(13, 202, 240, 0.35);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(13, 202, 240, 0.35);
+}
+
+.proceso-estrategico-index__action--edit {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.proceso-estrategico-index__action--edit:hover {
+    background: rgba(255, 193, 7, 0.35);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(255, 193, 7, 0.35);
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.proceso-estrategico-index__empty {
+    text-align: center;
+    padding: 2.2rem;
+    color: #9fb3c8;
+    font-style: italic;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   PROCESO ESTRATÉGICO — SHOW
+   (CLON EXACTO DE PERSONAL)
+   ========================================================= */
+
+.proceso-estrategico-show {
+    background:
+        radial-gradient(circle at top, rgba(13, 202, 240, 0.08), transparent 55%),
+        linear-gradient(135deg, #0f1c26, #0b1117);
+
+    padding: 2.4rem;
+    border-radius: 22px;
+
+    box-shadow:
+        0 28px 70px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+    position: relative;
+}
+
+.proceso-estrategico-show::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    pointer-events: none;
+    box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
+}
+
+/* ================= HEADER ================= */
+
+.proceso-estrategico-show__header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+
+    margin-bottom: 2rem;
+    padding-bottom: 1.1rem;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.proceso-estrategico-show__title {
+    justify-self: center;
+    text-align: center;
+
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #e6f1ff;
+    letter-spacing: 0.4px;
+}
+
+/* ================= ICON BUTTON BASE ================= */
+
+.proceso-estrategico-show__icon-btn {
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    font-size: 1.15rem;
+    text-decoration: none;
+
+    transition: all 0.25s ease;
+}
+
+/* ================= BACK ================= */
+
+.proceso-estrategico-show__icon-btn--back {
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.45);
+}
+
+.proceso-estrategico-show__icon-btn--back:hover {
+    background: rgba(13, 202, 240, 0.35);
+    color: #ffffff;
+    box-shadow:
+        0 10px 26px rgba(13, 202, 240, 0.35),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.4);
+}
+
+/* ================= HEADER ACTIONS ================= */
+
+.proceso-estrategico-show__header-actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-self: end;
+}
+
+/* ================= EDIT ================= */
+
+.proceso-estrategico-show__icon-btn--edit {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.55);
+}
+
+.proceso-estrategico-show__icon-btn--edit:hover {
+    background: rgba(255, 193, 7, 0.35);
+    color: #ffffff;
+    box-shadow:
+        0 10px 26px rgba(255, 193, 7, 0.35),
+        inset 0 0 0 1px rgba(255, 193, 7, 0.4);
+}
+
+/* ================= TABLE ================= */
+
+.proceso-estrategico-show__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    border-radius: 14px;
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.proceso-estrategico-show__table th {
+    width: 35%;
+    background: linear-gradient(135deg, #0b3c6f, #062a4f);
+    color: #ffffff;
+
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+
+    padding: 14px 18px;
+}
+
+.proceso-estrategico-show__table td {
+    padding: 14px 18px;
+    color: #e6f1ff;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   PROCESO ESTRATÉGICO — NEW
+   (clon exacto de personal-form--new)
+   ========================================================= */
+
+.proceso-estrategico-form--new {
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(13, 202, 240, 0.08),
+            transparent 55%
+        ),
+        linear-gradient(135deg, #0f1c26, #0b1117);
+
+    padding: 2.4rem;
+    border-radius: 22px;
+
+    box-shadow:
+        0 26px 65px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+    position: relative;
+}
+
+.proceso-estrategico-form--new::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    pointer-events: none;
+    box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
+}
+
+/* HEADER */
+
+.proceso-estrategico-form__header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+
+    margin-bottom: 2rem;
+    padding-bottom: 1.1rem;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.proceso-estrategico-form__title {
+    justify-self: center;
+    text-align: center;
+
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #e6f1ff;
+    letter-spacing: 0.4px;
+}
+
+/* BOTÓN VOLVER */
+
+.proceso-estrategico-form__icon-btn {
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    font-size: 1.15rem;
+
+    cursor: pointer;
+    text-decoration: none;
+
+    transition: all 0.25s ease;
+}
+
+.proceso-estrategico-form__icon-btn--back {
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.45);
+}
+
+.proceso-estrategico-form__icon-btn--back:hover {
+    background: rgba(13, 202, 240, 0.35);
+    color: #ffffff;
+}
+
+/* FORM */
+
+.proceso-estrategico-form--new .proceso-estrategico-form__form {
+    gap: 1.35rem;
+}
+
+/* GROUPS */
+
+.proceso-estrategico-form--new .proceso-estrategico-form__group {
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.proceso-estrategico-form--new .proceso-estrategico-form__group:last-child {
+    border-bottom: none;
+}
+
+/* ACTIONS */
+
+.proceso-estrategico-form__actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.4rem;
+}
+
+/* SUBMIT */
+
+.proceso-estrategico-form--new .proceso-estrategico-form__submit {
+    width: 52px;
+    height: 52px;
+
+    padding: 0;
+    border-radius: 12px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(25, 135, 84, 0.15);
+    color: #198754;
+
+    border: 1px solid rgba(25, 135, 84, 0.55);
+    font-size: 1.3rem;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    box-shadow:
+        0 10px 26px rgba(0, 0, 0, 0.35),
+        inset 0 0 0 1px rgba(25, 135, 84, 0.25);
+}
+
+.proceso-estrategico-form--new .proceso-estrategico-form__submit:hover {
+    background: rgba(25, 135, 84, 0.35);
+    color: #ffffff;
+    border-color: #198754;
+
+    box-shadow:
+        0 12px 30px rgba(25, 135, 84, 0.35),
+        inset 0 0 0 1px rgba(25, 135, 84, 0.35);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================================
+   PROCESO ESTRATÉGICO — EDIT
+   ========================================================= */
+
+.proceso-estrategico-form--edit {
+    background:
+        radial-gradient(circle at top, rgba(13, 202, 240, 0.08), transparent 55%),
+        linear-gradient(135deg, #0f1c26, #0b1117);
+
+    padding: 2.4rem;
+    border-radius: 22px;
+
+    box-shadow:
+        0 26px 65px rgba(0, 0, 0, 0.75),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+    position: relative;
+}
+
+.proceso-estrategico-form--edit::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 22px;
+    pointer-events: none;
+    box-shadow: inset 0 0 22px rgba(13, 202, 240, 0.08);
+}
+
+/* HEADER */
+
+.proceso-estrategico-form__header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: start;
+
+    margin-bottom: 2rem;
+    padding-bottom: 1.1rem;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.proceso-estrategico-form__header-center {
+    text-align: center;
+}
+
+.proceso-estrategico-form__title {
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: #e6f1ff;
+}
+
+.proceso-estrategico-form__subtitle {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: #9fb3c8;
+}
+
+/* BOTONES */
+
+.proceso-estrategico-form__icon-btn {
+    margin-top: 0.25rem;
+    width: 42px;
+    height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    font-size: 1.15rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.proceso-estrategico-form__icon-btn--back {
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.45);
+}
+
+.proceso-estrategico-form__icon-btn--save {
+    background: rgba(25, 135, 84, 0.15);
+    color: #198754;
+    border: 1px solid rgba(25, 135, 84, 0.55);
+}
+
+/* FORM */
+
+.proceso-estrategico-form--edit .proceso-estrategico-form__group {
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.proceso-estrategico-form__submit-proxy {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 2.6rem;
+    padding-top: 1.6rem;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.proceso-estrategico-form__submit-proxy
+.proceso-estrategico-form__icon-btn--save {
+    width: 54px;
+    height: 54px;
+    font-size: 1.3rem;
+}

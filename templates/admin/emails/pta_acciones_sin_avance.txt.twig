@@ -1,0 +1,30 @@
+{{ appName }}
+— Notificación
+{{ fecha|date('d/m/Y H:i') }}
+
+{% if tipoAviso == 'PRIMER_AVISO' %}
+	El siguiente PTA presenta acciones sin avance registrado en el periodo correspondiente. Registre avances antes de terminar el mes.
+{% elseif tipoAviso == 'SEGUNDO_AVISO' %}
+	El siguiente PTA presenta acciones sin avance registrado en el periodo correspondiente. Registre avances lo antes posible; el periodo establecido está por concluir.
+{% else %}
+	El siguiente PTA no registró avances en el periodo establecido. Por favor guarde información y documentos para justificar la falta de avances en ese periodo para posibles auditorías o justificación con su supervisor.
+{% endif %}
+
+Número de PTA: #{{ pta.id }}
+Nombre:
+{{ pta.nombre }}
+Objetivo:
+{{ pta.objetivo }}
+
+Acciones sin registro:
+{% for a in acciones %}
+	- Indicador
+	{{ a.indiceIndicador }}:
+	{{ a.indicadorNombre }}
+	| Acción:
+	{{ a.texto }}
+	| Estado: Sin registro
+{% endfor %}
+
+Saludos cordiales,
+{{ appName }}

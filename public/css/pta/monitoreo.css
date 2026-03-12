@@ -1,0 +1,583 @@
+/* ============================================================
+   PTA — MONITOREO (NAMESPACE AISLADO)
+   Vista estratégica (lectura)
+   ============================================================ */
+
+.pta-monitoreo {
+    padding: 28px 34px 60px;
+    background: radial-gradient(circle at top, #0f1c26, #0b1117 60%);
+    color: #e6f1ff;
+
+    --pta-primary: #0dcaf0;
+    --pta-ok: #1dd1a1;
+    --pta-warning: #feca57;
+    --pta-danger: #ff6b6b;
+    --pta-muted: #9fb3c8;
+
+    --pta-border: rgba(13, 202, 240, 0.25);
+    --pta-border-soft: rgba(13, 202, 240, 0.15);
+
+    --pta-card: #121b23;
+    --pta-card-soft: #16222d;
+}
+
+/* ============================================================
+   BREADCRUMB
+   ============================================================ */
+
+.pta-monitoreo-breadcrumb__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.pta-monitoreo-breadcrumb__item + .pta-monitoreo-breadcrumb__item::before {
+    content: "›";
+    opacity: 0.55;
+    margin: 0 8px 0 2px;
+}
+
+.pta-monitoreo-breadcrumb__link {
+    color: rgba(13, 202, 240, 0.88);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.pta-monitoreo-breadcrumb__link:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================
+   ESTADOS (BORDES ELEGANTES)
+   ============================================================ */
+
+.pta-status-ok {
+    box-shadow: inset 4px 0 0 rgba(29, 209, 161, 0.75);
+}
+
+.pta-status-atencion {
+    box-shadow: inset 4px 0 0 rgba(254, 202, 87, 0.75);
+}
+
+.pta-status-critico {
+    box-shadow: inset 4px 0 0 rgba(255, 107, 107, 0.85);
+}
+
+/* ============================================================
+   CARDS PRINCIPALES (GLOBAL / DEPARTAMENTO / PUESTO)
+   ============================================================ */
+
+.pta-report-card {
+    background: radial-gradient(
+        circle at top left,
+        rgba(13, 202, 240, 0.18),
+        rgba(6, 15, 22, 0.96) 55%
+    );
+
+    border-radius: 22px;
+    border: 1px solid var(--pta-border);
+    padding: 26px 28px;
+    display: block;
+    color: inherit;
+    text-decoration: none;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.18),
+        0 20px 50px rgba(0, 0, 0, 0.75);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.pta-report-card[href]:hover {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.45),
+        0 24px 56px rgba(0, 0, 0, 0.85);
+}
+
+/* ===== Variante global ===== */
+
+.pta-report-card--global {
+    position: relative;
+    overflow: hidden;
+}
+
+.pta-report-card--global::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    left: 0;
+    width: 6px;
+    border-radius: 10px;
+    background: var(--pta-primary);
+}
+
+/* ============================================================
+   TITULOS
+   ============================================================ */
+
+.pta-report-card__title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 20px;
+    letter-spacing: 0.4px;
+}
+
+.pta-report-card__subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-bottom: 16px;
+}
+
+/* ============================================================
+   GRID DE CARDS
+   ============================================================ */
+
+.pta-monitoreo-cards__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+@media (max-width: 992px) {
+    .pta-monitoreo-cards__grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   METRICAS
+   ============================================================ */
+
+.pta-report-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 700px) {
+    .pta-report-metrics {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.pta-metric {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+.pta-metric__label {
+    font-size: 0.8rem;
+    color: var(--pta-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pta-metric__value {
+    font-size: 1.45rem;
+    font-weight: 900;
+    margin-top: 6px;
+}
+
+/* ============================================================
+   GRAFICAS TIPO BARRA
+   ============================================================ */
+
+.pta-report-chart {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--pta-border-soft);
+}
+
+.pta-meter {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.pta-meter__row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 12px;
+    align-items: center;
+}
+
+@media (max-width: 520px) {
+    .pta-meter__row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pta-meter__name {
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+.pta-meter__track {
+    position: relative;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(13, 202, 240, 0.12);
+}
+
+.pta-meter__fill {
+    height: 100%;
+    border-radius: 999px;
+}
+
+.pta-meter__fill--ok {
+    background: linear-gradient(90deg, #1dd1a1, #20c997);
+}
+
+.pta-meter__fill--atencion {
+    background: linear-gradient(90deg, #feca57, #ffd166);
+}
+
+.pta-meter__fill--critico {
+    background: linear-gradient(90deg, #ff6b6b, #ff8787);
+}
+
+/* Globo porcentaje */
+
+.pta-meter__bubble {
+    position: absolute;
+    top: -34px;
+    background: #e6f1ff;
+    color: #0b1117;
+    font-size: 0.75rem;
+    font-weight: 900;
+    padding: 4px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+.pta-meter__bubble::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #e6f1ff;
+}
+
+/* ============================================================
+   TABLA FINAL PTA
+   ============================================================ */
+
+.pta-monitoreo-table {
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--pta-border);
+}
+
+.pta-monitoreo-table thead th {
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--pta-muted);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pta-monitoreo-table tbody tr:hover {
+    background: rgba(13, 202, 240, 0.06);
+}
+
+/* ============================================================
+   BADGES ESTADO
+   ============================================================ */
+
+.pta-badge-ok,
+.pta-badge-en_tiempo {
+    background: rgba(29, 209, 161, 0.18);
+    color: #3ddc97;
+}
+
+.pta-badge-atencion {
+    background: rgba(254, 202, 87, 0.22);
+    color: #feca57;
+}
+
+.pta-badge-critico {
+    background: rgba(255, 107, 107, 0.22);
+    color: #ff6b6b;
+}
+
+.pta-monitoreo-table .badge {
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 999px;
+}
+
+/* ============================================================
+   PTA — TABLA FINAL (ESTILO PREMIUM)
+   ============================================================ */
+
+.pta-monitoreo-ptas {
+    margin-top: 24px;
+}
+
+/* ===== Contenedor tabla ===== */
+.pta-monitoreo-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 14px; /* 🔥 filas flotantes */
+    background: transparent;
+    border: none;
+}
+
+/* ===== Header ===== */
+.pta-monitoreo-table thead th {
+    background: rgba(0, 0, 0, 0.55);
+    color: var(--pta-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 14px 16px;
+    border: none;
+}
+
+/* Bordes redondeados header */
+.pta-monitoreo-table thead th:first-child {
+    border-top-left-radius: 14px;
+}
+.pta-monitoreo-table thead th:last-child {
+    border-top-right-radius: 14px;
+}
+
+/* ===== Filas ===== */
+.pta-monitoreo-table tbody tr {
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+
+    box-shadow:
+        inset 0 0 0 1px var(--pta-border-soft),
+        0 10px 26px rgba(0, 0, 0, 0.7);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+/* Hover elegante */
+.pta-monitoreo-table tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.45),
+        0 16px 36px rgba(0, 0, 0, 0.85);
+}
+
+/* ===== Celdas ===== */
+.pta-monitoreo-table td {
+    padding: 18px 16px;
+    border: none;
+    vertical-align: middle;
+}
+
+/* Bordes redondeados por fila */
+.pta-monitoreo-table tbody tr td:first-child {
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+    font-weight: 800;
+    opacity: 0.85;
+}
+
+.pta-monitoreo-table tbody tr td:last-child {
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+}
+
+/* ===== Columna nombre PTA ===== */
+.pta-col-nombre {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.45;
+    color: #e6f1ff;
+}
+
+/* ===== Departamento / Puesto ===== */
+.pta-col-departamento,
+.pta-col-puesto {
+    font-weight: 600;
+    color: var(--pta-muted);
+    white-space: nowrap;
+}
+
+/* ============================================================
+   ESTADOS PTA — BADGES INTEGRADOS
+   ============================================================ */
+
+.pta-monitoreo-table .badge {
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 999px;
+    letter-spacing: 0.3px;
+}
+
+/* OK */
+.pta-badge-ok,
+.pta-badge-en_tiempo {
+    background: rgba(29, 209, 161, 0.18);
+    color: #3ddc97;
+    box-shadow: inset 0 0 0 1px rgba(29, 209, 161, 0.45);
+}
+
+/* Atención */
+.pta-badge-atencion {
+    background: rgba(254, 202, 87, 0.22);
+    color: #feca57;
+    box-shadow: inset 0 0 0 1px rgba(254, 202, 87, 0.55);
+}
+
+/* Crítico */
+.pta-badge-critico {
+    background: rgba(255, 107, 107, 0.22);
+    color: #ff6b6b;
+    box-shadow: inset 0 0 0 1px rgba(255, 107, 107, 0.65);
+}
+
+/* ============================================================
+   BOTONES DE ACCIÓN
+   ============================================================ */
+
+.pta-col-accion {
+    white-space: nowrap;
+}
+
+.pta-col-accion .btn {
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 6px 14px;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.pta-col-accion .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================================================
+   ESTADO POR FILA (GLOW SUAVE)
+   ============================================================ */
+
+.pta-monitoreo-table tbody tr.pta-status-ok {
+    box-shadow:
+        inset 4px 0 0 rgba(29, 209, 161, 0.75),
+        0 10px 26px rgba(0, 0, 0, 0.7);
+}
+
+.pta-monitoreo-table tbody tr.pta-status-atencion {
+    box-shadow:
+        inset 4px 0 0 rgba(254, 202, 87, 0.8),
+        0 10px 26px rgba(0, 0, 0, 0.7);
+}
+
+.pta-monitoreo-table tbody tr.pta-status-critico {
+    box-shadow:
+        inset 4px 0 0 rgba(255, 107, 107, 0.85),
+        0 12px 30px rgba(0, 0, 0, 0.8);
+}
+
+/* Nombre del proyecto PTA */
+.pta-col-nombre {
+    color: #ffffff;
+}
+.pta-col-nombre {
+    color: #ffffff;
+    text-shadow: 0 0 6px rgba(13, 202, 240, 0.15);
+}
+
+/* Contenedor visual de la tabla */
+.pta-monitoreo-table {
+    border-radius: 22px;
+    padding: 12px;
+    background: linear-gradient(
+        145deg,
+        rgba(10, 18, 26, 0.95),
+        rgba(6, 12, 18, 0.9)
+    );
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.18),
+        0 18px 46px rgba(0, 0, 0, 0.85);
+}
+
+/* Separación interna entre filas */
+.pta-monitoreo-table tbody tr {
+    position: relative;
+}
+
+.pta-monitoreo-table tbody tr::after {
+    content: "";
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: -7px;
+    height: 1px;
+    background: rgba(13, 202, 240, 0.12);
+}
+
+/* ============================================================
+   ACCIONES PTA — SOLUCIÓN REAL Y CORRECTA
+   ============================================================ */
+
+.pta-col-accion {
+    vertical-align: middle; /* 🔥 tabla manda */
+    text-align: right;
+    white-space: nowrap;
+}
+
+.pta-actions {
+    display: inline-flex; /* 🔥 inline-level */
+    align-items: center;
+    gap: 10px;
+}
+
+/* Encabezados de tabla — más presencia */
+.pta-monitoreo-table thead th {
+    font-size: 0.9rem; /* antes ~0.75rem */
+    font-weight: 800; /* más autoridad visual */
+    letter-spacing: 0.8px; /* aire elegante */
+    padding: 16px 18px; /* un poco más de altura */
+    color: #e6f1ff; /* blanco suave, consistente */
+}
+.pta-monitoreo-table thead th {
+    text-shadow: 0 0 6px rgba(13, 202, 240, 0.25);
+}
+
+.pta-col-nombre {
+    width: 45%;
+    max-width: 45%;
+}
+
+.pta-col-departamento,
+.pta-col-puesto {
+    width: 20%;
+    max-width: 20%;
+    white-space: normal; /* permite salto de línea */
+    word-break: break-word; /* rompe palabras largas */
+    line-height: 1.35;
+}

@@ -24,17 +24,81 @@
  *  - Este JS vive dentro de un dashboard
  *  - Por eso se ejecuta solo cuando el frame correcto se carga
  */
+
+/**
+ * =====================================================
+ * BOOTSTRAP UNIVERSAL PTA NEW
+ * -----------------------------------------------------
+ * Permite que el mismo JS funcione:
+ *  - Dentro de Turbo (admin)
+ *  - En carga normal (no-admin)
+ * =====================================================
+ */
+function bootPtaNew(context) {
+    const ptaForm = context.querySelector('form[data-pta-form="pta-new"]');
+    if (!ptaForm) return;
+
+    // 🛑 PROTECCIÓN: evitar doble inicialización
+    if (ptaForm.dataset.ptaInitialized === "true") return;
+
+    ptaForm.dataset.ptaInitialized = "true";
+
+    initPtaNew(context, ptaForm);
+}
+
+
+/**
+ * =====================================================
+ * EVENTOS UNIVERSALES
+ * -----------------------------------------------------
+ * - Admin: turbo:frame-load (frame #content)
+ * - No-admin con Turbo Drive: turbo:load
+ * - No-admin sin Turbo: DOMContentLoaded
+ * =====================================================
+ */
+
+// ✅ Admin (dashboard): cuando se carga el frame content
 document.addEventListener("turbo:frame-load", (event) => {
-
-    // Referencia al frame que acaba de cargarse
     const frame = event.target;
+    if (!frame || frame.id !== "content") return;
+    bootPtaNew(frame);
+});
 
-    // Seguridad: solo ejecutar si es el frame principal del contenido
-    if (frame.id !== "content") return;
+// ✅ No-admin con Turbo Drive (navegación sin recargar página)
+document.addEventListener("turbo:load", () => {
+    bootPtaNew(document);
+});
 
+// ✅ Fallback (si algún día Turbo no está activo)
+document.addEventListener("DOMContentLoaded", () => {
+    bootPtaNew(document);
+});
+
+
+
+
+function initPtaNew(frame, ptaForm) {
     console.log("PTA NEW JS cargado ✔");
 
     /**
+ * =====================================================
+ * SOLO DÍGITOS — INPUTS NUMÉRICOS (PTA)
+ * =====================================================
+ */
+function enforceOnlyDigits(input) {
+    if (!input) return;
+
+    // Teclado numérico en móviles
+    input.setAttribute("inputmode", "numeric");
+    input.setAttribute("pattern", "[0-9]*");
+
+    input.addEventListener("input", () => {
+        input.value = input.value.replace(/\D+/g, "");
+    });
+}
+
+
+/**
      * =====================================================
      * BUSCADOR GENÉRICO DE PERSONAL
      * -----------------------------------------------------
@@ -97,7 +161,7 @@ document.addEventListener("turbo:frame-load", (event) => {
              * Petición a la API de personal
              * Devuelve [{ id, nombre }]
              */
-            fetch(`/admin/api/personal/buscar?q=${encodeURIComponent(q)}`, {
+            fetch(`/api/personal/buscar?q=${encodeURIComponent(q)}`, {
                 signal: controller.signal
             })
                 .then(res => res.json())
@@ -141,6 +205,7 @@ document.addEventListener("turbo:frame-load", (event) => {
         });
     }
 
+    
     // Inicialización del buscador de Supervisor
     initPersonalSearch({
         inputSelector: ".supervisor-search",
@@ -154,6 +219,13 @@ document.addEventListener("turbo:frame-load", (event) => {
         hiddenSelector: 'input[name$="[aval]"]',
         resultsSelector: ".aval-results"
     });
+    // Inicialización del buscador de Responsable del PTA
+initPersonalSearch({
+    inputSelector: ".responsable-search",
+    hiddenSelector: 'input[name="responsable_id"]',
+    resultsSelector: ".responsable-results"
+});
+
 
     /**
      * =====================================================
@@ -251,6 +323,7 @@ document.addEventListener("turbo:frame-load", (event) => {
         console.log("🔄 Indicadores sincronizados con acciones");
     }
 
+
     /**
      * =====================================================
      * UTILIDAD: BOTONES DE ELIMINAR
@@ -310,6 +383,16 @@ document.addEventListener("turbo:frame-load", (event) => {
             const temp = document.createElement("div");
             temp.innerHTML = prototype.replace(/__name__/g, index);
 
+            // ===============================
+// SOLO DÍGITOS — BASE Y META
+// ===============================
+const valorBaseInput = temp.querySelector('[name$="[valorBase]"]');
+const metaInput = temp.querySelector('[name$="[valor]"]');
+
+if (valorBaseInput) enforceOnlyDigits(valorBaseInput);
+if (metaInput) enforceOnlyDigits(metaInput);
+
+
             // Campo hidden de índice lógico
             const indiceInput = temp.querySelector('[name$="[indice]"]');
             if (indiceInput) {
@@ -327,6 +410,7 @@ document.addEventListener("turbo:frame-load", (event) => {
                     ${indiceInput ? indiceInput.outerHTML : ''}
                 </td>
                 <td class="p-1">${temp.querySelector('[name$="[formula]"]').outerHTML}</td>
+                <td class="p-1">${temp.querySelector('[name$="[valorBase]"]').outerHTML}</td>
                 <td class="p-1">${temp.querySelector('[name$="[valor]"]').outerHTML}</td>
                 <td class="p-1">${temp.querySelector('[name$="[periodo]"]').outerHTML}</td>
                 <td class="p-1">${temp.querySelector('[name$="[tendencia]"]').outerHTML}</td>
@@ -346,6 +430,7 @@ document.addEventListener("turbo:frame-load", (event) => {
 
         activateRemoveButtons(frame, ".remove-indicador");
     }
+
 
     /**
      * =====================================================
@@ -385,7 +470,7 @@ document.addEventListener("turbo:frame-load", (event) => {
              * (el real es un hidden)
              */
             const indicadorSelect = document.createElement("select");
-            indicadorSelect.classList.add("form-select", "form-select-sm");
+            indicadorSelect.classList.add("pta-input");
             indicadorSelect.innerHTML = `<option value="">Seleccione un indicador</option>`;
 
             // Poblar con indicadores existentes
@@ -455,6 +540,8 @@ document.addEventListener("turbo:frame-load", (event) => {
         activateRemoveButtons(frame, ".remove-accion");
     }
 
+
+
     /**
      * =====================================================
      * LIMPIEZA VISUAL DE ERRORES
@@ -466,15 +553,15 @@ document.addEventListener("turbo:frame-load", (event) => {
         });
     }
 
+
     /**
      * =====================================================
      * VALIDACIÓN FINAL ANTES DEL SUBMIT
      * =====================================================
      */
-    const form = frame.querySelector("form");
 
-    if (form) {
-        form.addEventListener("submit", (e) => {
+    if (ptaForm) {
+        ptaForm.addEventListener("submit", (e) => {
 
             // ===============================
             // VALIDACIÓN DE RESPONSABLES
@@ -668,9 +755,8 @@ document.addEventListener("turbo:frame-load", (event) => {
             }
         });
     }
-});
 
-/**
+    /**
  * =====================================================
  * AUTO-GROW DE TEXTAREAS (ENCABEZADO)
  * =====================================================
@@ -712,3 +798,18 @@ frame.querySelectorAll('.fixed-textarea').forEach(textarea => {
         autoGrowLimited(textarea, 5);
     });
 });
+
+/**
+ * =====================================================
+ * APLICAR SOLO DÍGITOS A INPUTS EXISTENTES
+ * =====================================================
+ */
+frame.querySelectorAll(
+    '[name$="[valorBase]"], [name$="[valor]"]'
+).forEach(input => {
+    enforceOnlyDigits(input);
+});
+
+
+}// fin de la funcion de contencion
+

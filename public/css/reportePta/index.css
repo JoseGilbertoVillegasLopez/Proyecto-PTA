@@ -1,0 +1,768 @@
+/* =========================================================
+   REPORTE PTA INDEX — VERSIÓN MEJORADA
+   Namespace único: .reporteptaindex
+   ========================================================= */
+
+.reporteptaindex {
+    --reporteptaindex-primary: #0dcaf0;
+    --reporteptaindex-primary-strong: #00d2ff;
+    --reporteptaindex-primary-soft: rgba(13, 202, 240, 0.16);
+
+    --reporteptaindex-success: #1dd1a1;
+    --reporteptaindex-warning: #feca57;
+    --reporteptaindex-danger: #ff6b6b;
+    --reporteptaindex-muted: #9fb3c8;
+
+    --reporteptaindex-bg-main: transparent;
+    --reporteptaindex-bg-panel: radial-gradient(
+        circle at top left,
+        rgba(13, 202, 240, 0.12),
+        rgba(5, 13, 19, 0.98) 58%
+    );
+    --reporteptaindex-bg-card: linear-gradient(
+        180deg,
+        rgba(9, 20, 28, 0.98),
+        rgba(6, 13, 19, 0.98)
+    );
+    --reporteptaindex-bg-card-soft: linear-gradient(
+        180deg,
+        rgba(13, 25, 34, 0.95),
+        rgba(8, 16, 22, 0.98)
+    );
+
+    --reporteptaindex-border: rgba(13, 202, 240, 0.24);
+    --reporteptaindex-border-soft: rgba(13, 202, 240, 0.12);
+
+    --reporteptaindex-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.08),
+        0 20px 48px rgba(0, 0, 0, 0.72);
+
+    --reporteptaindex-shadow-hover:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.16),
+        0 26px 58px rgba(0, 0, 0, 0.82);
+
+    color: #ffffff;
+    padding: 0;
+    background: var(--reporteptaindex-bg-main);
+}
+
+/* =========================================================
+   RESET LOCAL
+   ========================================================= */
+
+.reporteptaindex,
+.reporteptaindex *,
+.reporteptaindex *::before,
+.reporteptaindex *::after {
+    box-sizing: border-box;
+}
+
+.reporteptaindex h1,
+.reporteptaindex h2,
+.reporteptaindex h3,
+.reporteptaindex h4,
+.reporteptaindex h5,
+.reporteptaindex h6,
+.reporteptaindex p {
+    margin-top: 0;
+}
+
+.reporteptaindex a {
+    text-decoration: none;
+}
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__layout {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* =========================================================
+   BOTÓN VOLVER
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__volver-wrapper {
+    margin-bottom: 1.25rem;
+}
+
+.reporteptaindex .reporteptaindex__volver-boton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+
+    padding: 0.8rem 1.15rem;
+    border-radius: 14px;
+
+    background: rgba(13, 202, 240, 0.08);
+    border: 1px solid rgba(13, 202, 240, 0.24);
+    color: #d8f8ff;
+
+    font-weight: 800;
+    letter-spacing: 0.2px;
+
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.34);
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease,
+        color 0.18s ease;
+}
+
+.reporteptaindex .reporteptaindex__volver-boton:hover {
+    transform: translateY(-1px);
+    background: rgba(13, 202, 240, 0.14);
+    border-color: rgba(13, 202, 240, 0.4);
+    color: #ffffff;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__hero {
+    text-align: center;
+    margin-bottom: 1.6rem;
+    padding: 0.35rem 0 0.2rem;
+}
+
+.reporteptaindex .reporteptaindex__hero-kicker {
+    display: inline-block;
+    margin-bottom: 0.65rem;
+    padding: 0.38rem 0.85rem;
+    border-radius: 999px;
+
+    background: rgba(13, 202, 240, 0.08);
+    border: 1px solid rgba(13, 202, 240, 0.18);
+    color: #c8f6ff;
+
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.reporteptaindex .reporteptaindex__hero-titulo {
+    margin: 0 0 0.45rem 0;
+    font-size: 2.15rem;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+    color: #ffffff;
+    text-shadow: 0 0 18px rgba(13, 202, 240, 0.1);
+}
+
+.reporteptaindex .reporteptaindex__hero-subtitulo {
+    margin: 0;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+
+    color: var(--reporteptaindex-muted);
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+/* =========================================================
+   BLOQUES GENERALES
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__bloque-pta,
+.reporteptaindex .reporteptaindex__bloque-calendario {
+    background: var(--reporteptaindex-bg-panel);
+    border: 1px solid var(--reporteptaindex-border);
+    border-radius: 28px;
+    padding: 1.55rem 1.5rem 1.45rem;
+    box-shadow: var(--reporteptaindex-shadow);
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.reporteptaindex .reporteptaindex__bloque-pta::before,
+.reporteptaindex .reporteptaindex__bloque-calendario::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px rgba(13, 202, 240, 0.04);
+}
+
+.reporteptaindex .reporteptaindex__bloque-cabecera {
+    margin-bottom: 1rem;
+}
+
+.reporteptaindex .reporteptaindex__bloque-titulo {
+    margin: 0;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 0.25px;
+}
+
+/* =========================================================
+   BLOQUE PTA
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__bloque-pta-campos {
+    display: grid;
+    grid-template-columns: 0.75fr 1.2fr 1.65fr;
+    gap: 1rem;
+}
+
+.reporteptaindex .reporteptaindex__bloque-pta-campo {
+    background: var(--reporteptaindex-bg-card);
+    border: 1px solid var(--reporteptaindex-border-soft);
+    border-radius: 22px;
+    padding: 1.25rem 1.1rem;
+    min-height: 135px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.07),
+        0 12px 28px rgba(0, 0, 0, 0.55);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.reporteptaindex .reporteptaindex__bloque-pta-campo:hover {
+    transform: translateY(-2px);
+    border-color: rgba(13, 202, 240, 0.24);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.1),
+        0 18px 36px rgba(0, 0, 0, 0.65);
+}
+
+.reporteptaindex .reporteptaindex__bloque-pta-etiqueta {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--reporteptaindex-muted);
+    margin-bottom: 0.6rem;
+}
+
+.reporteptaindex .reporteptaindex__bloque-pta-valor {
+    font-size: 1.08rem;
+    font-weight: 800;
+    color: #eefbff;
+    line-height: 1.55;
+    word-break: break-word;
+}
+
+/* =========================================================
+   BLOQUE CALENDARIO
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__bloque-calendario-listado {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.reporteptaindex .reporteptaindex__bloque-calendario-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    background: var(--reporteptaindex-bg-card-soft);
+    border: 1px solid var(--reporteptaindex-border-soft);
+    border-radius: 18px;
+    padding: 1rem 1.1rem;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.05),
+        0 10px 22px rgba(0, 0, 0, 0.42);
+}
+
+.reporteptaindex .reporteptaindex__bloque-calendario-item-periodo {
+    font-size: 1rem;
+    font-weight: 900;
+    color: #ffffff;
+}
+
+.reporteptaindex .reporteptaindex__bloque-calendario-item-fecha {
+    color: #d4edf5;
+    font-weight: 700;
+    text-align: right;
+    line-height: 1.45;
+}
+
+/* =========================================================
+   GRID TRIMESTRES
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__bloque-trimestres {
+    margin-top: 0.2rem;
+}
+
+.reporteptaindex .reporteptaindex__bloque-trimestres-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.3rem;
+}
+
+/* =========================================================
+   CARD TRIMESTRE
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__trimestre-card {
+    position: relative;
+    overflow: hidden;
+
+    background: radial-gradient(
+        circle at top,
+        rgba(13, 202, 240, 0.12),
+        rgba(4, 10, 15, 0.99) 64%
+    );
+    border: 1px solid var(--reporteptaindex-border);
+    border-radius: 30px;
+    padding: 1.35rem 1.2rem 1.2rem;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.06),
+        0 22px 52px rgba(0, 0, 0, 0.74);
+
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.12),
+        0 28px 62px rgba(0, 0, 0, 0.82);
+}
+
+/* Línea superior de acento */
+.reporteptaindex .reporteptaindex__trimestre-accent-line {
+    position: absolute;
+    top: 0;
+    left: 22px;
+    right: 22px;
+    height: 4px;
+    border-radius: 0 0 999px 999px;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accent-line--entregado {
+    background: linear-gradient(
+        90deg,
+        rgba(29, 209, 161, 0.85),
+        rgba(29, 209, 161, 0.25)
+    );
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accent-line--en_proceso {
+    background: linear-gradient(
+        90deg,
+        rgba(254, 202, 87, 0.9),
+        rgba(254, 202, 87, 0.25)
+    );
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accent-line--sin_entregar {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 107, 107, 0.92),
+        rgba(255, 107, 107, 0.25)
+    );
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accent-line--pendiente {
+    background: linear-gradient(
+        90deg,
+        rgba(13, 202, 240, 0.92),
+        rgba(13, 202, 240, 0.25)
+    );
+}
+
+/* =========================================================
+   CABECERA TRIMESTRE
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__trimestre-cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-top: 0.2rem;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-cabecera-numero {
+    font-size: 0.86rem;
+    font-weight: 800;
+    letter-spacing: 0.25px;
+    color: var(--reporteptaindex-muted);
+    margin-bottom: 0.2rem;
+    text-transform: uppercase;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-cabecera-titulo {
+    margin: 0;
+    font-size: 1.36rem;
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-cabecera-estado {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 118px;
+    padding: 0.5rem 0.9rem;
+    border-radius: 999px;
+
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 0.22px;
+    white-space: nowrap;
+
+    border: 1px solid transparent;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-cabecera-estado--entregado {
+    background: rgba(29, 209, 161, 0.12);
+    color: #defff4;
+    border-color: rgba(29, 209, 161, 0.28);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-cabecera-estado--en_proceso {
+    background: rgba(254, 202, 87, 0.12);
+    color: #fff4d8;
+    border-color: rgba(254, 202, 87, 0.28);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-cabecera-estado--sin_entregar {
+    background: rgba(255, 107, 107, 0.12);
+    color: #ffe4e4;
+    border-color: rgba(255, 107, 107, 0.28);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-cabecera-estado--pendiente {
+    background: rgba(13, 202, 240, 0.12);
+    color: #dff9ff;
+    border-color: rgba(13, 202, 240, 0.26);
+}
+
+/* =========================================================
+   RESUMEN SUPERIOR
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__trimestre-resumen {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-resumen-celda {
+    background: linear-gradient(
+        180deg,
+        rgba(8, 18, 25, 0.96),
+        rgba(5, 12, 17, 0.98)
+    );
+    border: 1px solid rgba(13, 202, 240, 0.12);
+    border-radius: 18px;
+    min-height: 102px;
+    padding: 0.95rem 0.8rem;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.04),
+        0 10px 20px rgba(0, 0, 0, 0.42);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-resumen-etiqueta {
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--reporteptaindex-muted);
+    margin-bottom: 0.45rem;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-resumen-valor {
+    font-size: 1.05rem;
+    font-weight: 900;
+    color: #edfaff;
+    line-height: 1.35;
+    word-break: break-word;
+}
+
+/* =========================================================
+   CUERPO DEL TRIMESTRE
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__trimestre-cuerpo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-fila-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+
+    padding: 0.95rem 1rem;
+    border-radius: 17px;
+
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(13, 202, 240, 0.08);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-fila-etiqueta {
+    font-size: 0.92rem;
+    font-weight: 900;
+    color: #ffffff;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-fila-valor {
+    font-size: 0.94rem;
+    font-weight: 700;
+    color: #d4ebf4;
+    line-height: 1.5;
+    text-align: right;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-mensaje {
+    border-radius: 17px;
+    padding: 1rem 1rem;
+    font-size: 0.94rem;
+    font-weight: 700;
+    line-height: 1.58;
+    border: 1px solid transparent;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-mensaje--entregado {
+    background: rgba(29, 209, 161, 0.1);
+    color: #defff4;
+    border-color: rgba(29, 209, 161, 0.18);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-mensaje--en_proceso {
+    background: rgba(254, 202, 87, 0.1);
+    color: #fff4d8;
+    border-color: rgba(254, 202, 87, 0.18);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-mensaje--sin_entregar {
+    background: rgba(255, 107, 107, 0.1);
+    color: #ffe6e6;
+    border-color: rgba(255, 107, 107, 0.18);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-mensaje--pendiente {
+    background: rgba(13, 202, 240, 0.1);
+    color: #ddf8ff;
+    border-color: rgba(13, 202, 240, 0.18);
+}
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__trimestre-acciones {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 0.1rem;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accion-boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    padding: 0.82rem 1.15rem;
+    border-radius: 14px;
+
+    font-size: 0.92rem;
+    font-weight: 800;
+    letter-spacing: 0.15px;
+
+    border: 1px solid transparent;
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease,
+        color 0.18s ease;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accion-boton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.36);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accion-boton--ver {
+    background: rgba(13, 202, 240, 0.1);
+    color: #ddf8ff;
+    border-color: rgba(13, 202, 240, 0.24);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accion-boton--ver:hover {
+    background: rgba(13, 202, 240, 0.16);
+    color: #ffffff;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accion-boton--editar {
+    background: rgba(254, 202, 87, 0.1);
+    color: #fff4d7;
+    border-color: rgba(254, 202, 87, 0.24);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accion-boton--editar:hover {
+    background: rgba(254, 202, 87, 0.17);
+    color: #ffffff;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accion-boton--crear {
+    background: rgba(29, 209, 161, 0.1);
+    color: #defff4;
+    border-color: rgba(29, 209, 161, 0.24);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-accion-boton--crear:hover {
+    background: rgba(29, 209, 161, 0.17);
+    color: #ffffff;
+}
+
+.reporteptaindex .reporteptaindex__trimestre-acciones-vacio {
+    text-align: center;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--reporteptaindex-muted);
+    padding: 0.35rem 0.15rem;
+}
+
+/* =========================================================
+   BORDE DEL CARD POR ESTADO
+   ========================================================= */
+
+.reporteptaindex .reporteptaindex__trimestre-card--entregado {
+    border-color: rgba(29, 209, 161, 0.24);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-card--en_proceso {
+    border-color: rgba(254, 202, 87, 0.22);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-card--sin_entregar {
+    border-color: rgba(255, 107, 107, 0.22);
+}
+
+.reporteptaindex .reporteptaindex__trimestre-card--pendiente {
+    border-color: rgba(13, 202, 240, 0.22);
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+    .reporteptaindex .reporteptaindex__bloque-pta-campos {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .reporteptaindex .reporteptaindex__bloque-pta-campo--objetivo {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 992px) {
+    .reporteptaindex .reporteptaindex__bloque-trimestres-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .reporteptaindex .reporteptaindex__hero-titulo {
+        font-size: 1.75rem;
+    }
+
+    .reporteptaindex .reporteptaindex__bloque-pta,
+    .reporteptaindex .reporteptaindex__bloque-calendario,
+    .reporteptaindex .reporteptaindex__trimestre-card {
+        border-radius: 24px;
+        padding: 1.15rem 1rem 1.1rem;
+    }
+
+    .reporteptaindex .reporteptaindex__bloque-pta-campos {
+        grid-template-columns: 1fr;
+    }
+
+    .reporteptaindex .reporteptaindex__bloque-pta-campo--objetivo {
+        grid-column: auto;
+    }
+
+    .reporteptaindex .reporteptaindex__trimestre-cabecera {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .reporteptaindex .reporteptaindex__trimestre-fila-valor {
+        text-align: left;
+    }
+}
+
+@media (max-width: 520px) {
+    .reporteptaindex .reporteptaindex__hero-kicker {
+        font-size: 0.75rem;
+    }
+
+    .reporteptaindex .reporteptaindex__hero-titulo {
+        font-size: 1.5rem;
+    }
+
+    .reporteptaindex .reporteptaindex__hero-subtitulo {
+        font-size: 0.93rem;
+    }
+
+    .reporteptaindex .reporteptaindex__bloque-calendario-item {
+        padding: 0.95rem 0.9rem;
+    }
+
+    .reporteptaindex .reporteptaindex__trimestre-accion-boton {
+        width: 100%;
+    }
+
+    .reporteptaindex .reporteptaindex__trimestre-acciones {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

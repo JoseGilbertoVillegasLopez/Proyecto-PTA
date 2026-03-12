@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8">
+		<title>Aviso administrativo — Supervisor</title>
+	</head>
+	<body style="margin:0;padding:0;background:#f4f6f9;font-family:Arial,Helvetica,sans-serif;">
+
+		<div style="max-width:720px;margin:0 auto;background:#ffffff;">
+
+			<div style="background:#198754;color:#fff;padding:16px 24px;">
+				<h2 style="margin:0;font-size:18px;">
+					Aviso administrativo — Supervisor
+				</h2>
+				<p style="margin:4px 0 0;font-size:13px;">
+					Periodo cerrado:
+					{{ mesNombre }}
+					{{ anio }}
+				</p>
+			</div>
+
+			<div style="padding:24px;color:#333;">
+
+				<p>
+					Estimado(a)
+					<strong>{{ supervisor }}</strong>,
+				</p>
+
+				<p>
+					Los siguientes PTA bajo su supervisión presentan acciones sin avance
+										            en el periodo
+					<strong>{{ mesNombre }}
+						{{ anio }}</strong>.
+				</p>
+
+				{% for item in items %}
+					<div style="border:1px solid #dee2e6;border-radius:6px;margin:18px 0;">
+
+						<div style="background:#f3faf6;padding:12px 16px;">
+							<strong>PTA #{{ item.pta.id }}
+								—
+								{{ item.pta.nombre }}</strong><br>
+							<span style="font-size:13px;color:#555;">
+								Responsable:
+								{{ item.responsable.nombre }}
+							</span>
+						</div>
+
+						<div style="padding:16px;">
+
+							{% set indicadores = {} %}
+							{% for a in item.acciones %}
+								{% set indicadores = indicadores|merge({
+                            (a.indiceIndicador): (indicadores[a.indiceIndicador]|default([]))|merge([a])
+                        }) %}
+							{% endfor %}
+
+							{% for indice, acciones in indicadores %}
+								<div style="margin-bottom:14px;">
+									<div style="font-weight:bold;color:#198754;margin-bottom:6px;">
+										Indicador
+										{{ indice + 1}}:
+										{{ acciones[0].indicadorNombre }}
+									</div>
+									<ul style="margin:0;padding-left:18px;">
+										{% for acc in acciones %}
+											<li style="margin-bottom:6px;">
+												{{ acc.texto }}
+											</li>
+										{% endfor %}
+									</ul>
+								</div>
+							{% endfor %}
+
+						</div>
+					</div>
+				{% endfor %}
+
+				<p style="font-size:13px;color:#555;">
+					Atentamente,<br>
+					<strong>{{ appName }}</strong>
+				</p>
+
+			</div>
+		</div>
+
+	</body>
+</html>

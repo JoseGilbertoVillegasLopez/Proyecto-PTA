@@ -1,0 +1,258 @@
+<turbo-frame id="content">
+
+	<div class="pta-reporte-new" data-reporte-form="reporte-edit" data-modo="edit" data-datos-iniciales='{{ datos.inicial|json_encode|raw }}' data-uploads-base="{{ datos.uploads.base_url }}" data-procesos-estrategicos='{{ datos.catalogos.procesos_estrategicos|json_encode|raw }}' data-procesos-clave='{{ datos.catalogos.procesos_clave|json_encode|raw }}' data-partidas-presupuestales='{{ datos.catalogos.partidas_presupuestales|json_encode|raw }}'>
+
+		<form method="POST" action="{{ path('app_reporte_pta_edit', { id: datos.pta.id, trimestre: datos.trimestre }) }}" enctype="multipart/form-data" data-turbo-action="advance">
+			<input type="hidden" name="_token" value="{{ csrf_token }}">
+
+			<div class="pta-reporte-container">
+
+				{# ===================================================== #}
+				{# BOTÓN VOLVER #}
+				{# ===================================================== #}
+					<div class="mb-4"> <a href="{{ volver_path|default('#') }}" class="btn btn-outline-light" data-turbo-action="advance">
+						← Volver
+					</a>
+				</div>
+
+				{# ===================================================== #}
+				{# TÍTULO #}
+				{# ===================================================== #}
+
+				{% set trimestreTexto = {
+                    1: 'Enero - Marzo',
+                    2: 'Enero - Junio',
+                    3: 'Enero - Septiembre',
+                    4: 'Enero - Diciembre'
+                } %}
+
+					<h1 class="pta-reporte-new__title"> Editar Reporte PTA Trimestre
+					{{ trimestreTexto[datos.trimestre] }}
+				</h1>
+
+				{# ===================================================== #}
+				{# CARD ENCABEZADO PTA #}
+				{# ===================================================== #}
+
+					<div class="pta-report-card pta-report-card--global mb-5 pta-reporte-headcard"> <div class="pta-reporte-headcard__grid">
+
+						<div class="pta-reporte-headcard__item pta-reporte-headcard__item--pta">
+							<div class="pta-reporte-headcard__label"># PTA:</div>
+							<div class="pta-reporte-headcard__value">{{ datos.pta.id ?? 'N/A' }}</div>
+						</div>
+
+						<div class="pta-reporte-headcard__item pta-reporte-headcard__item--nombre">
+							<div class="pta-reporte-headcard__label">Nombre:</div>
+							<div class="pta-reporte-headcard__value">{{ datos.pta.nombre }}</div>
+						</div>
+
+						<div class="pta-reporte-headcard__item pta-reporte-headcard__item--objetivo">
+							<div class="pta-reporte-headcard__label">Objetivo:</div>
+							<div class="pta-reporte-headcard__value">{{ datos.pta.objetivo }}</div>
+						</div>
+
+					</div>
+				</div>
+
+				{# ===================================================== #}
+				{# ACCORDION INDICADORES #}
+				{# ===================================================== #}
+
+					<div class="accordion" id="accordionIndicadores"> {% for indice, data in datos.resultados %}
+						{% set isFirst = loop.first %}
+						{% set inicial = datos.inicial[indice] ?? null %}
+
+						<div class="accordion-item mb-4">
+
+							<h2 class="accordion-header">
+								<button class="accordion-button {{ not isFirst ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ indice }}" aria-expanded="{{ isFirst ? 'true' : 'false' }}">
+
+									{{ data.nombre }}
+								</button>
+							</h2>
+
+							<div id="collapse{{ indice }}" class="accordion-collapse collapse {{ isFirst ? 'show' : '' }}" data-bs-parent="#accordionIndicadores">
+
+								<div
+									class="accordion-body">
+
+									{# ================= DATOS CALCULADOS ================= #}
+
+									<div class="pta-report-card pta-reporte-indicador-datos mb-4">
+
+										<div class="pta-report-card__subtitle">
+											Datos del Indicador
+										</div>
+
+										<div class="pta-rnew-indicador-grid">
+
+											<div class="pta-rnew-metric pta-rnew-metric--meta">
+												<div class="pta-rnew-metric__label">Meta Año</div>
+												<div class="pta-rnew-metric__value">{{ data.meta }}</div>
+											</div>
+
+											<div class="pta-rnew-metric pta-rnew-metric--resultado">
+												<div class="pta-rnew-metric__label">Resultado Trimestre</div>
+												<div class="pta-rnew-metric__value">{{ data.resultado }}</div>
+											</div>
+
+											<div class="pta-rnew-metric pta-rnew-metric--porcentaje">
+												<div class="pta-rnew-metric__label">Porcentaje</div>
+												<div class="pta-rnew-metric__value">{{ data.porcentaje }}%</div>
+											</div>
+
+											<div class="pta-rnew-metric pta-rnew-metric--formula">
+												<div class="pta-rnew-metric__label">Fórmula</div>
+												<div class="pta-rnew-metric__value pta-rnew-metric__value--wrap">
+													{{ data.formula_descripcion }}
+												</div>
+											</div>
+
+											<div class="pta-rnew-metric pta-rnew-metric--responsable">
+												<div class="pta-rnew-metric__label">Responsable</div>
+												<div class="pta-rnew-metric__value">
+													{{ datos.pta.puesto_responsable }}
+												</div>
+											</div>
+
+										</div>
+									</div>
+
+									{# ================= INFORMACIÓN DEL REPORTE ================= #}
+
+									<div class="pta-report-card mb-4">
+
+										<div class="pta-report-card__subtitle">
+											Información del Reporte
+										</div>
+
+										<div class="mb-3">
+											<label class="form-label">Indicador Básico que aplica</label>
+											<select class="form-select" name="reporte[indicadores][{{ indice }}][indicador_basico]">
+
+												<option value="">Seleccione...</option>
+
+												{% for ib in datos.catalogos.indicadores_basicos %}
+													<option value="{{ ib.id }}" {% if inicial and inicial.indicador_basico_id == ib.id %} selected {% endif %}>
+														{{ ib.nombreIndicador }}
+													</option>
+												{% endfor %}
+
+											</select>
+										</div>
+
+										<div class="mb-3">
+											<label class="form-label">Unidad de Medida</label>
+											<input type="text" class="form-control" name="reporte[indicadores][{{ indice }}][unidad_medida]" value="{{ inicial.unidad_medida ?? '' }}">
+										</div>
+
+										<div class="mb-3">
+											<label class="form-label">Medio de Verificación</label>
+											<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][medio_verificacion]">{{ (inicial.medio_verificacion ?? '')|trim }}</textarea>
+										</div>
+
+										<div class="mb-3">
+											<label class="form-label">Fórmula empleada (opcional)</label>
+											<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][formula_opcional]" placeholder="Escribe aquí la fórmula aplicada por el usuario, si corresponde.">{{ (inicial.formula_opcional ?? '')|trim }}</textarea>
+										</div>
+
+										{% if data.porcentaje < 100 %}
+											<div class="mb-3">
+												<label class="form-label">
+													Justificación de Meta
+												</label>
+												<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][justificacion_meta]">{{ (inicial.meta_cumplida ?? '')|trim }}</textarea>
+											</div>
+										{% endif %}
+
+									</div>
+
+									{# ================= ACCIONES ================= #}
+
+									<div class="pta-report-card mb-4">
+
+										<div class="pta-report-card__subtitle text-center">
+											Acciones
+										</div>
+										<div class="acciones-container" data-indicador-index="{{ indice }}" data-accion-index="{{ inicial and inicial.acciones is defined ? inicial.acciones|length : 0 }}"></div>
+										<div class="text-end">
+											<button type="button" class="btn btn-outline-info add-accion mt-2">
+												+ Agregar Acción
+											</button>
+										</div>
+
+									</div>
+
+									{# ================= GASTOS ================= #}
+
+									<div class="pta-report-card mb-4">
+										<div class="pta-report-card__subtitle">
+											Solicitud de Gastos
+										</div>
+
+										<div class="gastos-container" data-indicador-index="{{ indice }}"></div>
+									</div>
+
+									{# ================= EVIDENCIAS ================= #}
+
+									<div class="pta-report-card mb-4">
+
+										<div class="pta-report-card__subtitle">
+											Evidencias
+										</div>
+
+										<div class="evidencias-container" data-indicador-index="{{ indice }}" data-bloque-index="{{ inicial and inicial.evidencias is defined ? inicial.evidencias|length : 0 }}"></div>
+
+										<div class="pta-rnew-center-btn">
+											<button type="button" class="btn btn-outline-info add-evidencia">
+												+ Agregar Evidencia
+											</button>
+										</div>
+
+										<small class="text-muted">
+											Máximo 3 bloques. Hasta 4 imágenes por bloque (máx 5MB cada una).
+										</small>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+					{% endfor %}
+				</div>
+
+				{# ===================================================== #}
+				{# BOTÓN ACTUALIZAR #}
+				{# ===================================================== #}
+
+					<div class="pta-rnew-submit-wrapper"> <button type="submit" class="pta-btn-primary">
+						Actualizar Reporte
+					</button>
+				</div>
+
+			</div>
+		</form>
+	</div>
+	{# ===================================================== #}
+	{# MODAL ERRORES #}
+	{# ===================================================== #}
+
+		<div class="modal fade pta-rnew-modal" id="modalErroresReporte" tabindex="-1"> <div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content pta-rnew-modal-content">
+
+				<div class="modal-header pta-rnew-modal-header">
+					<h5 class="modal-title">
+						Validación del Reporte
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body pta-rnew-modal-body">
+					<ul id="listaErroresReporte" class="pta-rnew-error-list"></ul>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</turbo-frame>

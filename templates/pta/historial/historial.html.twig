@@ -1,0 +1,231 @@
+{# ============================================================
+   PTA — HISTORIAL COMPLETO (MES = CARD COMPACTA)
+   ============================================================ #}
+
+<section
+	class="pta-historial">
+
+	{# ================ENCABEZADO DEL PTA=================== #}
+	<header
+		class="pta-historial-header">
+
+		<!-- BOTÓN VOLVER (ARRIBA) -->
+		<div class="pta-historial-header__back">
+			<a href="{{ volver_path }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-back-btn">
+				<i class="bi bi-arrow-left"></i>
+				Volver
+			</a>
+		</div>
+
+		<!-- INFO DEL PTA -->
+		<div class="pta-historial-header__info">
+			<h1 class="pta-historial-title">{{ encabezado.nombre }}</h1>
+
+			<p class="pta-historial-objetivo">
+				{{ encabezado.objetivo }}
+			</p>
+
+			<div class="pta-historial-meta">
+				<span>
+					<strong>Responsable:</strong>
+					{{ encabezado.responsable }}</span>
+				<span>
+					<strong>Proyecto #</strong>
+					{{ encabezado.id }}</span>
+				<span>
+					<strong>Año:</strong>
+					{{ encabezado.anioEjecucion }}</span>
+			</div>
+		</div>
+
+	</header>
+
+
+	{# =====================================================
+											       INDICADORES
+											       ===================================================== #}
+	{% for indicador in historial %}
+
+		<section class="pta-indicador-card">
+
+			<div class="pta-historial-indicador-header">
+				<div class="pta-indicador-top">
+					<h2 class="pta-indicador-title">{{ indicador.info.indicador }}</h2>
+
+					<span class="pta-badge {{ indicador.info.tendencia == 'POSITIVA' ? 'pta-badge-ok' : 'pta-badge-bad' }}">
+						{{ indicador.info.tendencia }}
+					</span>
+				</div>
+
+				<div class="pta-indicador-data">
+					<span>
+						<strong>Fórmula:</strong>
+						{{ indicador.info.formula }}</span>
+					<span>
+						<strong>Valor base:</strong>
+						{{ indicador.info.valor_base }}</span>
+					<span>
+						<strong>Meta:</strong>
+						{{ indicador.info.meta }}</span>
+				</div>
+			</div>
+
+			{# =================================================
+																																	               ACCIONES
+																																	               ================================================= #}
+			<div class="pta-acciones">
+
+				{% for accion in indicador.acciones %}
+
+					<details class="pta-accion">
+						<summary class="pta-accion-title">
+							{{ accion.nombre }}
+						</summary>
+
+						<div
+							class="pta-accion-body">
+
+							{# ===============================
+																																																																													                               GRID DE MESES
+																																																																													                               =============================== #}
+							<div class="pta-meses-grid">
+
+								{% for mes, data in accion.meses %}
+									{% set estado = data.estado %}
+
+									<article class="pta-mes-card pta-mes-{{ estado }}">
+
+										<div class="pta-mes-head">
+											<h4 class="pta-mes-name">{{ mes }}</h4>
+
+											{# ===== ESTADO (TEXTO CORREGIDO) ===== #}
+											{% if estado == 'ok' %}
+												<span class="pta-chip pta-chip-ok">En tiempo</span>
+											{% elseif estado == 'atraso' %}
+												<span class="pta-chip pta-chip-atraso">Atraso</span>
+											{% elseif estado == 'atraso_critico' %}
+												<span class="pta-chip pta-chip-critico">Crítico</span>
+											{% elseif estado == 'pendiente' %}
+												<span class="pta-chip pta-chip-pendiente">Pendiente</span>
+											{% else %}
+												<span class="pta-chip pta-chip-naplica">N/A</span>
+											{% endif %}
+										</div>
+
+										<div
+											class="pta-mes-body">
+
+											{# Fuera de periodo #}
+											{% if estado == 'fuera_periodo' %}
+												<p class="pta-mes-muted">
+													Fuera del periodo
+												</p>
+
+												{# Sin eventos #}
+											{% elseif data.eventos is empty %}
+												{% if estado == 'pendiente' %}
+													<p class="pta-mes-muted">
+														Mes futuro
+													</p>
+												{% else %}
+													<p class="pta-mes-alert">
+														Sin captura
+													</p>
+												{% endif %}
+
+												{# Eventos #}
+											{% else %}
+												<div class="pta-eventos-mini">
+													{% for evento in data.eventos %}
+														<div class="pta-evento-mini">
+
+															<div class="pta-evento-mini__row">
+																<span class="pta-evento-mini__label">
+																	Valor
+																</span>
+																<span class="pta-evento-mini__valor">
+																	{{ evento.valor }}
+																</span>
+															</div>
+
+															<div class="pta-evento-mini__date">
+																{{ evento.fecha|date('d/m/Y H:i') }}
+															</div>
+
+															{% if evento.motivo %}
+																<div class="pta-evento-mini__motivo">
+																	<i class="bi bi-exclamation-circle"></i>
+																	{{ evento.motivo }}
+																</div>
+															{% endif %}
+
+														</div>
+													{% endfor %}
+												</div>
+											{% endif %}
+
+										</div>
+
+									</article>
+								{% endfor %}
+
+							</div>
+						</div>
+					</details>
+
+				{% else %}
+					<p class="pta-muted">
+						No hay acciones para este indicador.
+					</p>
+				{% endfor %}
+
+			</div>
+
+			{# =================================================
+																		   GRÁFICA (MISMA QUE SHOW)
+																		   ================================================= #}
+			<div class="pta-indicador-chart">
+				<div class="pta-chart-summary">
+					<div class="pta-chart-summary__item">
+						<span class="pta-chart-summary__label">Valor base</span>
+						<span class="pta-chart-summary__value">
+							{{ indicador.grafica.valor_base }}
+						</span>
+					</div>
+
+					<div class="pta-chart-summary__item">
+						<span class="pta-chart-summary__label">Meta</span>
+						<span class="pta-chart-summary__value">
+							{{ indicador.grafica.meta }}
+						</span>
+					</div>
+
+					<div class="pta-chart-summary__item">
+						<span class="pta-chart-summary__label">Avance</span>
+						<span class="pta-chart-summary__value pta-chart-summary__value--accent">
+							{{ indicador.grafica.porcentaje }}%
+						</span>
+					</div>
+				</div>
+
+				{% if indicador.grafica is defined and indicador.grafica.serie is not empty %}
+					<div data-pta-view="graficas">
+						<canvas class="pta-chart" data-serie='{{ indicador.grafica.serie|json_encode|raw }}' data-meta="{{ indicador.grafica.meta }}" data-tendencia="{{ indicador.grafica.tendencia }}"></canvas>
+					</div>
+				{% else %}
+					<div class="pta-chart-placeholder">
+						<i class="bi bi-graph-up"></i>
+						Gráfica de avance del indicador
+					</div>
+				{% endif %}
+			</div>
+
+		</div>
+
+	</section>
+
+{% else %}
+	<p class="pta-muted text-center">
+		No hay historial disponible.
+	</p>
+{% endfor %}</section>

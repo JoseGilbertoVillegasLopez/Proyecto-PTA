@@ -1,8 +1,50 @@
 <turbo-frame id="content">
+	<section
+		class="departamento-form departamento-form--new">
 
-    <h1>Create new Departamento</h1>
+		<!-- ===============================
+				             HEADER
+				        ================================ -->
+		<header
+			class="departamento-form__header">
 
-    {{ include('admin/departamento/_form.html.twig') }}
+			<!-- VOLVER -->
+			<a href="{{ path('app_departamento_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="departamento-form__icon-btn departamento-form__icon-btn--back" title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
 
-    <a href="{{ path('app_departamento_index') }}">back to list</a>
+			<!-- TÍTULO -->
+			<h1 class="departamento-form__title">
+				Crear nuevo departamento
+			</h1>
+
+		</header>
+
+		<!-- ===============================
+				             FORM
+				        ================================ -->
+		{{ form_start(form, {
+            action: path('app_departamento_new'),
+            attr: {
+                'data-turbo-frame': 'content',
+                'class': 'departamento-form__form'
+            }
+        }) }}
+
+		<div class="departamento-form__group">
+			{{ form_label(form.nombre) }}
+			{{ form_widget(form.nombre) }}
+			{{ form_errors(form.nombre) }}
+		</div>
+
+		<!-- GUARDAR CENTRADO -->
+		<div class="departamento-form__actions">
+			<button type="submit" class="departamento-form__submit departamento-form__submit--icon" title="Guardar">
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
+
+		{{ form_end(form) }}
+
+	</section>
 </turbo-frame>

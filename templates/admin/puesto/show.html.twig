@@ -1,24 +1,59 @@
 <turbo-frame id="content">
-    <h1>Puesto</h1>
+	<section
+		class="puesto-show">
 
-        <table class="table">
-            <tbody>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ puesto.id }}</td>
-                </tr>
-                <tr>
-                    <th>Nombre</th>
-                    <td>{{ puesto.nombre }}</td>
-                </tr>
-            </tbody>
-        </table>
+		<!-- ===============================
+									HEADER
+									================================ -->
+		<header
+			class="puesto-show__header">
 
-        <a href="{{ path('app_puesto_index') }}">back to list</a>
+			<!-- IZQUIERDA: VOLVER -->
+			<a href="{{ path('app_puesto_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="puesto-show__icon-btn puesto-show__icon-btn--back" title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
 
-        <a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}">edit</a>
+			<!-- CENTRO: TÍTULO -->
+			<h1 class="puesto-show__title">
+				Información del puesto
+			</h1>
 
-        {{ include('admin/puesto/_delete_form.html.twig') }}
+			<!-- DERECHA: EDITAR -->
+			<div class="puesto-show__header-actions">
+				<a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="puesto-show__icon-btn puesto-show__icon-btn--edit" title="Editar">
+					<i class="bi bi-pencil"></i>
+				</a>
+			</div>
+
+		</header>
+
+		<!-- ===============================
+								TABLE
+								================================ -->
+		<table class="puesto-show__table">
+			<tbody>
+
+				<tr>
+					<th>ID</th>
+					<td>{{ puesto.id }}</td>
+				</tr>
+
+				<tr>
+					<th>Nombre</th>
+					<td>{{ puesto.nombre }}</td>
+				</tr>
+				<tr>
+					<th>Supervisor directo</th>
+					<td>
+						{{ puesto.supervisorDirecto
+            ? puesto.supervisorDirecto.nombre
+            : '—' }}
+					</td>
+				</tr>
+
+
+			</tbody>
+		</table>
+
+	</section>
 </turbo-frame>
-    
-

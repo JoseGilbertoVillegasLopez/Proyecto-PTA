@@ -1,0 +1,210 @@
+/* =========================================================
+   PTA — DASHBOARD
+   Menú lateral principal (ESTILO PTA UNIFICADO)
+   ========================================================= */
+
+/* ===============================
+   ASIDE
+   =============================== */
+.pta-dashboard-aside {
+    width: 250px;
+
+    background: radial-gradient(
+        120% 120% at 50% 0%,
+        rgba(13, 202, 240, 0.1),
+        rgba(6, 15, 22, 0.95)
+    );
+
+    border-right: 1px solid rgba(13, 202, 240, 0.35);
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    color: #ffffff;
+}
+
+/* ===============================
+   BLOQUE CENTRADO (MENÚ)
+   =============================== */
+.pta-dashboard-menu-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ===============================
+   HEADER
+   =============================== */
+.pta-dashboard-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 26px;
+    flex-shrink: 0;
+}
+
+.pta-dashboard-icon {
+    font-size: 2.6rem;
+    color: #0dcaf0;
+    filter: drop-shadow(0 0 6px rgba(13, 202, 240, 0.45));
+}
+
+.pta-dashboard-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+/* ===============================
+   MENU
+   =============================== */
+.pta-dashboard-menu {
+    list-style: none;
+    padding: 10px 0 0 0;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    overflow-y: auto;
+    flex: 1;
+
+    padding-right: 4px; /* espacio para scrollbar */
+}
+
+.pta-dashboard-menu-item {
+    width: 100%;
+}
+
+.pta-dashboard-link {
+    display: block;
+    text-align: center;
+
+    padding: 11px 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    color: #e7faff;
+    text-decoration: none;
+
+    border-radius: 10px;
+
+    background: linear-gradient(
+        180deg,
+        rgba(13, 202, 240, 0.12),
+        rgba(13, 202, 240, 0.04)
+    );
+
+    border: 1px solid rgba(13, 202, 240, 0.35);
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.15),
+        0 8px 20px rgba(0, 0, 0, 0.45);
+
+    transition:
+        transform 0.15s ease,
+        background-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.pta-dashboard-link:hover {
+    background: linear-gradient(
+        180deg,
+        rgba(13, 202, 240, 0.22),
+        rgba(13, 202, 240, 0.1)
+    );
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.35),
+        0 0 14px rgba(13, 202, 240, 0.45);
+
+    transform: translateY(-2px);
+}
+
+.pta-dashboard-link:active {
+    transform: translateY(0);
+}
+
+/* ===============================
+   LOGOUT
+   =============================== */
+.pta-dashboard-logout {
+    margin-top: auto; /* 🔥 lo empuja hacia abajo */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #0dcaf0;
+    font-size: 0.95rem;
+    text-decoration: none;
+    opacity: 0.75;
+
+    transition:
+        opacity 0.15s ease,
+        transform 0.15s ease;
+}
+
+.pta-dashboard-logout i {
+    font-size: 1.6rem;
+}
+
+.pta-dashboard-logout:hover {
+    opacity: 1;
+    transform: translateY(-1px);
+}
+
+/* ===============================
+   CONTENEDOR TURBO (MAIN)
+   =============================== */
+main {
+    background: radial-gradient(circle at top, #0d2638, #0a1119 60%);
+}
+
+/* =========================================================
+   SCROLL PERSONALIZADO PTA — FINO Y OSCURO
+   ========================================================= */
+
+/* Webkit (Chrome, Edge, Opera) */
+.pta-dashboard-menu::-webkit-scrollbar {
+    width: 4px; /* más angosto 🔥 */
+}
+
+.pta-dashboard-menu::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.55); /* oscuro elegante */
+    border-radius: 10px;
+}
+
+.pta-dashboard-menu::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        180deg,
+        rgba(13, 202, 240, 0.65),
+        rgba(13, 202, 240, 0.35)
+    );
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.pta-dashboard-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(13, 202, 240, 0.9);
+}
+
+/* Firefox */
+.pta-dashboard-menu {
+    scrollbar-width: thin; /* más delgado */
+    scrollbar-color: rgba(13, 202, 240, 0.6) rgba(0, 0, 0, 0.55);
+}
+
+.pta-dashboard-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
