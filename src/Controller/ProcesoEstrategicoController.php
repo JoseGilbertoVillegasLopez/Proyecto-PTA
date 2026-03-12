@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('admin/proceso_estrategico')]
+#[Route('proceso_estrategico')]
 final class ProcesoEstrategicoController extends AbstractController
 {
     #[Route(name: 'app_proceso_estrategico_index', methods: ['GET'])]

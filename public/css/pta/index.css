@@ -252,7 +252,7 @@
 
 .pta-index-table th:nth-child(3),
 .pta-index-table td:nth-child(3) {
-    width: 32%;
+    width: 30%;
     white-space: normal;
     word-break: break-word;
     line-height: 1.5;
@@ -281,7 +281,7 @@
 
 .pta-index-table th:nth-child(6),
 .pta-index-table td:nth-child(6) {
-    width: 12%;
+    width: 15%;
     text-align: center;
 }
 
@@ -306,20 +306,26 @@
 .pta-actions {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    min-width: 126px;
+    margin: 0 auto;
 }
 
 .pta-action-btn {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
 
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
     border-radius: 10px;
-    font-size: 1.05rem;
+    font-size: 1rem;
     text-decoration: none;
+
+    flex: 0 0 auto;
 
     transition: all 0.2s ease;
 }
@@ -401,4 +407,16 @@
         border-color: rgba(103, 232, 249, 0.6);
         background: rgba(103, 232, 249, 0.18);
     }
+}
+
+.pta-action-report {
+    background: rgba(13, 202, 240, 0.1);
+    border: 1px solid rgba(13, 202, 240, 0.28);
+    color: #dff8ff;
+}
+
+.pta-action-report:hover {
+    background: rgba(13, 202, 240, 0.18);
+    border-color: rgba(13, 202, 240, 0.42);
+    color: #ffffff;
 }

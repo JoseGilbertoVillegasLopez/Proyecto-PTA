@@ -15,13 +15,7 @@
 {# Título principal de la vista #}
 <h1 class="mb-4">Crear nuevo PTA</h1>
 
-{# ============================================================
-	        INICIO DEL FORMULARIO SYMFONY
-	        ------------------------------------------------------------
-	        - action: ruta que maneja la creación del PTA
-	        - data-turbo: indica que el submit se maneja dentro del frame
-	        - NO es AJAX, Symfony procesa el submit normal
-	        ============================================================ #}
+{# ============================================================INICIO DEL FORMULARIO SYMFONY- action: ruta que maneja la creación del PTA- data-turbo: indica que el submit se maneja dentro del frame- NO es AJAX, Symfony procesa el submit normal============================================================ #}
 {{ form_start(form, {
             'action': path('app_encabezado_new'), 
             'attr': {
@@ -30,13 +24,7 @@
             }
         }) }}
 
-{# ============================================================
-	            1. ENCABEZADO DEL PTA
-	            ------------------------------------------------------------
-	            - Datos generales del proyecto
-	            - Nombre y Objetivo
-	            - Textareas con auto-grow manejado por JS
-	            ============================================================ #}
+{# ============================================================1. ENCABEZADO DEL PTA- Datos generales del proyecto- Nombre y Objetivo- Textareas con auto-grow manejado por JS============================================================ #}
 <div class="row g-3">
 
 	<div class="col-md-6">
@@ -58,9 +46,7 @@
 	</div>
 </div>
 
-{# ===========================
-	            AÑO DE EJECUCIÓN
-	            =========================== #}
+{# ===========================AÑO DE EJECUCIÓN=========================== #}
 <div class="col-md-6">
 	<div class="position-relative">
 		{{ form_label(form.anioEjecucion, null, {
@@ -80,14 +66,7 @@
 
 <br><br>
 
-{# ============================================================
-	            3. INDICADORES
-	            ------------------------------------------------------------
-	            - Sección dinámica
-	            - Usa CollectionType + prototype
-	            - Las filas NO se renderizan aquí
-	            - El JS se encarga de crearlas dinámicamente
-	            ============================================================ #}
+{# ============================================================3. INDICADORES- Sección dinámica- Usa CollectionType + prototype- Las filas NO se renderizan aquí- El JS se encarga de crearlas dinámicamente============================================================ #}
 <div
 	class="card pta-card mb-4">
 
@@ -128,13 +107,7 @@
 				</tr>
 			</thead>
 
-			{# ====================================================
-																																																																																				                    BODY DE INDICADORES
-																																																																																				                    ------------------------------------------------
-																																																																																				                    - data-collection-holder: identificador para JS
-																																																																																				                    - data-prototype: HTML base generado por Symfony
-																																																																																				                    - El tbody inicia vacío a propósito
-																																																																																				                    ==================================================== #}
+			{# ====================================================BODY DE INDICADORES- data-collection-holder: identificador para JS- data-prototype: HTML base generado por Symfony- El tbody inicia vacío a propósito==================================================== #}
 			<tbody data-collection-holder="indicadores" data-prototype="{{ form_widget(form.indicadores.vars.prototype)|e('html_attr') }}"></tbody>
 		</table>
 
@@ -147,13 +120,7 @@
 		</div>
 	</div>
 
-	{# ============================================================
-										            4. ACCIONES
-										            ------------------------------------------------------------
-										            - Acciones asociadas a indicadores
-										            - También dinámicas (CollectionType)
-										            - El indicador se selecciona vía JS
-										            ============================================================ #}
+	{# ============================================================4. ACCIONES- Acciones asociadas a indicadores- También dinámicas (CollectionType)- El indicador se selecciona vía JS============================================================ #}
 	<div class="card pta-card mb-4">
 
 		<h4 class="pta-title">
@@ -188,12 +155,7 @@
 				</tr>
 			</thead>
 
-			{# ====================================================
-																																																																																				                    BODY DE ACCIONES
-																																																																																				                    ------------------------------------------------
-																																																																																				                    - Manejado 100% por JS
-																																																																																				                    - Relaciona acciones ↔ indicadores por índice lógico
-																																																																																				                    ==================================================== #}
+			{# ====================================================BODY DE ACCIONES- Manejado 100% por JS- Relaciona acciones ↔ indicadores por índice lógico==================================================== #}
 			<tbody data-collection-holder="acciones" data-prototype="{{ form_widget(form.acciones.vars.prototype)|e('html_attr') }}"></tbody>
 		</table>
 
@@ -206,13 +168,7 @@
 		</div>
 	</div>
 
-	{# ============================================================
-										            2. RESPONSABLES
-										            ------------------------------------------------------------
-										            - Supervisor y Aval
-										            - Inputs visibles + hidden
-										            - El ID real se asigna vía JS + API
-										            ============================================================ #}
+	{# ============================================================2. RESPONSABLES- Supervisor y Aval- Inputs visibles + hidden- El ID real se asigna vía JS + API============================================================ #}
 	<div class="card pta-card mb-4">
 
 		<h4 class="pta-title">
@@ -223,9 +179,7 @@
 		<div
 			class="row mb-3">
 
-			{# ===========================
-																																																																																				                    SUPERVISOR
-																																																																																				                    =========================== #}
+			{# ===========================SUPERVISOR=========================== #}
 			<div class="col-md-6">
 				<div class="position-relative">
 					<label class="form-label">Supervisor del Proyecto</label>
@@ -247,9 +201,7 @@
 				</div>
 			</div>
 
-			{# ===========================
-																																																																																				                    AVAL
-																																																																																				                    =========================== #}
+			{# ===========================AVAL=========================== #}
 			<div class="col-md-6">
 				<div class="position-relative">
 					<label class="form-label">Aval del Proyecto</label>
@@ -271,28 +223,21 @@
 	</div>
 
 	{# ============================================================
-										            TOKEN CSRF
-										            ------------------------------------------------------------
-										            - Se renderiza manualmente
-										            - Evita problemas con manipulación dinámica del DOM
-										            ============================================================ #}
+														            TOKEN CSRF
+														            ------------------------------------------------------------
+														            - Se renderiza manualmente
+														            - Evita problemas con manipulación dinámica del DOM
+														            ============================================================ #}
 	{{ form_row(form._token) }}
 
-	{# ============================================================
-										            BOTÓN FINAL DE SUBMIT
-										            ============================================================ #}
+	{# ============================================================BOTÓN FINAL DE SUBMIT============================================================ #}
 	<div class="text-center mt-4">
 		<button type="submit" class="btn btn-primary px-5">
 			Guardar PTA
 		</button>
 	</div>
 
-	{# ============================================================
-										            MODAL DE ERRORES
-										            ------------------------------------------------------------
-										            - Usado por el JS para mostrar validaciones
-										            - El contenido se llena dinámicamente
-										            ============================================================ #}
+	{# ============================================================MODAL DE ERRORES- Usado por el JS para mostrar validaciones- El contenido se llena dinámicamente============================================================ #}
 	<div class="modal fade" id="erroresModal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-lg modal-dialog-centered">
 			<div class="modal-content bg-dark text-light border-warning">

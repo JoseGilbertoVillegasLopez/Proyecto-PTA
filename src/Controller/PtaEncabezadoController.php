@@ -466,6 +466,7 @@ public function edit(
         // 5) Fecha y mes actuales
         $fechaActual     = new \DateTimeImmutable();
         $anioActual      = (int) $fechaActual->format('Y');
+        //$mesActualNumero = (int) date('n');
         $mesActualNumero = 5; // SIMULAMOS MARZO// 1-12
 
         // ⚠️ Seguridad extra: solo guardar si coincide el año del encabezado

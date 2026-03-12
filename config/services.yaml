@@ -45,3 +45,7 @@ services:
             $fromEmail: "%app.mail.from_email%"
             $fromName: "%app.mail.from_name%"
             $appName: "%app.app_name%"
+
+    App\Service\Pta\GuardarReportePtaService:
+        arguments:
+            $projectDir: "%kernel.project_dir%"

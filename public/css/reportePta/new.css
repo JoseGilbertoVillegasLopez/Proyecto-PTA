@@ -1,0 +1,1227 @@
+/* ============================================================
+   PTA — REPORTE NEW (AISLADO)
+   Namespace único: .pta-reporte-new
+   ============================================================ */
+
+.pta-reporte-new {
+    padding: 5x;
+    background: transparent;
+    color: #ffffff;
+
+    --pta-primary: #0dcaf0;
+    --pta-ok: #1dd1a1;
+    --pta-warning: #feca57;
+    --pta-danger: #ff6b6b;
+    --pta-muted: #9fb3c8;
+
+    --pta-border: rgba(13, 202, 240, 0.25);
+    --pta-border-soft: rgba(13, 202, 240, 0.15);
+
+    --pta-card: #121b23;
+    --pta-card-soft: #16222d;
+
+    --pta-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.18),
+        0 20px 50px rgba(0, 0, 0, 0.75);
+
+    --pta-shadow-hover:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.45),
+        0 24px 56px rgba(0, 0, 0, 0.85);
+}
+
+/* ============================================================
+   TEXTO GLOBAL BLANCO (SOLO ESTA VISTA)
+   ============================================================ */
+
+.pta-reporte-new,
+.pta-reporte-new h1,
+.pta-reporte-new h2,
+.pta-reporte-new h3,
+.pta-reporte-new h4,
+.pta-reporte-new h5,
+.pta-reporte-new h6,
+.pta-reporte-new p,
+.pta-reporte-new span,
+.pta-reporte-new strong,
+.pta-reporte-new label,
+.pta-reporte-new small,
+.pta-reporte-new .pta-report-card__subtitle,
+.pta-reporte-new .accordion-button {
+    color: #ffffff !important;
+}
+
+/* ============================================================
+   CONTENEDOR
+   ============================================================ */
+
+.pta-reporte-new .pta-reporte-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* ============================================================
+   TITULO
+   ============================================================ */
+
+.pta-reporte-new h2 {
+    margin: 0 0 22px 0;
+    font-size: 1.55rem;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+    text-shadow: 0 0 10px rgba(13, 202, 240, 0.16);
+}
+
+/* ============================================================
+   BOTONES (AISLADOS)
+   ============================================================ */
+
+.pta-reporte-new .pta-btn-primary {
+    background: linear-gradient(
+        180deg,
+        rgba(13, 202, 240, 0.95),
+        rgba(13, 202, 240, 0.72)
+    );
+    color: #061018;
+    border: 1px solid rgba(13, 202, 240, 0.55);
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-weight: 900;
+    letter-spacing: 0.2px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.55);
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        filter 0.18s ease;
+}
+
+.pta-reporte-new .pta-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.7);
+    filter: brightness(1.03);
+}
+
+.pta-reporte-new .pta-btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Refuerza botones bootstrap SOLO dentro del namespace */
+.pta-reporte-new .btn {
+    border-radius: 12px;
+    font-weight: 700;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        filter 0.18s ease;
+}
+
+.pta-reporte-new .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.55);
+}
+
+.pta-reporte-new .btn-outline-light,
+.pta-reporte-new .btn-outline-info {
+    border-color: rgba(13, 202, 240, 0.45);
+    color: rgba(13, 202, 240, 0.95);
+}
+
+.pta-reporte-new .btn-outline-light:hover,
+.pta-reporte-new .btn-outline-info:hover {
+    background: rgba(13, 202, 240, 0.12);
+    border-color: rgba(13, 202, 240, 0.75);
+}
+
+/* ============================================================
+   CARD PRINCIPAL (reutiliza tu look monitoreo, pero aislado)
+   ============================================================ */
+
+.pta-reporte-new .pta-report-card {
+    background: radial-gradient(
+        circle at top left,
+        rgba(13, 202, 240, 0.18),
+        rgba(6, 15, 22, 0.96) 55%
+    );
+    border-radius: 22px;
+    border: 1px solid var(--pta-border);
+    padding: 22px 24px;
+    box-shadow: var(--pta-shadow);
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+}
+
+.pta-reporte-new .pta-report-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--pta-shadow-hover);
+}
+
+.pta-reporte-new .pta-report-card--global {
+    position: relative;
+    overflow: hidden;
+}
+
+.pta-reporte-new .pta-report-card--global::before {
+    content: "";
+    position: absolute;
+    top: 18px;
+    bottom: 18px;
+    left: 0;
+    width: 6px;
+    border-radius: 10px;
+    background: var(--pta-primary);
+}
+
+.pta-reporte-new .pta-report-card__subtitle {
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: 900;
+    margin-bottom: 16px;
+    letter-spacing: 0.35px;
+}
+
+/* Texto “muted” dentro de esta vista */
+.pta-reporte-new .text-muted {
+    color: rgba(159, 179, 200, 0.85) !important;
+}
+
+/* ============================================================
+   ACCORDION (SOLO ESTA VISTA)
+   ============================================================ */
+
+.pta-reporte-new .accordion {
+    --bs-accordion-bg: transparent;
+    --bs-accordion-border-color: transparent;
+    --bs-accordion-active-bg: transparent;
+    --bs-accordion-active-color: #e6f1ff;
+}
+
+.pta-reporte-new .accordion-item {
+    background: transparent;
+    border: none;
+}
+
+.pta-reporte-new .accordion-header {
+    margin: 0;
+}
+
+.pta-reporte-new .accordion-button {
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+    color: #e6f1ff;
+    border-radius: 18px;
+    border: 1px solid var(--pta-border);
+    box-shadow:
+        inset 0 0 0 1px var(--pta-border-soft),
+        0 14px 34px rgba(0, 0, 0, 0.65);
+    font-weight: 900;
+    letter-spacing: 0.25px;
+    padding: 16px 18px;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.pta-reporte-new .accordion-button:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.35),
+        0 18px 42px rgba(0, 0, 0, 0.78);
+}
+
+.pta-reporte-new .accordion-button::after {
+    filter: invert(1);
+    opacity: 0.9;
+}
+
+.pta-reporte-new .accordion-button:not(.collapsed) {
+    border-color: rgba(13, 202, 240, 0.55);
+}
+
+.pta-reporte-new .accordion-body {
+    padding: 18px 0 0 0;
+}
+
+/* ============================================================
+   FORM CONTROLS (SOLO ESTA VISTA)
+   ============================================================ */
+
+.pta-reporte-new .form-label {
+    font-weight: 800;
+    color: rgba(230, 241, 255, 0.92);
+    margin-bottom: 8px;
+}
+
+.pta-reporte-new .form-control,
+.pta-reporte-new .form-select,
+.pta-reporte-new textarea {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--pta-border-soft);
+    color: #e6f1ff;
+    border-radius: 14px;
+    padding: 10px 12px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.18s ease;
+}
+
+.pta-reporte-new .form-control:focus,
+.pta-reporte-new .form-select:focus,
+.pta-reporte-new textarea:focus {
+    outline: none;
+    border-color: rgba(13, 202, 240, 0.65);
+    box-shadow:
+        0 0 0 0.22rem rgba(13, 202, 240, 0.18),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25);
+}
+
+/* Placeholder */
+.pta-reporte-new .form-control::placeholder,
+.pta-reporte-new textarea::placeholder {
+    color: rgba(159, 179, 200, 0.7);
+}
+
+/* Error visual (tu validación ya usa .campo-error) */
+.pta-reporte-new .campo-error {
+    border: 2px solid rgba(255, 107, 107, 0.95) !important;
+    box-shadow:
+        0 0 0 0.22rem rgba(255, 107, 107, 0.18),
+        inset 0 0 0 1px rgba(255, 107, 107, 0.35) !important;
+}
+
+/* ============================================================
+   ACCIONES (LISTA + ITEMS)
+   ============================================================ */
+
+.pta-reporte-new .acciones-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 8px;
+}
+
+.pta-reporte-new .accion-item {
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.88),
+        rgba(10, 16, 22, 0.84)
+    );
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 16px;
+    padding: 14px 14px;
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.08),
+        0 10px 22px rgba(0, 0, 0, 0.55);
+}
+
+.pta-reporte-new .accion-item label {
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+/* ============================================================
+   GASTOS (cards generadas por JS)
+   NOTA: tus cards del JS traen class="card" y "card-body"
+   Aquí las “re-skinneamos” SOLO en esta vista.
+   ============================================================ */
+
+.pta-reporte-new .gastos-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.pta-reporte-new .gastos-container > .card {
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+    border: 1px solid var(--pta-border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+        inset 0 0 0 1px var(--pta-border-soft),
+        0 12px 30px rgba(0, 0, 0, 0.7);
+}
+
+.pta-reporte-new .gastos-container > .card .card-header {
+    background: rgba(0, 0, 0, 0.45);
+    color: #e6f1ff;
+    font-weight: 900;
+    letter-spacing: 0.2px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--pta-border-soft);
+}
+
+.pta-reporte-new .gastos-container > .card .card-body {
+    background: transparent;
+    padding: 14px 14px 16px;
+}
+
+/* Partidas */
+.pta-reporte-new .partidas-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.pta-reporte-new .partidas-container [data-partida-index] {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px dashed rgba(13, 202, 240, 0.18) !important;
+    border-radius: 16px;
+    padding: 12px;
+}
+
+/* ============================================================
+   EVIDENCIAS
+   ============================================================ */
+
+.pta-reporte-new .evidencias-container {
+    margin-top: 10px;
+}
+
+.pta-reporte-new .evidencia-bloque {
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.92),
+        rgba(10, 16, 22, 0.88)
+    );
+    border: 1px solid var(--pta-border-soft) !important;
+    border-radius: 18px;
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.08),
+        0 12px 28px rgba(0, 0, 0, 0.7);
+}
+
+/* preview grid */
+.pta-reporte-new .evidencia-preview-container {
+    gap: 10px !important;
+}
+
+/* tarjetas de imagen y botón + */
+.pta-reporte-new .evidencia-card {
+    width: 120px;
+    height: 120px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(13, 202, 240, 0.18);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.55);
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.pta-reporte-new .evidencia-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.75);
+    border-color: rgba(13, 202, 240, 0.35);
+}
+
+/* El botón + (JS le pone add-button) */
+.pta-reporte-new .evidencia-card.add-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 42px !important;
+    color: rgba(13, 202, 240, 0.95);
+    border: 2px dashed rgba(13, 202, 240, 0.35) !important;
+    background: rgba(13, 202, 240, 0.06);
+}
+
+/* ============================================================
+   MODAL ERRORES (solo estética, no interfiere otras vistas)
+   ============================================================ */
+
+.pta-reporte-new #modalErroresReporte .modal-content {
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.98),
+        rgba(10, 16, 22, 0.95)
+    );
+    border-radius: 18px;
+    border: 1px solid rgba(255, 107, 107, 0.45) !important;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.85);
+}
+
+.pta-reporte-new #modalErroresReporte .modal-header {
+    border-bottom: 1px solid rgba(255, 107, 107, 0.25);
+}
+
+.pta-reporte-new #modalErroresReporte .modal-body {
+    color: #e6f1ff;
+}
+
+.pta-reporte-new #listaErroresReporte li {
+    margin: 6px 0;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .pta-reporte-new {
+        padding: 18px 16px 50px;
+    }
+
+    .pta-reporte-new .pta-report-card {
+        padding: 18px 16px;
+        border-radius: 18px;
+    }
+
+    .pta-reporte-new .accordion-button {
+        border-radius: 16px;
+        padding: 14px 14px;
+    }
+}
+
+.pta-reporte-new .form-control,
+.pta-reporte-new .form-select,
+.pta-reporte-new textarea {
+    background: rgba(0, 0, 0, 0.35);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* =========================================================
+   PTA — REPORTE NEW — ENCABEZADO (AISLADO)
+   ========================================================= */
+
+/* 1) Título centrado (H1) */
+.pta-reporte-new .pta-reporte-new__title {
+    margin: 0 0 18px 0;
+    text-align: center;
+    color: #ffffff;
+    font-weight: 900;
+    letter-spacing: 0.4px;
+}
+
+/* 2) Card header: 3 secciones con #PTA angosto */
+
+.pta-reporte-new .pta-reporte-headcard__grid {
+    display: grid;
+    grid-template-columns: max-content 1fr 1fr; /* #PTA = mínimo, Nombre/Objetivo = resto */
+    gap: 18px 26px;
+    align-items: start;
+}
+
+/* Items */
+.pta-reporte-new .pta-reporte-headcard__item {
+    color: #ffffff;
+}
+
+.pta-reporte-new .pta-reporte-headcard__label {
+    font-weight: 800;
+    opacity: 0.95;
+    margin-bottom: 6px;
+}
+
+.pta-reporte-new .pta-reporte-headcard__value {
+    font-weight: 600;
+    opacity: 0.95;
+    line-height: 1.4;
+}
+
+/* #PTA angosto pero legible */
+.pta-reporte-new .pta-reporte-headcard__item--pta {
+    min-width: 110px; /* suficiente para "# PTA:" y el valor */
+    padding-right: 6px;
+}
+
+/* Responsive: en pantallas chicas apila bonito */
+@media (max-width: 768px) {
+    .pta-reporte-new .pta-reporte-headcard__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pta-reporte-new .pta-reporte-headcard__item--pta {
+        min-width: unset;
+        padding-right: 0;
+    }
+}
+
+/* =========================================================
+   PTA — REPORTE NEW — HEAD CARD ESTILO COLUMNA LIMPIO
+   ========================================================= */
+
+.pta-reporte-new .pta-reporte-headcard__grid {
+    display: grid;
+    grid-template-columns: max-content 1fr 1fr;
+    align-items: stretch;
+    position: relative;
+}
+
+/* Cada columna */
+.pta-reporte-new .pta-reporte-headcard__item {
+    padding: 22px 26px;
+    text-align: center;
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Línea vertical separadora */
+.pta-reporte-new .pta-reporte-headcard__item:not(:last-child) {
+    border-right: 1px solid rgba(0, 212, 255, 0.25);
+}
+
+/* Label */
+.pta-reporte-new .pta-reporte-headcard__label {
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+/* Valor */
+.pta-reporte-new .pta-reporte-headcard__value {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+/* #PTA más compacto */
+.pta-reporte-new .pta-reporte-headcard__item--pta {
+    min-width: 110px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pta-reporte-new .pta-reporte-headcard__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pta-reporte-new .pta-reporte-headcard__item {
+        border-right: none !important;
+        border-bottom: 1px solid rgba(0, 212, 255, 0.25);
+    }
+
+    .pta-reporte-new .pta-reporte-headcard__item:last-child {
+        border-bottom: none;
+    }
+}
+
+/* =========================================================
+   PTA — REPORTE NEW (AISLADO)
+   SECCIÓN: DATOS DEL INDICADOR (cards flotantes)
+   ========================================================= */
+
+.pta-reporte-new .pta-reporte-indicador-datos {
+    color: #e6f1ff; /* 🔥 asegura que TODO el contenido sea blanco */
+}
+
+/* Convertimos el .row en grid para que los campos se vean como cards */
+.pta-reporte-new .pta-reporte-indicador-datos .row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+
+    /* neutralizamos comportamiento bootstrap row */
+    margin: 0;
+}
+
+/* Todos los hijos directos (col-md-4, col-12, etc) se vuelven “cards” */
+.pta-reporte-new .pta-reporte-indicador-datos .row > [class*="col-"] {
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(13, 202, 240, 0.18);
+    border-radius: 16px;
+
+    padding: 16px 18px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.08),
+        0 12px 28px rgba(0, 0, 0, 0.55);
+
+    /* bootstrap col padding out */
+    margin: 0;
+}
+
+/* La columna que era col-12 (Fórmula) ocupa todo el ancho del grid */
+.pta-reporte-new .pta-reporte-indicador-datos .row > .col-12 {
+    grid-column: 1 / -1;
+}
+
+/* Títulos/labels (Meta Año:, etc.) */
+.pta-reporte-new .pta-reporte-indicador-datos strong {
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+
+/* El “valor” (el texto normal debajo del strong) */
+.pta-reporte-new .pta-reporte-indicador-datos .row > [class*="col-"] {
+    color: rgba(230, 241, 255, 0.92); /* 🔥 antes te salía oscuro */
+    line-height: 1.4;
+}
+
+/* Responsive: 2 columnas y luego 1 */
+@media (max-width: 992px) {
+    .pta-reporte-new .pta-reporte-indicador-datos .row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .pta-reporte-new .pta-reporte-indicador-datos .row {
+        grid-template-columns: 1fr;
+    }
+}
+/* =========================================================
+   REPORTE NEW — DATOS DEL INDICADOR (GRID 3 + 2)
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-indicador-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(240px, 1fr));
+    gap: 18px;
+    align-items: stretch;
+    justify-items: stretch;
+    margin-top: 14px;
+}
+
+/* 2 abajo, centrados: cada uno ocupa 1.5 columnas (span 3 de 6) */
+@media (min-width: 992px) {
+    .pta-reporte-new .pta-rnew-indicador-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    /* ====== FILA SUPERIOR (3 iguales) ====== */
+    .pta-reporte-new .pta-rnew-metric--meta {
+        grid-column: 1 / span 2;
+    }
+
+    .pta-reporte-new .pta-rnew-metric--resultado {
+        grid-column: 3 / span 2;
+    }
+
+    .pta-reporte-new .pta-rnew-metric--porcentaje {
+        grid-column: 5 / span 2;
+    }
+
+    /* ====== FILA INFERIOR (2 CENTRADOS) ====== */
+    .pta-reporte-new .pta-rnew-metric--formula {
+        grid-column: 2 / span 2;
+    }
+
+    .pta-reporte-new .pta-rnew-metric--responsable {
+        grid-column: 4 / span 2;
+    }
+}
+
+/* si quieres MÁS centrado aún (formula y responsable simétricos):
+     cambia a:
+     .pta-rnew-metric--formula { grid-column: 2 / span 3; }
+     .pta-rnew-metric--responsable { grid-column: 5 / span 2; }
+     (ya queda visualmente balanceado con tamaños) */
+
+/* Responsive: en pantallas medianas baja a 2 columnas */
+@media (max-width: 991.98px) {
+    .pta-reporte-new .pta-rnew-indicador-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* Mobile: 1 columna */
+@media (max-width: 520px) {
+    .pta-reporte-new .pta-rnew-indicador-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Card “flotante” con más presencia */
+.pta-reporte-new .pta-rnew-metric {
+    background: rgba(0, 0, 0, 0.32);
+    border: 1px solid rgba(13, 202, 240, 0.18);
+    border-radius: 16px;
+
+    padding: 22px 18px;
+    min-height: 110px;
+
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.1),
+        0 12px 28px rgba(0, 0, 0, 0.55);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* 🔥 centra horizontal */
+    text-align: center; /* 🔥 centra texto */
+    gap: 10px;
+}
+
+/* Etiqueta */
+.pta-reporte-new .pta-rnew-metric__label {
+    color: #ffffff;
+    font-weight: 900;
+    font-size: 1.05rem;
+    text-align: center;
+}
+
+.pta-reporte-new .pta-rnew-metric__value {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/* Para fórmula: que NO se vea gigante pero sí legible */
+.pta-reporte-new .pta-rnew-metric__value--wrap {
+    font-weight: 600;
+    font-size: 1.05rem;
+    opacity: 0.92;
+    word-break: break-word;
+}
+
+/* Hover suave (impacto visual sin exagerar) */
+.pta-reporte-new .pta-rnew-metric:hover {
+    transform: translateY(-2px);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+    border-color: rgba(13, 202, 240, 0.35);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.2),
+        0 16px 34px rgba(0, 0, 0, 0.7);
+}
+
+/* =========================================================
+   REPORTE NEW — SELECT PERSONALIZADO OSCURO
+   ========================================================= */
+
+.pta-reporte-new select.form-select {
+    background-color: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+
+    border: 1px solid rgba(13, 202, 240, 0.35);
+    border-radius: 12px;
+
+    padding: 10px 14px;
+
+    box-shadow: inset 0 0 0 1px rgba(13, 202, 240, 0.12);
+
+    transition: all 0.2s ease;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, #0dcaf0 50%),
+        linear-gradient(135deg, #0dcaf0 50%, transparent 50%);
+    background-position:
+        calc(100% - 18px) calc(50% - 3px),
+        calc(100% - 12px) calc(50% - 3px);
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+}
+
+/* Hover */
+.pta-reporte-new select.form-select:hover {
+    border-color: rgba(13, 202, 240, 0.7);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25),
+        0 0 8px rgba(13, 202, 240, 0.15);
+}
+
+/* Focus */
+.pta-reporte-new select.form-select:focus {
+    outline: none;
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.3);
+}
+
+/* Opciones internas (funciona en varios navegadores) */
+.pta-reporte-new select.form-select option {
+    background-color: #0b1a22;
+    color: #ffffff;
+}
+
+/* Scrollbar interna (WebKit) */
+.pta-reporte-new select.form-select::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pta-reporte-new select.form-select::-webkit-scrollbar-track {
+    background: #0b1a22;
+}
+
+.pta-reporte-new select.form-select::-webkit-scrollbar-thumb {
+    background: rgba(13, 202, 240, 0.4);
+    border-radius: 6px;
+}
+
+.pta-reporte-new select.form-select::-webkit-scrollbar-thumb:hover {
+    background: rgba(13, 202, 240, 0.7);
+}
+
+/* =========================================================
+   REPORTE NEW — TEXTAREA CONTROLADO (3 LÍNEAS FIJAS)
+   ========================================================= */
+
+.pta-reporte-new textarea.form-control {
+    /* Altura equivalente a 3 líneas reales */
+    line-height: 1.5rem;
+    height: calc(1.5rem * 3 + 1.2rem); /* 3 líneas + padding */
+
+    resize: none; /* ❌ No se puede agrandar */
+    overflow-y: auto; /* Scroll solo vertical */
+
+    background-color: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+
+    border: 1px solid rgba(13, 202, 240, 0.35);
+    border-radius: 14px;
+
+    padding: 0.6rem 0.9rem;
+
+    box-shadow: inset 0 0 0 1px rgba(13, 202, 240, 0.12);
+
+    transition: all 0.2s ease;
+}
+
+/* Hover elegante */
+.pta-reporte-new textarea.form-control:hover {
+    border-color: rgba(13, 202, 240, 0.7);
+}
+
+/* Focus glow PTA */
+.pta-reporte-new textarea.form-control:focus {
+    outline: none;
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.3);
+}
+
+/* =========================================================
+   REPORTE NEW — BOTÓN AGREGAR ACCIÓN CENTRADO
+   ========================================================= */
+
+.pta-reporte-new .acciones-container + .text-end {
+    text-align: center !important;
+}
+
+.pta-reporte-new .add-accion {
+    margin-top: 1.5rem;
+}
+
+/* =========================================================
+   REPORTE NEW — BOTÓN AGREGAR PARTIDA CENTRADO
+   ========================================================= */
+
+.pta-reporte-new .gastos-container .add-partida {
+    display: block;
+    margin: 1.5rem auto 0 auto; /* centrado horizontal */
+}
+
+/* =========================================================
+   REPORTE NEW — CARDS DINÁMICOS (AISLADO)
+   ========================================================= */
+
+.pta-reporte-new {
+    --rnew-card-bg: #16222d;
+    --rnew-card-bg-soft: #1b2a36;
+    --rnew-border: rgba(13, 202, 240, 0.25);
+    --rnew-border-soft: rgba(13, 202, 240, 0.15);
+    --rnew-glow: rgba(13, 202, 240, 0.08);
+}
+
+/* =========================================================
+   ACCIÓN CARD
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-accion-card {
+    background: linear-gradient(
+        180deg,
+        var(--rnew-card-bg),
+        var(--rnew-card-bg-soft)
+    );
+    border: 1px solid var(--rnew-border-soft);
+
+    border-radius: 14px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1rem;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.pta-reporte-new .pta-rnew-accion-row {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.pta-reporte-new .pta-rnew-accion-card label {
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+/* =========================================================
+   GASTO CARD
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-gasto-card {
+    background: linear-gradient(180deg, #121b23, #182734);
+    border: 1px solid var(--rnew-border);
+    border-radius: 18px;
+
+    margin-bottom: 1.5rem;
+
+    box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.45),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+
+.pta-reporte-new .pta-rnew-gasto-card:hover {
+    border-color: #0dcaf0;
+    box-shadow:
+        0 22px 45px rgba(0, 0, 0, 0.6),
+        0 0 18px var(--rnew-glow);
+}
+
+/* HEADER */
+
+.pta-reporte-new .pta-rnew-gasto-header {
+    background: rgba(13, 202, 240, 0.08);
+    padding: 0.9rem 1.2rem;
+
+    font-weight: 600;
+    color: #ffffff;
+
+    border-bottom: 1px solid var(--rnew-border-soft);
+}
+
+/* BODY */
+
+.pta-reporte-new .pta-rnew-gasto-body {
+    padding: 1.2rem;
+}
+
+.pta-reporte-new .pta-rnew-gasto-body label {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+/* =========================================================
+   PARTIDA CARD
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-partida-card {
+    background: #111a22;
+    border: 1px solid rgba(13, 202, 240, 0.15);
+
+    border-radius: 12px;
+    padding: 0.9rem 1rem;
+    margin-bottom: 0.8rem;
+
+    transition: all 0.2s ease;
+}
+
+.pta-reporte-new .pta-rnew-partida-card:hover {
+    border-color: #0dcaf0;
+    background: #13202b;
+}
+
+/* =========================================================
+   EVIDENCIA CARD
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-evidencia-card {
+    background: linear-gradient(180deg, #141f28, #1b2a36);
+    border: 1px solid var(--rnew-border-soft);
+
+    border-radius: 18px;
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+.pta-reporte-new .pta-rnew-evidencia-card strong {
+    color: #ffffff;
+}
+
+.pta-reporte-new .pta-rnew-evidencia-card label {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+/* =========================================================
+   INPUTS INTERNOS (AISLADO)
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-accion-card input,
+.pta-reporte-new .pta-rnew-gasto-card select,
+.pta-reporte-new .pta-rnew-partida-card select,
+.pta-reporte-new .pta-rnew-partida-card input,
+.pta-reporte-new .pta-rnew-evidencia-card textarea {
+    background: #0f1c26;
+    color: #ffffff;
+    border: 1px solid rgba(13, 202, 240, 0.25);
+
+    border-radius: 10px;
+}
+
+.pta-reporte-new input:focus,
+.pta-reporte-new select:focus,
+.pta-reporte-new textarea:focus {
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
+}
+
+/* =========================================================
+   REPORTE NEW — BOTONES CENTRADOS
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-center-btn {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+/* =========================================================
+   REPORTE NEW — BOTÓN GUARDAR INSTITUCIONAL
+   ========================================================= */
+
+.pta-reporte-new .pta-btn-primary {
+    background: #0dcaf0;
+    border: 1px solid #0dcaf0;
+
+    padding: 0.85rem 2.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+
+    color: #0b1117;
+
+    border-radius: 12px;
+
+    box-shadow: 0 10px 25px rgba(13, 202, 240, 0.25);
+
+    transition: all 0.2s ease;
+}
+
+/* Hover sutil */
+
+.pta-reporte-new .pta-btn-primary:hover {
+    background: #0bb6d9;
+    border-color: #0bb6d9;
+
+    box-shadow: 0 12px 30px rgba(13, 202, 240, 0.35);
+}
+
+/* Active */
+
+.pta-reporte-new .pta-btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 6px 15px rgba(13, 202, 240, 0.2);
+}
+/* =========================================================
+   REPORTE NEW — WRAPPER BOTÓN GUARDAR
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-submit-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    margin-top: 3rem;
+}
+
+/* =========================================================
+   MODAL VALIDACIÓN — AISLADO POR CLASE PROPIA
+   ========================================================= */
+
+.pta-rnew-modal-content {
+    background: linear-gradient(180deg, #121b23, #16222d) !important;
+    border: 1px solid rgba(13, 202, 240, 0.35) !important;
+
+    border-radius: 18px;
+    box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.65),
+        0 0 25px rgba(13, 202, 240, 0.08);
+
+    color: #ffffff;
+}
+
+.pta-rnew-modal-header {
+    background: rgba(13, 202, 240, 0.08) !important;
+    border-bottom: 1px solid rgba(13, 202, 240, 0.2) !important;
+}
+
+.pta-rnew-modal-header h5 {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.pta-rnew-modal-body {
+    padding: 1.5rem;
+    color: #ffffff;
+}
+
+/* Lista */
+.pta-rnew-error-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pta-rnew-error-list li {
+    padding: 0.6rem 0.8rem;
+    border-radius: 10px;
+    margin-bottom: 0.4rem;
+    transition: all 0.2s ease;
+}
+
+.pta-rnew-error-list li strong {
+    color: #0dcaf0;
+}
+
+.pta-rnew-error-list li:not(:has(strong)) {
+    background: rgba(255, 107, 107, 0.08);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    cursor: pointer;
+}
+
+.pta-rnew-error-list li:not(:has(strong)):hover {
+    background: rgba(255, 107, 107, 0.15);
+    transform: translateX(4px);
+}
+.modal-backdrop.show {
+    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.pta-reporte-new .pta-rshow-export-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.pta-reporte-new .pta-rshow-export-actions .btn {
+    min-width: 180px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
