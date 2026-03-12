@@ -60,6 +60,7 @@ class ConstructorVistaReportePtaEditService
                 'unidad_medida'       => $indicadorGuardado->getUnidadMedida(),
                 'medio_verificacion'  => $indicadorGuardado->getMedioVerificacion(),
                 'meta_cumplida'       => $indicadorGuardado->getMetaCumplida(),
+                'formula_opcional'    => $indicadorGuardado->getFormula(),
                 'acciones'            => [],
                 'evidencias'          => []
             ];

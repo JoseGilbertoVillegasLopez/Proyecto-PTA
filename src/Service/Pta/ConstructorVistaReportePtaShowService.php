@@ -143,6 +143,7 @@ class ConstructorVistaReportePtaShowService
                 'resultado'           => $indicador->getResultado(),
                 'porcentaje'          => $indicador->getPorcentajeAvance(),
                 'formula_descripcion' => $indicador->getFormulaDescripcion(),
+                'formula'             => $indicador->getFormula(),
 
                 'indicador_basico'    => $indicadorBasicoNombre,
                 'unidad_medida'       => $indicador->getUnidadMedida(),

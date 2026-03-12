@@ -2,8 +2,7 @@
 
 	<div class="pta-reporte-new" data-reporte-form="reporte-edit" data-modo="edit" data-datos-iniciales='{{ datos.inicial|json_encode|raw }}' data-uploads-base="{{ datos.uploads.base_url }}" data-procesos-estrategicos='{{ datos.catalogos.procesos_estrategicos|json_encode|raw }}' data-procesos-clave='{{ datos.catalogos.procesos_clave|json_encode|raw }}' data-partidas-presupuestales='{{ datos.catalogos.partidas_presupuestales|json_encode|raw }}'>
 
-		<form method="POST" action="{{ path('app_reporte_pta_edit', { id: datos.pta.id, trimestre: datos.trimestre }) }}" enctype="multipart/form-data">
-
+		<form method="POST" action="{{ path('app_reporte_pta_edit', { id: datos.pta.id, trimestre: datos.trimestre }) }}" enctype="multipart/form-data" data-turbo-action="advance">
 			<input type="hidden" name="_token" value="{{ csrf_token }}">
 
 			<div class="pta-reporte-container">
@@ -11,7 +10,7 @@
 				{# ===================================================== #}
 				{# BOTÓN VOLVER #}
 				{# ===================================================== #}
-					<div class="mb-4"> <a href="{{ volver_path|default('#') }}" class="btn btn-outline-light">
+					<div class="mb-4"> <a href="{{ volver_path|default('#') }}" class="btn btn-outline-light" data-turbo-action="advance">
 						← Volver
 					</a>
 				</div>
@@ -150,6 +149,11 @@
 										<div class="mb-3">
 											<label class="form-label">Medio de Verificación</label>
 											<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][medio_verificacion]">{{ (inicial.medio_verificacion ?? '')|trim }}</textarea>
+										</div>
+
+										<div class="mb-3">
+											<label class="form-label">Fórmula empleada (opcional)</label>
+											<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][formula_opcional]" placeholder="Escribe aquí la fórmula aplicada por el usuario, si corresponde.">{{ (inicial.formula_opcional ?? '')|trim }}</textarea>
 										</div>
 
 										{% if data.porcentaje < 100 %}

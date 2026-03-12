@@ -5,9 +5,7 @@
 <section
 	class="pta-historial">
 
-	{# =====================================================
-										       ENCABEZADO DEL PTA
-										       ===================================================== #}
+	{# ================ENCABEZADO DEL PTA=================== #}
 	<header
 		class="pta-historial-header">
 
@@ -44,8 +42,8 @@
 
 
 	{# =====================================================
-										       INDICADORES
-										       ===================================================== #}
+											       INDICADORES
+											       ===================================================== #}
 	{% for indicador in historial %}
 
 		<section class="pta-indicador-card">
@@ -73,8 +71,8 @@
 			</div>
 
 			{# =================================================
-																														               ACCIONES
-																														               ================================================= #}
+																																	               ACCIONES
+																																	               ================================================= #}
 			<div class="pta-acciones">
 
 				{% for accion in indicador.acciones %}
@@ -88,8 +86,8 @@
 							class="pta-accion-body">
 
 							{# ===============================
-																																																																						                               GRID DE MESES
-																																																																						                               =============================== #}
+																																																																													                               GRID DE MESES
+																																																																													                               =============================== #}
 							<div class="pta-meses-grid">
 
 								{% for mes, data in accion.meses %}
@@ -184,8 +182,8 @@
 			</div>
 
 			{# =================================================
-															   GRÁFICA (MISMA QUE SHOW)
-															   ================================================= #}
+																		   GRÁFICA (MISMA QUE SHOW)
+																		   ================================================= #}
 			<div class="pta-indicador-chart">
 				<div class="pta-chart-summary">
 					<div class="pta-chart-summary__item">

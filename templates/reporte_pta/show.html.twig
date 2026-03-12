@@ -5,7 +5,7 @@
 		<div class="pta-reporte-container">
 
 			<div class="mb-4">
-				<a href="{{ volver_path|default('#') }}" class="btn btn-outline-light">
+				<a href="{{ volver_path|default('#') }}" class="btn btn-outline-light" data-turbo-frame="content" data-turbo-action="advance">
 					← Volver
 				</a>
 			</div>
@@ -18,7 +18,7 @@
             } %}
 
 			<h1 class="pta-reporte-new__title">
-				Reporte PTA (Solo lectura) — Trimestre
+				Reporte PTA Trimestre
 				{{ trimestreTexto[datos.trimestre] }}
 			</h1>
 
@@ -67,6 +67,24 @@
 						⏳ Reporte pendiente de entrega
 					</div>
 				{% endif %}
+			</div>
+
+			<div class="pta-report-card mb-5">
+				<div class="pta-report-card__subtitle">
+					Exportación del Reporte
+				</div>
+
+				<div class="pta-rshow-export-actions">
+					<a href="{{ path('app_reporte_pta_export_word', { id: datos.pta.id, trimestre: datos.trimestre }) }}" class="btn btn-outline-info" data-turbo="false" target="_blank">
+						<i class="bi bi-file-earmark-word"></i>
+						Exportar Word
+					</a>
+
+					<a href="{{ path('app_reporte_pta_export_pdf', { id: datos.pta.id, trimestre: datos.trimestre }) }}" class="btn btn-outline-danger" data-turbo="false" target="_blank">
+						<i class="bi bi-file-earmark-pdf"></i>
+						Exportar PDF
+					</a>
+				</div>
 			</div>
 
 			<div
@@ -148,6 +166,11 @@
 									<div class="mb-3">
 										<label class="form-label">Medio de Verificación</label>
 										<textarea class="form-control" rows="3" readonly>{{ data.medio_verificacion ?? '' }}</textarea>
+									</div>
+
+									<div class="mb-3">
+										<label class="form-label">Fórmula empleada</label>
+										<textarea class="form-control" rows="3" readonly>{{ data.formula ?? '' }}</textarea>
 									</div>
 
 									{% if (data.porcentaje|default(0)) < 100 %}
@@ -272,7 +295,7 @@
 						Reporte Entregado
 					</button>
 				{% else %}
-					<form method="POST" action="{{ path('app_reporte_pta_entregar', { id: datos.pta.id, trimestre: datos.trimestre }) }}" onsubmit="return confirm('¿Entregar el reporte? Ya no debería editarse después.');">
+					<form method="POST" action="{{ path('app_reporte_pta_entregar', { id: datos.pta.id, trimestre: datos.trimestre }) }}" data-turbo-action="advance" onsubmit="return confirm('¿Entregar el reporte? Ya no debería editarse después.');">
 						<input type="hidden" name="_token" value="{{ csrf_token_entregar }}">
 						<button type="submit" class="pta-btn-primary">
 							Entregar Reporte

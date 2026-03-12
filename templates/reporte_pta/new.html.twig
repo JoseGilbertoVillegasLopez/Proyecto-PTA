@@ -2,8 +2,7 @@
 
 	<div class="pta-reporte-new" data-reporte-form="reporte-new" data-procesos-estrategicos='{{ datos.catalogos.procesos_estrategicos|json_encode|raw }}' data-procesos-clave='{{ datos.catalogos.procesos_clave|json_encode|raw }}' data-partidas-presupuestales='{{ datos.catalogos.partidas_presupuestales|json_encode|raw }}'>
 
-		<form method="POST" action="{{ path('app_reporte_pta_new', { id: datos.pta.id, trimestre: datos.trimestre }) }}" enctype="multipart/form-data">
-
+		<form method="POST" action="{{ path('app_reporte_pta_new', { id: datos.pta.id, trimestre: datos.trimestre }) }}" enctype="multipart/form-data" data-turbo-action="advance">
 			<input type="hidden" name="_token" value="{{ csrf_token }}">
 
 			<div class="pta-reporte-container">
@@ -12,7 +11,7 @@
 				{# BOTÓN VOLVER #}
 				{# ===================================================== #}
 
-					<div class="mb-4"> <a href="{{ volver_path|default('#') }}" class="btn btn-outline-light">
+					<div class="mb-4"> <a href="{{ volver_path|default('#') }}" class="btn btn-outline-light" data-turbo-action="advance">
 						← Volver
 					</a>
 				</div>
@@ -145,6 +144,11 @@
 											<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][medio_verificacion]"></textarea>
 										</div>
 
+										<div class="mb-3">
+											<label class="form-label">Fórmula empleada (opcional)</label>
+											<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][formula_opcional]" placeholder="Escribe aquí la fórmula aplicada por el usuario, si corresponde."></textarea>
+										</div>
+
 										{% if data.porcentaje < 100 %}
 											<div class="mb-3">
 												<label class="form-label">
@@ -215,36 +219,33 @@
 				{# ===================================================== #}
 				{# BOTÓN GUARDAR #}
 				{# ===================================================== #}
-
 					<div class="pta-rnew-submit-wrapper"> <button type="submit" class="pta-btn-primary">
 						Guardar Reporte
 					</button>
 				</div>
+
+			</div>
+		</form>
+	</div>
+	{# ===================================================== #}
+	{# MODAL ERRORES #}
+	{# ===================================================== #}
+
+		<div class="modal fade pta-rnew-modal" id="modalErroresReporte" tabindex="-1"> <div class="modal-dialog modal-lg modal-dialog-centered">
+			<div class="modal-content pta-rnew-modal-content">
+
+				<div class="modal-header pta-rnew-modal-header">
+					<h5 class="modal-title">
+						Validación del Reporte
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body pta-rnew-modal-body">
+					<ul id="listaErroresReporte" class="pta-rnew-error-list"></ul>
+				</div>
+
 			</div>
 		</div>
-
 	</div>
-
-</form>
-
-{# ===================================================== #}
-{# MODAL ERRORES #}
-{# ===================================================== #}
-
-	<div class="modal fade pta-rnew-modal" id="modalErroresReporte" tabindex="-1"> <div class="modal-dialog modal-lg modal-dialog-centered">
-		<div class="modal-content pta-rnew-modal-content">
-
-			<div class="modal-header pta-rnew-modal-header">
-				<h5 class="modal-title">
-					Validación del Reporte
-				</h5>
-				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-			</div>
-
-			<div class="modal-body pta-rnew-modal-body">
-				<ul id="listaErroresReporte" class="pta-rnew-error-list"></ul>
-			</div>
-
-		</div>
-	</div>
-</div></turbo-frame>
+</turbo-frame>
