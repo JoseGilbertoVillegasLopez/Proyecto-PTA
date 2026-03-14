@@ -1,34 +1,46 @@
 <turbo-frame id="content">
-	<section class="personal-index" data-page="personal-index">
+	<div class="card personal-index-card" data-page="personal-index">
 
-		<div class="personal-index__toolbar">
-			<h1 class="personal-index__title">Lista de personal</h1>
-		</div>
+		<h4 class="mb-3 personal-index-title">
+			<i class="bi bi-people-fill"></i>
+			Lista de personal
+		</h4>
 
-		<div class="personal-index__table-actions">
-			<a href="{{ path('app_personal_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="personal-index__add-btn">
-				<i class="bi bi-person-plus-fill"></i>
-				Crear nuevo
-			</a>
+		<div class="personal-index-toolbar">
 
-			<div class="personal-index__spacer"></div>
+			{# IZQUIERDA — BOTÓN AGREGAR #}
+			<div class="personal-index-toolbar__left">
+				<a href="{{ path('app_personal_new') }}"
+				   data-turbo-frame="content"
+				   data-turbo-action="advance"
+				   class="personal-index-add-btn">
+					<i class="bi bi-person-plus-fill"></i>
+					<span>Crear nuevo</span>
+				</a>
+			</div>
 
-			<div class="personal-index__search">
-				<i class="bi bi-search"></i>
-				<input type="text" id="personal-search" placeholder="Buscar personal..." autocomplete="off">
+			{# DERECHA — BUSCADOR #}
+			<div class="personal-index-toolbar__right">
+				<div class="personal-index-search">
+					<i class="bi bi-search"></i>
+					<input type="text"
+						   id="personal-search"
+						   placeholder="Buscar personal..."
+						   autocomplete="off">
+				</div>
 			</div>
 		</div>
 
-		<div class="personal-index__table-wrapper">
-			<table class="personal-index__table">
+		<div class="personal-index-table-wrapper">
+			<table class="personal-index-table">
 				<thead>
 					<tr>
 						<th>Nombre completo</th>
 						<th>Correo</th>
 						<th>Puesto</th>
 						<th>Departamento</th>
-						<th>Estado</th>
-						<th>Acciones</th>
+						<th class="text-center">Estado</th>
+						<th class="text-center">Acciones</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -38,27 +50,35 @@
 							<td>{{ personal.correo }}</td>
 							<td>{{ personal.puesto.nombre }}</td>
 							<td>{{ personal.departamento.nombre }}</td>
-							<td>
-								<span class="personal-index__badge {{ personal.activo ? 'is-active' : 'is-inactive' }}">
+							<td class="text-center">
+								<span class="personal-index-badge {{ personal.activo ? 'personal-index-badge--active' : 'personal-index-badge--inactive' }}">
 									{{ personal.activo ? 'Activo' : 'Inactivo' }}
 								</span>
 							</td>
-							<td>
-								<div class="personal-index__actions">
-									<a href="{{ path('app_personal_show', {'id': personal.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="personal-index__action personal-index__action--view">
+							<td class="text-center">
+								<div class="personal-index-actions">
+									<a href="{{ path('app_personal_show', {'id': personal.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="personal-index-action-btn personal-index-action-btn--view"
+									   title="Ver personal">
 										<i class="bi bi-eye"></i>
 									</a>
 
-									<a href="{{ path('app_personal_edit', {'id': personal.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="personal-index__action personal-index__action--edit">
-										<i class="bi bi-pencil"></i>
+									<a href="{{ path('app_personal_edit', {'id': personal.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="personal-index-action-btn personal-index-action-btn--edit"
+									   title="Editar personal">
+										<i class="bi bi-pencil-square"></i>
 									</a>
 								</div>
 							</td>
 						</tr>
 					{% else %}
 						<tr>
-							<td colspan="6" class="personal-index__empty">
-								No se encontraron registros
+							<td colspan="6" class="text-center text-muted personal-index-empty">
+								No se encontraron registros.
 							</td>
 						</tr>
 					{% endfor %}
@@ -66,5 +86,5 @@
 			</table>
 		</div>
 
-	</section>
+	</div>
 </turbo-frame>

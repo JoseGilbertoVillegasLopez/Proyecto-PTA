@@ -1,72 +1,58 @@
 <turbo-frame id="content">
-	<section class="indicadores-basicos-form indicadores-basicos-form--new">
+	<section class="indicadores-basicos-new-card">
 
-		{# =====================================================
-		   HEADER
-		   ===================================================== #}
-		<header class="indicadores-basicos-form__header">
+		<header class="indicadores-basicos-new-header">
 
 			<!-- VOLVER -->
-			<a
-				href="{{ path('app_indicadores_basicos_index') }}"
-				data-turbo-frame="content"
-				data-turbo-action="replace"
-				class="indicadores-basicos-form__icon-btn indicadores-basicos-form__icon-btn--back"
-				title="Volver">
-
+			<a href="{{ path('app_indicadores_basicos_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="indicadores-basicos-new-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
 			<!-- TÍTULO -->
-			<h1 class="indicadores-basicos-form__title">
+			<h1 class="indicadores-basicos-new-title">
 				Crear nuevo indicador básico
 			</h1>
 
+			<!-- ESPACIADOR -->
+			<div class="indicadores-basicos-new-header-spacer" aria-hidden="true"></div>
+
 		</header>
 
-
-		{# =====================================================
-		   FORMULARIO
-		   ===================================================== #}
 		{{ form_start(form, {
-			action: path('app_indicadores_basicos_new'),
-			attr: {
-				'data-turbo-frame': 'content',
-				'class': 'indicadores-basicos-form__form'
-			}
-		}) }}
+            action: path('app_indicadores_basicos_new'),
+            attr: {
+                'data-turbo-frame': 'content',
+                'class': 'indicadores-basicos-new-form'
+            }
+        }) }}
 
-		<div class="indicadores-basicos-form__group">
-			{{ form_label(form.nombreIndicador) }}
-			{{ form_widget(form.nombreIndicador) }}
-			{{ form_errors(form.nombreIndicador) }}
-		</div>
+			<div class="indicadores-basicos-new-group">
+				{{ form_label(form.nombreIndicador, null, {'label_attr': {'class': 'indicadores-basicos-new-label'}}) }}
+				{{ form_widget(form.nombreIndicador, {'attr': {'class': 'indicadores-basicos-new-input'}}) }}
+				{{ form_errors(form.nombreIndicador) }}
+			</div>
 
-		<div class="indicadores-basicos-form__group">
-			{{ form_label(form.formula) }}
-			{{ form_widget(form.formula) }}
-			{{ form_errors(form.formula) }}
-		</div>
+			<div class="indicadores-basicos-new-group">
+				{{ form_label(form.formula, null, {'label_attr': {'class': 'indicadores-basicos-new-label'}}) }}
+				{{ form_widget(form.formula, {'attr': {'class': 'indicadores-basicos-new-input'}}) }}
+				{{ form_errors(form.formula) }}
+			</div>
 
-		<div class="indicadores-basicos-form__group">
-			{{ form_label(form.observaciones) }}
-			{{ form_widget(form.observaciones) }}
-			{{ form_errors(form.observaciones) }}
-		</div>
+			<div class="indicadores-basicos-new-group">
+				{{ form_label(form.observaciones, null, {'label_attr': {'class': 'indicadores-basicos-new-label'}}) }}
+				{{ form_widget(form.observaciones, {'attr': {'class': 'indicadores-basicos-new-textarea'}}) }}
+				{{ form_errors(form.observaciones) }}
+			</div>
 
-
-		{# =====================================================
-		   ACCIONES
-		   ===================================================== #}
-		<div class="indicadores-basicos-form__actions">
-			<button
-				type="submit"
-				class="indicadores-basicos-form__submit indicadores-basicos-form__submit--icon"
-				title="Guardar indicador">
-
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="indicadores-basicos-new-actions">
+				<button type="submit" class="indicadores-basicos-new-submit-btn" title="Guardar">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_end(form) }}
 

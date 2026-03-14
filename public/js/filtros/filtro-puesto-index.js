@@ -1,13 +1,13 @@
-// assets/js/personal_index_search.js
+// assets/js/puesto_index_search.js
 
-function initPersonalIndexSearch() {
+function initPuestoIndexSearch() {
 
     // 🔒 AISLAMIENTO TOTAL
-    const page = document.querySelector('[data-page="personal-index"]');
+    const page = document.querySelector('[data-page="puesto-index"]');
     if (!page) return;
 
-    const input = page.querySelector('#personal-search');
-    const tbody = page.querySelector('.personal-index-table tbody');
+    const input = page.querySelector('#puesto-search');
+    const tbody = page.querySelector('.puesto-index-page-table tbody');
 
     if (!input || !tbody) return;
 
@@ -16,6 +16,7 @@ function initPersonalIndexSearch() {
     input.dataset.searchInit = '1';
 
     input.addEventListener('input', () => {
+
         const q = input.value.trim().toLowerCase();
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
@@ -25,13 +26,17 @@ function initPersonalIndexSearch() {
         }
 
         rows.forEach(tr => {
-            const nombre = tr.querySelector('td')?.textContent.toLowerCase() ?? '';
+
+            const nombre = tr.querySelector('.puesto-index-page-name')?.textContent.toLowerCase() ?? '';
+
             tr.style.display = nombre.includes(q) ? '' : 'none';
+
         });
+
     });
 }
 
 // 🔑 Turbo lifecycle seguro
-document.addEventListener('turbo:load', initPersonalIndexSearch);
-document.addEventListener('turbo:frame-load', initPersonalIndexSearch);
-document.addEventListener('turbo:render', initPersonalIndexSearch);
+document.addEventListener('turbo:load', initPuestoIndexSearch);
+document.addEventListener('turbo:frame-load', initPuestoIndexSearch);
+document.addEventListener('turbo:render', initPuestoIndexSearch);

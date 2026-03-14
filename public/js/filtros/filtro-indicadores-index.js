@@ -2,12 +2,12 @@
 
 function initIndicadoresBasicosIndexSearch() {
 
-    // 🔒 AISLAMIENTO TOTAL (igual que Personal)
+    // 🔒 AISLAMIENTO TOTAL
     const page = document.querySelector('[data-page="indicadores-basicos-index"]');
     if (!page) return;
 
     const input = page.querySelector('#indicadores-basicos-search');
-    const tbody = page.querySelector('.indicadores-basicos-index__table tbody');
+    const tbody = page.querySelector('.indicadores-basicos-index-table tbody');
 
     if (!input || !tbody) return;
 
@@ -19,21 +19,28 @@ function initIndicadoresBasicosIndexSearch() {
         const q = input.value.trim().toLowerCase();
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
-        // 🔎 Muestra todo si hay menos de 2 caracteres
-        if (q.length < 2) {
+        // 🔎 Mostrar todo si está vacío
+        if (q.length === 0) {
             rows.forEach(tr => tr.style.display = '');
             return;
         }
 
         rows.forEach(tr => {
-            // 📌 Primera columna = nombre del indicador
-            const nombre = tr.querySelector('td')?.textContent.toLowerCase() ?? '';
-            tr.style.display = nombre.includes(q) ? '' : 'none';
+            const nombre = tr.querySelector('.indicadores-basicos-nombre')?.textContent.toLowerCase() ?? '';
+            const formula = tr.querySelector('.indicadores-basicos-formula')?.textContent.toLowerCase() ?? '';
+            const observaciones = tr.querySelector('.indicadores-basicos-observaciones')?.textContent.toLowerCase() ?? '';
+
+            const coincide =
+                nombre.includes(q) ||
+                formula.includes(q) ||
+                observaciones.includes(q);
+
+            tr.style.display = coincide ? '' : 'none';
         });
     });
 }
 
-// 🔑 Turbo lifecycle seguro (MISMO patrón que Personal)
+// 🔑 Turbo lifecycle seguro
 document.addEventListener('turbo:load', initIndicadoresBasicosIndexSearch);
 document.addEventListener('turbo:frame-load', initIndicadoresBasicosIndexSearch);
 document.addEventListener('turbo:render', initIndicadoresBasicosIndexSearch);

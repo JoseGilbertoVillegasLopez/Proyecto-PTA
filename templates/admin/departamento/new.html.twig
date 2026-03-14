@@ -1,48 +1,43 @@
 <turbo-frame id="content">
-	<section
-		class="departamento-form departamento-form--new">
+	<section class="departamento-new-page-card">
 
-		<!-- ===============================
-				             HEADER
-				        ================================ -->
-		<header
-			class="departamento-form__header">
+		<header class="departamento-new-page-header">
 
-			<!-- VOLVER -->
-			<a href="{{ path('app_departamento_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="departamento-form__icon-btn departamento-form__icon-btn--back" title="Volver">
+			<a href="{{ path('app_departamento_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="departamento-new-page-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<!-- TÍTULO -->
-			<h1 class="departamento-form__title">
+			<h1 class="departamento-new-page-title">
 				Crear nuevo departamento
 			</h1>
 
+			<div class="departamento-new-page-header-spacer" aria-hidden="true"></div>
+
 		</header>
 
-		<!-- ===============================
-				             FORM
-				        ================================ -->
 		{{ form_start(form, {
             action: path('app_departamento_new'),
             attr: {
                 'data-turbo-frame': 'content',
-                'class': 'departamento-form__form'
+                'class': 'departamento-new-page-form'
             }
         }) }}
 
-		<div class="departamento-form__group">
-			{{ form_label(form.nombre) }}
-			{{ form_widget(form.nombre) }}
-			{{ form_errors(form.nombre) }}
-		</div>
+			<div class="departamento-new-page-group">
+				{{ form_label(form.nombre, null, {'label_attr': {'class': 'departamento-new-page-label'}}) }}
+				{{ form_widget(form.nombre, {'attr': {'class': 'departamento-new-page-input'}}) }}
+				{{ form_errors(form.nombre) }}
+			</div>
 
-		<!-- GUARDAR CENTRADO -->
-		<div class="departamento-form__actions">
-			<button type="submit" class="departamento-form__submit departamento-form__submit--icon" title="Guardar">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="departamento-new-page-actions">
+				<button type="submit" class="departamento-new-page-submit-btn" title="Guardar">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_end(form) }}
 

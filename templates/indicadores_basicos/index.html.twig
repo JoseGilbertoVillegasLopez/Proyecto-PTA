@@ -1,122 +1,94 @@
 <turbo-frame id="content">
-	<section
-		class="indicadores-basicos-index"
-		data-page="indicadores-basicos-index">
+	<div class="card indicadores-basicos-index-card" data-page="indicadores-basicos-index">
 
-		{# =====================================================
-		   TOOLBAR
-		   ===================================================== #}
-		<div class="indicadores-basicos-index__toolbar">
-			<h1 class="indicadores-basicos-index__title">
-				Lista de indicadores básicos
-			</h1>
-		</div>
+		<h4 class="mb-3 indicadores-basicos-index-title">
+			<i class="bi bi-bar-chart-line-fill"></i>
+			Lista de indicadores básicos
+		</h4>
 
-		{# =====================================================
-		   ACCIONES SUPERIORES
-		   ===================================================== #}
-		<div class="indicadores-basicos-index__table-actions">
+		<div class="indicadores-basicos-index-toolbar">
 
-			<a
-				href="{{ path('app_indicadores_basicos_new') }}"
-				data-turbo-frame="content"
-				data-turbo-action="advance"
-				class="indicadores-basicos-index__add-btn">
-
-				<i class="bi bi-plus-circle-fill"></i>
-				Crear indicador
-			</a>
-
-			<div class="indicadores-basicos-index__spacer"></div>
-
-			<div class="indicadores-basicos-index__search">
-				<i class="bi bi-search"></i>
-				<input
-					type="text"
-					id="indicadores-basicos-search"
-					placeholder="Buscar indicador..."
-					autocomplete="off">
+			{# IZQUIERDA — BOTÓN AGREGAR #}
+			<div class="indicadores-basicos-index-toolbar__left">
+				<a href="{{ path('app_indicadores_basicos_new') }}"
+				   data-turbo-frame="content"
+				   data-turbo-action="advance"
+				   class="indicadores-basicos-index-add-btn">
+					<i class="bi bi-plus-circle-fill"></i>
+					<span>Crear indicador</span>
+				</a>
 			</div>
 
+			{# DERECHA — BUSCADOR #}
+			<div class="indicadores-basicos-index-toolbar__right">
+				<div class="indicadores-basicos-index-search">
+					<i class="bi bi-search"></i>
+					<input type="text"
+						   id="indicadores-basicos-search"
+						   placeholder="Buscar indicador..."
+						   autocomplete="off">
+				</div>
+			</div>
 		</div>
 
-		{# =====================================================
-		   TABLA
-		   ===================================================== #}
-		<div class="indicadores-basicos-index__table-wrapper">
-			<table class="indicadores-basicos-index__table">
-
+		<div class="indicadores-basicos-index-table-wrapper">
+			<table class="indicadores-basicos-index-table">
 				<thead>
 					<tr>
 						<th>Indicador</th>
 						<th>Fórmula</th>
 						<th>Observaciones</th>
-						<th>Estado</th>
-						<th>Acciones</th>
+						<th class="text-center">Estado</th>
+						<th class="text-center">Acciones</th>
 					</tr>
 				</thead>
-
 				<tbody>
 					{% for indicador in indicadores_basicos %}
 						<tr class="indicadores-basicos-row">
-
 							<td class="indicadores-basicos-nombre">
 								{{ indicador.nombreIndicador }}
 							</td>
-
 							<td class="indicadores-basicos-formula">
 								{{ indicador.formula }}
 							</td>
-
 							<td class="indicadores-basicos-observaciones">
 								{{ indicador.observaciones ?: '—' }}
 							</td>
-
-							<td>
-								<span class="indicadores-basicos-index__badge {{ indicador.isActivo() ? 'is-active' : 'is-inactive' }}">
+							<td class="text-center">
+								<span class="indicadores-basicos-index-badge {{ indicador.isActivo() ? 'indicadores-basicos-index-badge--active' : 'indicadores-basicos-index-badge--inactive' }}">
 									{{ indicador.isActivo() ? 'Activo' : 'Inactivo' }}
 								</span>
 							</td>
-
-							<td>
-								<div class="indicadores-basicos-index__actions">
-
-									<a
-										href="{{ path('app_indicadores_basicos_show', { id: indicador.id }) }}"
-										data-turbo-frame="content"
-										data-turbo-action="advance"
-										class="indicadores-basicos-index__action indicadores-basicos-index__action--view">
-
+							<td class="text-center">
+								<div class="indicadores-basicos-index-actions">
+									<a href="{{ path('app_indicadores_basicos_show', {'id': indicador.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="indicadores-basicos-index-action-btn indicadores-basicos-index-action-btn--view"
+									   title="Ver indicador">
 										<i class="bi bi-eye"></i>
 									</a>
 
-									<a
-										href="{{ path('app_indicadores_basicos_edit', { id: indicador.id }) }}"
-										data-turbo-frame="content"
-										data-turbo-action="advance"
-										class="indicadores-basicos-index__action indicadores-basicos-index__action--edit">
-
-										<i class="bi bi-pencil"></i>
+									<a href="{{ path('app_indicadores_basicos_edit', {'id': indicador.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="indicadores-basicos-index-action-btn indicadores-basicos-index-action-btn--edit"
+									   title="Editar indicador">
+										<i class="bi bi-pencil-square"></i>
 									</a>
-
 								</div>
 							</td>
-
 						</tr>
 					{% else %}
 						<tr>
-							<td
-								colspan="5"
-								class="indicadores-basicos-index__empty">
-
-								No se encontraron indicadores básicos
+							<td colspan="5" class="text-center text-muted indicadores-basicos-index-empty">
+								No se encontraron indicadores básicos.
 							</td>
 						</tr>
 					{% endfor %}
 				</tbody>
-
 			</table>
 		</div>
 
-	</section>
+	</div>
 </turbo-frame>

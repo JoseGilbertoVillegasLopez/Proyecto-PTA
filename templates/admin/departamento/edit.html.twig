@@ -1,56 +1,58 @@
 <turbo-frame id="content">
-	<section
-		class="departamento-form departamento-form--edit">
+	<section class="departamento-edit-page-card">
 
-		<!-- HEADER -->
-		<header
-			class="departamento-form__header">
+		<header class="departamento-edit-page-header">
 
 			<!-- VOLVER -->
-			<a href="{{ path('app_departamento_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="departamento-form__icon-btn departamento-form__icon-btn--back" title="Volver">
+			<a href="{{ path('app_departamento_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="departamento-edit-page-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<!-- TÍTULO + SUB -->
-			<div class="departamento-form__header-center">
-				<h1 class="departamento-form__title">
+			<!-- TÍTULO + SUBTÍTULO -->
+			<div class="departamento-edit-page-header-center">
+				<h1 class="departamento-edit-page-title">
 					Editar departamento
 				</h1>
 
-				<p class="departamento-form__subtitle">
+				<p class="departamento-edit-page-subtitle">
 					Edita solo los campos necesarios
 				</p>
 			</div>
 
+			<!-- ESPACIADOR -->
+			<div class="departamento-edit-page-header-spacer" aria-hidden="true"></div>
+
 		</header>
 
-		<!-- FORM -->
 		{{ form_start(form, {
             action: path('app_departamento_edit', { id: departamento.id }),
             attr: {
                 'data-turbo-frame': 'content',
-                'class': 'departamento-form__form'
+                'class': 'departamento-edit-page-form'
             }
         }) }}
 
-		<div class="departamento-form__group">
-			{{ form_label(form.nombre) }}
-			{{ form_widget(form.nombre) }}
-			{{ form_errors(form.nombre) }}
-		</div>
+			<div class="departamento-edit-page-group">
+				{{ form_label(form.nombre, null, {'label_attr': {'class': 'departamento-edit-page-label'}}) }}
+				{{ form_widget(form.nombre, {'attr': {'class': 'departamento-edit-page-input'}}) }}
+				{{ form_errors(form.nombre) }}
+			</div>
 
-		<div class="departamento-form__group">
-			{{ form_label(form.activo) }}
-			{{ form_widget(form.activo) }}
-			{{ form_errors(form.activo) }}
-		</div>
+			<div class="departamento-edit-page-group">
+				{{ form_label(form.activo, null, {'label_attr': {'class': 'departamento-edit-page-label'}}) }}
+				{{ form_widget(form.activo, {'attr': {'class': 'departamento-edit-page-select'}}) }}
+				{{ form_errors(form.activo) }}
+			</div>
 
-		<!-- GUARDAR -->
-		<div class="departamento-form__submit-proxy">
-			<button type="submit" class="departamento-form__icon-btn departamento-form__icon-btn--save" title="Guardar cambios">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="departamento-edit-page-actions">
+				<button type="submit" class="departamento-edit-page-save-btn" title="Guardar cambios">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_rest(form) }}
 		{{ form_end(form) }}

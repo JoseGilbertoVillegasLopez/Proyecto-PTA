@@ -1,67 +1,64 @@
 <turbo-frame id="content">
-	<section class="proceso-clave-form proceso-clave-form--new">
+	<section class="proceso-clave-new-card">
 
-		<header class="proceso-clave-form__header">
+		<header class="proceso-clave-new-header">
 
 			<!-- VOLVER -->
 			<a href="{{ path('app_proceso_clave_index') }}"
 			   data-turbo-frame="content"
 			   data-turbo-action="replace"
-			   class="proceso-clave-form__icon-btn proceso-clave-form__icon-btn--back"
+			   class="proceso-clave-new-back-btn"
 			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
 			<!-- TÍTULO -->
-			<h1 class="proceso-clave-form__title">
+			<h1 class="proceso-clave-new-title">
 				Crear nuevo proceso clave
 			</h1>
 
+			<!-- ESPACIADOR -->
+			<div class="proceso-clave-new-header-spacer" aria-hidden="true"></div>
+
 		</header>
 
-		{# ===============================
-		        FORMULARIO
-		   =============================== #}
 		{{ form_start(form, {
 			action: path('app_proceso_clave_new'),
 			attr: {
 				'data-turbo-frame': 'content',
-				'class': 'proceso-clave-form__form'
+				'class': 'proceso-clave-new-form'
 			}
 		}) }}
 
-		<div class="proceso-clave-form__group">
-			{{ form_label(form.nombre) }}
-			{{ form_widget(form.nombre) }}
-			{{ form_errors(form.nombre) }}
-		</div>
+			<div class="proceso-clave-new-group">
+				{{ form_label(form.nombre, null, {'label_attr': {'class': 'proceso-clave-new-label'}}) }}
+				{{ form_widget(form.nombre, {'attr': {'class': 'proceso-clave-new-input'}}) }}
+				{{ form_errors(form.nombre) }}
+			</div>
 
-		<div class="proceso-clave-form__group">
-			{{ form_label(form.pei) }}
-			{{ form_widget(form.pei) }}
-			{{ form_errors(form.pei) }}
-		</div>
+			<div class="proceso-clave-new-group">
+				{{ form_label(form.pei, null, {'label_attr': {'class': 'proceso-clave-new-label'}}) }}
+				{{ form_widget(form.pei, {'attr': {'class': 'proceso-clave-new-input'}}) }}
+				{{ form_errors(form.pei) }}
+			</div>
 
-		<div class="proceso-clave-form__group">
-			{{ form_label(form.paig) }}
-			{{ form_widget(form.paig) }}
-			{{ form_errors(form.paig) }}
-		</div>
+			<div class="proceso-clave-new-group">
+				{{ form_label(form.paig, null, {'label_attr': {'class': 'proceso-clave-new-label'}}) }}
+				{{ form_widget(form.paig, {'attr': {'class': 'proceso-clave-new-input'}}) }}
+				{{ form_errors(form.paig) }}
+			</div>
 
-		<div class="proceso-clave-form__group">
-			{{ form_label(form.metaPdiPta) }}
-			{{ form_widget(form.metaPdiPta) }}
-			{{ form_errors(form.metaPdiPta) }}
-		</div>
+			<div class="proceso-clave-new-group">
+				{{ form_label(form.metaPdiPta, null, {'label_attr': {'class': 'proceso-clave-new-label'}}) }}
+				{{ form_widget(form.metaPdiPta, {'attr': {'class': 'proceso-clave-new-input'}}) }}
+				{{ form_errors(form.metaPdiPta) }}
+			</div>
 
-		{# GUARDAR CENTRADO — EXACTO A PERSONAL #}
-		<div class="proceso-clave-form__actions">
-			<button type="submit"
-			        class="proceso-clave-form__submit proceso-clave-form__submit--icon"
-			        title="Guardar proceso">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="proceso-clave-new-actions">
+				<button type="submit" class="proceso-clave-new-submit-btn" title="Guardar">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_end(form) }}
 

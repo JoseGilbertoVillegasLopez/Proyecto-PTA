@@ -4,7 +4,7 @@ function initProcesoEstrategicoIndexSearch() {
     if (!page) return;
 
     const input = page.querySelector('#proceso-estrategico-search');
-    const tbody = page.querySelector('.proceso-estrategico-index__table tbody');
+    const tbody = page.querySelector('.proceso-estrategico-index-table tbody');
 
     if (!input || !tbody) return;
 
@@ -16,16 +16,16 @@ function initProcesoEstrategicoIndexSearch() {
         const q = input.value.trim().toLowerCase();
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
-        if (q.length < 2) {
+        if (q.length === 0) {
             rows.forEach(tr => tr.style.display = '');
             return;
         }
 
         rows.forEach(tr => {
 
-            const texto = tr.textContent.toLowerCase();
+            const nombre = tr.querySelector('.proceso-estrategico-index-row-name')?.textContent.toLowerCase() ?? '';
 
-            tr.style.display = texto.includes(q) ? '' : 'none';
+            tr.style.display = nombre.includes(q) ? '' : 'none';
 
         });
 

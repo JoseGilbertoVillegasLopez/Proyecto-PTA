@@ -1,19 +1,24 @@
 <turbo-frame id="content">
-	<section class="partidas-presupuestales-form partidas-presupuestales-form--new">
+	<section class="partidas-presupuestales-new-card">
 
-		<header class="partidas-presupuestales-form__header">
+		<header class="partidas-presupuestales-new-header">
 
+			<!-- VOLVER -->
 			<a href="{{ path('app_partidas_presupuestales_index') }}"
 			   data-turbo-frame="content"
 			   data-turbo-action="replace"
-			   class="partidas-presupuestales-form__icon-btn partidas-presupuestales-form__icon-btn--back"
+			   class="partidas-presupuestales-new-back-btn"
 			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<h1 class="partidas-presupuestales-form__title">
+			<!-- TÍTULO -->
+			<h1 class="partidas-presupuestales-new-title">
 				Crear nueva partida presupuestal
 			</h1>
+
+			<!-- ESPACIADOR -->
+			<div class="partidas-presupuestales-new-header-spacer" aria-hidden="true"></div>
 
 		</header>
 
@@ -21,35 +26,33 @@
 			action: path('app_partidas_presupuestales_new'),
 			attr: {
 				'data-turbo-frame': 'content',
-				'class': 'partidas-presupuestales-form__form'
+				'class': 'partidas-presupuestales-new-form'
 			}
 		}) }}
 
-		<div class="partidas-presupuestales-form__group">
-			{{ form_label(form.capitulo) }}
-			{{ form_widget(form.capitulo) }}
-			{{ form_errors(form.capitulo) }}
-		</div>
+			<div class="partidas-presupuestales-new-group">
+				{{ form_label(form.capitulo, null, {'label_attr': {'class': 'partidas-presupuestales-new-label'}}) }}
+				{{ form_widget(form.capitulo, {'attr': {'class': 'partidas-presupuestales-new-input'}}) }}
+				{{ form_errors(form.capitulo) }}
+			</div>
 
-		<div class="partidas-presupuestales-form__group">
-			{{ form_label(form.partida) }}
-			{{ form_widget(form.partida) }}
-			{{ form_errors(form.partida) }}
-		</div>
+			<div class="partidas-presupuestales-new-group">
+				{{ form_label(form.partida, null, {'label_attr': {'class': 'partidas-presupuestales-new-label'}}) }}
+				{{ form_widget(form.partida, {'attr': {'class': 'partidas-presupuestales-new-input'}}) }}
+				{{ form_errors(form.partida) }}
+			</div>
 
-		<div class="partidas-presupuestales-form__group">
-			{{ form_label(form.descripcion) }}
-			{{ form_widget(form.descripcion) }}
-			{{ form_errors(form.descripcion) }}
-		</div>
+			<div class="partidas-presupuestales-new-group">
+				{{ form_label(form.descripcion, null, {'label_attr': {'class': 'partidas-presupuestales-new-label'}}) }}
+				{{ form_widget(form.descripcion, {'attr': {'class': 'partidas-presupuestales-new-textarea'}}) }}
+				{{ form_errors(form.descripcion) }}
+			</div>
 
-		<div class="partidas-presupuestales-form__actions">
-			<button type="submit"
-			        class="partidas-presupuestales-form__submit partidas-presupuestales-form__submit--icon"
-			        title="Guardar partida">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="partidas-presupuestales-new-actions">
+				<button type="submit" class="partidas-presupuestales-new-submit-btn" title="Guardar">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_end(form) }}
 

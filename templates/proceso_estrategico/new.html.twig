@@ -1,19 +1,21 @@
 <turbo-frame id="content">
-	<section class="proceso-estrategico-form proceso-estrategico-form--new">
+	<section class="proceso-estrategico-new-card">
 
-		<header class="proceso-estrategico-form__header">
+		<header class="proceso-estrategico-new-header">
 
 			<a href="{{ path('app_proceso_estrategico_index') }}"
 			   data-turbo-frame="content"
 			   data-turbo-action="replace"
-			   class="proceso-estrategico-form__icon-btn proceso-estrategico-form__icon-btn--back"
+			   class="proceso-estrategico-new-back-btn"
 			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<h1 class="proceso-estrategico-form__title">
+			<h1 class="proceso-estrategico-new-title">
 				Crear nuevo proceso estratégico
 			</h1>
+
+			<div class="proceso-estrategico-new-header-spacer" aria-hidden="true"></div>
 
 		</header>
 
@@ -21,23 +23,21 @@
 			action: path('app_proceso_estrategico_new'),
 			attr: {
 				'data-turbo-frame': 'content',
-				'class': 'proceso-estrategico-form__form'
+				'class': 'proceso-estrategico-new-form'
 			}
 		}) }}
 
-		<div class="proceso-estrategico-form__group">
-			{{ form_label(form.nombre) }}
-			{{ form_widget(form.nombre) }}
-			{{ form_errors(form.nombre) }}
-		</div>
+			<div class="proceso-estrategico-new-group">
+				{{ form_label(form.nombre, null, {'label_attr': {'class': 'proceso-estrategico-new-label'}}) }}
+				{{ form_widget(form.nombre, {'attr': {'class': 'proceso-estrategico-new-input'}}) }}
+				{{ form_errors(form.nombre) }}
+			</div>
 
-		<div class="proceso-estrategico-form__actions">
-			<button type="submit"
-			        class="proceso-estrategico-form__submit proceso-estrategico-form__submit--icon"
-			        title="Guardar proceso">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="proceso-estrategico-new-actions">
+				<button type="submit" class="proceso-estrategico-new-submit-btn" title="Guardar">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_end(form) }}
 

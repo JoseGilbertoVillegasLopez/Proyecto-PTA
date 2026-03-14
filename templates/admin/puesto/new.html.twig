@@ -1,54 +1,50 @@
+
 <turbo-frame id="content">
-	<section
-		class="puesto-form puesto-form--new">
+	<section class="puesto-new-page-card">
 
-		<!-- ===============================
-						             HEADER
-						        ================================ -->
-		<header
-			class="puesto-form__header">
+		<header class="puesto-new-page-header">
 
-			<!-- VOLVER -->
-			<a href="{{ path('app_puesto_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="puesto-form__icon-btn puesto-form__icon-btn--back" title="Volver">
+			<a href="{{ path('app_puesto_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="puesto-new-page-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<!-- TÍTULO -->
-			<h1 class="puesto-form__title">
+			<h1 class="puesto-new-page-title">
 				Crear nuevo puesto
 			</h1>
 
+			<div class="puesto-new-page-header-spacer" aria-hidden="true"></div>
+
 		</header>
 
-		<!-- ===============================
-						             FORM
-						        ================================ -->
 		{{ form_start(form, {
             action: path('app_puesto_new'),
             attr: {
                 'data-turbo-frame': 'content',
-                'class': 'puesto-form__form'
+                'class': 'puesto-new-page-form'
             }
         }) }}
 
-		<div class="puesto-form__group">
-			{{ form_label(form.nombre) }}
-			{{ form_widget(form.nombre) }}
-			{{ form_errors(form.nombre) }}
-		</div>
-		<div class="puesto-form__group">
-			{{ form_label(form.supervisorDirecto) }}
-			{{ form_widget(form.supervisorDirecto) }}
-			{{ form_errors(form.supervisorDirecto) }}
-		</div>
+			<div class="puesto-new-page-group">
+				{{ form_label(form.nombre, null, {'label_attr': {'class': 'puesto-new-page-label'}}) }}
+				{{ form_widget(form.nombre, {'attr': {'class': 'puesto-new-page-input'}}) }}
+				{{ form_errors(form.nombre) }}
+			</div>
 
+			<div class="puesto-new-page-group">
+				{{ form_label(form.supervisorDirecto, null, {'label_attr': {'class': 'puesto-new-page-label'}}) }}
+				{{ form_widget(form.supervisorDirecto, {'attr': {'class': 'puesto-new-page-select'}}) }}
+				{{ form_errors(form.supervisorDirecto) }}
+			</div>
 
-		<!-- GUARDAR CENTRADO -->
-		<div class="puesto-form__actions">
-			<button type="submit" class="puesto-form__submit puesto-form__submit--icon" title="Guardar">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="puesto-new-page-actions">
+				<button type="submit" class="puesto-new-page-submit-btn" title="Guardar">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_end(form) }}
 
