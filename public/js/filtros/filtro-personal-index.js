@@ -1,5 +1,14 @@
 // assets/js/personal_index_search.js
 
+function normalizarTexto(texto) {
+    return (texto || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
 function initPersonalIndexSearch() {
 
     // 🔒 AISLAMIENTO TOTAL
@@ -16,16 +25,18 @@ function initPersonalIndexSearch() {
     input.dataset.searchInit = '1';
 
     input.addEventListener('input', () => {
-        const q = input.value.trim().toLowerCase();
+        const q = normalizarTexto(input.value);
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
-        if (q.length < 2) {
+        if (q.length === 0) {
             rows.forEach(tr => tr.style.display = '');
             return;
         }
 
         rows.forEach(tr => {
-            const nombre = tr.querySelector('td')?.textContent.toLowerCase() ?? '';
+            const nombreCrudo = tr.querySelector('.personal-nombre')?.textContent ?? '';
+            const nombre = normalizarTexto(nombreCrudo);
+
             tr.style.display = nombre.includes(q) ? '' : 'none';
         });
     });

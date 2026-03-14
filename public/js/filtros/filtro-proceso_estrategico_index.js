@@ -1,3 +1,12 @@
+function normalizarTexto(texto) {
+    return (texto || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
 function initProcesoEstrategicoIndexSearch() {
 
     const page = document.querySelector('[data-page="proceso-estrategico-index"]');
@@ -13,7 +22,7 @@ function initProcesoEstrategicoIndexSearch() {
 
     input.addEventListener('input', () => {
 
-        const q = input.value.trim().toLowerCase();
+        const q = normalizarTexto(input.value);
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
         if (q.length === 0) {
@@ -23,7 +32,7 @@ function initProcesoEstrategicoIndexSearch() {
 
         rows.forEach(tr => {
 
-            const nombre = tr.querySelector('.proceso-estrategico-index-row-name')?.textContent.toLowerCase() ?? '';
+            const nombre = normalizarTexto(tr.querySelector('.proceso-estrategico-index-row-name')?.textContent ?? '');
 
             tr.style.display = nombre.includes(q) ? '' : 'none';
 

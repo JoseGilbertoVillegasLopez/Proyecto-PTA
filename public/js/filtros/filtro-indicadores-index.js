@@ -1,5 +1,14 @@
 // assets/js/indicadores_basicos_index_search.js
 
+function normalizarTexto(texto) {
+    return (texto || '')
+        .normalize('NFD')                   // separa letras y acentos
+        .replace(/[\u0300-\u036f]/g, '')    // elimina acentos
+        .toLowerCase()
+        .replace(/\s+/g, ' ')               // colapsa espacios múltiples
+        .trim();
+}
+
 function initIndicadoresBasicosIndexSearch() {
 
     // 🔒 AISLAMIENTO TOTAL
@@ -16,7 +25,7 @@ function initIndicadoresBasicosIndexSearch() {
     input.dataset.searchInit = '1';
 
     input.addEventListener('input', () => {
-        const q = input.value.trim().toLowerCase();
+        const q = normalizarTexto(input.value);
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
         // 🔎 Mostrar todo si está vacío
@@ -26,14 +35,10 @@ function initIndicadoresBasicosIndexSearch() {
         }
 
         rows.forEach(tr => {
-            const nombre = tr.querySelector('.indicadores-basicos-nombre')?.textContent.toLowerCase() ?? '';
-            const formula = tr.querySelector('.indicadores-basicos-formula')?.textContent.toLowerCase() ?? '';
-            const observaciones = tr.querySelector('.indicadores-basicos-observaciones')?.textContent.toLowerCase() ?? '';
+            const nombreCrudo = tr.querySelector('.indicadores-basicos-nombre')?.textContent ?? '';
+            const nombre = normalizarTexto(nombreCrudo);
 
-            const coincide =
-                nombre.includes(q) ||
-                formula.includes(q) ||
-                observaciones.includes(q);
+            const coincide = nombre.includes(q);
 
             tr.style.display = coincide ? '' : 'none';
         });
