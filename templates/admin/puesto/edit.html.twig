@@ -1,62 +1,64 @@
 <turbo-frame id="content">
-	<section
-		class="puesto-form puesto-form--edit">
+	<section class="puesto-edit-page-card">
 
-		<!-- HEADER -->
-		<header
-			class="puesto-form__header">
+		<header class="puesto-edit-page-header">
 
 			<!-- VOLVER -->
-			<a href="{{ path('app_puesto_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="puesto-form__icon-btn puesto-form__icon-btn--back" title="Volver">
+			<a href="{{ path('app_puesto_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="puesto-edit-page-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<!-- TÍTULO + SUB -->
-			<div class="puesto-form__header-center">
-				<h1 class="puesto-form__title">
+			<!-- TÍTULO + SUBTÍTULO -->
+			<div class="puesto-edit-page-header-center">
+				<h1 class="puesto-edit-page-title">
 					Editar puesto
 				</h1>
 
-				<p class="puesto-form__subtitle">
+				<p class="puesto-edit-page-subtitle">
 					Edita solo los campos necesarios
 				</p>
 			</div>
 
+			<!-- ESPACIADOR -->
+			<div class="puesto-edit-page-header-spacer" aria-hidden="true"></div>
+
 		</header>
 
-		<!-- FORM -->
 		{{ form_start(form, {
             action: path('app_puesto_edit', { id: puesto.id }),
             attr: {
                 'data-turbo-frame': 'content',
-                'class': 'puesto-form__form'
+                'class': 'puesto-edit-page-form'
             }
         }) }}
 
-		<div class="puesto-form__group">
-			{{ form_label(form.nombre) }}
-			{{ form_widget(form.nombre) }}
-			{{ form_errors(form.nombre) }}
-		</div>
-		<div class="puesto-form__group">
-			{{ form_label(form.supervisorDirecto) }}
-			{{ form_widget(form.supervisorDirecto) }}
-			{{ form_errors(form.supervisorDirecto) }}
-		</div>
+			<div class="puesto-edit-page-group">
+				{{ form_label(form.nombre, null, {'label_attr': {'class': 'puesto-edit-page-label'}}) }}
+				{{ form_widget(form.nombre, {'attr': {'class': 'puesto-edit-page-input'}}) }}
+				{{ form_errors(form.nombre) }}
+			</div>
 
+			<div class="puesto-edit-page-group">
+				{{ form_label(form.supervisorDirecto, null, {'label_attr': {'class': 'puesto-edit-page-label'}}) }}
+				{{ form_widget(form.supervisorDirecto, {'attr': {'class': 'puesto-edit-page-select'}}) }}
+				{{ form_errors(form.supervisorDirecto) }}
+			</div>
 
-		<div class="puesto-form__group">
-			{{ form_label(form.activo) }}
-			{{ form_widget(form.activo) }}
-			{{ form_errors(form.activo) }}
-		</div>
+			<div class="puesto-edit-page-group">
+				{{ form_label(form.activo, null, {'label_attr': {'class': 'puesto-edit-page-label'}}) }}
+				{{ form_widget(form.activo, {'attr': {'class': 'puesto-edit-page-select'}}) }}
+				{{ form_errors(form.activo) }}
+			</div>
 
-		<!-- GUARDAR -->
-		<div class="puesto-form__submit-proxy">
-			<button type="submit" class="puesto-form__icon-btn puesto-form__icon-btn--save" title="Guardar cambios">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="puesto-edit-page-actions">
+				<button type="submit" class="puesto-edit-page-save-btn" title="Guardar cambios">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_rest(form) }}
 		{{ form_end(form) }}

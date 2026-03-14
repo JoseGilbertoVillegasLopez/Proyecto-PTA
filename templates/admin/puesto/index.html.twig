@@ -1,19 +1,37 @@
 <turbo-frame id="content">
-	<section class="puesto-index">
+	<section class="puesto-index-page-card" data-page="puesto-index">
 
-		<div class="puesto-index__toolbar">
-			<h1 class="puesto-index__title">Lista de puestos</h1>
+		<h4 class="puesto-index-page-title">
+			<i class="bi bi-briefcase-fill"></i>
+			Lista de puestos
+		</h4>
+
+		<div class="puesto-index-page-toolbar">
+
+			<div class="puesto-index-page-toolbar-left">
+				<a href="{{ path('app_puesto_new') }}"
+				   data-turbo-frame="content"
+				   data-turbo-action="advance"
+				   class="puesto-index-page-add-btn">
+					<i class="bi bi-briefcase-fill"></i>
+					<span>Crear nuevo</span>
+				</a>
+			</div>
+
+			<div class="puesto-index-page-toolbar-right">
+				<div class="puesto-index-page-search">
+					<i class="bi bi-search"></i>
+					<input type="text"
+						   id="puesto-search"
+						   placeholder="Buscar puesto..."
+						   autocomplete="off">
+				</div>
+			</div>
+
 		</div>
 
-		<div class="puesto-index__table-actions">
-			<a href="{{ path('app_puesto_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="puesto-index__add-btn">
-				<i class="bi bi-briefcase-fill"></i>
-				Crear nuevo
-			</a>
-		</div>
-
-		<div class="puesto-index__table-wrapper">
-			<table class="puesto-index__table">
+		<div class="puesto-index-page-table-wrapper">
+			<table class="puesto-index-page-table">
 				<thead>
 					<tr>
 						<th>Nombre</th>
@@ -25,37 +43,45 @@
 
 				<tbody>
 					{% for puesto in puestos %}
-						<tr>
-							<td>{{ puesto.nombre }}</td>
-
-							<td>
-								{{ puesto.supervisorDirecto
-                                ? puesto.supervisorDirecto.nombre
-                                : '—' }}
+						<tr class="puesto-index-page-row">
+							<td class="puesto-index-page-name">
+								{{ puesto.nombre }}
 							</td>
 
-							<td>
-								<span class="puesto-index__badge {{ puesto.activo ? 'is-active' : 'is-inactive' }}">
+							<td class="puesto-index-page-supervisor">
+								{{ puesto.supervisorDirecto ? puesto.supervisorDirecto.nombre : '—' }}
+							</td>
+
+							<td class="text-center">
+								<span class="puesto-index-page-badge {{ puesto.activo ? 'puesto-index-page-badge--active' : 'puesto-index-page-badge--inactive' }}">
 									{{ puesto.activo ? 'Activo' : 'Inactivo' }}
 								</span>
 							</td>
 
-							<td>
-								<div class="puesto-index__actions">
-									<a href="{{ path('app_puesto_show', {'id': puesto.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="puesto-index__action puesto-index__action--view">
+							<td class="text-center">
+								<div class="puesto-index-page-actions">
+									<a href="{{ path('app_puesto_show', {'id': puesto.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="puesto-index-page-action-btn puesto-index-page-action-btn--view"
+									   title="Ver puesto">
 										<i class="bi bi-eye"></i>
 									</a>
 
-									<a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="puesto-index__action puesto-index__action--edit">
-										<i class="bi bi-pencil"></i>
+									<a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="puesto-index-page-action-btn puesto-index-page-action-btn--edit"
+									   title="Editar puesto">
+										<i class="bi bi-pencil-square"></i>
 									</a>
 								</div>
 							</td>
 						</tr>
 					{% else %}
 						<tr>
-							<td colspan="4" class="puesto-index__empty">
-								No se encontraron registros
+							<td colspan="4" class="puesto-index-page-empty">
+								No se encontraron registros.
 							</td>
 						</tr>
 					{% endfor %}

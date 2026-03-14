@@ -5,7 +5,7 @@ function initPartidasPresupuestalesIndexSearch() {
     if (!page) return;
 
     const input = page.querySelector('#partidas-presupuestales-search');
-    const tbody = page.querySelector('.partidas-presupuestales-index__table tbody');
+    const tbody = page.querySelector('.partidas-presupuestales-index-table tbody');
 
     if (!input || !tbody) return;
 
@@ -18,16 +18,23 @@ function initPartidasPresupuestalesIndexSearch() {
         const q = input.value.trim().toLowerCase();
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
-        if (q.length < 2) {
+        if (q.length === 0) {
             rows.forEach(tr => tr.style.display = '');
             return;
         }
 
         rows.forEach(tr => {
 
-            const texto = tr.textContent.toLowerCase();
+            const capitulo = tr.querySelector('.partidas-presupuestales-capitulo')?.textContent.toLowerCase() ?? '';
+            const partida = tr.querySelector('.partidas-presupuestales-partida')?.textContent.toLowerCase() ?? '';
+            const descripcion = tr.querySelector('.partidas-presupuestales-descripcion')?.textContent.toLowerCase() ?? '';
 
-            tr.style.display = texto.includes(q) ? '' : 'none';
+            const coincide =
+                capitulo.includes(q) ||
+                partida.includes(q) ||
+                descripcion.includes(q);
+
+            tr.style.display = coincide ? '' : 'none';
 
         });
 

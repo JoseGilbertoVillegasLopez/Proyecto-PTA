@@ -1,74 +1,64 @@
 <turbo-frame id="content">
-	<section class="indicadores-basicos-show">
+	<section class="indicadores-basicos-show-card">
 
-		{# =====================================================
-		   HEADER
-		   -----------------------------------------------------
-		   - Volver al index
-		   - Título del módulo
-		   - Acción editar
-		   ===================================================== #}
-		<header class="indicadores-basicos-show__header">
+		<header class="indicadores-basicos-show-header">
 
 			<!-- IZQUIERDA: VOLVER -->
-			<a
-				href="{{ path('app_indicadores_basicos_index') }}"
-				data-turbo-frame="content"
-				data-turbo-action="replace"
-				class="indicadores-basicos-show__icon-btn indicadores-basicos-show__icon-btn--back"
-				title="Volver">
-
+			<a href="{{ path('app_indicadores_basicos_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="indicadores-basicos-show-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
 			<!-- CENTRO: TÍTULO -->
-			<h1 class="indicadores-basicos-show__title">
-				Detalle del indicador básico
+			<h1 class="indicadores-basicos-show-title">
+				Información del indicador básico
 			</h1>
 
 			<!-- DERECHA: EDITAR -->
-			<div class="indicadores-basicos-show__header-actions">
-				<a
-					href="{{ path('app_indicadores_basicos_edit', { id: indicador.id }) }}"
-					data-turbo-frame="content"
-					data-turbo-action="advance"
-					class="indicadores-basicos-show__icon-btn indicadores-basicos-show__icon-btn--edit"
-					title="Editar">
-
+			<div class="indicadores-basicos-show-header-actions">
+				<a href="{{ path('app_indicadores_basicos_edit', {'id': indicador.id}) }}"
+				   data-turbo-frame="content"
+				   data-turbo-action="advance"
+				   class="indicadores-basicos-show-edit-btn"
+				   title="Editar">
 					<i class="bi bi-pencil"></i>
 				</a>
 			</div>
 
 		</header>
 
+		<div class="indicadores-basicos-show-table-wrapper">
+			<table class="indicadores-basicos-show-table">
+				<tbody>
+					<tr>
+						<th>Nombre del indicador</th>
+						<td>{{ indicador.nombreIndicador }}</td>
+					</tr>
 
-		{# =====================================================
-		   TABLA DE DETALLE
-		   -----------------------------------------------------
-		   Vista solo lectura del indicador
-		   ===================================================== #}
-		<table class="indicadores-basicos-show__table">
-			<tbody>
+					<tr>
+						<th>Fórmula</th>
+						<td>{{ indicador.formula }}</td>
+					</tr>
 
-				<tr>
-					<th>Nombre del indicador</th>
-					<td>{{ indicador.nombreIndicador }}</td>
-				</tr>
+					<tr>
+						<th>Observaciones</th>
+						<td>{{ indicador.observaciones ?: '—' }}</td>
+					</tr>
 
-				<tr>
-					<th>Fórmula</th>
-					<td>{{ indicador.formula }}</td>
-				</tr>
-
-				<tr>
-					<th>Observaciones</th>
-					<td>
-						{{ indicador.observaciones ?: '—' }}
-					</td>
-				</tr>
-
-			</tbody>
-		</table>
+					<tr>
+						<th>Estado</th>
+						<td>
+							<span class="indicadores-basicos-show-status-badge {{ indicador.activo ? 'indicadores-basicos-show-status-badge--active' : 'indicadores-basicos-show-status-badge--inactive' }}">
+								{{ indicador.activo ? 'Activo' : 'Inactivo' }}
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
 	</section>
 </turbo-frame>

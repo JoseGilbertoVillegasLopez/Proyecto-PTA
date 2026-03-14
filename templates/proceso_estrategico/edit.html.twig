@@ -1,56 +1,58 @@
 <turbo-frame id="content">
-	<section class="proceso-estrategico-form proceso-estrategico-form--edit">
+	<section class="proceso-estrategico-edit-card">
 
-		<header class="proceso-estrategico-form__header">
+		<header class="proceso-estrategico-edit-header">
 
+			<!-- VOLVER -->
 			<a href="{{ path('app_proceso_estrategico_index') }}"
 			   data-turbo-frame="content"
 			   data-turbo-action="replace"
-			   class="proceso-estrategico-form__icon-btn proceso-estrategico-form__icon-btn--back"
+			   class="proceso-estrategico-edit-back-btn"
 			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<div class="proceso-estrategico-form__header-center">
-				<h1 class="proceso-estrategico-form__title">
-					Editar proceso estratégico
-					{{ proceso.nombre }}
+			<!-- TÍTULO + SUBTÍTULO -->
+			<div class="proceso-estrategico-edit-header-center">
+				<h1 class="proceso-estrategico-edit-title">
+					Editar proceso estratégico {{ proceso.nombre }}
 				</h1>
 
-				<p class="proceso-estrategico-form__subtitle">
+				<p class="proceso-estrategico-edit-subtitle">
 					Edita solo los campos necesarios
 				</p>
 			</div>
 
+			<!-- ESPACIADOR -->
+			<div class="proceso-estrategico-edit-header-spacer" aria-hidden="true"></div>
+
 		</header>
 
 		{{ form_start(form, {
-			action: path('app_proceso_estrategico_edit', { id: proceso.id }),
-			attr: {
-				'data-turbo-frame': 'content',
-				'class': 'proceso-estrategico-form__form'
-			}
-		}) }}
+            action: path('app_proceso_estrategico_edit', { id: proceso.id }),
+            attr: {
+                'data-turbo-frame': 'content',
+                'class': 'proceso-estrategico-edit-form'
+            }
+        }) }}
 
-		<div class="proceso-estrategico-form__group">
-			{{ form_label(form.nombre) }}
-			{{ form_widget(form.nombre) }}
-			{{ form_errors(form.nombre) }}
-		</div>
+			<div class="proceso-estrategico-edit-group">
+				{{ form_label(form.nombre, null, {'label_attr': {'class': 'proceso-estrategico-edit-label'}}) }}
+				{{ form_widget(form.nombre, {'attr': {'class': 'proceso-estrategico-edit-input'}}) }}
+				{{ form_errors(form.nombre) }}
+			</div>
 
-		<div class="proceso-estrategico-form__group">
-			{{ form_label(form.activo) }}
-			{{ form_widget(form.activo) }}
-			{{ form_errors(form.activo) }}
-		</div>
+			<div class="proceso-estrategico-edit-group">
+				{{ form_label(form.activo, null, {'label_attr': {'class': 'proceso-estrategico-edit-label'}}) }}
+				{{ form_widget(form.activo, {'attr': {'class': 'proceso-estrategico-edit-select'}}) }}
+				{{ form_errors(form.activo) }}
+			</div>
 
-		<div class="proceso-estrategico-form__submit-proxy">
-			<button type="submit"
-			        class="proceso-estrategico-form__icon-btn proceso-estrategico-form__icon-btn--save"
-			        title="Guardar cambios">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="proceso-estrategico-edit-actions">
+				<button type="submit" class="proceso-estrategico-edit-save-btn" title="Guardar cambios">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_rest(form) }}
 		{{ form_end(form) }}

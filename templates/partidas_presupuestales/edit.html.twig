@@ -1,26 +1,30 @@
 <turbo-frame id="content">
-	<section class="partidas-presupuestales-form partidas-presupuestales-form--edit">
+	<section class="partidas-presupuestales-edit-card">
 
-		<header class="partidas-presupuestales-form__header">
+		<header class="partidas-presupuestales-edit-header">
 
+			<!-- VOLVER -->
 			<a href="{{ path('app_partidas_presupuestales_index') }}"
 			   data-turbo-frame="content"
 			   data-turbo-action="replace"
-			   class="partidas-presupuestales-form__icon-btn partidas-presupuestales-form__icon-btn--back"
+			   class="partidas-presupuestales-edit-back-btn"
 			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<div class="partidas-presupuestales-form__header-center">
-				<h1 class="partidas-presupuestales-form__title">
-					Editar partida
-					{{ partida.partida }}
+			<!-- TÍTULO + SUBTÍTULO -->
+			<div class="partidas-presupuestales-edit-header-center">
+				<h1 class="partidas-presupuestales-edit-title">
+					Editar información de la partida {{ partida.partida }}
 				</h1>
 
-				<p class="partidas-presupuestales-form__subtitle">
+				<p class="partidas-presupuestales-edit-subtitle">
 					Edita solo los campos necesarios
 				</p>
 			</div>
+
+			<!-- ESPACIADOR -->
+			<div class="partidas-presupuestales-edit-header-spacer" aria-hidden="true"></div>
 
 		</header>
 
@@ -28,41 +32,39 @@
 			action: path('app_partidas_presupuestales_edit', { id: partida.id }),
 			attr: {
 				'data-turbo-frame': 'content',
-				'class': 'partidas-presupuestales-form__form'
+				'class': 'partidas-presupuestales-edit-form'
 			}
 		}) }}
 
-		<div class="partidas-presupuestales-form__group">
-			{{ form_label(form.capitulo) }}
-			{{ form_widget(form.capitulo) }}
-			{{ form_errors(form.capitulo) }}
-		</div>
+			<div class="partidas-presupuestales-edit-group">
+				{{ form_label(form.capitulo, null, {'label_attr': {'class': 'partidas-presupuestales-edit-label'}}) }}
+				{{ form_widget(form.capitulo, {'attr': {'class': 'partidas-presupuestales-edit-input'}}) }}
+				{{ form_errors(form.capitulo) }}
+			</div>
 
-		<div class="partidas-presupuestales-form__group">
-			{{ form_label(form.partida) }}
-			{{ form_widget(form.partida) }}
-			{{ form_errors(form.partida) }}
-		</div>
+			<div class="partidas-presupuestales-edit-group">
+				{{ form_label(form.partida, null, {'label_attr': {'class': 'partidas-presupuestales-edit-label'}}) }}
+				{{ form_widget(form.partida, {'attr': {'class': 'partidas-presupuestales-edit-input'}}) }}
+				{{ form_errors(form.partida) }}
+			</div>
 
-		<div class="partidas-presupuestales-form__group">
-			{{ form_label(form.descripcion) }}
-			{{ form_widget(form.descripcion) }}
-			{{ form_errors(form.descripcion) }}
-		</div>
+			<div class="partidas-presupuestales-edit-group">
+				{{ form_label(form.descripcion, null, {'label_attr': {'class': 'partidas-presupuestales-edit-label'}}) }}
+				{{ form_widget(form.descripcion, {'attr': {'class': 'partidas-presupuestales-edit-textarea'}}) }}
+				{{ form_errors(form.descripcion) }}
+			</div>
 
-		<div class="partidas-presupuestales-form__group">
-			{{ form_label(form.activo) }}
-			{{ form_widget(form.activo) }}
-			{{ form_errors(form.activo) }}
-		</div>
+			<div class="partidas-presupuestales-edit-group">
+				{{ form_label(form.activo, null, {'label_attr': {'class': 'partidas-presupuestales-edit-label'}}) }}
+				{{ form_widget(form.activo, {'attr': {'class': 'partidas-presupuestales-edit-select'}}) }}
+				{{ form_errors(form.activo) }}
+			</div>
 
-		<div class="partidas-presupuestales-form__submit-proxy">
-			<button type="submit"
-			        class="partidas-presupuestales-form__icon-btn partidas-presupuestales-form__icon-btn--save"
-			        title="Guardar cambios">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="partidas-presupuestales-edit-actions">
+				<button type="submit" class="partidas-presupuestales-edit-save-btn" title="Guardar cambios">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_rest(form) }}
 		{{ form_end(form) }}

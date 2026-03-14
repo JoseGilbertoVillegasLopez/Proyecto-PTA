@@ -1,25 +1,28 @@
 <turbo-frame id="content">
-	<section class="proceso-clave-show">
+	<section class="proceso-clave-show-card">
 
-		<header class="proceso-clave-show__header">
+		<header class="proceso-clave-show-header">
 
+			<!-- IZQUIERDA: VOLVER -->
 			<a href="{{ path('app_proceso_clave_index') }}"
 			   data-turbo-frame="content"
 			   data-turbo-action="replace"
-			   class="proceso-clave-show__icon-btn proceso-clave-show__icon-btn--back"
+			   class="proceso-clave-show-back-btn"
 			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<h1 class="proceso-clave-show__title">
+			<!-- CENTRO: TÍTULO -->
+			<h1 class="proceso-clave-show-title">
 				Información del proceso clave
 			</h1>
 
-			<div class="proceso-clave-show__header-actions">
+			<!-- DERECHA: EDITAR -->
+			<div class="proceso-clave-show-header-actions">
 				<a href="{{ path('app_proceso_clave_edit', {'id': proceso.id}) }}"
 				   data-turbo-frame="content"
 				   data-turbo-action="advance"
-				   class="proceso-clave-show__icon-btn proceso-clave-show__icon-btn--edit"
+				   class="proceso-clave-show-edit-btn"
 				   title="Editar">
 					<i class="bi bi-pencil"></i>
 				</a>
@@ -27,31 +30,42 @@
 
 		</header>
 
-		<table class="proceso-clave-show__table">
-			<tbody>
+		<div class="proceso-clave-show-table-wrapper">
+			<table class="proceso-clave-show-table">
+				<tbody>
 
-				<tr>
-					<th>Nombre</th>
-					<td>{{ proceso.nombre }}</td>
-				</tr>
+					<tr>
+						<th>Nombre</th>
+						<td>{{ proceso.nombre }}</td>
+					</tr>
 
-				<tr>
-					<th>PEI</th>
-					<td>{{ proceso.pei }}</td>
-				</tr>
+					<tr>
+						<th>PEI</th>
+						<td>{{ proceso.pei }}</td>
+					</tr>
 
-				<tr>
-					<th>PAIG</th>
-					<td>{{ proceso.paig }}</td>
-				</tr>
+					<tr>
+						<th>PAIG</th>
+						<td>{{ proceso.paig }}</td>
+					</tr>
 
-				<tr>
-					<th>Meta PDI / PTA</th>
-					<td>{{ proceso.metaPdiPta }}</td>
-				</tr>
+					<tr>
+						<th>Meta PDI / PTA</th>
+						<td>{{ proceso.metaPdiPta }}</td>
+					</tr>
 
-			</tbody>
-		</table>
+					<tr>
+						<th>Estado</th>
+						<td>
+							<span class="proceso-clave-show-status-badge {{ proceso.activo ? 'proceso-clave-show-status-badge--active' : 'proceso-clave-show-status-badge--inactive' }}">
+								{{ proceso.activo ? 'Activo' : 'Inactivo' }}
+							</span>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
 
 	</section>
 </turbo-frame>

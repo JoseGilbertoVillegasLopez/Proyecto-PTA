@@ -1,25 +1,28 @@
 <turbo-frame id="content">
-	<section class="proceso-estrategico-show">
+	<section class="proceso-estrategico-show-card">
 
-		<header class="proceso-estrategico-show__header">
+		<header class="proceso-estrategico-show-header">
 
+			<!-- IZQUIERDA: VOLVER -->
 			<a href="{{ path('app_proceso_estrategico_index') }}"
 			   data-turbo-frame="content"
 			   data-turbo-action="replace"
-			   class="proceso-estrategico-show__icon-btn proceso-estrategico-show__icon-btn--back"
+			   class="proceso-estrategico-show-back-btn"
 			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<h1 class="proceso-estrategico-show__title">
+			<!-- CENTRO: TÍTULO -->
+			<h1 class="proceso-estrategico-show-title">
 				Información del proceso estratégico
 			</h1>
 
-			<div class="proceso-estrategico-show__header-actions">
+			<!-- DERECHA: EDITAR -->
+			<div class="proceso-estrategico-show-header-actions">
 				<a href="{{ path('app_proceso_estrategico_edit', {'id': proceso.id}) }}"
 				   data-turbo-frame="content"
 				   data-turbo-action="advance"
-				   class="proceso-estrategico-show__icon-btn proceso-estrategico-show__icon-btn--edit"
+				   class="proceso-estrategico-show-edit-btn"
 				   title="Editar">
 					<i class="bi bi-pencil"></i>
 				</a>
@@ -27,14 +30,25 @@
 
 		</header>
 
-		<table class="proceso-estrategico-show__table">
-			<tbody>
-				<tr>
-					<th>Nombre</th>
-					<td>{{ proceso.nombre }}</td>
-				</tr>
-			</tbody>
-		</table>
+		<div class="proceso-estrategico-show-table-wrapper">
+			<table class="proceso-estrategico-show-table">
+				<tbody>
+					<tr>
+						<th>Nombre</th>
+						<td>{{ proceso.nombre }}</td>
+					</tr>
+
+					<tr>
+						<th>Estado</th>
+						<td>
+							<span class="proceso-estrategico-show-status-badge {{ proceso.activo ? 'proceso-estrategico-show-status-badge--active' : 'proceso-estrategico-show-status-badge--inactive' }}">
+								{{ proceso.activo ? 'Activo' : 'Inactivo' }}
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
 	</section>
 </turbo-frame>

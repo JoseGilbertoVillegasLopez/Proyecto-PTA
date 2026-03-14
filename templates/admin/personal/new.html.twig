@@ -1,77 +1,76 @@
 <turbo-frame id="content">
-	<section class="personal-form personal-form--new">
+	<section class="personal-new-card">
 
-		<header
-			class="personal-form__header">
+		<header class="personal-new-header">
 
 			<!-- VOLVER -->
-			<a href="{{ path('app_personal_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="personal-form__icon-btn personal-form__icon-btn--back" title="Volver">
+			<a href="{{ path('app_personal_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="personal-new-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
 			<!-- TÍTULO -->
-			<h1 class="personal-form__title">
+			<h1 class="personal-new-title">
 				Crear nuevo personal
 			</h1>
 
+			<!-- ESPACIADOR -->
+			<div class="personal-new-header-spacer" aria-hidden="true"></div>
+
 		</header>
 
-
-		<!-- ===============================
-				             FORM
-				        ================================ -->
 		{{ form_start(form, {
             action: path('app_personal_new'),
             attr: {
                 'data-turbo-frame': 'content',
-                'class': 'personal-form__form'
+                'class': 'personal-new-form'
             }
         }) }}
 
-		<div class="personal-form__group">
-			{{ form_label(form.nombre) }}
-			{{ form_widget(form.nombre) }}
-			{{ form_errors(form.nombre) }}
-		</div>
+			<div class="personal-new-group">
+				{{ form_label(form.nombre, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+				{{ form_widget(form.nombre, {'attr': {'class': 'personal-new-input'}}) }}
+				{{ form_errors(form.nombre) }}
+			</div>
 
-		<div class="personal-form__group">
-			{{ form_label(form.ap_paterno) }}
-			{{ form_widget(form.ap_paterno) }}
-			{{ form_errors(form.ap_paterno) }}
-		</div>
+			<div class="personal-new-group">
+				{{ form_label(form.ap_paterno, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+				{{ form_widget(form.ap_paterno, {'attr': {'class': 'personal-new-input'}}) }}
+				{{ form_errors(form.ap_paterno) }}
+			</div>
 
-		<div class="personal-form__group">
-			{{ form_label(form.ap_materno) }}
-			{{ form_widget(form.ap_materno) }}
-			{{ form_errors(form.ap_materno) }}
-		</div>
+			<div class="personal-new-group">
+				{{ form_label(form.ap_materno, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+				{{ form_widget(form.ap_materno, {'attr': {'class': 'personal-new-input'}}) }}
+				{{ form_errors(form.ap_materno) }}
+			</div>
 
-		<div class="personal-form__group">
-			{{ form_label(form.correo) }}
-			{{ form_widget(form.correo) }}
-			{{ form_errors(form.correo) }}
-		</div>
+			<div class="personal-new-group">
+				{{ form_label(form.correo, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+				{{ form_widget(form.correo, {'attr': {'class': 'personal-new-input'}}) }}
+				{{ form_errors(form.correo) }}
+			</div>
 
-		<div class="personal-form__group">
-			{{ form_label(form.puesto) }}
-			{{ form_widget(form.puesto) }}
-			{{ form_errors(form.puesto) }}
-		</div>
+			<div class="personal-new-group">
+				{{ form_label(form.puesto, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+				{{ form_widget(form.puesto, {'attr': {'class': 'personal-new-select'}}) }}
+				{{ form_errors(form.puesto) }}
+			</div>
 
-		<div class="personal-form__group">
-			{{ form_label(form.departamento) }}
-			{{ form_widget(form.departamento) }}
-			{{ form_errors(form.departamento) }}
-		</div>
+			<div class="personal-new-group">
+				{{ form_label(form.departamento, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+				{{ form_widget(form.departamento, {'attr': {'class': 'personal-new-select'}}) }}
+				{{ form_errors(form.departamento) }}
+			</div>
 
-
-		<!-- GUARDAR CENTRADO -->
-		<div class="personal-form__actions">
-			<button type="submit" class="personal-form__submit personal-form__submit--icon" title="Guardar">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
-
+			<div class="personal-new-actions">
+				<button type="submit" class="personal-new-submit-btn" title="Guardar">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_end(form) }}
 

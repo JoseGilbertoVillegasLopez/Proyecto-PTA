@@ -4,7 +4,7 @@ function initProcesoClaveIndexSearch() {
     if (!page) return;
 
     const input = page.querySelector('#proceso-clave-search');
-    const tbody = page.querySelector('.proceso-clave-index__table tbody');
+    const tbody = page.querySelector('.proceso-clave-index-table tbody');
 
     if (!input || !tbody) return;
 
@@ -16,16 +16,25 @@ function initProcesoClaveIndexSearch() {
         const q = input.value.trim().toLowerCase();
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
-        if (q.length < 2) {
+        if (q.length === 0) {
             rows.forEach(tr => tr.style.display = '');
             return;
         }
 
         rows.forEach(tr => {
 
-            const texto = tr.textContent.toLowerCase();
+            const nombre = tr.querySelector('.proceso-clave-index-row-name')?.textContent.toLowerCase() ?? '';
+            const pei = tr.children[1]?.textContent.toLowerCase() ?? '';
+            const paig = tr.children[2]?.textContent.toLowerCase() ?? '';
+            const meta = tr.children[3]?.textContent.toLowerCase() ?? '';
 
-            tr.style.display = texto.includes(q) ? '' : 'none';
+            const coincide =
+                nombre.includes(q) ||
+                pei.includes(q) ||
+                paig.includes(q) ||
+                meta.includes(q);
+
+            tr.style.display = coincide ? '' : 'none';
 
         });
 

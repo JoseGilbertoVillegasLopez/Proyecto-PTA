@@ -1,92 +1,70 @@
 <turbo-frame id="content">
-	<section class="indicadores-basicos-form indicadores-basicos-form--edit">
+	<section class="indicadores-basicos-edit-card">
 
-		{# =====================================================
-		   HEADER
-		   -----------------------------------------------------
-		   - Botón volver al index
-		   - Título con contexto
-		   ===================================================== #}
-		<header class="indicadores-basicos-form__header">
+		<header class="indicadores-basicos-edit-header">
 
 			<!-- VOLVER -->
-			<a
-				href="{{ path('app_indicadores_basicos_index') }}"
-				data-turbo-frame="content"
-				data-turbo-action="replace"
-				class="indicadores-basicos-form__icon-btn indicadores-basicos-form__icon-btn--back"
-				title="Volver">
-
+			<a href="{{ path('app_indicadores_basicos_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="indicadores-basicos-edit-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
 			<!-- TÍTULO + SUBTÍTULO -->
-			<div class="indicadores-basicos-form__header-center">
-				<h1 class="indicadores-basicos-form__title">
-					Editar indicador:
-					{{ indicador.nombreIndicador }}
+			<div class="indicadores-basicos-edit-header-center">
+				<h1 class="indicadores-basicos-edit-title">
+					Editar indicador: {{ indicador.nombreIndicador }}
 				</h1>
 
-				<p class="indicadores-basicos-form__subtitle">
-					Modifica únicamente los campos necesarios
+				<p class="indicadores-basicos-edit-subtitle">
+					Edita solo los campos necesarios
 				</p>
 			</div>
 
+			<!-- ESPACIADOR -->
+			<div class="indicadores-basicos-edit-header-spacer" aria-hidden="true"></div>
+
 		</header>
 
-
-		{# =====================================================
-		   FORMULARIO
-		   -----------------------------------------------------
-		   Usa el EditType (hereda del Type base)
-		   ===================================================== #}
 		{{ form_start(form, {
-			action: path('app_indicadores_basicos_edit', { id: indicador.id }),
-			attr: {
-				'data-turbo-frame': 'content',
-				'class': 'indicadores-basicos-form__form'
-			}
-		}) }}
+            action: path('app_indicadores_basicos_edit', { id: indicador.id }),
+            attr: {
+                'data-turbo-frame': 'content',
+                'class': 'indicadores-basicos-edit-form'
+            }
+        }) }}
 
-		<div class="indicadores-basicos-form__group">
-			{{ form_label(form.nombreIndicador) }}
-			{{ form_widget(form.nombreIndicador) }}
-			{{ form_errors(form.nombreIndicador) }}
-		</div>
+			<div class="indicadores-basicos-edit-group">
+				{{ form_label(form.nombreIndicador, null, {'label_attr': {'class': 'indicadores-basicos-edit-label'}}) }}
+				{{ form_widget(form.nombreIndicador, {'attr': {'class': 'indicadores-basicos-edit-input'}}) }}
+				{{ form_errors(form.nombreIndicador) }}
+			</div>
 
-		<div class="indicadores-basicos-form__group">
-			{{ form_label(form.formula) }}
-			{{ form_widget(form.formula) }}
-			{{ form_errors(form.formula) }}
-		</div>
+			<div class="indicadores-basicos-edit-group">
+				{{ form_label(form.formula, null, {'label_attr': {'class': 'indicadores-basicos-edit-label'}}) }}
+				{{ form_widget(form.formula, {'attr': {'class': 'indicadores-basicos-edit-input'}}) }}
+				{{ form_errors(form.formula) }}
+			</div>
 
-		<div class="indicadores-basicos-form__group">
-			{{ form_label(form.observaciones) }}
-			{{ form_widget(form.observaciones) }}
-			{{ form_errors(form.observaciones) }}
-		</div>
+			<div class="indicadores-basicos-edit-group">
+				{{ form_label(form.observaciones, null, {'label_attr': {'class': 'indicadores-basicos-edit-label'}}) }}
+				{{ form_widget(form.observaciones, {'attr': {'class': 'indicadores-basicos-edit-textarea'}}) }}
+				{{ form_errors(form.observaciones) }}
+			</div>
 
-		<div class="indicadores-basicos-form__group">
-			{{ form_label(form.activo) }}
-			{{ form_widget(form.activo) }}
-			{{ form_errors(form.activo) }}
-		</div>
+			<div class="indicadores-basicos-edit-group">
+				{{ form_label(form.activo, null, {'label_attr': {'class': 'indicadores-basicos-edit-label'}}) }}
+				{{ form_widget(form.activo, {'attr': {'class': 'indicadores-basicos-edit-select'}}) }}
+				{{ form_errors(form.activo) }}
+			</div>
 
-
-		{# =====================================================
-		   ACCIÓN GUARDAR
-		   -----------------------------------------------------
-		   Botón flotante / centrado (igual que Personal)
-		   ===================================================== #}
-		<div class="indicadores-basicos-form__submit-proxy">
-			<button
-				type="submit"
-				class="indicadores-basicos-form__icon-btn indicadores-basicos-form__icon-btn--save"
-				title="Guardar cambios">
-
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="indicadores-basicos-edit-actions">
+				<button type="submit" class="indicadores-basicos-edit-save-btn" title="Guardar cambios">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_rest(form) }}
 		{{ form_end(form) }}

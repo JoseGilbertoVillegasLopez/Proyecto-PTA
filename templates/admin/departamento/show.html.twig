@@ -1,50 +1,59 @@
 <turbo-frame id="content">
-	<section
-		class="departamento-show">
+	<section class="departamento-show-page-card">
 
-		<!-- ===============================
-						             HEADER
-						        ================================ -->
-		<header
-			class="departamento-show__header">
+		<header class="departamento-show-page-header">
 
 			<!-- IZQUIERDA: VOLVER -->
-			<a href="{{ path('app_departamento_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="departamento-show__icon-btn departamento-show__icon-btn--back" title="Volver">
+			<a href="{{ path('app_departamento_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="departamento-show-page-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
 			<!-- CENTRO: TÍTULO -->
-			<h1 class="departamento-show__title">
+			<h1 class="departamento-show-page-title">
 				Información del departamento
 			</h1>
 
 			<!-- DERECHA: EDITAR -->
-			<div class="departamento-show__header-actions">
-				<a href="{{ path('app_departamento_edit', {'id': departamento.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="departamento-show__icon-btn departamento-show__icon-btn--edit" title="Editar">
+			<div class="departamento-show-page-header-actions">
+				<a href="{{ path('app_departamento_edit', {'id': departamento.id}) }}"
+				   data-turbo-frame="content"
+				   data-turbo-action="advance"
+				   class="departamento-show-page-edit-btn"
+				   title="Editar">
 					<i class="bi bi-pencil"></i>
 				</a>
 			</div>
 
 		</header>
 
-		<!-- ===============================
-						             TABLE
-						        ================================ -->
-		<table class="departamento-show__table">
-			<tbody>
+		<div class="departamento-show-page-table-wrapper">
+			<table class="departamento-show-page-table">
+				<tbody>
+					<tr>
+						<th>ID</th>
+						<td>{{ departamento.id }}</td>
+					</tr>
 
-				<tr>
-					<th>ID</th>
-					<td>{{ departamento.id }}</td>
-				</tr>
+					<tr>
+						<th>Nombre</th>
+						<td>{{ departamento.nombre }}</td>
+					</tr>
 
-				<tr>
-					<th>Nombre</th>
-					<td>{{ departamento.nombre }}</td>
-				</tr>
-
-			</tbody>
-		</table>
+					<tr>
+						<th>Estado</th>
+						<td>
+							<span class="departamento-show-page-status-badge {{ departamento.activo ? 'departamento-show-page-status-badge--active' : 'departamento-show-page-status-badge--inactive' }}">
+								{{ departamento.activo ? 'Activo' : 'Inactivo' }}
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
 	</section>
 </turbo-frame>

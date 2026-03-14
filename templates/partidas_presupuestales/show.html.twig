@@ -1,28 +1,28 @@
 <turbo-frame id="content">
-	<section class="partidas-presupuestales-show">
+	<section class="partidas-presupuestales-show-card">
 
-		<header class="partidas-presupuestales-show__header">
+		<header class="partidas-presupuestales-show-header">
 
 			<!-- IZQUIERDA: VOLVER -->
 			<a href="{{ path('app_partidas_presupuestales_index') }}"
 			   data-turbo-frame="content"
 			   data-turbo-action="replace"
-			   class="partidas-presupuestales-show__icon-btn partidas-presupuestales-show__icon-btn--back"
+			   class="partidas-presupuestales-show-back-btn"
 			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
 			<!-- CENTRO: TÍTULO -->
-			<h1 class="partidas-presupuestales-show__title">
+			<h1 class="partidas-presupuestales-show-title">
 				Información de la partida presupuestal
 			</h1>
 
 			<!-- DERECHA: EDITAR -->
-			<div class="partidas-presupuestales-show__header-actions">
+			<div class="partidas-presupuestales-show-header-actions">
 				<a href="{{ path('app_partidas_presupuestales_edit', {'id': partida.id}) }}"
 				   data-turbo-frame="content"
 				   data-turbo-action="advance"
-				   class="partidas-presupuestales-show__icon-btn partidas-presupuestales-show__icon-btn--edit"
+				   class="partidas-presupuestales-show-edit-btn"
 				   title="Editar">
 					<i class="bi bi-pencil"></i>
 				</a>
@@ -30,26 +30,37 @@
 
 		</header>
 
-		<table class="partidas-presupuestales-show__table">
-			<tbody>
+		<div class="partidas-presupuestales-show-table-wrapper">
+			<table class="partidas-presupuestales-show-table">
+				<tbody>
 
-				<tr>
-					<th>Capítulo</th>
-					<td>{{ partida.capitulo }}</td>
-				</tr>
+					<tr>
+						<th>Capítulo</th>
+						<td>{{ partida.capitulo }}</td>
+					</tr>
 
-				<tr>
-					<th>Partida</th>
-					<td>{{ partida.partida }}</td>
-				</tr>
+					<tr>
+						<th>Partida</th>
+						<td>{{ partida.partida }}</td>
+					</tr>
 
-				<tr>
-					<th>Descripción</th>
-					<td>{{ partida.descripcion }}</td>
-				</tr>
+					<tr>
+						<th>Descripción</th>
+						<td>{{ partida.descripcion }}</td>
+					</tr>
 
-			</tbody>
-		</table>
+					<tr>
+						<th>Estado</th>
+						<td>
+							<span class="partidas-presupuestales-show-status-badge {{ partida.activo ? 'partidas-presupuestales-show-status-badge--active' : 'partidas-presupuestales-show-status-badge--inactive' }}">
+								{{ partida.activo ? 'Activo' : 'Inactivo' }}
+							</span>
+						</td>
+					</tr>
+
+				</tbody>
+			</table>
+		</div>
 
 	</section>
 </turbo-frame>

@@ -1,26 +1,30 @@
 <turbo-frame id="content">
-	<section class="proceso-clave-form proceso-clave-form--edit">
+	<section class="proceso-clave-edit-card">
 
-		<header class="proceso-clave-form__header">
+		<header class="proceso-clave-edit-header">
 
+			<!-- VOLVER -->
 			<a href="{{ path('app_proceso_clave_index') }}"
 			   data-turbo-frame="content"
 			   data-turbo-action="replace"
-			   class="proceso-clave-form__icon-btn proceso-clave-form__icon-btn--back"
+			   class="proceso-clave-edit-back-btn"
 			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<div class="proceso-clave-form__header-center">
-				<h1 class="proceso-clave-form__title">
-					Editar proceso clave
-					{{ proceso.nombre }}
+			<!-- TÍTULO + SUBTÍTULO -->
+			<div class="proceso-clave-edit-header-center">
+				<h1 class="proceso-clave-edit-title">
+					Editar proceso clave {{ proceso.nombre }}
 				</h1>
 
-				<p class="proceso-clave-form__subtitle">
+				<p class="proceso-clave-edit-subtitle">
 					Edita solo los campos necesarios
 				</p>
 			</div>
+
+			<!-- ESPACIADOR -->
+			<div class="proceso-clave-edit-header-spacer" aria-hidden="true"></div>
 
 		</header>
 
@@ -28,47 +32,45 @@
 			action: path('app_proceso_clave_edit', { id: proceso.id }),
 			attr: {
 				'data-turbo-frame': 'content',
-				'class': 'proceso-clave-form__form'
+				'class': 'proceso-clave-edit-form'
 			}
 		}) }}
 
-		<div class="proceso-clave-form__group">
-			{{ form_label(form.nombre) }}
-			{{ form_widget(form.nombre) }}
-			{{ form_errors(form.nombre) }}
-		</div>
+			<div class="proceso-clave-edit-group">
+				{{ form_label(form.nombre, null, {'label_attr': {'class': 'proceso-clave-edit-label'}}) }}
+				{{ form_widget(form.nombre, {'attr': {'class': 'proceso-clave-edit-input'}}) }}
+				{{ form_errors(form.nombre) }}
+			</div>
 
-		<div class="proceso-clave-form__group">
-			{{ form_label(form.pei) }}
-			{{ form_widget(form.pei) }}
-			{{ form_errors(form.pei) }}
-		</div>
+			<div class="proceso-clave-edit-group">
+				{{ form_label(form.pei, null, {'label_attr': {'class': 'proceso-clave-edit-label'}}) }}
+				{{ form_widget(form.pei, {'attr': {'class': 'proceso-clave-edit-input'}}) }}
+				{{ form_errors(form.pei) }}
+			</div>
 
-		<div class="proceso-clave-form__group">
-			{{ form_label(form.paig) }}
-			{{ form_widget(form.paig) }}
-			{{ form_errors(form.paig) }}
-		</div>
+			<div class="proceso-clave-edit-group">
+				{{ form_label(form.paig, null, {'label_attr': {'class': 'proceso-clave-edit-label'}}) }}
+				{{ form_widget(form.paig, {'attr': {'class': 'proceso-clave-edit-input'}}) }}
+				{{ form_errors(form.paig) }}
+			</div>
 
-		<div class="proceso-clave-form__group">
-			{{ form_label(form.metaPdiPta) }}
-			{{ form_widget(form.metaPdiPta) }}
-			{{ form_errors(form.metaPdiPta) }}
-		</div>
+			<div class="proceso-clave-edit-group">
+				{{ form_label(form.metaPdiPta, null, {'label_attr': {'class': 'proceso-clave-edit-label'}}) }}
+				{{ form_widget(form.metaPdiPta, {'attr': {'class': 'proceso-clave-edit-input'}}) }}
+				{{ form_errors(form.metaPdiPta) }}
+			</div>
 
-		<div class="proceso-clave-form__group">
-			{{ form_label(form.activo) }}
-			{{ form_widget(form.activo) }}
-			{{ form_errors(form.activo) }}
-		</div>
+			<div class="proceso-clave-edit-group">
+				{{ form_label(form.activo, null, {'label_attr': {'class': 'proceso-clave-edit-label'}}) }}
+				{{ form_widget(form.activo, {'attr': {'class': 'proceso-clave-edit-select'}}) }}
+				{{ form_errors(form.activo) }}
+			</div>
 
-		<div class="proceso-clave-form__submit-proxy">
-			<button type="submit"
-			        class="proceso-clave-form__icon-btn proceso-clave-form__icon-btn--save"
-			        title="Guardar cambios">
-				<i class="bi bi-check-lg"></i>
-			</button>
-		</div>
+			<div class="proceso-clave-edit-actions">
+				<button type="submit" class="proceso-clave-edit-save-btn" title="Guardar cambios">
+					<i class="bi bi-check-lg"></i>
+				</button>
+			</div>
 
 		{{ form_rest(form) }}
 		{{ form_end(form) }}

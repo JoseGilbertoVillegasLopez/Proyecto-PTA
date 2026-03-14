@@ -1,60 +1,79 @@
 <turbo-frame id="content">
-	<section class="personal-show">
+	<section class="personal-show-card">
 
-		<header
-			class="personal-show__header">
+		<header class="personal-show-header">
 
 			<!-- IZQUIERDA: VOLVER -->
-			<a href="{{ path('app_personal_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="personal-show__icon-btn personal-show__icon-btn--back" title="Volver">
+			<a href="{{ path('app_personal_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="personal-show-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
 			<!-- CENTRO: TÍTULO -->
-			<h1 class="personal-show__title">
+			<h1 class="personal-show-title">
 				Información del personal
 			</h1>
 
 			<!-- DERECHA: EDITAR -->
-			<div class="personal-show__header-actions">
-				<a href="{{ path('app_personal_edit', {'id': personal.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="personal-show__icon-btn personal-show__icon-btn--edit" title="Editar">
+			<div class="personal-show-header-actions">
+				<a href="{{ path('app_personal_edit', {'id': personal.id}) }}"
+				   data-turbo-frame="content"
+				   data-turbo-action="advance"
+				   class="personal-show-edit-btn"
+				   title="Editar">
 					<i class="bi bi-pencil"></i>
 				</a>
 			</div>
 
 		</header>
 
+		<div class="personal-show-table-wrapper">
+			<table class="personal-show-table">
+				<tbody>
+					<tr>
+						<th>Nombre</th>
+						<td>{{ personal.nombre }}</td>
+					</tr>
 
-		<!-- ===============================
-						             TABLE
-						        ================================ -->
-		<table class="personal-show__table">
-			<tbody>
+					<tr>
+						<th>Apellido paterno</th>
+						<td>{{ personal.apPaterno }}</td>
+					</tr>
 
+					<tr>
+						<th>Apellido materno</th>
+						<td>{{ personal.apMaterno }}</td>
+					</tr>
 
-				<tr>
-					<th>Nombre</th>
-					<td>{{ personal.nombre }}</td>
-				</tr>
+					<tr>
+						<th>Correo</th>
+						<td>{{ personal.correo }}</td>
+					</tr>
 
-				<tr>
-					<th>Apellido paterno</th>
-					<td>{{ personal.apPaterno }}</td>
-				</tr>
+					<tr>
+						<th>Puesto</th>
+						<td>{{ personal.puesto.nombre }}</td>
+					</tr>
 
-				<tr>
-					<th>Apellido materno</th>
-					<td>{{ personal.apMaterno }}</td>
-				</tr>
+					<tr>
+						<th>Departamento</th>
+						<td>{{ personal.departamento.nombre }}</td>
+					</tr>
 
-				<tr>
-					<th>Correo</th>
-					<td>{{ personal.correo }}</td>
-				</tr>
-
-
-			</tbody>
-		</table>
-
+					<tr>
+						<th>Estado</th>
+						<td>
+							<span class="personal-show-status-badge {{ personal.activo ? 'personal-show-status-badge--active' : 'personal-show-status-badge--inactive' }}">
+								{{ personal.activo ? 'Activo' : 'Inactivo' }}
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 
 	</section>
 </turbo-frame>
