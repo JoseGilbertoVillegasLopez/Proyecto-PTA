@@ -1,3 +1,12 @@
+function normalizarTexto(texto) {
+    return (texto || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
 function initProcesoClaveIndexSearch() {
 
     const page = document.querySelector('[data-page="proceso-clave-index"]');
@@ -13,7 +22,7 @@ function initProcesoClaveIndexSearch() {
 
     input.addEventListener('input', () => {
 
-        const q = input.value.trim().toLowerCase();
+        const q = normalizarTexto(input.value);
         const rows = Array.from(tbody.querySelectorAll('tr'));
 
         if (q.length === 0) {
@@ -23,10 +32,10 @@ function initProcesoClaveIndexSearch() {
 
         rows.forEach(tr => {
 
-            const nombre = tr.querySelector('.proceso-clave-index-row-name')?.textContent.toLowerCase() ?? '';
-            const pei = tr.children[1]?.textContent.toLowerCase() ?? '';
-            const paig = tr.children[2]?.textContent.toLowerCase() ?? '';
-            const meta = tr.children[3]?.textContent.toLowerCase() ?? '';
+            const nombre = normalizarTexto(tr.querySelector('.proceso-clave-index-row-name')?.textContent ?? '');
+            const pei = normalizarTexto(tr.children[1]?.textContent ?? '');
+            const paig = normalizarTexto(tr.children[2]?.textContent ?? '');
+            const meta = normalizarTexto(tr.children[3]?.textContent ?? '');
 
             const coincide =
                 nombre.includes(q) ||
