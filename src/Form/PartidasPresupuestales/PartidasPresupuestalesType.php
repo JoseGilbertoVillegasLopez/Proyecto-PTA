@@ -16,23 +16,21 @@ class PartidasPresupuestalesType extends AbstractType
     {
         $builder
 
-           ->add('capitulo', IntegerType::class, [
+            ->add('capitulo', TextType::class, [
                 'label' => 'Capítulo',
                 'required' => true,
                 'attr' => [
                     'placeholder' => 'Ej. 2000',
-                    'min' => 0,
-                    'step' => 1,
+                    'inputmode' => 'numeric',
                 ],
             ])
 
-            ->add('partida', IntegerType::class, [
+                ->add('partida', TextType::class, [
                 'label' => 'Partida',
                 'required' => true,
                 'attr' => [
                     'placeholder' => 'Ej. 22101',
-                    'min' => 0,
-                    'step' => 1,
+                    'inputmode' => 'numeric',
                 ],
             ])
 

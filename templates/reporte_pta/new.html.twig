@@ -58,7 +58,7 @@
 					<div class="accordion" id="accordionIndicadores"> {% for indice, data in datos.resultados %}
 						{% set isFirst = loop.first %}
 
-						<div class="accordion-item mb-4">
+						<div class="accordion-item mb-4" data-indicador-card="{{ indice }}">
 
 							<h2 class="accordion-header">
 								<button class="accordion-button {{ not isFirst ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ indice }}" aria-expanded="{{ isFirst ? 'true' : 'false' }}">
@@ -245,6 +245,11 @@
 					<ul id="listaErroresReporte" class="pta-rnew-error-list"></ul>
 				</div>
 
+			</div>
+			<div class="pta-indicador-bottom-toggle text-center mt-4">
+				<button type="button" class="btn btn-outline-light pta-toggle-indicador-bottom" data-bs-toggle="collapse" data-bs-target="#collapse{{ indice }}" aria-expanded="{{ isFirst ? 'true' : 'false' }}" aria-controls="collapse{{ indice }}">
+					Plegar / Desplegar indicador
+				</button>
 			</div>
 		</div>
 	</div>

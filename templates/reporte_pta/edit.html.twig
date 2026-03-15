@@ -2,7 +2,7 @@
 
 	<div class="pta-reporte-new" data-reporte-form="reporte-edit" data-modo="edit" data-datos-iniciales='{{ datos.inicial|json_encode|raw }}' data-uploads-base="{{ datos.uploads.base_url }}" data-procesos-estrategicos='{{ datos.catalogos.procesos_estrategicos|json_encode|raw }}' data-procesos-clave='{{ datos.catalogos.procesos_clave|json_encode|raw }}' data-partidas-presupuestales='{{ datos.catalogos.partidas_presupuestales|json_encode|raw }}'>
 
-		<form method="POST" action="{{ path('app_reporte_pta_edit', { id: datos.pta.id, trimestre: datos.trimestre }) }}" enctype="multipart/form-data" data-turbo-action="advance">
+		<form method="POST" action="{{ path('app_reporte_pta_edit', { id: datos.pta.id, trimestre: datos.trimestre }) }}" enctype="multipart/form-data" data-turbo-action="advance" novalidate>
 			<input type="hidden" name="_token" value="{{ csrf_token }}">
 
 			<div class="pta-reporte-container">
@@ -62,7 +62,7 @@
 						{% set isFirst = loop.first %}
 						{% set inicial = datos.inicial[indice] ?? null %}
 
-						<div class="accordion-item mb-4">
+						<div class="accordion-item mb-4" data-indicador-card="{{ indice }}">
 
 							<h2 class="accordion-header">
 								<button class="accordion-button {{ not isFirst ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ indice }}" aria-expanded="{{ isFirst ? 'true' : 'false' }}">
@@ -214,7 +214,11 @@
 										</small>
 
 									</div>
-
+									<div class="pta-indicador-bottom-toggle text-center mt-4">
+										<button type="button" class="btn btn-outline-light pta-toggle-indicador-bottom" data-bs-toggle="collapse" data-bs-target="#collapse{{ indice }}" aria-expanded="{{ isFirst ? 'true' : 'false' }}" aria-controls="collapse{{ indice }}">
+											Plegar / Desplegar indicador
+										</button>
+									</div>
 								</div>
 							</div>
 						</div>

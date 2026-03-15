@@ -1,6 +1,6 @@
 /**
  * =====================================================
- * REPORTE PTA — VISTA NEW
+ * REPORTE PTA — VISTA NEW / EDIT
  * ACCIONES + SINCRONIZACIÓN COMPLETA
  * =====================================================
  */
@@ -35,8 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ===================================================== */
 
 function initReporteNew(root) {
+    if (root.dataset.reporteInitialized === "1") {
+        return;
+    }
+
+    root.dataset.reporteInitialized = "1";
+
     console.log("Reporte PTA NEW JS cargado ✔");
     console.log("Root encontrado:", root);
+
     const modo = root.dataset.modo;
 
     if (modo === "edit") {
@@ -52,13 +59,14 @@ function initReporteNew(root) {
     }
 
     activarBotonesAgregar(root);
-    /* =====================================================
-   SYNC TEXTO ACCIÓN → HEADER GASTO (DELEGACIÓN)
-   ===================================================== */
 
+    /* =====================================================
+       SYNC TEXTO ACCIÓN → HEADER GASTO (DELEGACIÓN)
+       ===================================================== */
     root.addEventListener("input", function (e) {
-        if (!e.target.matches(".pta-rnew-accion-card input[type='text']"))
+        if (!e.target.matches(".pta-rnew-accion-card input[type='text']")) {
             return;
+        }
 
         const input = e.target;
         const accionCard = input.closest(".pta-rnew-accion-card");
@@ -88,7 +96,10 @@ function initReporteNew(root) {
 
         header.textContent = texto.length > 0 ? texto : `Acción ${accionIndex}`;
     });
+
     initEvidencias(root);
+    activarBotonesToggleInferior(root);
+    activarScrollIndicadores(root);
     activarValidacionEnvio(root);
 }
 
@@ -99,8 +110,6 @@ function initReporteNew(root) {
 function activarBotonesAgregar(root) {
     root.querySelectorAll(".add-accion").forEach((btn) => {
         btn.addEventListener("click", function () {
-            // ✅ ANTES: closest(".card-body") -> ya no existe
-            // ✅ AHORA: nos colgamos del accordion-item actual
             const accordionItem = this.closest(".accordion-item");
             if (!accordionItem) {
                 console.warn("[add-accion] No se encontró .accordion-item");
@@ -200,6 +209,8 @@ function activateRemove(root, element) {
 
     btn.addEventListener("click", function () {
         const container = element.closest(".acciones-container");
+        if (!container) return;
+
         const indicadorIndex = container.dataset.indicadorIndex;
         const accionIndex = element.dataset.accionIndex;
 
@@ -213,11 +224,15 @@ function activateRemove(root, element) {
             item.querySelector("label").textContent = `Acción ${contador}*`;
 
             const hidden = item.querySelector('input[type="hidden"]');
-            hidden.name = `acciones[${indicadorIndex}][${contador}][indice]`;
-            hidden.value = contador;
+            if (hidden) {
+                hidden.name = `acciones[${indicadorIndex}][${contador}][indice]`;
+                hidden.value = contador;
+            }
 
             const input = item.querySelector('input[type="text"]');
-            input.name = `acciones[${indicadorIndex}][${contador}][descripcion]`;
+            if (input) {
+                input.name = `acciones[${indicadorIndex}][${contador}][descripcion]`;
+            }
 
             contador++;
         });
@@ -296,7 +311,7 @@ function createGastoCard(root, indicadorIndex, accionIndex) {
 `;
 
     gastosContainer.appendChild(card);
-    // Activar botón agregar partida
+
     const addBtn = card.querySelector(".add-partida");
 
     addBtn.addEventListener("click", function () {
@@ -361,13 +376,12 @@ function reorderGastos(root, indicadorIndex) {
             selects[1].name = `gastos[${indicadorIndex}][${contador}][proceso_clave]`;
         }
 
-        /* =====================================================
-           🔥 REORDENAR PARTIDAS — DEBE IR DENTRO DEL FOR EACH
-           ===================================================== */
-
         const partidasContainer = card.querySelector(".partidas-container");
 
         if (partidasContainer) {
+            partidasContainer.dataset.indicadorIndex = indicadorIndex;
+            partidasContainer.dataset.accionIndex = contador;
+
             let partidaContador = 1;
 
             partidasContainer
@@ -397,7 +411,7 @@ function reorderGastos(root, indicadorIndex) {
 }
 
 /* =====================================================
-   SINCRONIZAR TEXTO ACCIÓN → HEADER GASTO
+   PARTIDAS
    ===================================================== */
 
 function createPartida(root, indicadorIndex, accionIndex) {
@@ -407,7 +421,10 @@ function createPartida(root, indicadorIndex, accionIndex) {
 
     if (!partidasContainer) return;
 
-    let partidaIndex = parseInt(partidasContainer.dataset.partidaIndex);
+    let partidaIndex = parseInt(
+        partidasContainer.dataset.partidaIndex || "0",
+        10,
+    );
     partidaIndex++;
 
     partidasContainer.dataset.partidaIndex = partidaIndex;
@@ -466,6 +483,7 @@ function activateRemovePartida(root, element, indicadorIndex, accionIndex) {
 
     btn.addEventListener("click", function () {
         const container = element.closest(".partidas-container");
+        if (!container) return;
 
         element.remove();
 
@@ -500,11 +518,59 @@ function initEvidencias(root) {
     activarBotonesAgregarEvidencia(root);
 }
 
+/* =====================================================
+   TOGGLE INFERIOR DE INDICADORES
+   ===================================================== */
+
+function activarBotonesToggleInferior(root) {
+    root.querySelectorAll(".accordion-item").forEach((item) => {
+        const collapse = item.querySelector(".accordion-collapse");
+        const bottomBtn = item.querySelector(".pta-toggle-indicador-bottom");
+
+        if (!collapse || !bottomBtn) return;
+
+        const actualizarTexto = () => {
+            if (collapse.classList.contains("show")) {
+                bottomBtn.textContent = "Plegar indicador";
+                bottomBtn.setAttribute("aria-expanded", "true");
+            } else {
+                bottomBtn.textContent = "Desplegar indicador";
+                bottomBtn.setAttribute("aria-expanded", "false");
+            }
+        };
+
+        actualizarTexto();
+
+        collapse.addEventListener("shown.bs.collapse", actualizarTexto);
+        collapse.addEventListener("hidden.bs.collapse", actualizarTexto);
+    });
+}
+
+/* =====================================================
+   SCROLL CORRECTO AL ABRIR INDICADORES
+   ===================================================== */
+
+function activarScrollIndicadores(root) {
+    root.querySelectorAll(".accordion-item").forEach((item) => {
+        const collapse = item.querySelector(".accordion-collapse");
+        const header = item.querySelector(".accordion-header");
+
+        if (!collapse || !header) return;
+
+        collapse.addEventListener("shown.bs.collapse", function () {
+            setTimeout(() => {
+                header.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }, 120);
+        });
+    });
+}
+
 function activarBotonesAgregarEvidencia(root) {
     root.querySelectorAll(".add-evidencia").forEach((btn) => {
         btn.addEventListener("click", function () {
-            // ✅ ANTES: closest(".card-body") -> ya no existe
-            // ✅ AHORA: nos colgamos del accordion-item actual
             const accordionItem = this.closest(".accordion-item");
             if (!accordionItem) {
                 console.warn("[add-evidencia] No se encontró .accordion-item");
@@ -576,6 +642,8 @@ function activarEliminarBloque(bloque) {
 
     btn.addEventListener("click", function () {
         const container = bloque.closest(".evidencias-container");
+        if (!container) return;
+
         const indicadorIndex = container.dataset.indicadorIndex;
 
         bloque.remove();
@@ -587,12 +655,25 @@ function activarEliminarBloque(bloque) {
             .forEach((item) => {
                 item.dataset.bloqueIndex = contador;
 
-                item.querySelector("strong").textContent =
-                    `Evidencia ${contador}`;
+                const titulo = item.querySelector("strong");
+                if (titulo) {
+                    titulo.textContent = `Evidencia ${contador}`;
+                }
 
                 const textarea = item.querySelector("textarea");
+                if (textarea) {
+                    textarea.name = `evidencias[${indicadorIndex}][${contador}][descripcion]`;
+                }
 
-                textarea.name = `evidencias[${indicadorIndex}][${contador}][descripcion]`;
+                item.querySelectorAll(".imagen-existente-hidden").forEach(
+                    (hidden) => {
+                        hidden.name = `evidencias[${indicadorIndex}][${contador}][imagenes_existentes][]`;
+                    },
+                );
+
+                item.querySelectorAll(".imagen-real").forEach((inputFile) => {
+                    inputFile.name = `evidencias[${indicadorIndex}][${contador}][imagenes][]`;
+                });
 
                 contador++;
             });
@@ -614,7 +695,6 @@ function inicializarSistemaImagenes(bloque, indicadorIndex, bloqueIndex) {
 }
 
 function renderBotonAgregar(container, bloque, indicadorIndex, bloqueIndex) {
-    // 🔥 Eliminar cualquier botón "+" previo
     container
         .querySelectorAll(".evidencia-card.add-button")
         .forEach((btn) => btn.remove());
@@ -662,7 +742,14 @@ function renderBotonAgregar(container, bloque, indicadorIndex, bloqueIndex) {
         input.name = `evidencias[${indicadorIndex}][${bloqueIndex}][imagenes][]`;
         input.classList.add("imagen-real");
 
-        mostrarPreview(container, file, input);
+        mostrarPreview(
+            container,
+            bloque,
+            indicadorIndex,
+            bloqueIndex,
+            file,
+            input,
+        );
 
         container.appendChild(input);
 
@@ -672,7 +759,14 @@ function renderBotonAgregar(container, bloque, indicadorIndex, bloqueIndex) {
     container.appendChild(card);
 }
 
-function mostrarPreview(container, file, input) {
+function mostrarPreview(
+    container,
+    bloque,
+    indicadorIndex,
+    bloqueIndex,
+    file,
+    input,
+) {
     const card = document.createElement("div");
     card.classList.add("evidencia-card");
     card.style.width = "150px";
@@ -733,17 +827,14 @@ function crearCardImagenExistente(
     uploadsBase,
     nombreImagen,
 ) {
-    // 1) Hidden input para que el backend sepa qué imagen se conserva
     const hidden = document.createElement("input");
     hidden.type = "hidden";
     hidden.name = `evidencias[${indicadorIndex}][${bloqueIndex}][imagenes_existentes][]`;
     hidden.value = nombreImagen;
     hidden.classList.add("imagen-existente-hidden");
 
-    // Lo metemos dentro del bloque (para que vaya en el submit)
     bloque.appendChild(hidden);
 
-    // 2) Card visual con la imagen
     const card = document.createElement("div");
     card.classList.add("evidencia-card");
     card.style.width = "150px";
@@ -762,7 +853,6 @@ function crearCardImagenExistente(
         abrirModalPreview(img.src);
     });
 
-    // 3) Botón X para quitar (quita card + hidden)
     const btn = document.createElement("button");
     btn.type = "button";
     btn.innerHTML = "×";
@@ -777,13 +867,9 @@ function crearCardImagenExistente(
     btn.style.cursor = "pointer";
 
     btn.addEventListener("click", function () {
-        // quita de UI
         card.remove();
-
-        // quita del submit (ya no se conservará en BD)
         hidden.remove();
 
-        // si hay espacio y no existe el +, lo volvemos a poner
         const totalPreviews = container.querySelectorAll(
             ".evidencia-card:not(.add-button)",
         ).length;
@@ -858,12 +944,10 @@ function crearModalPreviewSiNoExiste() {
 
     document.body.appendChild(modal);
 
-    // Cerrar con botón
     modal.querySelector("#cerrarModalPreview").addEventListener("click", () => {
         modal.style.display = "none";
     });
 
-    // Cerrar haciendo click fuera
     modal.addEventListener("click", function (e) {
         if (e.target === modal) {
             modal.style.display = "none";
@@ -886,6 +970,18 @@ function abrirModalPreview(src) {
 ===================================================== */
 
 function hidratarFormulario(root, datosIniciales, uploadsBase) {
+    root.querySelectorAll(".acciones-container").forEach((container) => {
+        container.innerHTML = "";
+    });
+
+    root.querySelectorAll(".gastos-container").forEach((container) => {
+        container.innerHTML = "";
+    });
+
+    root.querySelectorAll(".evidencias-container").forEach((container) => {
+        container.innerHTML = "";
+    });
+
     Object.keys(datosIniciales).forEach((indice) => {
         const indicadorData = datosIniciales[indice];
 
@@ -901,10 +997,8 @@ function hidratarFormulario(root, datosIniciales, uploadsBase) {
 
         Object.keys(indicadorData.acciones || {}).forEach((accionIndexRaw) => {
             const accionIndex = parseInt(accionIndexRaw, 10);
-
             const accion = indicadorData.acciones[accionIndex];
 
-            // Crear acción visualmente igual que botón "+"
             const div = document.createElement("div");
             div.classList.add("pta-rnew-accion-card");
             div.dataset.accionIndex = accionIndex;
@@ -929,19 +1023,21 @@ function hidratarFormulario(root, datosIniciales, uploadsBase) {
                 </div>
             `;
 
-            const btnWrap = accionesContainer
-                .querySelector(".add-accion")
-                ?.closest(".text-end");
-            if (btnWrap) accionesContainer.insertBefore(div, btnWrap);
-            else accionesContainer.appendChild(div);
+            accionesContainer.appendChild(div);
             activateRemove(root, div);
 
-            // Crear gasto correspondiente
             createGastoCard(root, indice, accionIndex);
 
-            const gastoCard = root.querySelector(
-                `.pta-rnew-gasto-card[data-accion-index="${accionIndex}"]`,
+            const gastosContainer = root.querySelector(
+                `.gastos-container[data-indicador-index="${indice}"]`,
             );
+
+            const gastoCard = gastosContainer
+                ? gastosContainer.querySelector(
+                      `.pta-rnew-gasto-card[data-accion-index="${accionIndex}"]`,
+                  )
+                : null;
+
             if (gastoCard) {
                 const header = gastoCard.querySelector(".gasto-header");
                 if (header) {
@@ -949,9 +1045,7 @@ function hidratarFormulario(root, datosIniciales, uploadsBase) {
                     header.textContent =
                         texto !== "" ? texto : `Acción ${accionIndex}`;
                 }
-            }
 
-            if (gastoCard) {
                 const selects = gastoCard.querySelectorAll("select");
 
                 if (selects[0] && accion.proceso_estrategico_id) {
@@ -962,41 +1056,47 @@ function hidratarFormulario(root, datosIniciales, uploadsBase) {
                     selects[1].value = accion.proceso_clave_id;
                 }
 
-                /* ==============================
-                   PARTIDAS
-                ============================== */
-
                 const partidasContainer = gastoCard.querySelector(
                     ".partidas-container",
                 );
 
-                Object.keys(accion.partidas || {}).forEach((partidaIndex) => {
-                    createPartida(root, indice, accionIndex);
+                Object.keys(accion.partidas || {}).forEach(
+                    (partidaIndexRaw) => {
+                        const partidaIndex = parseInt(partidaIndexRaw, 10);
+                        const partidaData = accion.partidas[partidaIndex];
 
-                    const ultimaPartida = partidasContainer.querySelector(
-                        `[data-partida-index="${partidaIndex}"]`,
-                    );
+                        createPartida(root, indice, accionIndex);
 
-                    if (ultimaPartida) {
-                        const select = ultimaPartida.querySelector("select");
-                        const input = ultimaPartida.querySelector("input");
+                        const partidaCard = partidasContainer
+                            ? partidasContainer.querySelector(
+                                  `[data-partida-index="${partidaIndex}"]`,
+                              )
+                            : null;
 
-                        if (
-                            select &&
-                            accion.partidas[partidaIndex].partida_id
-                        ) {
-                            select.value =
-                                accion.partidas[partidaIndex].partida_id;
+                        if (partidaCard) {
+                            const select = partidaCard.querySelector("select");
+                            const input = partidaCard.querySelector("input");
+
+                            if (select && partidaData.partida_id) {
+                                select.value = partidaData.partida_id;
+                            }
+
+                            if (
+                                input &&
+                                partidaData.cantidad !== undefined &&
+                                partidaData.cantidad !== null
+                            ) {
+                                input.value = partidaData.cantidad;
+                            }
                         }
-
-                        if (input && accion.partidas[partidaIndex].cantidad) {
-                            input.value =
-                                accion.partidas[partidaIndex].cantidad;
-                        }
-                    }
-                });
+                    },
+                );
             }
         });
+
+        accionesContainer.dataset.accionIndex = Object.keys(
+            indicadorData.acciones || {},
+        ).length;
 
         /* ==============================
            EVIDENCIAS
@@ -1006,10 +1106,11 @@ function hidratarFormulario(root, datosIniciales, uploadsBase) {
             `.evidencias-container[data-indicador-index="${indice}"]`,
         );
 
+        if (!evidenciasContainer) return;
+
         Object.keys(indicadorData.evidencias || {}).forEach(
             (bloqueIndexRaw) => {
                 const bloqueIndex = parseInt(bloqueIndexRaw, 10);
-
                 const bloqueData = indicadorData.evidencias[bloqueIndex];
 
                 const bloque = document.createElement("div");
@@ -1062,14 +1163,12 @@ function hidratarFormulario(root, datosIniciales, uploadsBase) {
                     indice,
                     bloqueIndex,
                 );
-                renderBotonAgregar(
-                    previewContainer,
-                    bloque,
-                    indice,
-                    bloqueIndex,
-                );
             },
         );
+
+        evidenciasContainer.dataset.bloqueIndex = Object.keys(
+            indicadorData.evidencias || {},
+        ).length;
     });
 }
 
@@ -1097,8 +1196,8 @@ function activarValidacionEnvio(root) {
                 }
 
                 /* ===============================
-               CAMPOS INDICADOR
-            =============================== */
+                   CAMPOS INDICADOR
+                =============================== */
 
                 item.querySelectorAll("[name^='reporte[indicadores]']").forEach(
                     (input) => {
@@ -1122,8 +1221,8 @@ function activarValidacionEnvio(root) {
                 );
 
                 /* ===============================
-               ACCIONES
-            =============================== */
+                   ACCIONES
+                =============================== */
 
                 const acciones = item.querySelectorAll(".pta-rnew-accion-card");
 
@@ -1137,7 +1236,8 @@ function activarValidacionEnvio(root) {
 
                 acciones.forEach((accion, accionIndex) => {
                     const numeroAccion = accionIndex + 1;
-                    const descripcion = accion.querySelector("input");
+                    const descripcion =
+                        accion.querySelector("input[type='text']");
 
                     if (!descripcion || descripcion.value.trim() === "") {
                         erroresAgrupados[numeroIndicador].push({
@@ -1152,8 +1252,8 @@ function activarValidacionEnvio(root) {
                 });
 
                 /* ===============================
-               PARTIDAS
-            =============================== */
+                   PARTIDAS
+                =============================== */
 
                 item.querySelectorAll(".partidas-container").forEach(
                     (container, accionIndex) => {
@@ -1182,8 +1282,9 @@ function activarValidacionEnvio(root) {
                                     collapse: collapse,
                                 });
                                 marcarError(select);
-                                if (!primerCampoError)
+                                if (!primerCampoError) {
                                     primerCampoError = select;
+                                }
                             }
 
                             if (
@@ -1204,8 +1305,8 @@ function activarValidacionEnvio(root) {
                 );
 
                 /* ===============================
-               EVIDENCIAS
-            =============================== */
+                   EVIDENCIAS
+                =============================== */
 
                 const bloques = item.querySelectorAll(
                     ".pta-rnew-evidencia-card",
@@ -1232,6 +1333,17 @@ function activarValidacionEnvio(root) {
                     const totalImagenes =
                         imagenesNuevas.length + imagenesExistentes.length;
 
+                    if (!descripcion || descripcion.value.trim() === "") {
+                        erroresAgrupados[numeroIndicador].push({
+                            mensaje: `⚠ Evidencia ${numeroBloque} sin descripción.`,
+                            elemento: descripcion,
+                            collapse: collapse,
+                        });
+
+                        marcarError(descripcion);
+                        if (!primerCampoError) primerCampoError = descripcion;
+                    }
+
                     if (totalImagenes === 0) {
                         erroresAgrupados[numeroIndicador].push({
                             mensaje: `⚠ Evidencia ${numeroBloque} sin imágenes.`,
@@ -1241,14 +1353,6 @@ function activarValidacionEnvio(root) {
 
                         marcarError(descripcion);
                         if (!primerCampoError) primerCampoError = descripcion;
-                    }
-
-                    if (imagenes.length === 0) {
-                        erroresAgrupados[numeroIndicador].push({
-                            mensaje: `⚠ Evidencia ${numeroBloque} sin imágenes.`,
-                            elemento: bloque,
-                            collapse: collapse,
-                        });
                     }
                 });
             },
@@ -1263,12 +1367,12 @@ function activarValidacionEnvio(root) {
 
             mostrarModalErroresAgrupados(erroresAgrupados);
 
-            // Expandir accordion con error
             indicadoresConError.forEach((ind) => {
                 const item = root.querySelectorAll(".accordion-item")[ind - 1];
-                const collapse = item.querySelector(".accordion-collapse");
+                if (!item) return;
 
-                if (!collapse.classList.contains("show")) {
+                const collapse = item.querySelector(".accordion-collapse");
+                if (collapse && !collapse.classList.contains("show")) {
                     new bootstrap.Collapse(collapse, { toggle: true });
                 }
             });
@@ -1302,9 +1406,13 @@ function limpiarErroresVisuales(root) {
 
 function mostrarModalErroresAgrupados(erroresAgrupados) {
     const modalElement = document.getElementById("modalErroresReporte");
+    if (!modalElement) return;
+
     const modalInstance = new bootstrap.Modal(modalElement);
 
     const lista = document.getElementById("listaErroresReporte");
+    if (!lista) return;
+
     lista.innerHTML = "";
 
     Object.keys(erroresAgrupados).forEach((indicador) => {
@@ -1321,12 +1429,9 @@ function mostrarModalErroresAgrupados(erroresAgrupados) {
             li.innerHTML = `❌ ${error.mensaje}`;
 
             li.addEventListener("click", function () {
-                // 🔥 CERRAR MODAL PRIMERO
                 modalInstance.hide();
 
-                // Esperar a que el modal termine animación
                 setTimeout(() => {
-                    // Expandir accordion si está cerrado
                     if (
                         error.collapse &&
                         !error.collapse.classList.contains("show")
@@ -1336,17 +1441,17 @@ function mostrarModalErroresAgrupados(erroresAgrupados) {
                         });
                     }
 
-                    // Scroll al campo
                     if (error.elemento) {
                         error.elemento.scrollIntoView({
                             behavior: "smooth",
                             block: "center",
                         });
 
-                        // Opcional: enfoque visual
-                        error.elemento.focus();
+                        if (typeof error.elemento.focus === "function") {
+                            error.elemento.focus();
+                        }
                     }
-                }, 300); // tiempo aproximado animación Bootstrap
+                }, 300);
             });
 
             lista.appendChild(li);

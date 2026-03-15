@@ -36,7 +36,7 @@ class PartidasPresupuestales
         return $this->capitulo;
     }
 
-    public function setCapitulo(int $capitulo): static
+    public function setCapitulo(string $capitulo): static
     {
         $this->capitulo = $capitulo;
 
@@ -48,7 +48,7 @@ class PartidasPresupuestales
         return $this->partida;
     }
 
-    public function setPartida(int $partida): static
+    public function setPartida(string $partida): static
     {
         $this->partida = $partida;
 

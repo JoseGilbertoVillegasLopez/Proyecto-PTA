@@ -56,11 +56,9 @@ class ReportePtaWordExportService
             'footerHeight' => 120,
         ]);
 
-$this->agregarEncabezadoPagina($section);
-$this->agregarPiePagina($section);
-
-$this->agregarTituloDocumento($section, $data);
-
+        $this->agregarEncabezadoPagina($section);
+        $this->agregarPiePagina($section);
+        $this->agregarTituloDocumento($section, $data);
 
         $indicadores = $data['indicadores'] ?? [];
 
@@ -112,31 +110,31 @@ $this->agregarTituloDocumento($section, $data);
     private function registrarEstilos(PhpWord $phpWord): void
     {
         $phpWord->addFontStyle('rpta-title', [
-            'name' => 'Arial',
+            'name' => 'Noto Sans',
             'size' => 8,
             'bold' => true,
         ]);
 
         $phpWord->addFontStyle('rpta-normal', [
-            'name' => 'Arial',
+            'name' => 'Noto Sans',
             'size' => 8,
         ]);
 
         $phpWord->addFontStyle('rpta-bold', [
-            'name' => 'Arial',
+            'name' => 'Noto Sans',
             'size' => 8,
             'bold' => true,
         ]);
 
         $phpWord->addFontStyle('rpta-header-dark', [
-            'name'  => 'Arial',
+            'name'  => 'Noto Sans',
             'size'  => 8,
             'bold'  => true,
             'color' => '000000',
         ]);
 
         $phpWord->addFontStyle('rpta-header-white', [
-            'name'  => 'Arial',
+            'name'  => 'Noto Sans',
             'size'  => 8,
             'bold'  => true,
             'color' => 'FFFFFF',
@@ -166,9 +164,21 @@ $this->agregarTituloDocumento($section, $data);
 
     private function agregarTituloDocumento($section, array $data): void
     {
-        $anio = strtoupper((string)($data['anio'] ?? ''));
-        $periodo = strtoupper((string)($data['trimestre_label'] ?? ''));
-        $puesto = strtoupper((string)($data['pta']['responsable_puesto'] ?? ''));
+        $anio = mb_strtoupper((string)($data['anio'] ?? ''), 'UTF-8');
+        $periodo = mb_strtoupper((string)($data['trimestre_label'] ?? ''), 'UTF-8');
+
+        $puesto = '';
+
+        foreach (($data['indicadores'] ?? []) as $indicador) {
+            $puestoActual = trim((string)($indicador['responsable_puesto'] ?? ''));
+
+            if ($puestoActual !== '') {
+                $puesto = $puestoActual;
+                break;
+            }
+        }
+
+        $puesto = mb_strtoupper($puesto, 'UTF-8');
 
         $titulo1 = 'REPORTE TRIMESTRAL DE ACTIVIDADES DEL PTA ' . $anio;
         $titulo2 = 'PERIODO ' . $periodo . ' ' . $anio;
@@ -192,77 +202,76 @@ $this->agregarTituloDocumento($section, $data);
         $section->addTextBreak(1);
     }
 
+    private function agregarEncabezadoPagina($section): void
+    {
+        $header = $section->addHeader();
 
-private function agregarEncabezadoPagina($section): void
-{
-    $header = $section->addHeader();
+        $logoHeader = $this->obtenerRutaLogo('logo encabezado de pagina.png');
 
-    $logoHeader = $this->obtenerRutaLogo('logo encabezado de pagina.png');
+        $this->agregarImagenDirectaSiExiste($header, $logoHeader, 500, 100, Jc::CENTER);
+    }
 
-    $this->agregarImagenDirectaSiExiste($header, $logoHeader, 500, 100, Jc::CENTER);
-}
+    private function agregarPiePagina($section): void
+    {
+        $footer = $section->addFooter();
 
-private function agregarPiePagina($section): void
-{
-    $footer = $section->addFooter();
+        $logoFooter = $this->obtenerRutaLogo('logo pie de pagina.png');
 
-    $logoFooter = $this->obtenerRutaLogo('logo pie de pagina.png');
+        $this->agregarImagenDirectaSiExiste($footer, $logoFooter, 900, 90, Jc::CENTER);
+    }
 
-    $this->agregarImagenDirectaSiExiste($footer, $logoFooter, 900, 90, Jc::CENTER);
-}
+    private function obtenerRutaLogo(string|array $nombres): ?string
+    {
+        $nombres = is_array($nombres) ? $nombres : [$nombres];
 
-private function obtenerRutaLogo(string|array $nombres): ?string
-{
-    $nombres = is_array($nombres) ? $nombres : [$nombres];
+        $basePath = $this->parameterBag->get('kernel.project_dir') . '/public/uploads/logos/';
 
-    $basePath = $this->parameterBag->get('kernel.project_dir') . '/public/uploads/logos/';
+        foreach ($nombres as $nombre) {
+            $ruta = $basePath . $nombre;
 
-    foreach ($nombres as $nombre) {
-        $ruta = $basePath . $nombre;
-
-        if (is_file($ruta)) {
-            return $ruta;
+            if (is_file($ruta)) {
+                return $ruta;
+            }
         }
+
+        return null;
     }
 
-    return null;
-}
+    private function agregarImagenDirectaSiExiste(
+        $contenedor,
+        ?string $path,
+        int $maxWidth,
+        int $maxHeight,
+        string $alignment = Jc::CENTER
+    ): void {
+        if (!$path || !is_file($path)) {
+            return;
+        }
 
-private function agregarImagenDirectaSiExiste(
-    $contenedor,
-    ?string $path,
-    int $maxWidth,
-    int $maxHeight,
-    string $alignment = Jc::CENTER
-): void {
-    if (!$path || !is_file($path)) {
-        return;
+        $info = @getimagesize($path);
+
+        if (!$info || empty($info[0]) || empty($info[1])) {
+            $width = $maxWidth;
+            $height = $maxHeight;
+        } else {
+            $originalWidth = $info[0];
+            $originalHeight = $info[1];
+
+            $ratio = min(
+                $maxWidth / $originalWidth,
+                $maxHeight / $originalHeight
+            );
+
+            $width = (int) round($originalWidth * $ratio);
+            $height = (int) round($originalHeight * $ratio);
+        }
+
+        $contenedor->addImage($path, [
+            'width'     => $width,
+            'height'    => $height,
+            'alignment' => $alignment,
+        ]);
     }
-
-    $info = @getimagesize($path);
-
-    if (!$info || empty($info[0]) || empty($info[1])) {
-        $width = $maxWidth;
-        $height = $maxHeight;
-    } else {
-        $originalWidth = $info[0];
-        $originalHeight = $info[1];
-
-        $ratio = min(
-            $maxWidth / $originalWidth,
-            $maxHeight / $originalHeight
-        );
-
-        $width = (int) round($originalWidth * $ratio);
-        $height = (int) round($originalHeight * $ratio);
-    }
-
-    $contenedor->addImage($path, [
-        'width'     => $width,
-        'height'    => $height,
-        'alignment' => $alignment,
-    ]);
-}
 
     private function agregarBloqueIndicador($section, array $data, array $indicador): void
     {
@@ -327,7 +336,10 @@ private function agregarImagenDirectaSiExiste(
         foreach ($headers as $i => $lineasHeader) {
             $cell = $table->addCell(
                 $widths[$i],
-                $this->estiloCelda(6, 6, 6, 6, 'DAE9F7')
+                array_merge(
+                    $this->estiloCelda(6, 6, 6, 6, 'DAE9F7'),
+                    ['valign' => 'center']
+                )
             );
 
             $this->agregarTextoMultilineaCentrado($cell, $lineasHeader, 'rpta-header-dark');
@@ -350,15 +362,20 @@ private function agregarImagenDirectaSiExiste(
         ];
 
         foreach ($values as $i => $value) {
-            $alignment = in_array($i, [5, 6], true) ? Jc::CENTER : Jc::CENTER;
-
             $cell = $table->addCell(
                 $widths[$i],
-                $this->estiloCelda(8, 8, 8, 8)
+                array_merge(
+                    $this->estiloCelda(8, 8, 8, 8),
+                    ['valign' => 'center']
+                )
             );
 
-            $cell->addText((string)$value, 'rpta-normal', [
-                'alignment' => $alignment,
+            $fontStyle = $i === 4 ? 'rpta-bold' : 'rpta-normal';
+
+            $cell->addText((string)$value, $fontStyle, [
+                'alignment'   => Jc::CENTER,
+                'spaceBefore' => 0,
+                'spaceAfter'  => 0,
             ]);
         }
 
@@ -375,24 +392,38 @@ private function agregarImagenDirectaSiExiste(
             ]
         ));
         $cell1->addText('Formula', 'rpta-header-dark', [
-            'alignment' => Jc::CENTER,
+            'alignment'   => Jc::CENTER,
+            'spaceBefore' => 0,
+            'spaceAfter'  => 0,
         ]);
 
         $cell2 = $table->addCell($anchoBloqueCentral, array_merge(
             $this->estiloCelda(6, 6, 6, 6),
-            ['gridSpan' => 2]
+            [
+                'gridSpan' => 2,
+                'valign'   => 'center',
+            ]
         ));
         $cell2->addText((string)($indicador['formula_empleada'] ?? ''), 'rpta-normal', [
-            'alignment' => Jc::CENTER,
+            'alignment'   => Jc::CENTER,
+            'spaceBefore' => 0,
+            'spaceAfter'  => 0,
         ]);
 
         $cell3 = $table->addCell($anchoBloqueDerecho, array_merge(
-            $this->estiloCelda(6, 6, 6, 6),
-            ['gridSpan' => 4]
+            $this->estiloCelda(40, 40, 40, 40),
+            [
+                'gridSpan' => 4,
+                'valign'   => 'center',
+            ]
         ));
-        $cell3->addText((string)($indicador['formula_descripcion'] ?? ''), 'rpta-normal', [
-            'alignment' => Jc::START,
-        ]);
+
+        $this->agregarTextoConPaddingVisual(
+            $cell3,
+            (string)($indicador['formula_descripcion'] ?? ''),
+            'rpta-normal',
+            Jc::START
+        );
 
         // =====================================================
         // ACCIONES
@@ -410,25 +441,32 @@ private function agregarImagenDirectaSiExiste(
                 ]
             ));
             $c1->addText('Acción', 'rpta-header-dark', [
-                'alignment' => Jc::CENTER,
+                'alignment'   => Jc::CENTER,
+                'spaceBefore' => 0,
+                'spaceAfter'  => 0,
             ]);
 
             $c2 = $table->addCell($anchoBloqueCentral, array_merge(
                 $this->estiloCelda(6, 6, 6, 6),
-                ['gridSpan' => 2]
+                [
+                    'gridSpan' => 2,
+                    'valign'   => 'center',
+                ]
             ));
             $c2->addText('', 'rpta-normal', [
-                'alignment' => Jc::CENTER,
+                'alignment'   => Jc::CENTER,
+                'spaceBefore' => 0,
+                'spaceAfter'  => 0,
             ]);
 
             $c3 = $table->addCell($anchoBloqueDerecho, array_merge(
-                $this->estiloCelda(40, 40, 120, 120),
+                $this->estiloCelda(20, 20, 40, 40),
                 [
                     'gridSpan' => 4,
                     'valign'   => 'center',
                 ]
             ));
-            $c3->addText('Sin acciones registradas.', 'rpta-normal', [
+            $c3->addText('', 'rpta-normal', [
                 'alignment'   => Jc::START,
                 'spaceBefore' => 0,
                 'spaceAfter'  => 0,
@@ -445,65 +483,72 @@ private function agregarImagenDirectaSiExiste(
                     ]
                 ));
                 $c1->addText('Acción ' . ($i + 1), 'rpta-header-dark', [
-                    'alignment' => Jc::CENTER,
+                    'alignment'   => Jc::CENTER,
+                    'spaceBefore' => 0,
+                    'spaceAfter'  => 0,
                 ]);
 
                 $c2 = $table->addCell($anchoBloqueCentral, array_merge(
-                    $this->estiloCelda(6, 6, 6, 6),
-                    ['gridSpan' => 2]
+                    $this->estiloCelda(20, 20, 40, 40),
+                    [
+                        'gridSpan' => 2,
+                        'valign'   => 'center',
+                    ]
                 ));
                 $c2->addText('', 'rpta-normal', [
-                    'alignment' => Jc::CENTER,
+                    'alignment'   => Jc::CENTER,
+                    'spaceBefore' => 0,
+                    'spaceAfter'  => 0,
                 ]);
 
                 $c3 = $table->addCell($anchoBloqueDerecho, array_merge(
-                    $this->estiloCelda(40, 40, 120, 120),
+                    $this->estiloCelda(20, 20, 20, 20),
                     [
                         'gridSpan' => 4,
                         'valign'   => 'center',
                     ]
                 ));
-                $c3->addText((string)($accion['descripcion'] ?? ''), 'rpta-normal', [
-                    'alignment'   => Jc::START,
-                    'spaceBefore' => 0,
-                    'spaceAfter'  => 0,
-                ]);
+
+                $this->agregarTextoConPaddingVisual(
+                    $c3,
+                    (string)($accion['descripcion'] ?? ''),
+                    'rpta-normal',
+                    Jc::START
+                );
             }
         }
 
         // =====================================================
-        // EVIDENCIAS: UNA SOLA FILA
+        // EVIDENCIAS
         // =====================================================
         $table->addRow();
 
         $cellEvidencias = $table->addCell($anchoTotal, array_merge(
             $this->estiloCelda(8, 8, 8, 8),
-            ['gridSpan' => 8]
+            [
+                'gridSpan' => 8,
+                'valign'   => 'center',
+            ]
         ));
 
-        $cellEvidencias->addText('EVIDENCIAS', 'rpta-header-dark', [
-            'alignment' => Jc::CENTER,
+        $cellEvidencias->addText('EVIDENCIAS', 'rpta-bold', [
+            'alignment'   => Jc::CENTER,
+            'spaceBefore' => 0,
+            'spaceAfter'  => 120,
         ]);
 
         $evidencias = $indicador['evidencias'] ?? [];
 
-        if (empty($evidencias)) {
-            $cellEvidencias->addTextBreak(1);
-            $cellEvidencias->addText('Sin evidencias registradas.', 'rpta-normal', [
-                'alignment' => Jc::START,
-            ]);
-            return;
-        }
+        foreach ($evidencias as $evidenciaIndex => $evidencia) {
+            $descripcion = trim((string)($evidencia['descripcion'] ?? ''));
 
-        foreach ($evidencias as $i => $evidencia) {
-            $cellEvidencias->addTextBreak(1);
-
-            $this->agregarTextoCompuesto(
-                $cellEvidencias,
-                'Evidencia ' . ($i + 1) . ': ',
-                (string)($evidencia['descripcion'] ?? ''),
-                false
-            );
+            if ($descripcion !== '') {
+                $cellEvidencias->addText($descripcion, 'rpta-normal', [
+                    'alignment'   => Jc::CENTER,
+                    'spaceBefore' => 0,
+                    'spaceAfter'  => 0,
+                ]);
+            }
 
             $imagenesValidas = array_values(array_filter(
                 $evidencia['imagenes'] ?? [],
@@ -511,8 +556,15 @@ private function agregarImagenDirectaSiExiste(
             ));
 
             if (!empty($imagenesValidas)) {
-                $cellEvidencias->addTextBreak(1);
+                if ($descripcion !== '') {
+                    $cellEvidencias->addTextBreak(1);
+                }
+
                 $this->agregarImagenesEnMismaCelda($cellEvidencias, $imagenesValidas);
+
+                if ($evidenciaIndex < count($evidencias) - 1) {
+                    $cellEvidencias->addTextBreak(1);
+                }
             }
         }
     }
@@ -525,9 +577,6 @@ private function agregarImagenDirectaSiExiste(
         ));
 
         if (empty($imagenesValidas)) {
-            $cell->addText('Imagen no encontrada.', 'rpta-normal', [
-                'alignment' => Jc::CENTER,
-            ]);
             return;
         }
 
@@ -575,9 +624,7 @@ private function agregarImagenDirectaSiExiste(
         foreach ($imagenes as $index => $imagen) {
             $path = (string)($imagen['path'] ?? '');
 
-            if (!is_file($path)) {
-                $textRun->addText('Imagen no encontrada.', 'rpta-normal');
-            } else {
+            if (is_file($path)) {
                 [$width, $height] = $this->calcularTamanoImagen($path, $maxWidth, $maxHeight);
 
                 $textRun->addImage($path, [
@@ -653,25 +700,28 @@ private function agregarImagenDirectaSiExiste(
         }
     }
 
-    private function agregarTextoCompuesto($cell, string $bold, string $normal, bool $center = false): void
-    {
+    private function agregarTextoConPaddingVisual(
+        $cell,
+        string $texto,
+        string $fontStyle = 'rpta-normal',
+        string $alignment = Jc::START
+    ): void {
         $textRun = $cell->addTextRun([
-            'alignment' => $center ? Jc::CENTER : Jc::START,
+            'alignment'   => $alignment,
+            'spaceBefore' => 0,
+            'spaceAfter'  => 0,
+            'indentation' => [
+                'left'  => 220,
+                'right' => 220,
+            ],
         ]);
 
-        if ($bold !== '') {
-            $textRun->addText($bold, 'rpta-bold');
-        }
-
-        $textRun->addText($normal, 'rpta-normal');
+        $textRun->addText($texto, $fontStyle);
     }
 
     private function agregarImagenCentrada($cell, string $path, int $maxWidth, int $maxHeight): void
     {
         if (!is_file($path)) {
-            $cell->addText('Imagen no encontrada.', 'rpta-normal', [
-                'alignment' => Jc::CENTER,
-            ]);
             return;
         }
 

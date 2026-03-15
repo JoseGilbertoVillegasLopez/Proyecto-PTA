@@ -15,8 +15,8 @@ use App\Service\Pta\ConstructorVistaReportePtaEditService;
 use App\Repository\ReportePtaTrimestreRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\Pta\ConstructorVistaReportePtaIndexService;
-use App\Service\Pta\ReportePtaExportDataBuilderService;
 use App\Service\Pta\ReportePtaWordExportService;
+use App\Service\Pta\ReportePtaPdfExportService;
 
 #[Route('/pta/reporte')]
 class ReportePtaController extends AbstractController
@@ -304,7 +304,7 @@ public function exportWord(
 public function exportPdf(
     Encabezado $encabezado,
     int $trimestre,
-    ReportePtaExportDataBuilderService $builder,
+    ReportePtaPdfExportService $pdfExportService,
 ): Response {
 
     // ===============================
@@ -315,23 +315,9 @@ public function exportPdf(
     }
 
     // ===============================
-    // 2) Construir datos exportables
+    // 2) Exportar PDF real
     // ===============================
-    $data = $builder->build($encabezado, $trimestre);
-
-    // ===============================
-    // 3) RESPUESTA TEMPORAL DE PRUEBA
-    // -------------------------------------------------
-    // Aquí después conectaremos el servicio real PDF.
-    // Por ahora sirve para validar que la ruta y data
-    // ya funcionan.
-    // ===============================
-    return $this->json([
-        'ok' => true,
-        'tipo' => 'pdf',
-        'mensaje' => 'Base de exportación PDF lista.',
-        'reporte' => $data,
-    ]);
+    return $pdfExportService->exportar($encabezado, $trimestre);
 }
 
 
