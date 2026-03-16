@@ -43,6 +43,7 @@ public function index(
     /** @var \App\Entity\User $usuario */
     $usuario  = $this->getUser();
     $personal = $usuario->getPersonal();
+    $puesto   = $personal?->getPuesto();
 
     $access = $ptaAccessResolver->resolve($usuario);
 
@@ -54,6 +55,7 @@ public function index(
         'puesto'       => $request->query->get('puesto'),
         'departamento' => $request->query->get('departamento'),
         'personal_id'  => $personal?->getId(),
+        'puesto_id'    => $puesto?->getId(),
     ];
 
     /* =====================================================
@@ -68,7 +70,8 @@ public function index(
     // ---------- AÑOS ----------
     $aniosFiltro = $encabezadoRepository->findAniosDisponibles(
         $access,
-        $personal?->getId() ?? 0
+        $personal?->getId() ?? 0,
+        $puesto?->getId()
     );
 
     // ---------- PUESTOS ----------
@@ -101,24 +104,23 @@ public function index(
 
     /* =====================================================
      * 6. VISTA
-     * ===================================================== *
+     * ===================================================== */
 
     /* =====================================================
      * 7. RENDER
      * ===================================================== */
     return $this->render('pta/encabezado/index.html.twig', [
-    'encabezados'         => $encabezados,
-    'anioSeleccionado'    => $anioEjecucion,
-    'aniosFiltro'         => $aniosFiltro,
-    'access'              => $access,
-    'puestosFiltro'       => $puestosFiltro,
-    'departamentosFiltro' => $departamentosFiltro,
-    'filtrosActivos' => [
-        'puesto'       => $filters['puesto'],
-        'departamento' => $filters['departamento'],
-    ],
-]);
-
+        'encabezados'         => $encabezados,
+        'anioSeleccionado'    => $anioEjecucion,
+        'aniosFiltro'         => $aniosFiltro,
+        'access'              => $access,
+        'puestosFiltro'       => $puestosFiltro,
+        'departamentosFiltro' => $departamentosFiltro,
+        'filtrosActivos' => [
+            'puesto'       => $filters['puesto'],
+            'departamento' => $filters['departamento'],
+        ],
+    ]);
 }
 
 

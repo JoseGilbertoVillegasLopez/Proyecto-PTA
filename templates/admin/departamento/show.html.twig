@@ -1,14 +1,11 @@
 <turbo-frame id="content">
 	<section class="departamento-show-page-card">
 
-		<header class="departamento-show-page-header">
+		<header
+			class="departamento-show-page-header">
 
 			<!-- IZQUIERDA: VOLVER -->
-			<a href="{{ path('app_departamento_index') }}"
-			   data-turbo-frame="content"
-			   data-turbo-action="replace"
-			   class="departamento-show-page-back-btn"
-			   title="Volver">
+			<a href="{{ path('app_departamento_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="departamento-show-page-back-btn" title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
@@ -19,11 +16,7 @@
 
 			<!-- DERECHA: EDITAR -->
 			<div class="departamento-show-page-header-actions">
-				<a href="{{ path('app_departamento_edit', {'id': departamento.id}) }}"
-				   data-turbo-frame="content"
-				   data-turbo-action="advance"
-				   class="departamento-show-page-edit-btn"
-				   title="Editar">
+				<a href="{{ path('app_departamento_edit', {'id': departamento.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="departamento-show-page-edit-btn" title="Editar">
 					<i class="bi bi-pencil"></i>
 				</a>
 			</div>
@@ -49,6 +42,27 @@
 							<span class="departamento-show-page-status-badge {{ departamento.activo ? 'departamento-show-page-status-badge--active' : 'departamento-show-page-status-badge--inactive' }}">
 								{{ departamento.activo ? 'Activo' : 'Inactivo' }}
 							</span>
+						</td>
+					</tr>
+
+					<tr>
+						<th>Indicadores básicos</th>
+						<td>
+							{% if departamento.indicadoresBasicos|length > 0 %}
+								<div class="departamento-show-page-indicadores-grid">
+									{% for indicador in departamento.indicadoresBasicos %}
+										<div class="departamento-show-page-indicador-mini-card">
+											<div class="departamento-show-page-indicador-mini-card__title">
+												{{ indicador.nombreIndicador }}
+											</div>
+										</div>
+									{% endfor %}
+								</div>
+							{% else %}
+								<span class="departamento-show-page-empty-text">
+									Este departamento no tiene indicadores básicos asignados.
+								</span>
+							{% endif %}
 						</td>
 					</tr>
 				</tbody>

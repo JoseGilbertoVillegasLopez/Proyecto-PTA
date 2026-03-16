@@ -1,14 +1,11 @@
 <turbo-frame id="content">
 	<section class="proceso-estrategico-show-card">
 
-		<header class="proceso-estrategico-show-header">
+		<header
+			class="proceso-estrategico-show-header">
 
 			<!-- IZQUIERDA: VOLVER -->
-			<a href="{{ path('app_proceso_estrategico_index') }}"
-			   data-turbo-frame="content"
-			   data-turbo-action="replace"
-			   class="proceso-estrategico-show-back-btn"
-			   title="Volver">
+			<a href="{{ path('app_proceso_estrategico_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="proceso-estrategico-show-back-btn" title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
@@ -17,16 +14,6 @@
 				Información del proceso estratégico
 			</h1>
 
-			<!-- DERECHA: EDITAR -->
-			<div class="proceso-estrategico-show-header-actions">
-				<a href="{{ path('app_proceso_estrategico_edit', {'id': proceso.id}) }}"
-				   data-turbo-frame="content"
-				   data-turbo-action="advance"
-				   class="proceso-estrategico-show-edit-btn"
-				   title="Editar">
-					<i class="bi bi-pencil"></i>
-				</a>
-			</div>
 
 		</header>
 

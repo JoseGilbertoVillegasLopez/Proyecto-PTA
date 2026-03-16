@@ -6,14 +6,12 @@
 			Lista de indicadores básicos
 		</h4>
 
-		<div class="indicadores-basicos-index-toolbar">
+		<div
+			class="indicadores-basicos-index-toolbar">
 
 			{# IZQUIERDA — BOTÓN AGREGAR #}
 			<div class="indicadores-basicos-index-toolbar__left">
-				<a href="{{ path('app_indicadores_basicos_new') }}"
-				   data-turbo-frame="content"
-				   data-turbo-action="advance"
-				   class="indicadores-basicos-index-add-btn">
+				<a href="{{ path('app_indicadores_basicos_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn">
 					<i class="bi bi-plus-circle-fill"></i>
 					<span>Crear indicador</span>
 				</a>
@@ -23,9 +21,7 @@
 			<div class="indicadores-basicos-index-toolbar__right">
 				<div class="indicadores-basicos-index-search">
 					<i class="bi bi-search"></i>
-					<input type="text"
-						   id="indicadores-basicos-search"
-						   placeholder="Buscar indicador...">
+					<input type="text" id="indicadores-basicos-search" placeholder="Buscar indicador...">
 				</div>
 			</div>
 		</div>
@@ -37,7 +33,9 @@
 						<th>Indicador</th>
 						<th>Fórmula</th>
 						<th>Observaciones</th>
-						<th class="text-center">Estado</th>
+						{% if is_granted('ROLE_ADMIN') %}
+							<th class="text-center">Estado</th>
+						{% endif %}
 						<th class="text-center">Acciones</th>
 					</tr>
 				</thead>
@@ -53,28 +51,24 @@
 							<td class="indicadores-basicos-observaciones">
 								{{ indicador.observaciones ?: '—' }}
 							</td>
-							<td class="text-center">
-								<span class="indicadores-basicos-index-badge {{ indicador.isActivo() ? 'indicadores-basicos-index-badge--active' : 'indicadores-basicos-index-badge--inactive' }}">
-									{{ indicador.isActivo() ? 'Activo' : 'Inactivo' }}
-								</span>
-							</td>
+							{% if is_granted('ROLE_ADMIN') %}
+								<td class="text-center">
+									<span class="indicadores-basicos-index-badge {{ indicador.isActivo() ? 'indicadores-basicos-index-badge--active' : 'indicadores-basicos-index-badge--inactive' }}">
+										{{ indicador.isActivo() ? 'Activo' : 'Inactivo' }}
+									</span>
+								</td>
+							{% endif %}
 							<td class="text-center">
 								<div class="indicadores-basicos-index-actions">
-									<a href="{{ path('app_indicadores_basicos_show', {'id': indicador.id}) }}"
-									   data-turbo-frame="content"
-									   data-turbo-action="advance"
-									   class="indicadores-basicos-index-action-btn indicadores-basicos-index-action-btn--view"
-									   title="Ver indicador">
+									<a href="{{ path('app_indicadores_basicos_show', {'id': indicador.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-action-btn indicadores-basicos-index-action-btn--view" title="Ver indicador">
 										<i class="bi bi-eye"></i>
 									</a>
 
-									<a href="{{ path('app_indicadores_basicos_edit', {'id': indicador.id}) }}"
-									   data-turbo-frame="content"
-									   data-turbo-action="advance"
-									   class="indicadores-basicos-index-action-btn indicadores-basicos-index-action-btn--edit"
-									   title="Editar indicador">
-										<i class="bi bi-pencil-square"></i>
-									</a>
+									{% if is_granted('ROLE_ADMIN') %}
+										<a href="{{ path('app_indicadores_basicos_edit', {'id': indicador.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-action-btn indicadores-basicos-index-action-btn--edit" title="Editar indicador">
+											<i class="bi bi-pencil-square"></i>
+										</a>
+									{% endif %}
 								</div>
 							</td>
 						</tr>

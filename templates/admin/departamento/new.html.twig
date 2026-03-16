@@ -3,11 +3,7 @@
 
 		<header class="departamento-new-page-header">
 
-			<a href="{{ path('app_departamento_index') }}"
-			   data-turbo-frame="content"
-			   data-turbo-action="replace"
-			   class="departamento-new-page-back-btn"
-			   title="Volver">
+			<a href="{{ path('app_departamento_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="departamento-new-page-back-btn" title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
@@ -27,17 +23,33 @@
             }
         }) }}
 
-			<div class="departamento-new-page-group">
-				{{ form_label(form.nombre, null, {'label_attr': {'class': 'departamento-new-page-label'}}) }}
-				{{ form_widget(form.nombre, {'attr': {'class': 'departamento-new-page-input'}}) }}
-				{{ form_errors(form.nombre) }}
+		<div class="departamento-new-page-group">
+			{{ form_label(form.nombre, null, {'label_attr': {'class': 'departamento-new-page-label'}}) }}
+			{{ form_widget(form.nombre, {'attr': {'class': 'departamento-new-page-input'}}) }}
+			{{ form_errors(form.nombre) }}
+		</div>
+
+		<div class="departamento-new-page-group">
+			{{ form_label(form.indicadoresBasicos, null, {'label_attr': {'class': 'departamento-new-page-label'}}) }}
+
+			<div class="departamento-new-edit-page-indicadores-tags-selector-field-shell">
+				{{ form_widget(form.indicadoresBasicos, {
+                    'attr': {
+                        'class': 'departamento-indicadores-multiple-select',
+                        'data-departamento-new-edit-page-indicadores-tags-selector-source': 'true'
+                    }
+                }) }}
 			</div>
 
-			<div class="departamento-new-page-actions">
-				<button type="submit" class="departamento-new-page-submit-btn" title="Guardar">
-					<i class="bi bi-check-lg"></i>
-				</button>
-			</div>
+			{{ form_help(form.indicadoresBasicos) }}
+			{{ form_errors(form.indicadoresBasicos) }}
+		</div>
+
+		<div class="departamento-new-page-actions">
+			<button type="submit" class="departamento-new-page-submit-btn" title="Guardar">
+				<i class="bi bi-check-lg"></i>
+			</button>
+		</div>
 
 		{{ form_end(form) }}
 

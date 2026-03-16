@@ -1,14 +1,11 @@
 <turbo-frame id="content">
 	<section class="proceso-clave-show-card">
 
-		<header class="proceso-clave-show-header">
+		<header
+			class="proceso-clave-show-header">
 
 			<!-- IZQUIERDA: VOLVER -->
-			<a href="{{ path('app_proceso_clave_index') }}"
-			   data-turbo-frame="content"
-			   data-turbo-action="replace"
-			   class="proceso-clave-show-back-btn"
-			   title="Volver">
+			<a href="{{ path('app_proceso_clave_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="proceso-clave-show-back-btn" title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
@@ -17,16 +14,6 @@
 				Información del proceso clave
 			</h1>
 
-			<!-- DERECHA: EDITAR -->
-			<div class="proceso-clave-show-header-actions">
-				<a href="{{ path('app_proceso_clave_edit', {'id': proceso.id}) }}"
-				   data-turbo-frame="content"
-				   data-turbo-action="advance"
-				   class="proceso-clave-show-edit-btn"
-				   title="Editar">
-					<i class="bi bi-pencil"></i>
-				</a>
-			</div>
 
 		</header>
 

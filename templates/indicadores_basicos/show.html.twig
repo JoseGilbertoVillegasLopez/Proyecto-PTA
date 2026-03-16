@@ -1,14 +1,11 @@
 <turbo-frame id="content">
 	<section class="indicadores-basicos-show-card">
 
-		<header class="indicadores-basicos-show-header">
+		<header
+			class="indicadores-basicos-show-header">
 
 			<!-- IZQUIERDA: VOLVER -->
-			<a href="{{ path('app_indicadores_basicos_index') }}"
-			   data-turbo-frame="content"
-			   data-turbo-action="replace"
-			   class="indicadores-basicos-show-back-btn"
-			   title="Volver">
+			<a href="{{ path('app_indicadores_basicos_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="indicadores-basicos-show-back-btn" title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
@@ -17,16 +14,6 @@
 				Información del indicador básico
 			</h1>
 
-			<!-- DERECHA: EDITAR -->
-			<div class="indicadores-basicos-show-header-actions">
-				<a href="{{ path('app_indicadores_basicos_edit', {'id': indicador.id}) }}"
-				   data-turbo-frame="content"
-				   data-turbo-action="advance"
-				   class="indicadores-basicos-show-edit-btn"
-				   title="Editar">
-					<i class="bi bi-pencil"></i>
-				</a>
-			</div>
 
 		</header>
 

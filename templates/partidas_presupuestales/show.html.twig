@@ -1,14 +1,11 @@
 <turbo-frame id="content">
 	<section class="partidas-presupuestales-show-card">
 
-		<header class="partidas-presupuestales-show-header">
+		<header
+			class="partidas-presupuestales-show-header">
 
 			<!-- IZQUIERDA: VOLVER -->
-			<a href="{{ path('app_partidas_presupuestales_index') }}"
-			   data-turbo-frame="content"
-			   data-turbo-action="replace"
-			   class="partidas-presupuestales-show-back-btn"
-			   title="Volver">
+			<a href="{{ path('app_partidas_presupuestales_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="partidas-presupuestales-show-back-btn" title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
@@ -17,16 +14,6 @@
 				Información de la partida presupuestal
 			</h1>
 
-			<!-- DERECHA: EDITAR -->
-			<div class="partidas-presupuestales-show-header-actions">
-				<a href="{{ path('app_partidas_presupuestales_edit', {'id': partida.id}) }}"
-				   data-turbo-frame="content"
-				   data-turbo-action="advance"
-				   class="partidas-presupuestales-show-edit-btn"
-				   title="Editar">
-					<i class="bi bi-pencil"></i>
-				</a>
-			</div>
 
 		</header>
 

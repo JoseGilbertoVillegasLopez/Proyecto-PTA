@@ -117,11 +117,11 @@
 									<a href="{{ path('app_encabezado_edit', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-edit" title="Editar PTA">
 										<i class="bi bi-pencil-square"></i>
 									</a>
-								{% endif %}
 
-								<a href="{{ path('app_reporte_pta_index', { id: encabezado.id }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-report" title="Ver reportes trimestrales">
-									<i class="bi bi-file-earmark-bar-graph"></i>
-								</a>
+									<a href="{{ path('app_reporte_pta_index', { id: encabezado.id }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-report" title="Ver reportes trimestrales">
+										<i class="bi bi-file-earmark-bar-graph"></i>
+									</a>
+								{% endif %}
 
 							</div>
 						</td>
