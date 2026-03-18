@@ -28,10 +28,24 @@ class ConstructorVistaReportePtaService
         // ============================
         // 2️⃣ Catálogos activos
         // ============================
-        $indicadoresBasicos = $this->indicadoresBasicosRepository->findBy(
-            ['activo' => true],
-            ['nombreIndicador' => 'ASC']
-        );
+        $responsable = $encabezado->getResponsable();
+        $departamento = $responsable?->getDepartamento();
+
+        $indicadoresBasicos = [];
+
+        if ($departamento) {
+            $indicadoresBasicos = $departamento
+                ->getIndicadoresBasicos()
+                ->filter(fn($indicador) => $indicador->isActivo())
+                ->toArray();
+
+            usort($indicadoresBasicos, function ($a, $b) {
+                return strcmp(
+                    $a->getNombreIndicador() ?? '',
+                    $b->getNombreIndicador() ?? ''
+                );
+            });
+        }
 
         $procesosClaveEntities = $this->procesoClaveRepository->findBy(
     ['activo' => true],
@@ -73,7 +87,6 @@ $partidas = array_map(function ($p) {
         // ============================
         // 3️⃣ Datos del PTA
         // ============================
-        $responsable = $encabezado->getResponsable();
         $puesto = $responsable?->getPuesto();
 
         return [

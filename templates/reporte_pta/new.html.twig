@@ -51,6 +51,7 @@
 
 					</div>
 				</div>
+
 				{# ===================================================== #}
 				{# ACCORDION INDICADORES #}
 				{# ===================================================== #}
@@ -58,11 +59,10 @@
 					<div class="accordion" id="accordionIndicadores"> {% for indice, data in datos.resultados %}
 						{% set isFirst = loop.first %}
 
-						<div class="accordion-item mb-4">
+						<div class="accordion-item mb-4" data-indicador-card="{{ indice }}">
 
 							<h2 class="accordion-header">
 								<button class="accordion-button {{ not isFirst ? 'collapsed' : '' }}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ indice }}" aria-expanded="{{ isFirst ? 'true' : 'false' }}">
-
 									{{ data.nombre }}
 								</button>
 							</h2>
@@ -167,7 +167,9 @@
 										<div class="pta-report-card__subtitle text-center">
 											Acciones
 										</div>
+
 										<div class="acciones-container" data-indicador-index="{{ indice }}" data-accion-index="0"></div>
+
 										<div class="text-end">
 											<button type="button" class="btn btn-outline-info add-accion mt-2">
 												+ Agregar Acción
@@ -184,8 +186,6 @@
 										</div>
 
 										<div class="gastos-container" data-indicador-index="{{ indice }}"></div>
-
-
 									</div>
 
 									{# ================= EVIDENCIAS ================= #}
@@ -197,6 +197,7 @@
 										</div>
 
 										<div class="evidencias-container" data-indicador-index="{{ indice }}" data-bloque-index="0"></div>
+
 										<div class="pta-rnew-center-btn">
 											<button type="button" class="btn btn-outline-info add-evidencia">
 												+ Agregar Evidencia
@@ -208,17 +209,23 @@
 										</small>
 									</div>
 
+									<div class="pta-indicador-bottom-toggle text-center mt-4">
+										<button type="button" class="btn btn-outline-light pta-toggle-indicador-bottom" data-bs-toggle="collapse" data-bs-target="#collapse{{ indice }}" aria-expanded="{{ isFirst ? 'true' : 'false' }}" aria-controls="collapse{{ indice }}">
+											Plegar / Desplegar indicador
+										</button>
+									</div>
+
 								</div>
 							</div>
 						</div>
 
 					{% endfor %}
-
 				</div>
 
 				{# ===================================================== #}
 				{# BOTÓN GUARDAR #}
 				{# ===================================================== #}
+
 					<div class="pta-rnew-submit-wrapper"> <button type="submit" class="pta-btn-primary">
 						Guardar Reporte
 					</button>
@@ -227,6 +234,7 @@
 			</div>
 		</form>
 	</div>
+
 	{# ===================================================== #}
 	{# MODAL ERRORES #}
 	{# ===================================================== #}

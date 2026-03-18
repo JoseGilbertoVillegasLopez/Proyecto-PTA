@@ -9,10 +9,7 @@
 		<div class="proceso-estrategico-index-toolbar">
 
 			<div class="proceso-estrategico-index-toolbar__left">
-				<a href="{{ path('app_proceso_estrategico_new') }}"
-				   data-turbo-frame="content"
-				   data-turbo-action="advance"
-				   class="proceso-estrategico-index-create-btn">
+				<a href="{{ path('app_proceso_estrategico_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="proceso-estrategico-index-create-btn">
 					<i class="bi bi-plus-circle-fill"></i>
 					<span>Crear nuevo</span>
 				</a>
@@ -21,9 +18,7 @@
 			<div class="proceso-estrategico-index-toolbar__right">
 				<div class="proceso-estrategico-index-searchbox">
 					<i class="bi bi-search"></i>
-					<input type="text"
-						   id="proceso-estrategico-search"
-						   placeholder="Buscar proceso estratégico...">
+					<input type="text" id="proceso-estrategico-search" placeholder="Buscar proceso estratégico...">
 				</div>
 			</div>
 		</div>
@@ -33,7 +28,9 @@
 				<thead>
 					<tr>
 						<th>Nombre</th>
-						<th class="text-center">Estado</th>
+						{% if is_granted('ROLE_ADMIN') %}
+							<th class="text-center">Estado</th>
+						{% endif %}
 						<th class="text-center">Acciones</th>
 					</tr>
 				</thead>
@@ -43,30 +40,23 @@
 							<td class="proceso-estrategico-index-row-name">
 								{{ proceso.nombre }}
 							</td>
-
-							<td class="text-center">
-								<span class="proceso-estrategico-index-status-badge {{ proceso.activo ? 'proceso-estrategico-index-status-badge--active' : 'proceso-estrategico-index-status-badge--inactive' }}">
-									{{ proceso.activo ? 'Activo' : 'Inactivo' }}
-								</span>
-							</td>
-
+							{% if is_granted('ROLE_ADMIN') %}
+								<td class="text-center">
+									<span class="proceso-estrategico-index-status-badge {{ proceso.activo ? 'proceso-estrategico-index-status-badge--active' : 'proceso-estrategico-index-status-badge--inactive' }}">
+										{{ proceso.activo ? 'Activo' : 'Inactivo' }}
+									</span>
+								</td>
+							{% endif %}
 							<td class="text-center">
 								<div class="proceso-estrategico-index-row-actions">
-									<a href="{{ path('app_proceso_estrategico_show', {'id': proceso.id}) }}"
-									   data-turbo-frame="content"
-									   data-turbo-action="advance"
-									   class="proceso-estrategico-index-row-action-btn proceso-estrategico-index-row-action-btn--view"
-									   title="Ver proceso estratégico">
+									<a href="{{ path('app_proceso_estrategico_show', {'id': proceso.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="proceso-estrategico-index-row-action-btn proceso-estrategico-index-row-action-btn--view" title="Ver proceso estratégico">
 										<i class="bi bi-eye"></i>
 									</a>
-
-									<a href="{{ path('app_proceso_estrategico_edit', {'id': proceso.id}) }}"
-									   data-turbo-frame="content"
-									   data-turbo-action="advance"
-									   class="proceso-estrategico-index-row-action-btn proceso-estrategico-index-row-action-btn--edit"
-									   title="Editar proceso estratégico">
-										<i class="bi bi-pencil-square"></i>
-									</a>
+									{% if is_granted('ROLE_ADMIN') %}
+										<a href="{{ path('app_proceso_estrategico_edit', {'id': proceso.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="proceso-estrategico-index-row-action-btn proceso-estrategico-index-row-action-btn--edit" title="Editar proceso estratégico">
+											<i class="bi bi-pencil-square"></i>
+										</a>
+									{% endif %}
 								</div>
 							</td>
 						</tr>

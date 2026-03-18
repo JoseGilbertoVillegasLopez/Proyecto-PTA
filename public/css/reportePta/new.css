@@ -1225,3 +1225,12 @@
     align-items: center;
     gap: 8px;
 }
+
+.pta-indicador-bottom-toggle {
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pta-toggle-indicador-bottom {
+    min-width: 220px;
+}

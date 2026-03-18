@@ -8,16 +8,16 @@
 		class="card pta-card">
 
 		{# =====================================================
-								           TÍTULO
-								           ===================================================== #}
+				   TÍTULO
+				   ===================================================== #}
 		<h4 class="pta-title mb-4">
 			<i class="bi bi-clock-history"></i>
 			Historial de PTA
 		</h4>
 
 		{# =====================================================
-								           TOOLBAR (FILTROS)
-								           ===================================================== #}
+				   TOOLBAR (FILTROS)
+				   ===================================================== #}
 		<div class="pta-toolbar mb-4">
 
 			<div class="pta-toolbar-left">
@@ -52,14 +52,14 @@
 		</div>
 
 		{# =====================================================
-								           TABLA — PTA PROPIO
-								           ===================================================== #}
+				   TABLA — PTA PROPIO
+				   ===================================================== #}
 		<h5 class="mb-3">
 			<i class="bi bi-person-badge"></i>
 			PTA propio
 		</h5>
 
-		<table class="pta-monitoreo-table pta-index-table mb-5">
+		<table class="pta-monitoreo-table pta-index-table pta-historial-index-table mb-5">
 			<thead>
 				<tr>
 					<th>#</th>
@@ -112,16 +112,16 @@
 		</table>
 
 		{# =====================================================
-								           TABLA — PTA DE PUESTO (CONDICIONAL)
-								           ===================================================== #}
+				   TABLA — PTA DE PUESTO (CONDICIONAL)
+				   ===================================================== #}
 		{% if ptaPuesto is not empty %}
 
-			<h5 class="mb-3">
+			<h5 class="mb-3 pta-historial-index-title-puesto">
 				<i class="bi bi-diagram-3"></i>
 				PTA del puesto
 			</h5>
 
-			<table class="pta-monitoreo-table pta-index-table">
+			<table class="pta-monitoreo-table pta-index-table pta-historial-index-table pta-historial-index-table--puesto">
 				<thead>
 					<tr>
 						<th>#</th>

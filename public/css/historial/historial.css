@@ -3,7 +3,6 @@
    ========================================================= */
 
 .pta-historial {
-    padding: 28px 34px 60px;
     color: #e6f1ff;
 
     --pta-primary: #0dcaf0;
@@ -654,4 +653,118 @@
     font-size: 1.25rem;
     margin-right: 6px;
     vertical-align: -2px;
+}
+
+/* =========================================================
+   PTA — HISTORIAL INDEX | DOS TABLAS SEPARADAS
+   ========================================================= */
+
+.pta-historial-index .pta-historial-index-table {
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.1),
+        0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.pta-historial-index .pta-historial-index-table.mb-5 {
+    margin-bottom: 42px !important;
+}
+
+.pta-historial-index .pta-historial-index-title-puesto {
+    margin-top: 8px;
+}
+
+.pta-historial-index .pta-historial-index-table--puesto {
+    margin-top: 0;
+}
+
+.pta-historial-index .pta-historial-index-table tbody tr {
+    transition:
+        background 0.22s ease,
+        transform 0.22s ease,
+        box-shadow 0.22s ease;
+}
+
+.pta-historial-index .pta-historial-index-table tbody tr:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.16),
+        0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.pta-historial-index .pta-historial-index-table td.text-center,
+.pta-historial-index .pta-historial-index-table th.text-center {
+    vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+    .pta-historial-index .pta-historial-index-table.mb-5 {
+        margin-bottom: 30px !important;
+    }
+
+    .pta-historial-index .pta-historial-index-title-puesto {
+        margin-top: 4px;
+    }
+}
+/* =========================================================
+   PTA — HISTORIAL INDEX | AJUSTE TABLA PTA DEL PUESTO
+   ========================================================= */
+
+/* Dar anchos específicos solo a la tabla de PTA del puesto */
+.pta-historial-index .pta-historial-index-table--puesto th:nth-child(1),
+.pta-historial-index .pta-historial-index-table--puesto td:nth-child(1) {
+    width: 6%;
+}
+
+.pta-historial-index .pta-historial-index-table--puesto th:nth-child(2),
+.pta-historial-index .pta-historial-index-table--puesto td:nth-child(2) {
+    width: 24%;
+}
+
+.pta-historial-index .pta-historial-index-table--puesto th:nth-child(3),
+.pta-historial-index .pta-historial-index-table--puesto td:nth-child(3) {
+    width: 30%;
+}
+
+.pta-historial-index .pta-historial-index-table--puesto th:nth-child(4),
+.pta-historial-index .pta-historial-index-table--puesto td:nth-child(4) {
+    width: 22%;
+}
+
+.pta-historial-index .pta-historial-index-table--puesto th:nth-child(5),
+.pta-historial-index .pta-historial-index-table--puesto td:nth-child(5) {
+    width: 10%;
+}
+
+.pta-historial-index .pta-historial-index-table--puesto th:nth-child(6),
+.pta-historial-index .pta-historial-index-table--puesto td:nth-child(6) {
+    width: 8%;
+}
+
+/* Responsable: centrado real y permitir salto de línea limpio */
+.pta-historial-index .pta-historial-index-table--puesto th:nth-child(4),
+.pta-historial-index .pta-historial-index-table--puesto td:nth-child(4) {
+    text-align: center;
+    vertical-align: middle;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    line-height: 1.35;
+}
+
+/* Periodo: que no se deforme ni reciba texto invadido */
+.pta-historial-index .pta-historial-index-table--puesto th:nth-child(5),
+.pta-historial-index .pta-historial-index-table--puesto td:nth-child(5) {
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+/* Historial: mantener compacto */
+.pta-historial-index .pta-historial-index-table--puesto th:nth-child(6),
+.pta-historial-index .pta-historial-index-table--puesto td:nth-child(6) {
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
 }
