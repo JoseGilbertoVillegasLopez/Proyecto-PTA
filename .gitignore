@@ -1,4 +1,11 @@
 
+# Claude Code — no incluir en el repo
+CLAUDE.md
+.agents/
+
+# Uploads generados por usuarios
+/public/uploads/pta/
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
