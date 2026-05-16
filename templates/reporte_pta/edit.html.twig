@@ -128,9 +128,9 @@
 
 										<div class="mb-3">
 											<label class="form-label">Indicador Básico que aplica</label>
-											<select class="form-select" name="reporte[indicadores][{{ indice }}][indicador_basico]">
+											<select class="form-select" name="reporte[indicadores][{{ indice }}][indicador_basico]" data-opcional="true">
 
-												<option value="">Seleccione...</option>
+												<option value="" {% if not inicial or not inicial.indicador_basico_id %}selected{% endif %}>NO APLICA</option>
 
 												{% for ib in datos.catalogos.indicadores_basicos %}
 													<option value="{{ ib.id }}" {% if inicial and inicial.indicador_basico_id == ib.id %} selected {% endif %}>
@@ -153,7 +153,7 @@
 
 										<div class="mb-3">
 											<label class="form-label">Fórmula empleada (opcional)</label>
-											<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][formula_opcional]" placeholder="Escribe aquí la fórmula aplicada por el usuario, si corresponde.">{{ (inicial.formula_opcional ?? '')|trim }}</textarea>
+											<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][formula_opcional]" data-opcional="true" placeholder="Escribe aquí la fórmula aplicada por el usuario, si corresponde.">{{ (inicial.formula_opcional ?? '')|trim }}</textarea>
 										</div>
 
 										{% if data.porcentaje < 100 %}

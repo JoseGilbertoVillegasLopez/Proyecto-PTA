@@ -1199,8 +1199,9 @@ function activarValidacionEnvio(root) {
                    CAMPOS INDICADOR
                 =============================== */
 
-                item.querySelectorAll("[name^='reporte[indicadores]']").forEach(
-                    (input) => {
+                Array.from(item.querySelectorAll("input[name], select[name], textarea[name]"))
+                    .filter((el) => el.name.startsWith("reporte[indicadores]") && !el.dataset.opcional)
+                    .forEach((input) => {
                         if (input.value.trim() === "") {
                             const label =
                                 input
@@ -1217,8 +1218,7 @@ function activarValidacionEnvio(root) {
                             marcarError(input);
                             if (!primerCampoError) primerCampoError = input;
                         }
-                    },
-                );
+                    });
 
                 /* ===============================
                    ACCIONES

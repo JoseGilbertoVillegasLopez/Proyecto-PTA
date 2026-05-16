@@ -155,7 +155,7 @@
 									<div class="mb-3">
 										<label class="form-label">Indicador Básico que aplica</label>
 										{# ✅ Tu service ya trae el NOMBRE en data.indicador_basico #}
-										<input class="form-control" value="{{ data.indicador_basico ?? '' }}" readonly>
+										<input class="form-control" value="{{ data.indicador_basico ?: 'No aplica' }}" readonly>
 									</div>
 
 									<div class="mb-3">

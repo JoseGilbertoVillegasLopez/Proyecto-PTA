@@ -242,15 +242,17 @@ class GuardarReportePtaService
             $indicador = new ReportePtaIndicador();
             $indicador->setReporteTrimestre($trimestre);
 
-            // Indicador Básico
-            $indicadorBasico = $this->indicadorBasicoRepo
-                ->find($requestIndicador['indicador_basico'] ?? null);
-
-            if (!$indicadorBasico) {
-                throw new \DomainException("Indicador básico inválido en índice {$indice}");
+            // Indicador Básico (opcional — puede ser null si el usuario seleccionó NO APLICA)
+            $ibId = $requestIndicador['indicador_basico'] ?? null;
+            if ($ibId !== null && $ibId !== '') {
+                $indicadorBasico = $this->indicadorBasicoRepo->find($ibId);
+                if (!$indicadorBasico) {
+                    throw new \DomainException("Indicador básico inválido en índice {$indice}");
+                }
+                $indicador->setIndicadorBasico($indicadorBasico);
+            } else {
+                $indicador->setIndicadorBasico(null);
             }
-
-            $indicador->setIndicadorBasico($indicadorBasico);
 
             // Indicador PTA (Entidad real)
             $indicadorPtaId = $datosIndicador['id'] ?? null;

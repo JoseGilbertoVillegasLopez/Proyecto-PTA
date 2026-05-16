@@ -46,12 +46,12 @@ class ConstructorVistaReportePtaShowService
             // =========================
             // Indicador básico (puede venir como relación o como ID)
             // =========================
-            $indicadorBasicoNombre = '';
+            $indicadorBasicoNombre = 'No aplica';
             if (method_exists($indicador, 'getIndicadorBasico') && $indicador->getIndicadorBasico()) {
-                $indicadorBasicoNombre = $indicador->getIndicadorBasico()?->getNombreIndicador() ?? '';
+                $indicadorBasicoNombre = $indicador->getIndicadorBasico()->getNombreIndicador() ?? 'No aplica';
             } elseif (method_exists($indicador, 'getIndicadorBasicoId') && $indicador->getIndicadorBasicoId()) {
                 $ib = $this->indicadoresBasicosRepo->find($indicador->getIndicadorBasicoId());
-                $indicadorBasicoNombre = $ib?->getNombreIndicador() ?? '';
+                $indicadorBasicoNombre = $ib?->getNombreIndicador() ?? 'No aplica';
             }
 
             // =========================
