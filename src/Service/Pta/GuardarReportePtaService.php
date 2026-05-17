@@ -322,27 +322,32 @@ class GuardarReportePtaService
             $accion->setReporteIndicador($indicador);
             $accion->setAccion($accionData['descripcion'] ?? '');
 
-            $gastoAccion = $requestData['gastos'][$indice][$accionIndex] ?? null;
-            if (!$gastoAccion) {
-                throw new \DomainException("Faltan datos de gastos para indicador {$indice}, acción {$accionIndex}");
+            $gastoAccion = $requestData['gastos'][$indice][$accionIndex] ?? [];
+            $produjoGastos = ($gastoAccion['produjo_gastos'] ?? '0') === '1';
+
+            if ($produjoGastos) {
+                $procesoE = $this->procesoEstrategicoRepo
+                    ->find($gastoAccion['proceso_estrategico'] ?? null);
+
+                $procesoC = $this->procesoClaveRepo
+                    ->find($gastoAccion['proceso_clave'] ?? null);
+
+                if (!$procesoE || !$procesoC) {
+                    throw new \DomainException("Proceso estratégico o clave inválido en indicador {$indice}, acción {$accionIndex}.");
+                }
+
+                $accion->setProcesoEstrategico($procesoE);
+                $accion->setProcesoClave($procesoC);
+
+                $this->em->persist($accion);
+
+                $this->crearPartidas($accion, $requestData, $indice, $accionIndex);
+            } else {
+                $accion->setProcesoEstrategico(null);
+                $accion->setProcesoClave(null);
+
+                $this->em->persist($accion);
             }
-
-            $procesoE = $this->procesoEstrategicoRepo
-                ->find($gastoAccion['proceso_estrategico'] ?? null);
-
-            $procesoC = $this->procesoClaveRepo
-                ->find($gastoAccion['proceso_clave'] ?? null);
-
-            if (!$procesoE || !$procesoC) {
-                throw new \DomainException("Proceso estratégico o clave inválido.");
-            }
-
-            $accion->setProcesoEstrategico($procesoE);
-            $accion->setProcesoClave($procesoC);
-
-            $this->em->persist($accion);
-
-            $this->crearPartidas($accion, $requestData, $indice, $accionIndex);
         }
     }
 

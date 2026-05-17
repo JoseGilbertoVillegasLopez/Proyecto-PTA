@@ -120,41 +120,43 @@
 											Información del Reporte
 										</div>
 
-										<div class="mb-3">
-											<label class="form-label">
-												Indicador Básico que aplica
-											</label>
-											<select class="form-select" name="reporte[indicadores][{{ indice }}][indicador_basico]" data-opcional="true">
-												<option value="" selected>NO APLICA</option>
-												{% for ib in datos.catalogos.indicadores_basicos %}
-													<option value="{{ ib.id }}">
-														{{ ib.nombreIndicador }}
-													</option>
-												{% endfor %}
-											</select>
-										</div>
+										<div class="pta-rnew-info-grid">
+											<div class="mb-3">
+												<label class="form-label">
+													Indicador Básico que aplica
+												</label>
+												<select class="form-select" name="reporte[indicadores][{{ indice }}][indicador_basico]" data-opcional="true">
+													<option value="" selected>NO APLICA</option>
+													{% for ib in datos.catalogos.indicadores_basicos %}
+														<option value="{{ ib.id }}">
+															{{ ib.nombreIndicador }}
+														</option>
+													{% endfor %}
+												</select>
+											</div>
 
-										<div class="mb-3">
-											<label class="form-label">Unidad de Medida</label>
-											<input type="text" class="form-control" name="reporte[indicadores][{{ indice }}][unidad_medida]">
-										</div>
+											<div class="mb-3">
+												<label class="form-label">Unidad de Medida</label>
+												<input type="text" class="form-control" name="reporte[indicadores][{{ indice }}][unidad_medida]" placeholder="Unidad de medida del indicador">
+											</div>
 
-										<div class="mb-3">
-											<label class="form-label">Medio de Verificación</label>
-											<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][medio_verificacion]"></textarea>
-										</div>
+											<div class="mb-3">
+												<label class="form-label">Medio de Verificación</label>
+												<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][medio_verificacion]" placeholder="Documento, link u otro medio donde se evidencia el cumplimiento del indicador."></textarea>
+											</div>
 
-										<div class="mb-3">
-											<label class="form-label">Fórmula empleada (opcional)</label>
-											<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][formula_opcional]" data-opcional="true" placeholder="Escribe aquí la fórmula aplicada por el usuario, si corresponde."></textarea>
+											<div class="mb-3">
+												<label class="form-label">Fórmula empleada (opcional)</label>
+												<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][formula_opcional]" data-opcional="true" placeholder="Escribe aquí la fórmula aplicada."></textarea>
+											</div>
 										</div>
 
 										{% if data.porcentaje < 100 %}
-											<div class="mb-3">
+											<div class="mb-3 pta-rnew-info-full">
 												<label class="form-label">
 													Justificación de Meta
 												</label>
-												<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][justificacion_meta]"></textarea>
+												<textarea class="form-control" rows="3" name="reporte[indicadores][{{ indice }}][justificacion_meta]" placeholder="Describe los motivos por los cuales no se alcanzó el 100% de la meta."></textarea>
 											</div>
 										{% endif %}
 

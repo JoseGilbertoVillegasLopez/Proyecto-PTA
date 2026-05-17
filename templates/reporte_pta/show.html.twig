@@ -152,29 +152,31 @@
 								<div class="pta-report-card mb-4">
 									<div class="pta-report-card__subtitle">Información del Reporte</div>
 
-									<div class="mb-3">
-										<label class="form-label">Indicador Básico que aplica</label>
-										{# ✅ Tu service ya trae el NOMBRE en data.indicador_basico #}
-										<input class="form-control" value="{{ data.indicador_basico ?: 'No aplica' }}" readonly>
-									</div>
+									<div class="pta-rnew-info-grid">
+										<div class="mb-3">
+											<label class="form-label">Indicador Básico que aplica</label>
+											{# ✅ Tu service ya trae el NOMBRE en data.indicador_basico #}
+											<input class="form-control" value="{{ data.indicador_basico ?: 'No aplica' }}" readonly>
+										</div>
 
-									<div class="mb-3">
-										<label class="form-label">Unidad de Medida</label>
-										<input class="form-control" value="{{ data.unidad_medida ?? '' }}" readonly>
-									</div>
+										<div class="mb-3">
+											<label class="form-label">Unidad de Medida</label>
+											<input class="form-control" value="{{ data.unidad_medida ?? '' }}" readonly>
+										</div>
 
-									<div class="mb-3">
-										<label class="form-label">Medio de Verificación</label>
-										<textarea class="form-control" rows="3" readonly>{{ data.medio_verificacion ?? '' }}</textarea>
-									</div>
+										<div class="mb-3">
+											<label class="form-label">Medio de Verificación</label>
+											<textarea class="form-control" rows="3" readonly>{{ data.medio_verificacion ?? '' }}</textarea>
+										</div>
 
-									<div class="mb-3">
-										<label class="form-label">Fórmula empleada</label>
-										<textarea class="form-control" rows="3" readonly>{{ data.formula ?? '' }}</textarea>
+										<div class="mb-3">
+											<label class="form-label">Fórmula empleada</label>
+											<textarea class="form-control" rows="3" readonly>{{ data.formula ?? '' }}</textarea>
+										</div>
 									</div>
 
 									{% if (data.porcentaje|default(0)) < 100 %}
-										<div class="mb-3">
+										<div class="mb-3 pta-rnew-info-full">
 											<label class="form-label">Justificación de Meta</label>
 											<textarea class="form-control" rows="3" readonly>{{ data.meta_cumplida ?? '' }}</textarea>
 										</div>
@@ -188,13 +190,15 @@
 									{% if data.acciones is empty %}
 										<div class="alert alert-secondary mb-0">Sin acciones.</div>
 									{% else %}
-										{% for aIndex, accion in data.acciones %}
-											<div class="pta-rnew-accion-card" style="margin-bottom:12px;">
-												<label class="form-label">Acción
-													{{ aIndex }}</label>
-												<input class="form-control" value="{{ accion.descripcion }}" readonly>
-											</div>
-										{% endfor %}
+										<div class="acciones-container">
+											{% for aIndex, accion in data.acciones %}
+												<div class="pta-rnew-accion-card">
+													<label class="form-label">Acción
+														{{ aIndex }}</label>
+													<input class="form-control" value="{{ accion.descripcion }}" readonly>
+												</div>
+											{% endfor %}
+										</div>
 									{% endif %}
 								</div>
 
@@ -211,16 +215,18 @@
 													{{ accion.descripcion ?: ('Acción ' ~ aIndex) }}
 												</div>
 
-												<div class="pta-rnew-gasto-body">
-
-													<div class="mb-2">
-														<label class="form-label">Proceso Estratégico</label>
-														<input class="form-control" value="{{ accion.proceso_estrategico ?? '' }}" readonly>
-													</div>
-
-													<div class="mb-2">
-														<label class="form-label">Proceso Clave</label>
-														<input class="form-control" value="{{ accion.proceso_clave ?? '' }}" readonly>
+												{% if accion.tiene_gastos is defined and accion.tiene_gastos %}
+													<div class="pta-rnew-procesos-grid">
+														<div class="mb-2">
+															<label class="form-label">Proceso Estratégico</label>
+															<input class="form-control" value="{{ accion.proceso_estrategico ?? '' }}" readonly>
+														</div>
+	
+														<div class="mb-2">
+															<label class="form-label">Proceso Clave</label>
+															<input class="form-control" value="{{ accion.proceso_clave ?? '' }}" readonly>
+														</div>
+	
 													</div>
 
 													<hr>
@@ -241,8 +247,9 @@
 															</div>
 														{% endfor %}
 													{% endif %}
-
-												</div>
+												{% else %}
+													<div class="alert alert-secondary mb-0">Sin gastos registrados.</div>
+												{% endif %}
 											</div>
 										{% endfor %}
 									{% endif %}
@@ -269,9 +276,9 @@
 
 												<div class="mb-3">
 													<label class="form-label">Imágenes</label>
-													<div class="evidencia-preview-container d-flex gap-2 flex-wrap">
+													<div class="evidencia-preview-container d-flex flex-wrap">
 														{% for img in ev.imagenes %}
-															<div class="evidencia-card" style="width:120px;height:120px;position:relative;border:1px solid #ddd;">
+															<div class="evidencia-card" style="width:188px;height:188px;position:relative;border:1px solid #ddd;">
 																<img src="{{ datos.uploads.base_url ~ img }}" style="width:100%;height:100%;object-fit:cover;cursor:pointer;" onclick="window.__ptaPreview && window.__ptaPreview('{{ datos.uploads.base_url ~ img }}')">
 															</div>
 														{% endfor %}

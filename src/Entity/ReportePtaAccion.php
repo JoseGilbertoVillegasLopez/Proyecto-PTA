@@ -24,11 +24,11 @@ class ReportePtaAccion
     private ?string $accion = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?ProcesoEstrategico $procesoEstrategico = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?ProcesoClave $procesoClave = null;
 
     /**

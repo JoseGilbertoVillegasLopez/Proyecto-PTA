@@ -302,7 +302,7 @@
 
 .pta-reporte-new .acciones-container {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 14px;
     margin-top: 8px;
 }
@@ -405,13 +405,17 @@
 
 /* preview grid */
 .pta-reporte-new .evidencia-preview-container {
-    gap: 10px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 /* tarjetas de imagen y botón + */
 .pta-reporte-new .evidencia-card {
-    width: 120px;
-    height: 120px;
+    width: 188px;
+    height: 188px;
     border-radius: 16px;
     overflow: hidden;
     background: rgba(0, 0, 0, 0.35);
@@ -421,6 +425,10 @@
         transform 0.18s ease,
         box-shadow 0.18s ease,
         border-color 0.18s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
 .pta-reporte-new .evidencia-card:hover {
@@ -581,7 +589,7 @@
 
 /* Label */
 .pta-reporte-new .pta-reporte-headcard__label {
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     font-weight: 800;
     margin-bottom: 10px;
     letter-spacing: 0.5px;
@@ -589,7 +597,7 @@
 
 /* Valor */
 .pta-reporte-new .pta-reporte-headcard__value {
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: 600;
     line-height: 1.5;
 }
@@ -953,7 +961,8 @@
 
     border-radius: 14px;
     padding: 1rem 1.2rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
+    width: calc(50% - 7px);
 
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 }
@@ -1233,4 +1242,95 @@
 
 .pta-toggle-indicador-bottom {
     min-width: 220px;
+}
+
+/* =========================================================
+   REPORTE NEW — INFORMACIÓN DEL REPORTE EN 2 COLUMNAS
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px;
+}
+
+.pta-reporte-new .pta-rnew-info-full {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+    .pta-reporte-new .pta-rnew-info-grid {
+        grid-template-columns: 1fr;
+    }
+    .pta-reporte-new .pta-rnew-info-full {
+        grid-column: unset;
+    }
+}
+
+/* =========================================================
+   REPORTE NEW — ACCIONES 2 COLUMNAS
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-accion-card:nth-child(odd):last-child {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .pta-reporte-new .pta-rnew-accion-card {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   REPORTE NEW — TOGGLE ¿PRODUJO GASTOS? ESTILO PILL
+   ========================================================= */
+
+.pta-reporte-new .gasto-toggle-zone .gasto-toggle-radio {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.pta-reporte-new .gasto-toggle-zone .form-check {
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+.pta-reporte-new .gasto-toggle-zone .form-check-label {
+    padding: 4px 16px;
+    border: 1px solid rgba(13, 202, 240, 0.35);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(159, 179, 200, 0.85) !important;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+}
+
+.pta-reporte-new .gasto-toggle-zone .gasto-toggle-radio:checked + .form-check-label {
+    background: rgba(13, 202, 240, 0.18);
+    border-color: #0dcaf0;
+    color: #0dcaf0 !important;
+    font-weight: 700;
+    box-shadow: 0 0 8px rgba(13, 202, 240, 0.15);
+}
+
+/* =========================================================
+   REPORTE NEW — PROCESOS EN 2 COLUMNAS
+   ========================================================= */
+
+.pta-reporte-new .pta-rnew-procesos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 16px;
+}
+
+@media (max-width: 576px) {
+    .pta-reporte-new .pta-rnew-procesos-grid {
+        grid-template-columns: 1fr;
+    }
 }

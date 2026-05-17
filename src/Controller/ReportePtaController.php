@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Service\Pta\ConstructorVistaReportePtaIndexService;
 use App\Service\Pta\ReportePtaWordExportService;
 use App\Service\Pta\ReportePtaPdfExportService;
+use App\Service\Pta\PtaAccessResolver;
 
 #[Route('/pta/reporte')]
 class ReportePtaController extends AbstractController
@@ -26,25 +27,27 @@ class ReportePtaController extends AbstractController
         Request $request,
         Encabezado $encabezado,
         ConstructorVistaReportePtaIndexService $constructorIndex,
+        PtaAccessResolver $ptaAccessResolver,
     ): Response {
         $isTurbo = $request->headers->has('Turbo-Frame');
 
         $datos = $constructorIndex->build($encabezado);
 
         if ($isTurbo) {
-    return $this->render('reporte_pta/index.html.twig', [
-        'datos' => $datos,
-        'volver_path' => $this->generateUrl('app_encabezado_index', [
-            'anio' => $encabezado->getAnioEjecucion(),
-        ]),
-    ]);
-}
+            return $this->render('reporte_pta/index.html.twig', [
+                'datos' => $datos,
+                'volver_path' => $this->generateUrl('app_encabezado_index', [
+                    'anio' => $encabezado->getAnioEjecucion(),
+                ]),
+            ]);
+        }
 
         return $this->render('dashboard/index.html.twig', [
-            'section' => 'pta',
+            'section'     => 'pta',
             'content_url' => $this->generateUrl('app_reporte_pta_index', [
                 'id' => $encabezado->getId(),
             ]),
+            'ptaAccess'   => $ptaAccessResolver->resolve($this->getUser()),
         ]);
     }
 

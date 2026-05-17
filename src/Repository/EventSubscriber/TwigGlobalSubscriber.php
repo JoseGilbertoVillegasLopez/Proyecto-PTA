@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace App\Repository\EventSubscriber;
 
 use App\Service\Pta\PtaAccessResolver;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

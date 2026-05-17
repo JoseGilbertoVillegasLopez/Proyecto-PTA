@@ -103,20 +103,25 @@ class ConstructorVistaReportePtaShowService
                     }
 
                     $partidas[$partidaIndex] = [
+                        'partida_id'   => $pp?->getId(),
                         'capitulo'     => $pp?->getCapitulo(),
                         'partida'      => $pp?->getPartida(),
                         'descripcion'  => $pp?->getDescripcion(),
                         'monto'        => $monto,
+                        'cantidad'     => $monto,
                     ];
 
                     $partidaIndex++;
                 }
 
                 $acciones[$accionIndex] = [
-                    'descripcion'         => method_exists($accion, 'getAccion') ? $accion->getAccion() : '',
-                    'proceso_estrategico' => $procesoEstrategicoNombre,
-                    'proceso_clave'       => $procesoClaveNombre,
-                    'partidas'            => $partidas,
+                    'descripcion'            => method_exists($accion, 'getAccion') ? $accion->getAccion() : '',
+                    'tiene_gastos'           => $accion->getProcesoEstrategico() !== null,
+                    'proceso_estrategico'    => $procesoEstrategicoNombre,
+                    'proceso_estrategico_id' => $accion->getProcesoEstrategico()?->getId(),
+                    'proceso_clave'          => $procesoClaveNombre,
+                    'proceso_clave_id'       => $accion->getProcesoClave()?->getId(),
+                    'partidas'               => $partidas,
                 ];
 
                 $accionIndex++;

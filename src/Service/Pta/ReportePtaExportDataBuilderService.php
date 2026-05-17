@@ -84,8 +84,9 @@ class ReportePtaExportDataBuilderService
         foreach ($reporteIndicador->getReportePtaAccions() as $accion) {
             $acciones[] = [
                 'descripcion'         => $accion->getAccion(),
-                'proceso_estrategico' => $accion->getProcesoEstrategico()?->getNombre(),
-                'proceso_clave'       => $accion->getProcesoClave()?->getNombre(),
+                'tiene_gastos'        => $accion->getProcesoEstrategico() !== null,
+                'proceso_estrategico' => $accion->getProcesoEstrategico()?->getNombre() ?? '',
+                'proceso_clave'       => $accion->getProcesoClave()?->getNombre() ?? '',
             ];
         }
 

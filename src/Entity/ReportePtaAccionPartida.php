@@ -19,7 +19,7 @@ class ReportePtaAccionPartida
     private ?ReportePtaAccion $reporteAccion = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?PartidasPresupuestales $partidaPresupuestal = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 12, scale: 2)]
