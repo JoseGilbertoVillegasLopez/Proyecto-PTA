@@ -39,6 +39,9 @@ class Indicadores
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     private ?string $valorBase = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $esPorcentaje = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -136,6 +139,18 @@ class Indicadores
     public function setValorBase(string $valorBase): static
     {
         $this->valorBase = $valorBase;
+
+        return $this;
+    }
+
+    public function isEsPorcentaje(): bool
+    {
+        return $this->esPorcentaje;
+    }
+
+    public function setEsPorcentaje(bool $esPorcentaje): static
+    {
+        $this->esPorcentaje = $esPorcentaje;
 
         return $this;
     }

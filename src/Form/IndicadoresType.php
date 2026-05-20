@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 
 /**
@@ -56,7 +57,7 @@ class IndicadoresType extends AbstractType
                 'attr' => [
                     'rows' => 3,
                     'class' => 'indicator-textarea',
-                    'placeholder' => 'Descripción del indicador'
+                    'placeholder' => 'Escriba el indicador que corresponde'
                 ],
             ])
 
@@ -123,12 +124,8 @@ class IndicadoresType extends AbstractType
              * - Valor por defecto: Anual
              * =============================================
              */
-            ->add('periodo', ChoiceType::class, [
-                'choices' => [
-                    'Semestral' => 'Semestral',
-                    'Anual' => 'Anual',
-                ],
-                'data' => 'Anual', // valor por defecto
+            ->add('periodo', HiddenType::class, [
+                'data' => 'Anual',
             ])
 
             /**
@@ -145,6 +142,10 @@ class IndicadoresType extends AbstractType
                     'Positiva' => 'POSITIVA',
                     'Negativa' => 'NEGATIVA',
                 ],
+            ])
+            ->add('esPorcentaje', CheckboxType::class, [
+                'required' => false,
+                'attr'     => ['class' => 'es-porcentaje-hidden'],
             ]);
     }
 

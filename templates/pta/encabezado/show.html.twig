@@ -124,7 +124,7 @@
 								<strong>{{ indicador.valorBase }}</strong>
 							</td>
 							<td class="text-center">
-								<strong>{{ indicador.valor }}</strong>
+								<strong>{{ indicador.valor }}{% if indicador.esPorcentaje %}%{% endif %}</strong>
 							</td>
 							<td class="text-center">
 								{{ indicador.periodo }}

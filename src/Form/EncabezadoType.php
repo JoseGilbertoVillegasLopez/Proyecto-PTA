@@ -57,7 +57,7 @@ class EncabezadoType extends AbstractType
                     date('Y') => date('Y'),
                     date('Y') + 1 => date('Y') + 1,
                 ],
-                'placeholder' => 'Seleccione el año de ejecución',
+                'placeholder' => 'Seleccionar año',
             ])
 
 

@@ -133,6 +133,132 @@ textarea.field-error,
     color: #e6f1ff;
 }
 
+/* =========================================================
+   TARJETA INFORMACIÓN DEL PROYECTO
+   ========================================================= */
+.pta-info-card {
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.pta-info-card .pta-title {
+    padding: 1.1rem 1.4rem 1rem;
+    margin: 0;
+    border-bottom: 1px solid var(--pta-border-soft);
+}
+
+.pta-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 0;
+}
+
+.pta-info-col-main {
+    padding: 1.4rem;
+    border-right: 1px solid var(--pta-border-soft);
+}
+
+.pta-info-col-side {
+    padding: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* Label con ícono */
+.pta-field-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--pta-primary);
+    margin-bottom: 8px;
+}
+
+.pta-field-label i {
+    font-size: 0.95rem;
+    opacity: 0.85;
+}
+
+/* Textarea Nombre */
+.pta-textarea-nombre {
+    height: 64px;
+    min-height: 64px;
+    font-size: 1rem;
+    border-left: 3px solid var(--pta-primary) !important;
+    border-radius: 0 6px 6px 0 !important;
+    padding-left: 12px !important;
+    resize: none;
+}
+
+/* Textarea Objetivo */
+.pta-textarea-objetivo {
+    height: 96px;
+    min-height: 96px;
+    font-size: 0.93rem;
+    border-left: 3px solid rgba(29, 209, 161, 0.7) !important;
+    border-radius: 0 6px 6px 0 !important;
+    padding-left: 12px !important;
+    resize: none;
+    line-height: 1.55;
+}
+
+/* Card lateral año */
+.pta-anio-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+    background: rgba(13, 202, 240, 0.05);
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 12px;
+    padding: 1.4rem 1rem;
+    height: 100%;
+    justify-content: center;
+}
+
+.pta-anio-icon {
+    font-size: 2rem;
+    color: var(--pta-primary);
+    opacity: 0.75;
+    margin-bottom: 6px;
+    line-height: 1;
+}
+
+.pta-anio-select {
+    text-align: center;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    max-width: 180px;
+    height: 48px !important;
+    cursor: pointer;
+}
+
+.pta-anio-hint {
+    font-size: 0.75rem;
+    color: var(--pta-muted);
+    margin: 6px 0 0;
+    line-height: 1.4;
+    text-align: center;
+}
+
+/* Responsive: colapsa a una columna en móvil */
+@media (max-width: 700px) {
+    .pta-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pta-info-col-main {
+        border-right: none;
+        border-bottom: 1px solid var(--pta-border-soft);
+    }
+}
+
 .indicator-textarea,
 .accion-textarea {
     width: 100%;
@@ -150,56 +276,246 @@ textarea.field-error,
 }
 
 /* =========================================================
-   TABLA INDICADORES
+   CONTENEDOR DE INDICADORES
    ========================================================= */
-.pta-indicadores-table {
-    table-layout: fixed;
-    width: 100%;
-    min-width: 0 !important;
-    max-width: 100%;
-    padding: 2px;
-    text-align: center;
-    box-sizing: border-box;
-}
-
-.pta-indicadores-table > :not(caption) > * > * {
-    padding: 2.5px !important;
-    vertical-align: middle;
+.indicadores-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 1rem 0.5rem;
 }
 
 /* =========================================================
-   INPUTS Y SELECTS
+   INDICATOR CARD
    ========================================================= */
-.pta-indicadores-table input,
-.pta-indicadores-table select {
-    height: 48px;
-    padding: 6px 8px;
-    box-sizing: border-box;
-
-    background-color: #16222d !important;
-    border: 1px solid var(--pta-border-soft) !important;
-    color: #e6f1ff !important;
+.indicator-card {
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.06) 0%,
+        rgba(11, 17, 23, 0.9) 60%
+    );
+    border: 1px solid var(--pta-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: box-shadow 0.25s ease;
 }
 
-/* ✅ Focus para evitar “gris” residual del UA/Bootstrap */
-.pta-indicadores-table input:focus,
-.pta-indicadores-table select:focus {
+.indicator-card:hover {
+    box-shadow:
+        0 6px 28px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.2);
+}
+
+/* — Header del card — */
+.ic-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(13, 202, 240, 0.08);
+    border-bottom: 1px solid var(--pta-border-soft);
+}
+
+.ic-num {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.ic-num i {
+    color: var(--pta-primary);
+    opacity: 0.85;
+    font-size: 1.05rem;
+}
+
+.ic-num-text {
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+.ic-remove-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 107, 107, 0.35);
+    background: rgba(255, 107, 107, 0.08);
+    color: #ff6b6b;
+    font-size: 1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.ic-remove-btn:hover {
+    background: rgba(255, 107, 107, 0.22);
+    box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.5);
+    transform: scale(1.08);
+}
+
+/* — Cuerpo del card — */
+.ic-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Fila superior: Indicador + Fórmula */
+.ic-row-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* Fila inferior: Base + Meta + Periodo + Tendencia (4 columnas iguales) */
+.ic-row-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    align-items: end;
+}
+
+/* Campo individual (label + input) */
+.ic-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Label con ícono (igual que pta-field-label) */
+.ic-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.73rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--pta-muted);
+    margin: 0;
+}
+
+.ic-label i {
+    font-size: 0.85rem;
+    color: var(--pta-primary);
+    opacity: 0.7;
+}
+
+/* Inputs y textareas dentro del card */
+.indicator-card input,
+.indicator-card select,
+.indicator-card textarea {
+    width: 100%;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    background-color: #0e1a24;
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.93rem;
+    line-height: 1.4;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.indicator-card input:focus,
+.indicator-card select:focus,
+.indicator-card textarea:focus {
     outline: none;
-    background-color: #16222d !important;
-    border-color: rgba(13, 202, 240, 0.75) !important;
-    box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.35) !important;
+    border-color: rgba(13, 202, 240, 0.7);
+    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.15);
+    background-color: #0e1a24;
+    color: #ffffff;
 }
 
-/* =========================================================
-   INPUTS NUMÉRICOS
-   ========================================================= */
-.indicator-valor {
-    width: 100%;
-    min-width: 72px;
-    padding: 6px;
+.indicator-card select option {
+    background-color: #0e1a24;
+    color: #ffffff;
+}
+
+/* Textareas de descripción y fórmula — tamaño fijo, scroll interno */
+.indicator-card .indicator-textarea {
+    height: 72px;
+    min-height: 72px;
+    max-height: 72px;
+    resize: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    font-size: 0.95rem;
+}
+
+/* Inputs numéricos (base y meta) */
+.indicator-card .indicator-valor {
     text-align: center;
     font-variant-numeric: tabular-nums;
-    box-sizing: border-box;
+    font-size: 1rem;
+    font-weight: 600;
+    height: 44px;
+    color: #ffffff;
+}
+
+/* Periodo y Tendencia — fuente más grande y negrita */
+.ic-field--periodo select,
+.ic-field--tendencia select {
+    font-size: 0.97rem;
+    font-weight: 700;
+}
+
+/* Periodo estático (reemplaza al select) */
+.ic-periodo-static {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 44px;
+    border-radius: 8px;
+    border: 1px solid var(--pta-border-soft);
+    background-color: #0e1a24;
+    color: #ffffff;
+    font-size: 0.97rem;
+    font-weight: 700;
+    padding: 0 10px;
+    user-select: none;
+}
+
+.ic-periodo-static i {
+    color: var(--pta-primary);
+    font-size: 0.95rem;
+}
+
+/* Wrap meta + toggle */
+.meta-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.meta-input-wrap .indicator-valor {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+    .ic-row-main {
+        grid-template-columns: 1fr;
+    }
+
+    .ic-row-meta {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 500px) {
+    .ic-row-meta {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* =========================================================
@@ -347,6 +663,12 @@ textarea.field-error,
     gap: 8px;
 }
 
+/* La tarjeta de info alinea el título a la izquierda */
+.pta-info-card h4.pta-title {
+    justify-content: flex-start;
+    text-align: left;
+}
+
 /* =========================================================
    LABELS
    ========================================================= */
@@ -368,6 +690,166 @@ textarea.field-error,
 .fixed-textarea::placeholder {
     color: #9fb3c8;
     opacity: 1;
+}
+
+/* =========================================================
+   RESPONSABLES — GRID DE DOS CARDS
+   ========================================================= */
+.resp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 1.2rem 1.4rem 1.4rem;
+}
+
+.resp-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 1.4rem 1.2rem;
+    background: rgba(13, 202, 240, 0.04);
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 14px;
+    text-align: center;
+    transition: box-shadow 0.2s ease;
+}
+
+.resp-card:hover {
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.2),
+        0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.resp-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(13, 202, 240, 0.12);
+    border: 1px solid var(--pta-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--pta-primary);
+}
+
+.resp-role {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--pta-primary);
+}
+
+.resp-search-wrap {
+    width: 100%;
+}
+
+.resp-search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--pta-muted);
+    font-size: 0.85rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.resp-input {
+    padding-left: 34px !important;
+}
+
+@media (max-width: 600px) {
+    .resp-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   BOTÓN AGREGAR (INDICADOR / ACCIÓN)
+   ========================================================= */
+.pta-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 28px;
+    border-radius: 10px;
+    border: 1px dashed rgba(13, 202, 240, 0.5);
+    background: rgba(13, 202, 240, 0.06);
+    color: var(--pta-primary);
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
+}
+
+.pta-add-btn i {
+    font-size: 1rem;
+}
+
+.pta-add-btn:hover {
+    background: rgba(13, 202, 240, 0.14);
+    border-color: rgba(13, 202, 240, 0.75);
+    box-shadow: 0 4px 16px rgba(13, 202, 240, 0.2);
+    transform: translateY(-1px);
+}
+
+.pta-add-btn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* =========================================================
+   BOTÓN GUARDAR PTA
+   ========================================================= */
+.pta-save-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 48px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.85) 0%,
+        rgba(9, 160, 200, 0.95) 100%
+    );
+    color: #050e14;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    box-shadow:
+        0 4px 20px rgba(13, 202, 240, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition:
+        box-shadow 0.25s ease,
+        transform 0.15s ease,
+        filter 0.2s ease;
+}
+
+.pta-save-btn i {
+    font-size: 1.05rem;
+}
+
+.pta-save-btn:hover {
+    box-shadow:
+        0 6px 28px rgba(13, 202, 240, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+.pta-save-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(13, 202, 240, 0.3);
 }
 
 /* =========================================================
@@ -546,4 +1028,215 @@ select[name$="[anioEjecucion]"].pta-input {
 /* Opcional: que no se vea flotando raro */
 select[name$="[anioEjecucion]"].pta-input {
     display: inline-block;
+}
+
+/* =========================================================
+   TOGGLE TIPO META (# / %)
+   ========================================================= */
+.meta-input-wrap .tipo-toggle {
+    height: 44px;
+    flex-shrink: 0;
+}
+
+.tipo-toggle .tipo-btn {
+    height: 44px;
+    padding: 0 14px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    border-color: rgba(13, 202, 240, 0.35);
+    color: #9fb3c8;
+    background: transparent;
+}
+
+.tipo-toggle .tipo-btn.active {
+    background: rgba(13, 202, 240, 0.18);
+    color: #0dcaf0;
+    border-color: rgba(13, 202, 240, 0.6);
+}
+
+.tipo-toggle .tipo-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+}
+
+/* =========================================================
+   CONTENEDOR DE ACCIONES
+   ========================================================= */
+.acciones-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 1rem 0.5rem;
+}
+
+/* =========================================================
+   ACCION CARD
+   ========================================================= */
+.accion-card {
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.06) 0%,
+        rgba(11, 17, 23, 0.9) 60%
+    );
+    border: 1px solid var(--pta-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: box-shadow 0.25s ease;
+}
+
+.accion-card:hover {
+    box-shadow:
+        0 6px 28px rgba(0, 0, 0, 0.55),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.2);
+}
+
+/* Header */
+.ac-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: rgba(13, 202, 240, 0.08);
+    border-bottom: 1px solid var(--pta-border-soft);
+}
+
+.ac-num {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.ac-num i {
+    color: var(--pta-primary);
+    opacity: 0.85;
+    font-size: 1.05rem;
+}
+
+.ac-num-text {
+    font-size: 1rem;
+    color: #ffffff;
+}
+
+/* Cuerpo */
+.ac-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.ac-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* Select de indicador */
+.ac-select {
+    width: 100%;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    background-color: #0e1a24;
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.93rem;
+    font-weight: 600;
+    height: 46px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    appearance: auto;
+}
+
+.ac-select:focus {
+    outline: none;
+    border-color: rgba(13, 202, 240, 0.7);
+    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.15);
+}
+
+.ac-select option {
+    background-color: #0e1a24;
+    color: #ffffff;
+}
+
+/* Textarea de acción */
+.ac-field--accion textarea {
+    width: 100%;
+    height: 72px;
+    min-height: 72px;
+    max-height: 72px;
+    resize: none;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    background-color: #0e1a24;
+    border: 1px solid var(--pta-border-soft);
+    border-left: 3px solid var(--pta-primary);
+    border-radius: 0 8px 8px 0;
+    color: #ffffff;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ac-field--accion textarea:focus {
+    outline: none;
+    border-color: rgba(13, 202, 240, 0.7);
+    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.12);
+    background-color: #0e1a24;
+}
+
+.ac-field--accion textarea::placeholder {
+    color: rgba(159, 179, 200, 0.6);
+}
+
+/* =========================================================
+   PILLS DE MESES
+   ========================================================= */
+.ac-meses-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+}
+
+.ac-mes-pill {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(159, 179, 200, 0.3);
+    background: rgba(255, 255, 255, 0.04);
+    color: #9fb3c8;
+    font-size: 0.93rem;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.ac-mes-pill:hover {
+    background: rgba(13, 202, 240, 0.1);
+    border-color: rgba(13, 202, 240, 0.45);
+    color: #ffffff;
+}
+
+.ac-mes-pill--active {
+    background: rgba(13, 202, 240, 0.18);
+    border-color: rgba(13, 202, 240, 0.7);
+    color: var(--pta-primary);
+    box-shadow: 0 0 0 1px rgba(13, 202, 240, 0.35);
+    font-weight: 700;
 }

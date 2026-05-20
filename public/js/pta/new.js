@@ -281,7 +281,7 @@ initPersonalSearch({
          */
         frame.querySelectorAll(".accion-row").forEach(row => {
 
-            const select = row.querySelector("select");
+            const select = row.querySelector(".ac-select");
 
             // Hidden real que se enviará al backend
             const hidden = row.querySelector(
@@ -294,7 +294,7 @@ initPersonalSearch({
             const valorActual = hidden.value;
 
             // Reset del select
-            select.innerHTML = `<option value="">Seleccione un indicador</option>`;
+            select.innerHTML = `<option value="">— Seleccione un indicador —</option>`;
 
             let sigueExistiendo = false;
 
@@ -335,11 +335,7 @@ initPersonalSearch({
     function activateRemoveButtons(root, selector) {
         root.querySelectorAll(selector).forEach(btn => {
             btn.onclick = () => {
-
-                // Elimina la fila completa (tr)
-                btn.closest("tr").remove();
-
-                // Re-sincroniza indicadores con acciones
+                btn.closest("tr, .indicator-card, .accion-card").remove();
                 syncIndicadoresConAcciones(root);
             };
         });
@@ -359,7 +355,7 @@ initPersonalSearch({
 
         // Inicializar índice del CollectionType
         indicadoresHolder.dataset.index =
-            indicadoresHolder.querySelectorAll("tr").length;
+            indicadoresHolder.querySelectorAll(".indicator-card").length;
 
         /**
          * Cuando se escribe en el nombre del indicador,
@@ -384,44 +380,141 @@ initPersonalSearch({
             temp.innerHTML = prototype.replace(/__name__/g, index);
 
             // ===============================
-// SOLO DÍGITOS — BASE Y META
-// ===============================
-const valorBaseInput = temp.querySelector('[name$="[valorBase]"]');
-const metaInput = temp.querySelector('[name$="[valor]"]');
+            // SOLO DÍGITOS — BASE Y META
+            // ===============================
+            const valorBaseInput = temp.querySelector('[name$="[valorBase]"]');
+            const metaInput = temp.querySelector('[name$="[valor]"]');
 
-if (valorBaseInput) enforceOnlyDigits(valorBaseInput);
-if (metaInput) enforceOnlyDigits(metaInput);
+            if (valorBaseInput) enforceOnlyDigits(valorBaseInput);
+            if (metaInput) enforceOnlyDigits(metaInput);
 
-
-            // Campo hidden de índice lógico
+            // Índice lógico del indicador
             const indiceInput = temp.querySelector('[name$="[indice]"]');
             if (indiceInput) {
                 indiceInput.value = indicadorIndiceGlobal;
                 indicadorIndiceGlobal++;
             }
 
-            // Crear fila de tabla
-            const row = document.createElement("tr");
-            row.classList.add("indicator-row");
+            // esPorcentaje: convertir checkbox → hidden
+            const esPorcentajeCheck = temp.querySelector('[name$="[esPorcentaje]"]');
+            if (esPorcentajeCheck) {
+                esPorcentajeCheck.type = 'hidden';
+                esPorcentajeCheck.value = '0';
+            }
 
-            row.innerHTML = `
-                <td class="p-2">
-                    ${temp.querySelector('[name$="[indicador]"]').outerHTML}
-                    ${indiceInput ? indiceInput.outerHTML : ''}
-                </td>
-                <td class="p-1">${temp.querySelector('[name$="[formula]"]').outerHTML}</td>
-                <td class="p-1">${temp.querySelector('[name$="[valorBase]"]').outerHTML}</td>
-                <td class="p-1">${temp.querySelector('[name$="[valor]"]').outerHTML}</td>
-                <td class="p-1">${temp.querySelector('[name$="[periodo]"]').outerHTML}</td>
-                <td class="p-1">${temp.querySelector('[name$="[tendencia]"]').outerHTML}</td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-danger btn-sm remove-indicador">
-                        <i class="bi bi-trash"></i>
+            // Número secuencial visible del card
+            const cardNum = indicadoresHolder.querySelectorAll(".indicator-card").length + 1;
+
+            // Card contenedor
+            const card = document.createElement("div");
+            card.classList.add("indicator-card", "indicator-row");
+
+            card.innerHTML = `
+                <div class="ic-header">
+                    <span class="ic-num">
+                        <i class="bi bi-graph-up"></i>
+                        <span class="ic-num-text">Indicador <strong>#${cardNum}</strong></span>
+                    </span>
+                    <button type="button" class="ic-remove-btn remove-indicador" title="Eliminar indicador">
+                        <i class="bi bi-trash3"></i>
                     </button>
-                </td>
+                </div>
+
+                <div class="ic-body">
+
+                    <div class="ic-row-main">
+                        <div class="ic-field ic-field--desc">
+                            <label class="ic-label">
+                                <i class="bi bi-card-text"></i> Indicador
+                            </label>
+                            ${temp.querySelector('[name$="[indicador]"]').outerHTML}
+                            ${indiceInput ? indiceInput.outerHTML : ''}
+                        </div>
+                        <div class="ic-field ic-field--formula">
+                            <label class="ic-label">
+                                <i class="bi bi-calculator"></i> Fórmula de Cálculo
+                            </label>
+                            ${temp.querySelector('[name$="[formula]"]').outerHTML}
+                        </div>
+                    </div>
+
+                    <div class="ic-row-meta">
+                        <div class="ic-field ic-field--base">
+                            <label class="ic-label">
+                                <i class="bi bi-bar-chart-line"></i> Valor Base
+                            </label>
+                            ${temp.querySelector('[name$="[valorBase]"]').outerHTML}
+                        </div>
+                        <div class="ic-field ic-field--meta">
+                            <label class="ic-label">
+                                <i class="bi bi-bullseye"></i> Meta
+                            </label>
+                            <div class="meta-input-wrap">
+                                ${temp.querySelector('[name$="[valor]"]').outerHTML}
+                                ${esPorcentajeCheck ? esPorcentajeCheck.outerHTML : ''}
+                                <div class="tipo-toggle btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn tipo-btn tipo-abs active" title="Valor absoluto">#</button>
+                                    <button type="button" class="btn tipo-btn tipo-pct" title="Porcentaje">%</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ic-field ic-field--periodo">
+                            <label class="ic-label">
+                                <i class="bi bi-calendar3"></i> Periodo
+                            </label>
+                            ${temp.querySelector('[name$="[periodo]"]').outerHTML}
+                            <div class="ic-periodo-static">
+                                <i class="bi bi-check2-circle"></i> Anual
+                            </div>
+                        </div>
+                        <div class="ic-field ic-field--tendencia">
+                            <label class="ic-label">
+                                <i class="bi bi-arrow-up-right-circle"></i> Tendencia
+                            </label>
+                            ${temp.querySelector('[name$="[tendencia]"]').outerHTML}
+                        </div>
+                    </div>
+
+                </div>
             `;
 
-            indicadoresHolder.appendChild(row);
+            // Toggle # / %
+            const hiddenPct = card.querySelector('[name$="[esPorcentaje]"]');
+            const btnAbs    = card.querySelector('.tipo-abs');
+            const btnPct    = card.querySelector('.tipo-pct');
+
+            if (hiddenPct && btnAbs && btnPct) {
+                btnAbs.addEventListener('click', () => {
+                    hiddenPct.value = '0';
+                    btnAbs.classList.add('active');
+                    btnPct.classList.remove('active');
+                });
+                btnPct.addEventListener('click', () => {
+                    hiddenPct.value = '1';
+                    btnPct.classList.add('active');
+                    btnAbs.classList.remove('active');
+                });
+            }
+
+            // Re-aplicar enforceOnlyDigits sobre los elementos reales del card
+            const cardValorBase = card.querySelector('[name$="[valorBase]"]');
+            const cardMeta = card.querySelector('[name$="[valor]"]:not([type="hidden"])');
+            if (cardValorBase) enforceOnlyDigits(cardValorBase);
+            if (cardMeta) enforceOnlyDigits(cardMeta);
+
+            // Actualizar encabezado del card en tiempo real
+            const indicadorTextarea = card.querySelector('[name$="[indicador]"]');
+            const icNumText = card.querySelector('.ic-num-text');
+            if (indicadorTextarea && icNumText) {
+                indicadorTextarea.addEventListener('input', () => {
+                    const val = indicadorTextarea.value.trim();
+                    icNumText.innerHTML = val
+                        ? `Indicador: <strong>${val}</strong>`
+                        : `Indicador <strong>#${cardNum}</strong>`;
+                });
+            }
+
+            indicadoresHolder.appendChild(card);
             indicadoresHolder.dataset.index++;
 
             activateRemoveButtons(frame, ".remove-indicador");
@@ -444,13 +537,9 @@ if (metaInput) enforceOnlyDigits(metaInput);
 
     if (addAccionBtn && accionesHolder) {
 
-        // Inicializar índice del CollectionType
         accionesHolder.dataset.index =
-            accionesHolder.querySelectorAll("tr").length;
+            accionesHolder.querySelectorAll(".accion-card").length;
 
-        /**
-         * Agregar nueva acción
-         */
         addAccionBtn.addEventListener("click", () => {
 
             const index = accionesHolder.dataset.index;
@@ -459,82 +548,115 @@ if (metaInput) enforceOnlyDigits(metaInput);
             const temp = document.createElement("div");
             temp.innerHTML = prototype.replace(/__name__/g, index);
 
-            const row = document.createElement("tr");
-            row.classList.add("accion-row");
+            const accionInput  = temp.querySelector('[name$="[accion]"]');
+            const mesesInput   = temp.querySelectorAll('[type="checkbox"]');
+            const indicadorHidden = temp.querySelector('[name$="[indicador]"]');
 
-            const accionInput = temp.querySelector('[name$="[accion]"]');
-            const mesesInput = temp.querySelectorAll('[type="checkbox"]');
+            const cardNum = accionesHolder.querySelectorAll(".accion-card").length + 1;
 
-            /**
-             * Select visible de indicador
-             * (el real es un hidden)
-             */
+            // Select visual de indicador
             const indicadorSelect = document.createElement("select");
-            indicadorSelect.classList.add("pta-input");
-            indicadorSelect.innerHTML = `<option value="">Seleccione un indicador</option>`;
+            indicadorSelect.classList.add("ac-select");
+            indicadorSelect.innerHTML = `<option value="">— Seleccione un indicador —</option>`;
 
-            // Poblar con indicadores existentes
-            frame.querySelectorAll(".indicator-row").forEach(row => {
-                const nombreInput = row.querySelector('[name$="[indicador]"]');
-                const indiceInput = row.querySelector('[name$="[indice]"]');
-                if (!nombreInput || !indiceInput) return;
-                if (nombreInput.value.trim() === "") return;
-
-                const option = document.createElement("option");
-                option.value = indiceInput.value;
-                option.textContent = nombreInput.value;
-                indicadorSelect.appendChild(option);
+            frame.querySelectorAll(".indicator-row").forEach(ind => {
+                const nombreInput = ind.querySelector('[name$="[indicador]"]');
+                const indiceInput = ind.querySelector('[name$="[indice]"]');
+                if (!nombreInput || !indiceInput || nombreInput.value.trim() === "") return;
+                const opt = document.createElement("option");
+                opt.value = indiceInput.value;
+                opt.textContent = nombreInput.value;
+                indicadorSelect.appendChild(opt);
             });
 
-            // Campo hidden real del formulario
-            const indicadorHidden = temp.querySelector('[name$="[indicador]"]');
             indicadorSelect.addEventListener("change", () => {
                 indicadorHidden.value = indicadorSelect.value;
             });
 
-            row.innerHTML = `
-                <td class="p-2"></td>
-                <td class="p-2">${accionInput.outerHTML}</td>
-                <td class="p-2 meses-col"></td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-danger btn-sm remove-accion">
-                        <i class="bi bi-trash"></i>
+            // Card
+            const card = document.createElement("div");
+            card.classList.add("accion-card", "accion-row");
+
+            card.innerHTML = `
+                <div class="ac-header">
+                    <span class="ac-num">
+                        <i class="bi bi-list-check"></i>
+                        <span class="ac-num-text">Acción <strong>#${cardNum}</strong></span>
+                    </span>
+                    <button type="button" class="ic-remove-btn remove-accion" title="Eliminar acción">
+                        <i class="bi bi-trash3"></i>
                     </button>
-                </td>
+                </div>
+                <div class="ac-body">
+                    <div class="ac-field ac-field--indicador">
+                        <label class="ic-label">
+                            <i class="bi bi-graph-up"></i> Indicador asociado
+                        </label>
+                    </div>
+                    <div class="ac-field ac-field--accion">
+                        <label class="ic-label">
+                            <i class="bi bi-pencil"></i> Descripción de la Acción
+                        </label>
+                        ${accionInput.outerHTML}
+                    </div>
+                    <div class="ac-field ac-field--meses">
+                        <label class="ic-label">
+                            <i class="bi bi-calendar3-range"></i> Meses de Ejecución
+                        </label>
+                        <div class="ac-meses-grid"></div>
+                    </div>
+                </div>
             `;
 
-            // Insertar select + hidden
-            const indicadorTd = row.querySelector("td");
-            indicadorTd.appendChild(indicadorSelect);
-            indicadorTd.appendChild(indicadorHidden);
+            // Insertar select + hidden en el campo indicador
+            const indicadorField = card.querySelector(".ac-field--indicador");
+            indicadorField.appendChild(indicadorSelect);
+            indicadorField.appendChild(indicadorHidden);
 
-            /**
-             * Renderizado visual de meses
-             */
-            const mesesTd = row.querySelector(".meses-col");
-            const nombresMeses = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+            // Pills de meses
+            const mesesGrid = card.querySelector(".ac-meses-grid");
+            const nombresMeses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
             mesesInput.forEach((mes, i) => {
-                const wrapper = document.createElement("label");
-                wrapper.classList.add("mes-label");
-                wrapper.style.display = "inline-flex";
-                wrapper.style.alignItems = "center";
-                wrapper.style.marginRight = "12px";
-                wrapper.style.cursor = "pointer";
+                const pill = document.createElement("label");
+                pill.classList.add("ac-mes-pill");
+
+                mes.style.position  = "absolute";
+                mes.style.opacity   = "0";
+                mes.style.width     = "0";
+                mes.style.height    = "0";
+                mes.style.pointerEvents = "none";
 
                 const span = document.createElement("span");
                 span.textContent = nombresMeses[i];
-                span.style.marginLeft = "4px";
 
-                wrapper.appendChild(mes);
-                wrapper.appendChild(span);
-                mesesTd.appendChild(wrapper);
+                pill.appendChild(mes);
+                pill.appendChild(span);
+
+                mes.addEventListener("change", () => {
+                    pill.classList.toggle("ac-mes-pill--active", mes.checked);
+                });
+
+                mesesGrid.appendChild(pill);
             });
 
-            accionesHolder.appendChild(row);
+            // Actualizar encabezado en tiempo real
+            const accionTextarea = card.querySelector('[name$="[accion]"]');
+            const acNumText = card.querySelector('.ac-num-text');
+            if (accionTextarea && acNumText) {
+                accionTextarea.addEventListener('input', () => {
+                    const val = accionTextarea.value.trim();
+                    acNumText.innerHTML = val
+                        ? `Acción: <strong>${val}</strong>`
+                        : `Acción <strong>#${cardNum}</strong>`;
+                });
+            }
+
+            accionesHolder.appendChild(card);
             accionesHolder.dataset.index++;
 
             activateRemoveButtons(frame, ".remove-accion");
+            syncIndicadoresConAcciones(frame);
         });
 
         activateRemoveButtons(frame, ".remove-accion");
@@ -647,7 +769,7 @@ if (metaInput) enforceOnlyDigits(metaInput);
 
                 if (!indicadorHidden || indicadorHidden.value === "") {
                     erroresAccion.push("sin indicador");
-                    const selectVisible = row.querySelector("select");
+                    const selectVisible = row.querySelector(".ac-select");
                     if (selectVisible) {
                         selectVisible.classList.add("field-error");
                         if (!primerCampoConError) primerCampoConError = selectVisible;
@@ -805,7 +927,7 @@ frame.querySelectorAll('.fixed-textarea').forEach(textarea => {
  * =====================================================
  */
 frame.querySelectorAll(
-    '[name$="[valorBase]"], [name$="[valor]"]'
+    '[name$="[valorBase]"], [name$="[valor]"]:not([type="hidden"])'
 ).forEach(input => {
     enforceOnlyDigits(input);
 });

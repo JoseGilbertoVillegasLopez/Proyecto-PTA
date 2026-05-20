@@ -378,3 +378,39 @@
 .pta-show .pta-indicadores-table td:nth-child(4) > * {
     display: inline-block;
 }
+
+/* =========================================================
+   BADGES INDICADORES
+   ========================================================= */
+.pta-show .pta-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+.pta-show .pta-badge-positive {
+    background: rgba(29, 209, 161, 0.18);
+    color: #1dd1a1;
+    border: 1px solid rgba(29, 209, 161, 0.4);
+}
+
+.pta-show .pta-badge-negative {
+    background: rgba(255, 107, 107, 0.18);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.4);
+}
+
+.pta-show .pta-badge-pct {
+    background: rgba(253, 203, 110, 0.18);
+    color: #fdcb6e;
+    border: 1px solid rgba(253, 203, 110, 0.4);
+}
+
+.pta-show .pta-badge-abs {
+    background: rgba(116, 185, 255, 0.18);
+    color: #74b9ff;
+    border: 1px solid rgba(116, 185, 255, 0.4);
+}
