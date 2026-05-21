@@ -414,3 +414,191 @@
     color: #74b9ff;
     border: 1px solid rgba(116, 185, 255, 0.4);
 }
+
+/* =========================================================
+   SHOW — CAMPOS DE SOLO LECTURA (DISPLAY VALUES)
+   ========================================================= */
+
+/* Caja que imita un input en modo lectura */
+.pta-show .pta-show-text {
+    background: rgba(13, 202, 240, 0.04);
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #ffffff;
+    font-size: 0.97rem;
+    line-height: 1.5;
+}
+
+.pta-show .pta-show-text--nombre {
+    border-left: 3px solid var(--pta-primary);
+    border-radius: 0 8px 8px 0;
+    min-height: 48px;
+    font-size: 1rem;
+}
+
+.pta-show .pta-show-text--objetivo {
+    border-left: 3px solid rgba(29, 209, 161, 0.7);
+    border-radius: 0 8px 8px 0;
+    min-height: 80px;
+    font-size: 0.93rem;
+    line-height: 1.55;
+}
+
+/* Valor grande del año en la card lateral */
+.pta-show .pta-show-year {
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: var(--pta-primary);
+    letter-spacing: 2px;
+    line-height: 1;
+    margin: 4px 0;
+}
+
+/* =========================================================
+   SHOW — IC-DISPLAY (valores dentro de indicator-card)
+   ========================================================= */
+
+.pta-show .ic-display {
+    background: rgba(13, 202, 240, 0.05);
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.pta-show .ic-display--textarea {
+    min-height: 72px;
+    max-height: 72px;
+    overflow-y: auto;
+    align-items: flex-start;
+}
+
+.pta-show .ic-display--num {
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    justify-content: center;
+    height: 44px;
+    min-height: 44px;
+}
+
+.pta-show .ic-display--center {
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 4px 0;
+}
+
+/* Badge % junto al número de meta */
+.pta-show .ic-pct-badge {
+    font-size: 0.85rem;
+    color: var(--pta-primary);
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+/* ic-header sin botón eliminar */
+.pta-show .ic-header {
+    justify-content: flex-start;
+}
+
+/* Info-card: título con franja de header igual que ic-header/ac-header */
+.pta-show .pta-info-card .pta-title {
+    padding: 14px 18px;
+    margin: 0;
+    background: rgba(13, 202, 240, 0.08);
+    border-bottom: 1px solid var(--pta-border-soft);
+    border-radius: 14px 14px 0 0;
+    justify-content: flex-start;
+    font-size: 1.05rem;
+}
+
+/* ac-header: indicador asociado en subtítulo */
+.pta-show .ac-header-indicador {
+    font-weight: 400;
+    font-size: 0.88rem;
+    color: var(--pta-muted);
+}
+
+/* =========================================================
+   SHOW — ACCIONES: PILLS SOLO LECTURA
+   ========================================================= */
+
+.pta-show .ac-mes-pill-show {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 6px 4px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.82rem;
+    font-weight: 500;
+    text-align: center;
+    gap: 3px;
+    transition: none;
+}
+
+.pta-show .ac-mes-pill-show--active {
+    background: rgba(13, 202, 240, 0.15);
+    border: 1px solid rgba(13, 202, 240, 0.55);
+    color: #e7faff;
+    font-weight: 700;
+}
+
+.pta-show .ac-mes-nombre {
+    font-size: 0.82rem;
+    line-height: 1;
+}
+
+.pta-show .ac-mes-valor {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--pta-primary);
+    line-height: 1;
+}
+
+/* Descripción de acción (display largo) */
+.pta-show .ac-display-accion {
+    border-left: 3px solid var(--pta-primary);
+    border-radius: 0 8px 8px 0;
+}
+
+/* =========================================================
+   SHOW — RESPONSABLES: 3 COLUMNAS
+   ========================================================= */
+
+.pta-show .resp-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.pta-show .resp-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1.3;
+    margin-top: 2px;
+}
+
+.pta-show .resp-puesto {
+    font-size: 0.8rem;
+    color: var(--pta-muted);
+    text-align: center;
+    margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+    .pta-show .resp-grid--3 {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,380 +1,340 @@
-{# ============================================================
-   PTA — EDIT
-   Vista de captura de avance mensual por acción
-   ------------------------------------------------------------
-   Esta vista permite:
-   - Visualizar información general del encabezado (solo lectura)
-   - Mostrar indicadores (solo lectura)
-   - Capturar el avance mensual de cada acción
-   - Enviar los datos al controlador para su persistencia
-   ============================================================ #}
-
-
-    {# =========================================================
-       BOTÓN DE REGRESO
-       ---------------------------------------------------------
-       Regresa al index de encabezados manteniendo Turbo Frame
-       ========================================================= #}
-
-    <div class="pta-show pta-edit">
-       {% set dashboard_section = 'pta' %}
-
-    <div class="pta-back-wrapper">
-        <a
-    href="{{ path('app_encabezado_index', {
-        anio: filtros.anio,
-        departamento: filtros.departamento,
-        puesto: filtros.puesto
-    }) }}"
-    {% if app.user and 'ROLE_ADMIN' in app.user.roles %}
-        data-turbo-frame="content"
-        data-turbo-action="replace"
-    {% endif %}
-    class="pta-back-btn"
->
-
-    <i class="bi bi-arrow-left"></i>
-    <span>Volver</span>
-</a>
-    </div>
-
-    {# =========================================================
-       FORMULARIO PRINCIPAL
-       ---------------------------------------------------------
-       - Método POST
-       - Acción apunta al método edit del encabezado actual
-       - Contiene únicamente inputs de avance mensual
-       ========================================================= #}
-    <form
-    id="pta-edit-form"
-    data-mes-actual="{{ mesActual }}"
-    method="post"
-    action="{{ path('app_encabezado_edit', { id: encabezado.id }) }}"
->
-
-
-
-
-
-
-        {# =========================================================
-           ENCABEZADO — INFORMACIÓN GENERAL (SOLO LECTURA)
-           ---------------------------------------------------------
-           Muestra:
-           - Nombre del proyecto
-           - ID del proyecto
-           - Objetivo
-           ---------------------------------------------------------
-           No es editable, solo informativo
-           ========================================================= #}
-        <div class="pta-card pta-header-box mb-4">
-
-            {# FILA 1 — NOMBRE DEL PROYECTO #}
-            <div class="pta-header-row">
-                <div class="pta-header-label">
-                    NOMBRE DEL PROYECTO
-                </div>
-                <div class="pta-header-value">
-                    {{ encabezado.nombre }}
-                </div>
-            </div>
-
-            {# FILA 2 — NÚMERO Y OBJETIVO #}
-            <div class="pta-header-row">
-
-                {# COLUMNA IZQUIERDA — ID DEL PROYECTO #}
-                <div class="pta-header-col-numero">
-                    <div class="pta-header-label small">
-                        NÚMERO DE PROYECTO
-                    </div>
-                    <div class="pta-header-value small">
-                        {{ encabezado.id }}
-                    </div>
-                </div>
-
-                {# COLUMNA DERECHA — OBJETIVO #}
-                <div class="pta-header-col-objetivo">
-                    <div class="pta-header-objetivo-label">
-                        OBJETIVO
-                    </div>
-                    <div class="pta-header-objetivo-value">
-                        {{ encabezado.objetivo }}
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-        {# =========================================================
-           INDICADORES — SOLO LECTURA
-           ---------------------------------------------------------
-           Se muestran en el mismo formato que la vista NEW
-           No son editables en esta etapa
-           ========================================================= #}
-        <div class="card pta-card mt-4">
-
-            <h4 class="pta-title">
-                <i class="bi bi-graph-up"></i> Indicadores
-            </h4>
-
-            {% if encabezado.indicadores is empty %}
-
-                {# Mensaje cuando no existen indicadores #}
-                <p class="text-muted">
-                    No hay indicadores registrados.
-                </p>
-
-            {% else %}
-
-                <div class="pta-indicadores-head">
-                    <div>Indicador</div>
-                    <div>Fórmula</div>
-                    <div class="is-center">Base</div>
-                    <div class="is-center">Meta</div>
-                    <div class="is-center">Periodo</div>
-                </div>
-
-
-                {# Tabla de indicadores #}
-                <table class="pta-indicadores-table">
-
-                    <tbody>
-                        {% for indicador in encabezado.indicadores %}
-                            <tr>
-
-                                {# Nombre del indicador #}
-                                <td>
-                                    <span class="pta-num"> {{ indicador.indicador }} </span>
-                                </td>
-
-                                {# Fórmula #}
-                                <td>
-                                    <div class="indicator-textarea">
-                                        {{ indicador.formula }}
-                                    </div>
-                                </td>
-                                {# Valor base #}
-                                <td>
-                                    <span class="pta-num">{{ indicador.valorBase }}</span>
-                                </td>
-                                {# Meta #}
-                                <td>
-                                    <span class="pta-num">{{ indicador.valor }}{% if indicador.esPorcentaje %}%{% endif %}</span>
-                                </td>
-
-                                {# Periodo #}
-                                <td>
-                                    <span class="pta-num">{{ indicador.periodo }}</span>
-                                </td>
-
-                                {# Tendencia #}
-                                <td>
-                                    {% if indicador.tendencia == 'POSITIVA' %}
-                                        <span class="pta-badge pta-badge-positive">Positiva</span>
-
-                                    {% else %}
-                                        <span class="pta-badge pta-badge-negative">Negativa</span>
-
-                                    {% endif %}
-                                </td>
-
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-
-                </table>
-
-            {% endif %}
-        </div>
-
-        <br>
-
-        {# =========================================================
-           ACCIONES + AVANCE MENSUAL
-           ---------------------------------------------------------
-           - Cada fila representa una acción
-           - Cada input representa el avance de un mes
-           - Solo los meses activos son editables
-           ========================================================= #}
-        
-
-
-            <h4 class="pta-title">
-                <i class="bi bi-list-task"></i>
-                Acciones / Avance mensual
-            </h4>
-
-            <table class="table table-dark table-bordered pta-acciones-table">
-
-                <thead>
-                    <tr>
-                        <th style="width: 25%">Indicador</th>
-                        <th style="width: 30%">Acción</th>
-                        <th style="width: 45%">Periodo de ejecución</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {# Lista fija de meses #}
-                    {% set meses = [
-                        'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-                        'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
-                    ] %}
-
-                    {% for accion in encabezado.acciones %}
-                        <tr>
-
-                            {# Indicador asociado a la acción #}
-                            <td>
-                                {% set nombreIndicador = '—' %}
-                                {% for ind in encabezado.indicadores %}
-                                    {% if ind.indice == accion.indicador %}
-                                        {% set nombreIndicador = ind.indicador %}
-                                    {% endif %}
-                                {% endfor %}
-                                {{ nombreIndicador }}
-                            </td>
-
-                            {# Descripción de la acción #}
-                            <td>
-                                {{ accion.accion }}
-                            </td>
-
-                            {# Avance mensual #}
-                            <td>
-                                <div class="meses-grid">
-
-                                    {% for mes in meses %}
-
-                                        {# Determina si el mes está activo #}
-                                        {% set activo = mes in accion.periodo %}
-
-                                        {# Valor previamente guardado (si existe) #}
-                                        {% set valor = accion.valorAlcanzado[mes] ?? '' %}
-
-                                        <input
-                                            type="number"
-                                            name="valor_alcanzado[{{ accion.id }}][{{ mes }}]"
-                                            data-mes="{{ mes }}"
-                                            class="mes-input
-    {{ activo ? 'mes-activo' : 'mes-inactivo' }}
-    {{ valor is not empty ? 'mes-con-valor' : '' }}
-"
-
-                                            placeholder="{{ mes }}"
-                                            min="0"
-                                            {{ not activo ? 'readonly' }}
-                                            value="{{ valor }}"
-                                        >
-                                    {% endfor %}
-
-                                </div>
-                            </td>
-
-                        </tr>
-                    {% endfor %}
-                </tbody>
-
-            </table>
-        
-
-        {# =========================================================
-           TOKEN CSRF
-           ========================================================= #}
-        <input
-            type="hidden"
-            name="_token"
-            value="{{ csrf_token('edit' ~ encabezado.id) }}"
-        >
-
-        {# =========================================================
-           BOTÓN DE ENVÍO
-           ========================================================= #}
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary px-5">
-                Guardar avance
-            </button>
-        </div>
-
-    </form>
-
-    <div class="modal fade" id="modalAtraso" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-
-            <div class="modal-content pta-modal">
-
-                <div class="modal-header pta-modal__header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-clock-history"></i>
-                        Registro fuera de tiempo
-                    </h5>
-                    <button type="button"
-                            class="btn-close btn-close-white"
-                            data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body pta-modal__body">
-
-                    <p class="pta-modal__info">
-                        Este mes ya no está habilitado para su registro.
-                        El avance se guardará como <strong>atraso</strong>
-                        y deberá justificarse.
-                    </p>
-
-                    <div class="mb-3">
-                        <label class="form-label">Valor del avance</label>
-                        <input type="number"
-                            class="form-control pta-input"
-                            id="atraso-valor"
-                            min="0">
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Motivo del atraso</label>
-                        <textarea class="form-control pta-input"
-                                id="atraso-motivo"
-                                rows="3"
-                                placeholder="Describe el motivo del atraso..."></textarea>
-
-                        <div id="error-motivo-atraso"
-                            class="pta-error-text d-none">
-                            Debes indicar el motivo del atraso.
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer pta-modal__footer">
-
-    <!-- ❌ Cancelar -->
-    <button type="button"
-            class="btn btn-outline-secondary"
-            data-bs-dismiss="modal">
-        Cancelar
-    </button>
-
-    <!-- ✅ CONFIRMAR ATRASO (ESTE FALTABA) -->
-    <button type="button"
-            class="btn pta-btn-primary"
-            id="btnConfirmarAtraso">
-        Confirmar atraso
-    </button>
+<div class="pta-show pta-edit">
+	{% set dashboard_section = 'pta' %}
+
+	{# =========================================================
+	   BOTÓN DE REGRESO
+	   ========================================================= #}
+	<div class="pta-back-wrapper">
+		<a
+			href="{{ path('app_encabezado_index', {
+				anio: filtros.anio,
+				departamento: filtros.departamento,
+				puesto: filtros.puesto
+			}) }}"
+			{% if app.user and 'ROLE_ADMIN' in app.user.roles %}
+				data-turbo-frame="content"
+				data-turbo-action="replace"
+			{% endif %}
+			class="pta-back-btn"
+		>
+			<i class="bi bi-arrow-left"></i>
+			<span>Volver</span>
+		</a>
+	</div>
+
+	<form
+		id="pta-edit-form"
+		data-mes-actual="{{ mesActual }}"
+		method="post"
+		action="{{ path('app_encabezado_edit', { id: encabezado.id }) }}"
+	>
+
+		{# =========================================================
+		   1. INFORMACIÓN DEL PROYECTO (SOLO LECTURA)
+		   ========================================================= #}
+		<div class="card pta-card pta-info-card mb-4">
+
+			<h4 class="pta-title">
+				<i class="bi bi-file-earmark-text"></i>
+				Información del Proyecto
+			</h4>
+
+			<div class="pta-info-grid">
+
+				<div class="pta-info-col-main">
+
+					<div class="pta-field-group">
+						<label class="pta-field-label">
+							<i class="bi bi-pencil-square"></i>
+							Nombre del Proyecto
+						</label>
+						<div class="pta-show-text pta-show-text--nombre">{{ encabezado.nombre }}</div>
+					</div>
+
+					<div class="pta-field-group mt-3">
+						<label class="pta-field-label">
+							<i class="bi bi-bullseye"></i>
+							Objetivo del Proyecto
+						</label>
+						<div class="pta-show-text pta-show-text--objetivo">{{ encabezado.objetivo }}</div>
+					</div>
+
+				</div>
+
+				<div class="pta-info-col-side">
+					<div class="pta-anio-card">
+						<div class="pta-anio-icon">
+							<i class="bi bi-calendar-check"></i>
+						</div>
+						<label class="pta-field-label mb-2">Año de Ejecución</label>
+						<div class="pta-show-year">{{ encabezado.anioEjecucion }}</div>
+						<p class="pta-anio-hint">Proyecto #{{ encabezado.id }}</p>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+		{# =========================================================
+		   2. INDICADORES (SOLO LECTURA)
+		   ========================================================= #}
+		<div class="card pta-card mb-4">
+
+			<h4 class="pta-title">
+				<i class="bi bi-graph-up"></i>
+				Indicadores
+			</h4>
+
+			{% if encabezado.indicadores is empty %}
+
+				<p class="text-center py-3" style="color: var(--pta-muted);">
+					No hay indicadores registrados.
+				</p>
+
+			{% else %}
+
+				<div class="indicadores-container">
+
+					{% for indicador in encabezado.indicadores %}
+					<div class="indicator-card">
+
+						<div class="ic-header">
+							<div class="ic-num">
+								<i class="bi bi-graph-up"></i>
+								<span class="ic-num-text">
+									Indicador:
+									<strong>{{ indicador.indicador|slice(0, 65) }}{% if indicador.indicador|length > 65 %}…{% endif %}</strong>
+								</span>
+							</div>
+						</div>
+
+						<div class="ic-body">
+
+							<div class="ic-row-main">
+								<div class="ic-field">
+									<span class="ic-label">Indicador</span>
+									<div class="ic-display ic-display--textarea">{{ indicador.indicador }}</div>
+								</div>
+								<div class="ic-field">
+									<span class="ic-label">Fórmula</span>
+									<div class="ic-display ic-display--textarea">{{ indicador.formula }}</div>
+								</div>
+							</div>
+
+							<div class="ic-row-meta">
+								<div class="ic-field">
+									<span class="ic-label">Valor Base</span>
+									<div class="ic-display ic-display--num">{{ indicador.valorBase }}</div>
+								</div>
+								<div class="ic-field">
+									<span class="ic-label">Meta</span>
+									<div class="ic-display ic-display--num">
+										{{ indicador.valor }}{% if indicador.esPorcentaje %}<span class="ic-pct-badge">%</span>{% endif %}
+									</div>
+								</div>
+								<div class="ic-field">
+									<span class="ic-label">Periodo</span>
+									<div class="ic-periodo-static">
+										<i class="bi bi-calendar3"></i>
+										{{ indicador.periodo }}
+									</div>
+								</div>
+								<div class="ic-field">
+									<span class="ic-label">Tendencia</span>
+									<div class="ic-display ic-display--center">
+										{% if indicador.tendencia == 'POSITIVA' %}
+											<span class="pta-badge pta-badge-positive">Positiva</span>
+										{% else %}
+											<span class="pta-badge pta-badge-negative">Negativa</span>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+					{% endfor %}
+
+				</div>
+
+			{% endif %}
+		</div>
+
+
+		{# =========================================================
+		   3. ACCIONES + AVANCE MENSUAL (EDITABLE)
+		   ========================================================= #}
+		<div class="card pta-card mb-4">
+
+			<h4 class="pta-title">
+				<i class="bi bi-list-task"></i>
+				Acciones / Avance Mensual
+			</h4>
+
+			{% set meses = [
+				'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+				'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+			] %}
+
+			{% if encabezado.acciones is empty %}
+
+				<p class="text-center py-3" style="color: var(--pta-muted);">
+					No hay acciones registradas.
+				</p>
+
+			{% else %}
+
+				<div class="acciones-container">
+
+					{% for accion in encabezado.acciones %}
+					<div class="accion-card">
+
+						<div class="ac-header">
+							<div class="ac-num">
+								<i class="bi bi-list-task"></i>
+								<span class="ac-num-text">
+									Acción {{ loop.index }}
+									{% set nombreIndicador = '' %}
+									{% for ind in encabezado.indicadores %}
+										{% if ind.indice == accion.indicador %}
+											{% set nombreIndicador = ind.indicador %}
+										{% endif %}
+									{% endfor %}
+									{% if nombreIndicador %}
+										<span class="ac-header-indicador"> — {{ nombreIndicador|slice(0, 55) }}{% if nombreIndicador|length > 55 %}…{% endif %}</span>
+									{% endif %}
+								</span>
+							</div>
+						</div>
+
+						<div class="ac-body">
+
+							<div class="ac-field">
+								<span class="ic-label">Descripción de la Acción</span>
+								<div class="ic-display ic-display--textarea ac-display-accion">{{ accion.accion }}</div>
+							</div>
+
+							<div class="ac-field">
+								<span class="ic-label">Avance mensual — ingresa el valor alcanzado en cada mes activo</span>
+								<div class="meses-grid">
+									{% for mes in meses %}
+										{% set activo = mes in accion.periodo %}
+										{% set valor = accion.valorAlcanzado[mes] ?? '' %}
+										<input
+											type="number"
+											name="valor_alcanzado[{{ accion.id }}][{{ mes }}]"
+											data-mes="{{ mes }}"
+											class="mes-input {{ activo ? 'mes-activo' : 'mes-inactivo' }} {{ valor is not empty ? 'mes-con-valor' : '' }}"
+											placeholder="{{ mes }}"
+											min="0"
+											{{ not activo ? 'readonly' }}
+											value="{{ valor }}"
+										>
+									{% endfor %}
+								</div>
+							</div>
+
+						</div>
+					</div>
+					{% endfor %}
+
+				</div>
+
+			{% endif %}
+		</div>
+
+
+		{# =========================================================
+		   TOKEN CSRF
+		   ========================================================= #}
+		<input
+			type="hidden"
+			name="_token"
+			value="{{ csrf_token('edit' ~ encabezado.id) }}"
+		>
+
+		{# =========================================================
+		   BOTÓN GUARDAR AVANCE
+		   ========================================================= #}
+		<div class="text-center mt-4 mb-3">
+			<button type="submit" class="pta-save-btn">
+				<i class="bi bi-floppy2-fill"></i>
+				Guardar avance
+			</button>
+		</div>
+
+	</form>
+
+
+	{# =========================================================
+	   MODAL — REGISTRO FUERA DE TIEMPO (ATRASO)
+	   ========================================================= #}
+	<div class="modal fade" id="modalAtraso" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+
+			<div class="modal-content pta-modal">
+
+				<div class="modal-header pta-modal__header">
+					<h5 class="modal-title">
+						<i class="bi bi-clock-history"></i>
+						Registro fuera de tiempo
+					</h5>
+					<button type="button"
+							class="btn-close btn-close-white"
+							data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body pta-modal__body">
+
+					<p class="pta-modal__info">
+						Este mes ya no está habilitado para su registro.
+						El avance se guardará como <strong>atraso</strong>
+						y deberá justificarse.
+					</p>
+
+					<div class="mb-3">
+						<label class="form-label">Valor del avance</label>
+						<input type="number"
+							class="form-control pta-input"
+							id="atraso-valor"
+							min="0">
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Motivo del atraso</label>
+						<textarea class="form-control pta-input"
+								id="atraso-motivo"
+								rows="3"
+								placeholder="Describe el motivo del atraso..."></textarea>
+
+						<div id="error-motivo-atraso"
+							class="pta-error-text d-none">
+							Debes indicar el motivo del atraso.
+						</div>
+					</div>
+
+				</div>
+
+				<div class="modal-footer pta-modal__footer">
+					<button type="button"
+							class="btn btn-outline-secondary"
+							data-bs-dismiss="modal">
+						Cancelar
+					</button>
+					<button type="button"
+							class="btn pta-btn-primary"
+							id="btnConfirmarAtraso">
+						Confirmar atraso
+					</button>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
 
 </div>
-
-
-            </div>
-
-
-        
-        </div>
-    </div>
-</div>
-
-
-
 
 
 <script>
@@ -402,7 +362,7 @@
 
     // Detección de contexto
     const turboExists = !!window.Turbo;
-    const inContentFrame = !!form.closest('turbo-frame#content'); // admin dashboard normalmente
+    const inContentFrame = !!form.closest('turbo-frame#content');
     const mode = (turboExists && inContentFrame) ? 'ADMIN_TURBO' : 'NOADMIN_NATIVE';
 
     // Guard por modo (para no duplicar listeners)
@@ -416,19 +376,15 @@
     // (A) AISLAMIENTO SUBMIT SEGÚN MODO
     // =====================================================
     if (mode === 'NOADMIN_NATIVE') {
-
-  // Limpieza segura al enviar (sin romper submit nativo)
-  if (!form.dataset.submitCleanupBound) {
-    form.dataset.submitCleanupBound = '1';
-    form.addEventListener('submit', () => {
-      cleanupModalArtifacts();
-    }, true);
-  }
-} else {
-  // ADMIN con turbo-frame
-  form.setAttribute('data-turbo-frame', 'content');
-}
-
+      if (!form.dataset.submitCleanupBound) {
+        form.dataset.submitCleanupBound = '1';
+        form.addEventListener('submit', () => {
+          cleanupModalArtifacts();
+        }, true);
+      }
+    } else {
+      form.setAttribute('data-turbo-frame', 'content');
+    }
 
     // =====================================================
     // (B) LÓGICA MESES + MODAL (común para ambos)
@@ -486,7 +442,7 @@
         const mesNumero = mesesMap[mes];
         if (!mesNumero) return;
 
-        // defendemos readonly
+        // Defendemos readonly
         if (input.hasAttribute('readonly')) {
           input.blur();
           return;
@@ -527,7 +483,6 @@
           errorBox.classList.add('d-none');
           inputMotivo.classList.remove('is-invalid');
 
-          // Asegura estado correcto de accesibilidad (evita el warning de aria-hidden + focus)
           modalEl.removeAttribute('aria-hidden');
 
           modal.show();
@@ -584,7 +539,7 @@
       });
     }
 
-    // Limpieza al submit (por si algún cierre dejó “algo”)
+    // Limpieza al submit
     if (!form.dataset.submitCleanupBound) {
       form.dataset.submitCleanupBound = '1';
 
@@ -595,30 +550,24 @@
   }
 
   // =========================================================
-  // ENTRADAS AISLADAS (admin turbo vs no-admin normal)
+  // BOOT ROBUSTO (NO-ADMIN + ADMIN)
   // =========================================================
-    // =========================================================
-// BOOT ROBUSTO (NO-ADMIN + ADMIN)
-// =========================================================
-function bootPtaEdit() {
-  initPtaEdit();
-}
+  function bootPtaEdit() {
+    initPtaEdit();
+  }
 
-// ▶️ NO-ADMIN (navegación normal SIN Turbo)
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', bootPtaEdit);
-} else {
-  // El DOM ya estaba listo (cache / reload / back-forward)
-  bootPtaEdit();
-}
-
-// ▶️ ADMIN (Turbo)
-document.addEventListener('turbo:load', bootPtaEdit);
-document.addEventListener('turbo:frame-load', (e) => {
-  if (e.target && e.target.id === 'content') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootPtaEdit);
+  } else {
     bootPtaEdit();
   }
-});
+
+  document.addEventListener('turbo:load', bootPtaEdit);
+  document.addEventListener('turbo:frame-load', (e) => {
+    if (e.target && e.target.id === 'content') {
+      bootPtaEdit();
+    }
+  });
 
 })();
 </script>

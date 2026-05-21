@@ -1,13 +1,8 @@
-{# =========================================================
-       TOP BAR
-       ---------------------------------------------------------
-       IZQUIERDA:
-       - Volver al index
-       - Acceso a gráficas
-       DERECHA:
-       - Año de ejecución activo
-       ========================================================= #}
 <div class="pta-show">
+
+	{# =========================================================
+	   TOP BAR — NAVEGACIÓN Y AÑO
+	   ========================================================= #}
 	<div class="pta-topbar">
 		{% set from = from|default('index') %}
 
@@ -25,18 +20,15 @@
 				</a>
 			{% endif %}
 
-
-			<a href="{{ path('app_encabezado_graficas', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-action="advance" {% if app.user and 'ROLE_ADMIN' in app.user.roles %} data-turbo-frame="content" data-turbo-action="advance" {% endif %} class="pta-graph-btn">
+			<a href="{{ path('app_encabezado_graficas', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-action="advance" {% if app.user and 'ROLE_ADMIN' in app.user.roles %} data-turbo-frame="content" {% endif %} class="pta-graph-btn">
 				<i class="bi bi-bar-chart-line"></i>
 				<span>Gráficas</span>
 			</a>
-
 
 			<a href="{{ path('app_encabezado_export_excel', { id: encabezado.id }) }}" data-turbo="false" class="pta-graph-btn">
 				<i class="bi bi-file-earmark-excel"></i>
 				<span>Excel</span>
 			</a>
-
 
 		</div>
 
@@ -51,44 +43,56 @@
 	</div>
 
 
-	{# ==============ENCABEZADO DEL PROYECTO (SOLO LECTURA)=============== #}
-	<div class="card pta-card pta-header-box mb-4">
+	{# =========================================================
+	   1. INFORMACIÓN DEL PROYECTO
+	   ========================================================= #}
+	<div class="card pta-card pta-info-card mb-4">
 
-		<div class="pta-header-row">
-			<div class="pta-header-label">
-				NOMBRE DEL PROYECTO
+		<h4 class="pta-title">
+			<i class="bi bi-file-earmark-text"></i>
+			Información del Proyecto
+		</h4>
+
+		<div class="pta-info-grid">
+
+			<div class="pta-info-col-main">
+
+				<div class="pta-field-group">
+					<label class="pta-field-label">
+						<i class="bi bi-pencil-square"></i>
+						Nombre del Proyecto
+					</label>
+					<div class="pta-show-text pta-show-text--nombre">{{ encabezado.nombre }}</div>
+				</div>
+
+				<div class="pta-field-group mt-3">
+					<label class="pta-field-label">
+						<i class="bi bi-bullseye"></i>
+						Objetivo del Proyecto
+					</label>
+					<div class="pta-show-text pta-show-text--objetivo">{{ encabezado.objetivo }}</div>
+				</div>
+
 			</div>
-			<div class="pta-header-value">
-				{{ encabezado.nombre }}
+
+			<div class="pta-info-col-side">
+				<div class="pta-anio-card">
+					<div class="pta-anio-icon">
+						<i class="bi bi-calendar-check"></i>
+					</div>
+					<label class="pta-field-label mb-2">Año de Ejecución</label>
+					<div class="pta-show-year">{{ encabezado.anioEjecucion }}</div>
+					<p class="pta-anio-hint">Proyecto #{{ encabezado.id }}</p>
+				</div>
 			</div>
+
 		</div>
-
-		<div class="pta-header-row">
-
-			<div class="pta-header-col-numero">
-				<div class="pta-header-label small">
-					NÚMERO DE PROYECTO
-				</div>
-				<div class="pta-header-value small">
-					{{ encabezado.id }}
-				</div>
-			</div>
-
-			<div class="pta-header-col-objetivo">
-				<div class="pta-header-objetivo-label">
-					OBJETIVO
-				</div>
-				<div class="pta-header-objetivo-value">
-					{{ encabezado.objetivo }}
-				</div>
-			</div>
-
-		</div>
-
 	</div>
 
 
-	{# =========================================================INDICADORES (SOLO LECTURA)========================================================= #}
+	{# =========================================================
+	   2. INDICADORES (SOLO LECTURA)
+	   ========================================================= #}
 	<div class="card pta-card mb-4">
 
 		<h4 class="pta-title">
@@ -98,122 +102,162 @@
 
 		{% if encabezado.indicadores is empty %}
 
-			<p class="pta-muted">
+			<p class="text-center py-3" style="color: var(--pta-muted);">
 				No hay indicadores registrados.
 			</p>
 
 		{% else %}
 
-			<div class="pta-indicadores-head">
-				<span>Indicador</span>
-				<span>Fórmula</span>
-				<span>Base</span>
-				<span>Meta</span>
-				<span>Periodo</span>
+			<div class="indicadores-container">
+
+				{% for indicador in encabezado.indicadores %}
+				<div class="indicator-card">
+
+					<div class="ic-header">
+						<div class="ic-num">
+							<i class="bi bi-graph-up"></i>
+							<span class="ic-num-text">
+								Indicador:
+								<strong>{{ indicador.indicador|slice(0, 65) }}{% if indicador.indicador|length > 65 %}…{% endif %}</strong>
+							</span>
+						</div>
+					</div>
+
+					<div class="ic-body">
+
+						<div class="ic-row-main">
+							<div class="ic-field">
+								<span class="ic-label">Indicador</span>
+								<div class="ic-display ic-display--textarea">{{ indicador.indicador }}</div>
+							</div>
+							<div class="ic-field">
+								<span class="ic-label">Fórmula</span>
+								<div class="ic-display ic-display--textarea">{{ indicador.formula }}</div>
+							</div>
+						</div>
+
+						<div class="ic-row-meta">
+							<div class="ic-field">
+								<span class="ic-label">Valor Base</span>
+								<div class="ic-display ic-display--num">{{ indicador.valorBase }}</div>
+							</div>
+							<div class="ic-field">
+								<span class="ic-label">Meta</span>
+								<div class="ic-display ic-display--num">
+									{{ indicador.valor }}{% if indicador.esPorcentaje %}<span class="ic-pct-badge">%</span>{% endif %}
+								</div>
+							</div>
+							<div class="ic-field">
+								<span class="ic-label">Periodo</span>
+								<div class="ic-periodo-static">
+									<i class="bi bi-calendar3"></i>
+									{{ indicador.periodo }}
+								</div>
+							</div>
+							<div class="ic-field">
+								<span class="ic-label">Tendencia</span>
+								<div class="ic-display ic-display--center">
+									{% if indicador.tendencia == 'POSITIVA' %}
+										<span class="pta-badge pta-badge-positive">Positiva</span>
+									{% else %}
+										<span class="pta-badge pta-badge-negative">Negativa</span>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				{% endfor %}
+
 			</div>
-
-
-			<table class="pta-indicadores-table">
-
-				<tbody>
-					{% for indicador in encabezado.indicadores %}
-						<tr>
-							<td>{{ indicador.indicador }}</td>
-							<td>{{ indicador.formula }}</td>
-							<td class="text-center">
-								<strong>{{ indicador.valorBase }}</strong>
-							</td>
-							<td class="text-center">
-								<strong>{{ indicador.valor }}{% if indicador.esPorcentaje %}%{% endif %}</strong>
-							</td>
-							<td class="text-center">
-								{{ indicador.periodo }}
-							</td>
-							<td class="text-center">
-								{% if indicador.tendencia == 'POSITIVA' %}
-									<span class="pta-badge pta-badge-positive">Positiva</span>
-								{% else %}
-									<span class="pta-badge pta-badge-negative">Negativa</span>
-								{% endif %}
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-
-			</table>
 
 		{% endif %}
 	</div>
 
 
-	{# =========================================================ACCIONES / AVANCE MENSUAL (SOLO LECTURA)========================================================= #}
+	{# =========================================================
+	   3. ACCIONES / AVANCE MENSUAL (SOLO LECTURA)
+	   ========================================================= #}
 	<div class="card pta-card mb-4">
 
 		<h4 class="pta-title">
 			<i class="bi bi-list-task"></i>
-			Acciones / Avance mensual
+			Acciones del Proyecto
 		</h4>
 
-		<table class="pta-acciones-table">
+		{% set meses = [
+			'Enero','Febrero','Marzo','Abril','Mayo','Junio',
+			'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
+		] %}
 
-			<thead>
-				<tr>
-					<th style="width: 25%">Indicador</th>
-					<th style="width: 30%">Acción</th>
-					<th style="width: 45%">Periodo de ejecución</th>
-				</tr>
-			</thead>
+		{% if encabezado.acciones is empty %}
 
-			<tbody>
+			<p class="text-center py-3" style="color: var(--pta-muted);">
+				No hay acciones registradas.
+			</p>
 
-				{% set meses = [
-                    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
-                ] %}
+		{% else %}
+
+			<div class="acciones-container">
 
 				{% for accion in encabezado.acciones %}
-					<tr>
+				<div class="accion-card">
 
-						<td>
-							{% set nombreIndicador = '—' %}
-							{% for ind in encabezado.indicadores %}
-								{% if ind.indice == accion.indicador %}
-									{% set nombreIndicador = ind.indicador %}
+					<div class="ac-header">
+						<div class="ac-num">
+							<i class="bi bi-list-task"></i>
+							<span class="ac-num-text">
+								Acción {{ loop.index }}
+								{% set nombreIndicador = '' %}
+								{% for ind in encabezado.indicadores %}
+									{% if ind.indice == accion.indicador %}
+										{% set nombreIndicador = ind.indicador %}
+									{% endif %}
+								{% endfor %}
+								{% if nombreIndicador %}
+									<span class="ac-header-indicador"> — {{ nombreIndicador|slice(0, 55) }}{% if nombreIndicador|length > 55 %}…{% endif %}</span>
 								{% endif %}
-							{% endfor %}
-							{{ nombreIndicador }}
-						</td>
+							</span>
+						</div>
+					</div>
 
-						<td>
-							{{ accion.accion }}
-						</td>
+					<div class="ac-body">
 
-						<td>
-							<div class="meses-grid">
+						<div class="ac-field">
+							<span class="ic-label">Descripción de la Acción</span>
+							<div class="ic-display ic-display--textarea ac-display-accion">{{ accion.accion }}</div>
+						</div>
+
+						<div class="ac-field">
+							<span class="ic-label">Meses de Ejecución</span>
+							<div class="ac-meses-grid">
 								{% for mes in meses %}
 									{% set activo = mes in accion.periodo %}
 									{% set valor = accion.valorAlcanzado[mes] ?? '' %}
-
-									<span class="mes-pill {{ activo ? 'mes-activo' : 'mes-inactivo' }}">
-										{{ mes }}
-										{% if valor is not empty %}:
-											{{ valor }}
+									<div class="ac-mes-pill-show {{ activo ? 'ac-mes-pill-show--active' : '' }}">
+										<span class="ac-mes-nombre">{{ mes }}</span>
+										{% if valor is not empty %}
+											<span class="ac-mes-valor">{{ valor }}</span>
 										{% endif %}
-									</span>
+									</div>
 								{% endfor %}
 							</div>
-						</td>
+						</div>
 
-					</tr>
+					</div>
+				</div>
 				{% endfor %}
 
-			</tbody>
-		</table>
+			</div>
 
+		{% endif %}
 	</div>
 
 
-	{# =========================================================RESPONSABLES DEL PROYECTO========================================================= #}
+	{# =========================================================
+	   4. RESPONSABLES DEL PROYECTO
+	   ========================================================= #}
 	<div class="card pta-card mb-4">
 
 		<div class="d-flex justify-content-between align-items-center mb-3">
@@ -231,39 +275,36 @@
 
 		</div>
 
+		<div class="resp-grid resp-grid--3">
 
-		<table class="pta-responsables-table">
+			<div class="resp-card">
+				<div class="resp-icon-wrap">
+					<i class="bi bi-person-fill"></i>
+				</div>
+				<div class="resp-role">Responsable del Proyecto</div>
+				<div class="resp-name">{{ encabezado.responsable ?? '—' }}</div>
+				<div class="resp-puesto">{{ encabezado.responsable.puesto.nombre ?? '—' }}</div>
+			</div>
 
-			<thead>
-				<tr>
-					<th>Rol</th>
-					<th>Nombre</th>
-					<th>Puesto</th>
-				</tr>
-			</thead>
+			<div class="resp-card">
+				<div class="resp-icon-wrap">
+					<i class="bi bi-person-badge"></i>
+				</div>
+				<div class="resp-role">Supervisor del Proyecto</div>
+				<div class="resp-name">{{ encabezado.responsables.supervisor }}</div>
+				<div class="resp-puesto">{{ encabezado.responsables.supervisor.puesto.nombre ?? '—' }}</div>
+			</div>
 
-			<tbody>
+			<div class="resp-card">
+				<div class="resp-icon-wrap">
+					<i class="bi bi-person-check"></i>
+				</div>
+				<div class="resp-role">Aval del Proyecto</div>
+				<div class="resp-name">{{ encabezado.responsables.aval }}</div>
+				<div class="resp-puesto">{{ encabezado.responsables.aval.puesto.nombre ?? '—' }}</div>
+			</div>
 
-				<tr>
-					<td>Responsable del proyecto</td>
-					<td>{{ encabezado.responsable ?? '—' }}</td>
-					<td>{{ encabezado.responsable.puesto.nombre ?? '—' }}</td>
-				</tr>
-
-				<tr>
-					<td>Supervisor del proyecto</td>
-					<td>{{ encabezado.responsables.supervisor }}</td>
-					<td>{{ encabezado.responsables.supervisor.puesto.nombre ?? '—' }}</td>
-				</tr>
-
-				<tr>
-					<td>Aval del proyecto</td>
-					<td>{{ encabezado.responsables.aval }}</td>
-					<td>{{ encabezado.responsables.aval.puesto.nombre ?? '—' }}</td>
-				</tr>
-
-			</tbody>
-		</table>
-
+		</div>
 	</div>
+
 </div>
