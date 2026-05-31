@@ -646,3 +646,503 @@
 .pta-show.pta-edit .ac-header {
     justify-content: flex-start;
 }
+
+/* =========================================================
+   EDIT — SECCIÓN ACCIONES: TOGGLES ✓/✗ POR MES
+   ---------------------------------------------------------
+   Diseño inspirado en toggle groups de uiverse.io:
+   cada mes es una tarjeta glassmorphism con dos botones
+   de selección excluyente. El botón activo se "llena" con
+   el color de su estado y emite un glow exterior.
+   ========================================================= */
+
+/* Grid de meses: máximo 6 columnas por fila.
+   Si la acción tiene 12 meses se distribuyen en 2 filas de 6.
+   Si tiene menos de 6 llenan columnas de izquierda a derecha. */
+.pta-show.pta-edit .ac-cumplimiento-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    padding: 4px 0;
+}
+
+/* Tarjeta glassmorphism por mes */
+.pta-show.pta-edit .ac-mes-toggle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 8px 10px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(17, 25, 40, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    /* min-width eliminado: el grid controla el ancho */
+    transition: border-color 0.25s ease, background 0.25s ease,
+                box-shadow 0.25s ease;
+}
+
+/* Nombre del mes */
+.pta-show.pta-edit .ac-mes-nombre {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: rgba(159, 179, 200, 0.7);
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+/* Par de botones toggle — contenedor tipo "pill group" */
+.pta-show.pta-edit .ac-mes-btns {
+    display: flex;
+    gap: 0;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+/* Botón base del toggle */
+.pta-show.pta-edit .ac-mes-btn {
+    width: 34px;
+    height: 34px;
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    padding: 0;
+    position: relative;
+}
+
+/* Separador central entre ✓ y ✗ */
+.pta-show.pta-edit .ac-mes-btn--si {
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 9px 0 0 9px;
+}
+
+.pta-show.pta-edit .ac-mes-btn--no {
+    border-radius: 0 9px 9px 0;
+}
+
+/* Hover genérico */
+.pta-show.pta-edit .ac-mes-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* ✓ ACTIVO — fondo verde sólido + glow */
+.pta-show.pta-edit .ac-mes-btn--si.active {
+    background: #1dd1a1;
+    color: #0a1f18;
+    font-weight: 900;
+    box-shadow: 0 0 14px rgba(29, 209, 161, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* ✗ ACTIVO — fondo rojo sólido + glow */
+.pta-show.pta-edit .ac-mes-btn--no.active {
+    background: #ff6b6b;
+    color: #1f0a0a;
+    font-weight: 900;
+    box-shadow: 0 0 14px rgba(255, 107, 107, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* La tarjeta entera reacciona al estado activo de sus hijos */
+.pta-show.pta-edit .ac-mes-toggle:has(.ac-mes-btn--si.active) {
+    border-color: rgba(29, 209, 161, 0.4);
+    background: rgba(29, 209, 161, 0.06);
+    box-shadow: 0 4px 20px rgba(29, 209, 161, 0.12);
+}
+
+.pta-show.pta-edit .ac-mes-toggle:has(.ac-mes-btn--si.active) .ac-mes-nombre {
+    color: #1dd1a1;
+}
+
+.pta-show.pta-edit .ac-mes-toggle:has(.ac-mes-btn--no.active) {
+    border-color: rgba(255, 107, 107, 0.4);
+    background: rgba(255, 107, 107, 0.06);
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.12);
+}
+
+.pta-show.pta-edit .ac-mes-toggle:has(.ac-mes-btn--no.active) .ac-mes-nombre {
+    color: #ff6b6b;
+}
+
+/* MES ACTUAL — anillo cian + fondo tenue */
+.pta-show.pta-edit .ac-mes-toggle--actual {
+    border-color: rgba(13, 202, 240, 0.45);
+    background: rgba(13, 202, 240, 0.05);
+    box-shadow: 0 0 0 1px rgba(13, 202, 240, 0.15);
+}
+
+.pta-show.pta-edit .ac-mes-toggle--actual .ac-mes-nombre {
+    color: #0dcaf0;
+}
+
+/* MES PASADO — anillo ámbar + indicador visual */
+.pta-show.pta-edit .ac-mes-toggle--pasado {
+    border-color: rgba(253, 203, 110, 0.3);
+    background: rgba(253, 203, 110, 0.04);
+}
+
+.pta-show.pta-edit .ac-mes-toggle--pasado .ac-mes-nombre {
+    color: rgba(253, 203, 110, 0.75);
+}
+
+/* MES FUTURO — visible pero claramente bloqueado.
+   Se usa un patrón de rayas diagonales como señal visual de "no disponible",
+   con suficiente opacidad para verse bien y el candado en ámbar destacado. */
+.pta-show.pta-edit .ac-mes-toggle--futuro {
+    opacity: 0.65;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.025) 0px,
+        rgba(255, 255, 255, 0.025) 2px,
+        rgba(17, 25, 40, 0.7)      2px,
+        rgba(17, 25, 40, 0.7)      8px
+    ) !important;
+    border: 1px dashed rgba(255, 255, 255, 0.18) !important;
+    box-shadow: none !important;
+}
+
+.pta-show.pta-edit .ac-mes-toggle--futuro .ac-mes-nombre {
+    color: rgba(255, 255, 255, 0.45);
+    text-decoration: none;
+}
+
+/* Candado en mes futuro — ámbar visible */
+.pta-show.pta-edit .ac-mes-futuro-badge {
+    font-size: 1rem;
+    color: rgba(253, 203, 110, 0.65);
+    height: 34px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================================================
+   EDIT — SECCIÓN INDICADORES: VALOR ACUMULADO MENSUAL
+   ---------------------------------------------------------
+   Diseño inspirado en input cards de glassmorphism.
+   Cada mes reportable es una mini-tarjeta independiente
+   con etiqueta arriba y campo numérico abajo.
+   Los estados (actual/pasado/futuro) se distinguen por
+   color de borde y glow al hacer focus.
+   ========================================================= */
+
+/* Tarjeta contenedora del indicador */
+.pta-show.pta-edit .indicador-avance-card {
+    background: rgba(17, 25, 40, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    border-radius: 16px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Cabecera de la tarjeta del indicador */
+.pta-show.pta-edit .ia-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 18px;
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.1),
+        rgba(13, 202, 240, 0.04) 60%
+    );
+    border-bottom: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+/* Nombre del indicador */
+.pta-show.pta-edit .ia-nombre {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e6e6e6;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pta-show.pta-edit .ia-nombre i {
+    color: #0dcaf0;
+    font-size: 1rem;
+}
+
+/* Badge meta + base */
+.pta-show.pta-edit .ia-meta-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(13, 202, 240, 0.08);
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    font-size: 0.78rem;
+    color: #9fb3c8;
+    white-space: nowrap;
+}
+
+.pta-show.pta-edit .ia-meta-badge strong {
+    color: #0dcaf0;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Hint objetivo real (esPorcentaje=true) */
+.pta-show.pta-edit .ia-meta-hint {
+    display: inline-block;
+    color: rgba(253, 203, 110, 0.8);
+    font-size: 0.76rem;
+    margin-left: 4px;
+}
+
+/* Grid de meses reportables: auto-fit para que todos los meses
+   ocupen el mismo ancho y llenen el espacio disponible.
+   Con minmax(80px, 1fr) cada celda crece igual hasta cubrir la fila. */
+.pta-show.pta-edit .ia-meses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 12px;
+    padding: 16px 18px;
+}
+
+/* Celda glassmorphism por mes */
+.pta-show.pta-edit .ia-mes-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 8px 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(17, 25, 40, 0.5);
+    /* min-width eliminado: el grid maneja el tamaño */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease,
+                background 0.2s ease;
+}
+
+/* Etiqueta del mes */
+.pta-show.pta-edit .ia-mes-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: rgba(159, 179, 200, 0.65);
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+/* Input numérico: ancho 100% para llenar la celda del grid */
+.pta-show.pta-edit .ia-mes-input {
+    width: 100%;
+    height: 42px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    border-radius: 9px;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.4);
+    padding: 4px 6px;
+    transition: border-color 0.2s ease, box-shadow 0.25s ease,
+                background 0.2s ease, color 0.2s ease;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* Quitar flechas nativas del input number */
+.pta-show.pta-edit .ia-mes-input::-webkit-outer-spin-button,
+.pta-show.pta-edit .ia-mes-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Focus: glow cian */
+.pta-show.pta-edit .ia-mes-input:focus {
+    outline: none;
+    border-color: #0dcaf0;
+    background: rgba(13, 202, 240, 0.1);
+    color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.2),
+                0 0 20px rgba(13, 202, 240, 0.15);
+}
+
+/* Input con valor ya guardado */
+.pta-show.pta-edit .ia-mes-input--con-valor {
+    background: rgba(13, 202, 240, 0.14) !important;
+    border-color: rgba(13, 202, 240, 0.6) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.18),
+                0 0 16px rgba(13, 202, 240, 0.12) !important;
+}
+
+/* La celda entera reacciona cuando tiene valor */
+.pta-show.pta-edit .ia-mes-item:has(.ia-mes-input--con-valor) {
+    border-color: rgba(13, 202, 240, 0.35);
+    background: rgba(13, 202, 240, 0.06);
+}
+
+.pta-show.pta-edit .ia-mes-item:has(.ia-mes-input--con-valor) .ia-mes-label {
+    color: rgba(13, 202, 240, 0.75);
+}
+
+/* MES ACTUAL — cian */
+.pta-show.pta-edit .ia-mes--actual .ia-mes-label {
+    color: #0dcaf0;
+}
+
+.pta-show.pta-edit .ia-mes--actual {
+    border-color: rgba(13, 202, 240, 0.35);
+    background: rgba(13, 202, 240, 0.06);
+}
+
+.pta-show.pta-edit .ia-mes--actual .ia-mes-input {
+    border-color: rgba(13, 202, 240, 0.4);
+    background: rgba(13, 202, 240, 0.07);
+    color: rgba(13, 202, 240, 0.6);
+}
+
+/* MES PASADO — ámbar + glow dorado al hacer focus */
+.pta-show.pta-edit .ia-mes--pasado .ia-mes-label {
+    color: rgba(253, 203, 110, 0.75);
+}
+
+.pta-show.pta-edit .ia-mes--pasado {
+    border-color: rgba(253, 203, 110, 0.25);
+    background: rgba(253, 203, 110, 0.04);
+}
+
+.pta-show.pta-edit .ia-mes--pasado .ia-mes-input {
+    border-color: rgba(253, 203, 110, 0.3);
+    background: rgba(253, 203, 110, 0.05);
+    color: rgba(253, 203, 110, 0.5);
+}
+
+.pta-show.pta-edit .ia-mes--pasado .ia-mes-input:focus {
+    border-color: #fdcb6e;
+    background: rgba(253, 203, 110, 0.1);
+    color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(253, 203, 110, 0.2),
+                0 0 20px rgba(253, 203, 110, 0.15);
+}
+
+/* MES FUTURO del indicador — visible y claramente bloqueado.
+   Mismo patrón de rayas que los meses de acción. */
+.pta-show.pta-edit .ia-mes--futuro {
+    opacity: 0.62;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        -45deg,
+        rgba(255, 255, 255, 0.025) 0px,
+        rgba(255, 255, 255, 0.025) 2px,
+        rgba(17, 25, 40, 0.7)      2px,
+        rgba(17, 25, 40, 0.7)      8px
+    ) !important;
+    border: 1px dashed rgba(255, 255, 255, 0.18) !important;
+    box-shadow: none !important;
+}
+
+.pta-show.pta-edit .ia-mes--futuro .ia-mes-label {
+    color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* Valor readonly para mes futuro — 100% del ancho de la celda */
+.pta-show.pta-edit .ia-mes-valor-readonly {
+    width: 100%;
+    height: 42px;
+    border-radius: 9px;
+    border: 1.5px dashed rgba(255, 255, 255, 0.12);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Candado ámbar visible */
+.pta-show.pta-edit .ia-mes-lock {
+    color: rgba(253, 203, 110, 0.6);
+    font-size: 0.95rem;
+}
+
+/* Párrafo de ayuda contextual */
+.pta-show.pta-edit .pta-avance-hint {
+    font-size: 0.83rem;
+    color: #9fb3c8;
+    background: rgba(13, 202, 240, 0.04);
+    border-left: 3px solid rgba(13, 202, 240, 0.45);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pta-show.pta-edit .pta-avance-hint i {
+    color: #0dcaf0;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* Hint objetivo real dentro de ic-display--num */
+.pta-show.pta-edit .ic-meta-hint {
+    font-size: 0.7rem;
+    color: rgba(253, 203, 110, 0.7);
+    display: block;
+    margin-top: 3px;
+    font-weight: 400;
+}
+
+/* =========================================================
+   RESPONSIVE — MÓVIL (<576px)
+   ========================================================= */
+@media (max-width: 575px) {
+
+    /* En móvil: acciones en 3 columnas (de 6 → 3) */
+    .pta-show.pta-edit .ac-cumplimiento-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .pta-show.pta-edit .ia-meses-grid {
+        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+        gap: 8px;
+    }
+
+    .pta-show.pta-edit .ac-mes-toggle,
+    .pta-show.pta-edit .ia-mes-item {
+        padding: 9px 7px 8px;
+    }
+
+    .pta-show.pta-edit .ac-mes-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+
+    .pta-show.pta-edit .ia-mes-input,
+    .pta-show.pta-edit .ia-mes-valor-readonly {
+        width: 100%; /* ya hereda del grid */
+        height: 38px;
+        font-size: 0.9rem;
+    }
+}

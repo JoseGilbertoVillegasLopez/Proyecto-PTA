@@ -574,6 +574,502 @@
 }
 
 /* =========================================================
+   PTA — ACCORDION POR INDICADOR
+   ---------------------------------------------------------
+   Un card expandible por cada indicador que agrupa:
+     1. Info del indicador (readonly)
+     2. Acciones del indicador (toggles en edit, pills en show)
+     3. Avance mensual del indicador
+   Se aplica tanto en .pta-edit como en .pta-show.
+   ========================================================= */
+
+/* Contenedor del accordion */
+.pta-show .pta-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Cada item del accordion */
+.pta-show .pta-accordion .accordion-item {
+    background: rgba(17, 25, 40, 0.65) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(13, 202, 240, 0.22) !important;
+    border-radius: 16px !important;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pta-show .pta-accordion .accordion-item:has(.accordion-button:not(.collapsed)) {
+    border-color: rgba(13, 202, 240, 0.45) !important;
+    box-shadow: 0 8px 32px rgba(13, 202, 240, 0.12), 0 6px 24px rgba(0,0,0,0.35);
+}
+
+/* Botón de cabecera del accordion */
+.pta-show .pta-accordion .accordion-button {
+    background: linear-gradient(135deg, rgba(13, 202, 240, 0.09), rgba(13, 202, 240, 0.03) 70%) !important;
+    color: #c8d8e8 !important;
+    font-weight: 600;
+    font-size: 0.93rem;
+    padding: 14px 18px;
+    border: none !important;
+    box-shadow: none !important;
+    gap: 10px;
+    align-items: center;
+}
+
+.pta-show .pta-accordion .accordion-button:not(.collapsed) {
+    background: linear-gradient(135deg, rgba(13, 202, 240, 0.14), rgba(13, 202, 240, 0.05) 70%) !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid rgba(13, 202, 240, 0.15) !important;
+}
+
+/* Flecha del accordion — color blanco */
+.pta-show .pta-accordion .accordion-button::after {
+    filter: brightness(0) invert(1);
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.pta-show .pta-accordion .accordion-button:not(.collapsed)::after {
+    opacity: 0.9;
+    filter: brightness(0) saturate(100%) invert(57%) sepia(95%) saturate(456%) hue-rotate(158deg) brightness(104%) contrast(94%);
+}
+
+/* Número del indicador en la cabecera */
+.pta-show .pta-accordion .pta-acc-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(13, 202, 240, 0.15);
+    border: 1px solid rgba(13, 202, 240, 0.4);
+    color: #0dcaf0;
+    font-size: 0.75rem;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+/* Título del indicador en la cabecera */
+.pta-show .pta-accordion .pta-acc-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Badges de meta/tendencia en la cabecera */
+.pta-show .pta-accordion .pta-acc-badges {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-right: 8px;
+}
+
+.pta-show .pta-accordion .pta-acc-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.pta-show .pta-accordion .pta-acc-badge--meta {
+    background: rgba(13, 202, 240, 0.12);
+    border: 1px solid rgba(13, 202, 240, 0.3);
+    color: #0dcaf0;
+}
+
+.pta-show .pta-accordion .pta-acc-badge--positiva {
+    background: rgba(29, 209, 161, 0.12);
+    border: 1px solid rgba(29, 209, 161, 0.3);
+    color: #1dd1a1;
+}
+
+.pta-show .pta-accordion .pta-acc-badge--negativa {
+    background: rgba(255, 107, 107, 0.12);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    color: #ff6b6b;
+}
+
+/* Cuerpo del accordion */
+.pta-show .pta-accordion .accordion-body {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.pta-show .pta-accordion .accordion-collapse {
+    background: transparent !important;
+}
+
+/* Sub-secciones dentro del cuerpo */
+.pta-show .pta-acc-section {
+    padding: 16px 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Etiqueta de sub-sección */
+.pta-show .pta-acc-section-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #9fb3c8;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pta-show .pta-acc-section-label i {
+    color: #0dcaf0;
+    font-size: 0.85rem;
+}
+
+/* Sección de info del indicador */
+.pta-show .pta-acc-section--info {
+    background: rgba(13, 202, 240, 0.02);
+}
+
+/* Sección de acciones */
+.pta-show .pta-acc-section--acciones {
+    background: transparent;
+}
+
+/* Sección de avance mensual */
+.pta-show .pta-acc-section--avance {
+    background: rgba(13, 202, 240, 0.015);
+    border-radius: 0 0 16px 16px;
+}
+
+/* Mensaje "sin acciones" dentro del accordion */
+.pta-show .pta-acc-empty {
+    color: #9fb3c8;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 8px 0;
+    opacity: 0.6;
+}
+
+/* =========================================================
+   PTA — ACCIONES: GRID 2 COLUMNAS DENTRO DEL ACCORDION
+   ---------------------------------------------------------
+   Mismo patrón que en reporte PTA:
+   - 1 acción  → 100% ancho
+   - 2+ acciones → 50% cada una (2 columnas)
+   - La última acción si hay número impar → 100% (ocupa fila completa)
+   ========================================================= */
+
+/* Contenedor flex del grid de acciones */
+.pta-show .pta-acc-acciones-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* Cada acción ocupa la mitad — 2 columnas */
+.pta-show .pta-acc-acciones-grid .accion-card {
+    width: calc(50% - 6px);
+    margin-bottom: 0; /* el gap reemplaza el margin */
+}
+
+/* Si hay 1 sola acción o la última es impar → ocupa el 100% */
+.pta-show .pta-acc-acciones-grid .accion-card:only-child,
+.pta-show .pta-acc-acciones-grid .accion-card:nth-child(odd):last-child {
+    width: 100%;
+}
+
+/* Responsive: 1 columna en móvil */
+@media (max-width: 768px) {
+    .pta-show .pta-acc-acciones-grid .accion-card {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   SHOW — ACCIONES: PILLS DE CUMPLIMIENTO ✓/✗
+   ---------------------------------------------------------
+   Grid de pills compactas con estado visual claro:
+     --si        → cumplida   (verde con glow)
+     --no        → no cumplida (rojo con glow)
+     --pendiente → sin registrar (gris neutro)
+   ========================================================= */
+
+/* Grid de pills: mismo patrón que edit — máx 6 por fila.
+   Las pills crecen igual para llenar cada columna. */
+.pta-show .ac-cumplimiento-show {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    padding: 4px 0;
+}
+
+/* Pill base — sin min-width fijo, el grid controla el ancho */
+.pta-show .ac-mes-pill-show {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 6px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(17, 25, 40, 0.5);
+    backdrop-filter: blur(8px);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.25);
+    text-align: center;
+    transition: none;
+}
+
+/* =========================================================
+   SHOW — RESPONSIVE: 3 columnas en móvil
+   ========================================================= */
+@media (max-width: 768px) {
+    .pta-show .ac-cumplimiento-show {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Nombre del mes */
+.pta-show .ac-mes-pill-show .ac-mes-nombre {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Icono de estado */
+.pta-show .ac-mes-pill-show .ac-mes-estado {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* CUMPLIDA ✓ — verde con glow */
+.pta-show .ac-mes-pill-show--si {
+    background: rgba(29, 209, 161, 0.12);
+    border-color: rgba(29, 209, 161, 0.5);
+    box-shadow: 0 0 14px rgba(29, 209, 161, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    color: #1dd1a1;
+}
+
+.pta-show .ac-mes-pill-show--si .ac-mes-nombre {
+    color: rgba(29, 209, 161, 0.65);
+}
+
+/* NO CUMPLIDA ✗ — rojo con glow */
+.pta-show .ac-mes-pill-show--no {
+    background: rgba(255, 107, 107, 0.12);
+    border-color: rgba(255, 107, 107, 0.5);
+    box-shadow: 0 0 14px rgba(255, 107, 107, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    color: #ff6b6b;
+}
+
+.pta-show .ac-mes-pill-show--no .ac-mes-nombre {
+    color: rgba(255, 107, 107, 0.65);
+}
+
+/* PENDIENTE — gris neutro */
+.pta-show .ac-mes-pill-show--pendiente {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.18);
+}
+
+
+/* =========================================================
+   SHOW — INDICADORES: AVANCE MENSUAL (SOLO LECTURA)
+   ---------------------------------------------------------
+   Glassmorphism igual que en edit pero sin interacción.
+   Las celdas con valor brillan en cian; sin valor son grises.
+   ========================================================= */
+
+/* Tarjeta de avance del indicador */
+.pta-show .indicador-avance-card-show {
+    background: rgba(17, 25, 40, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* Cabecera */
+.pta-show .indicador-avance-card-show .ia-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 14px 18px;
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.1),
+        rgba(13, 202, 240, 0.04) 60%
+    );
+    border-bottom: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+.pta-show .indicador-avance-card-show .ia-nombre {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e6e6e6;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pta-show .indicador-avance-card-show .ia-nombre i {
+    color: var(--pta-primary);
+    font-size: 1rem;
+}
+
+.pta-show .indicador-avance-card-show .ia-meta-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(13, 202, 240, 0.08);
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    font-size: 0.78rem;
+    color: #9fb3c8;
+}
+
+.pta-show .indicador-avance-card-show .ia-meta-badge strong {
+    color: var(--pta-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Grid de meses snapshot: auto-fit igual que en edit */
+.pta-show .ia-meses-show {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+    gap: 10px;
+    padding: 16px 18px 8px;
+}
+
+/* Celda de mes (solo lectura) */
+.pta-show .ia-mes-show {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-width: 72px;
+    padding: 10px 8px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(17, 25, 40, 0.5);
+}
+
+/* Etiqueta del mes */
+.pta-show .ia-mes-show .ia-mes-label {
+    font-size: 0.67rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: rgba(159, 179, 200, 0.5);
+    line-height: 1;
+}
+
+/* Valor numérico */
+.pta-show .ia-mes-show .ia-mes-valor {
+    font-size: 1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: rgba(255, 255, 255, 0.18);
+    line-height: 1;
+}
+
+/* Celda CON VALOR — cian + glow */
+.pta-show .ia-mes-show--con-valor {
+    background: rgba(13, 202, 240, 0.1);
+    border-color: rgba(13, 202, 240, 0.45);
+    box-shadow: 0 0 14px rgba(13, 202, 240, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.pta-show .ia-mes-show--con-valor .ia-mes-label {
+    color: rgba(13, 202, 240, 0.65);
+}
+
+.pta-show .ia-mes-show--con-valor .ia-mes-valor {
+    color: #0dcaf0;
+}
+
+/* Celda SIN VALOR */
+.pta-show .ia-mes-show--vacio .ia-mes-valor {
+    color: rgba(255, 255, 255, 0.12);
+    font-size: 0.85rem;
+}
+
+/* Bloque de porcentaje de avance */
+.pta-show .ia-progreso {
+    padding: 10px 18px 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 4px;
+}
+
+.pta-show .ia-progreso-label {
+    font-size: 0.82rem;
+    color: #9fb3c8;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pta-show .ia-progreso-label strong {
+    color: #ffffff;
+    font-size: 1rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.pta-show .ia-progreso-detalle {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.77rem;
+}
+
+/* Barra de progreso — pill con animación */
+.pta-show .ia-progress-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.pta-show .ia-progress-bar .progress-bar {
+    border-radius: 999px;
+    transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 8px currentColor;
+}
+
+/* Hint de meta relativa en ic-display */
+.pta-show .ic-meta-hint {
+    font-size: 0.7rem;
+    color: rgba(253, 203, 110, 0.6);
+    display: block;
+    margin-top: 3px;
+    font-weight: 400;
+}
+
+/* =========================================================
    SHOW — RESPONSABLES: 3 COLUMNAS
    ========================================================= */
 
