@@ -119,7 +119,8 @@ class PtaTrimestreCalculoService
                     $valorBase,
                     $meta,
                     $tendencia,
-                    $esPorcentaje
+                    $esPorcentaje,
+                    $indicador->isCapturaEnPorcentaje()
                 );
             }
 
@@ -132,6 +133,7 @@ class PtaTrimestreCalculoService
                 'resultado'           => $sinDato ? null : round($ultimoValor, 2),
                 'porcentaje'          => $porcentaje,
                 'es_porcentaje'       => $esPorcentaje,
+                'captura_porcentaje'  => $indicador->isCapturaEnPorcentaje(),
                 'formula_descripcion' => $indicador->getFormula(),
                 'sin_dato'            => $sinDato,
             ];
@@ -142,6 +144,12 @@ class PtaTrimestreCalculoService
 
     /**
      * Aplica la fórmula de porcentaje de avance según el tipo de indicador.
+     *
+     * Casos:
+     *   esPorcentaje=false → meta neto: ((actual-base)/(meta-base))×100
+     *   esPorcentaje=true, capturaEnPorcentaje=false → meta=% cambio: ((actual-base)/(base×meta/100))×100
+     *   esPorcentaje=true, capturaEnPorcentaje=true  → meta=% objetivo: ((actual-base)/(meta-base))×100
+     *
      * Resultado acotado al rango [0, 100].
      */
     private function calcularPorcentaje(
@@ -149,13 +157,14 @@ class PtaTrimestreCalculoService
         float $valorBase,
         float $meta,
         string $tendencia,
-        bool $esPorcentaje
+        bool $esPorcentaje,
+        bool $capturaEnPorcentaje = false
     ): float {
-        if ($esPorcentaje) {
-            // Meta es % de cambio relativo al base
+        if ($esPorcentaje && !$capturaEnPorcentaje) {
+            // Meta es % de cambio relativo al base (Opción A)
             $denominador = $valorBase * $meta / 100;
         } else {
-            // Meta es valor neto absoluto
+            // Meta es valor neto o % objetivo directo
             $denominador = abs($meta - $valorBase);
         }
 

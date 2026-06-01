@@ -107,10 +107,29 @@ class Indicadores
      *
      * false → meta es un valor neto (ej. llegar a 1000)
      * true  → meta es % de incremento/decremento sobre el base
-     *          Los valores mensuales siguen siendo absolutos.
      */
     #[ORM\Column(options: ['default' => false])]
     private bool $esPorcentaje = false;
+
+    /**
+     * Solo aplica cuando esPorcentaje = true.
+     *
+     * Determina la unidad en que el responsable capturará
+     * el avance mensual del indicador:
+     *
+     *   false (default): captura en valor absoluto
+     *     → valorBase y valorMensual en la misma unidad física
+     *     → meta = % de cambio deseado (ej. 30 = crecer 30%)
+     *     → fórmula: ((actual-base)/(base×meta/100))×100
+     *
+     *   true: captura en porcentaje (0-100)
+     *     → el indicador SE MIDE en % (ej. eficiencia terminal)
+     *     → valorBase y valorMensual son porcentajes (ej. 60, 75)
+     *     → meta = porcentaje objetivo directo (ej. 85 = llegar al 85%)
+     *     → fórmula: ((actual-base)/(meta-base))×100
+     */
+    #[ORM\Column(options: ['default' => false])]
+    private bool $capturaEnPorcentaje = false;
 
     /**
      * Valores mensuales registrados por el responsable.
@@ -250,6 +269,17 @@ class Indicadores
     public function setEsPorcentaje(bool $esPorcentaje): static
     {
         $this->esPorcentaje = $esPorcentaje;
+        return $this;
+    }
+
+    public function isCapturaEnPorcentaje(): bool
+    {
+        return $this->capturaEnPorcentaje;
+    }
+
+    public function setCapturaEnPorcentaje(bool $capturaEnPorcentaje): static
+    {
+        $this->capturaEnPorcentaje = $capturaEnPorcentaje;
         return $this;
     }
 

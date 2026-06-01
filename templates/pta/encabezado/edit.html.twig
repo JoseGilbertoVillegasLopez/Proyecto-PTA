@@ -329,8 +329,13 @@
 											<span class="ia-meta-badge">
 												Meta: <strong>{{ indicador.valor }}{% if indicador.esPorcentaje %}%{% endif %}</strong>
 												| Base: <strong>{{ indicador.valorBase }}</strong>
-												{% if indicador.esPorcentaje %}
+												{% if indicador.esPorcentaje and not indicador.capturaEnPorcentaje %}
 													<span class="ia-meta-hint">(objetivo ≈ {{ (indicador.valorBase * indicador.valor / 100 + indicador.valorBase)|round(0) }})</span>
+												{% endif %}
+												{% if indicador.capturaEnPorcentaje %}
+													<span class="ia-meta-hint" style="color:rgba(13,202,240,.75);">
+														<i class="bi bi-percent"></i> Captura mensual en %
+													</span>
 												{% endif %}
 											</span>
 										</div>
@@ -356,12 +361,15 @@
 													data-mes-numero="{{ numMes }}"
 													data-indicador-id="{{ indicador.id }}">
 
-													<label class="ia-mes-label">{{ mes }}</label>
+													{# Etiqueta del mes + símbolo % cuando la captura es en porcentaje #}
+													<label class="ia-mes-label">
+														{{ mes }}{% if indicador.capturaEnPorcentaje %}<span style="color:rgba(13,202,240,.6);font-size:.6rem;"> %</span>{% endif %}
+													</label>
 
 													{% if esFuturo %}
 														<div class="ia-mes-valor-readonly">
 															{% if valorActual is not empty %}
-																{{ valorActual }}
+																{{ valorActual }}{% if indicador.capturaEnPorcentaje %}<small style="font-size:.7rem;">%</small>{% endif %}
 															{% else %}
 																<span class="ia-mes-lock"><i class="bi bi-lock"></i></span>
 															{% endif %}
@@ -372,12 +380,14 @@
 															class="ia-mes-input {{ valorActual is not empty ? 'ia-mes-input--con-valor' : '' }}"
 															value="{{ valorActual }}"
 															min="0"
+															{% if indicador.capturaEnPorcentaje %}max="100"{% endif %}
 															step="any"
-															placeholder="—"
+															placeholder="{{ indicador.capturaEnPorcentaje ? '0-100' : '—' }}"
 															data-mes="{{ mes }}"
 															data-mes-numero="{{ numMes }}"
 															data-indicador-id="{{ indicador.id }}"
 															data-es-pasado="{{ esPasado ? '1' : '0' }}"
+															data-captura-pct="{{ indicador.capturaEnPorcentaje ? '1' : '0' }}"
 															data-valor-anterior="{{ valorActual }}">
 													{% endif %}
 

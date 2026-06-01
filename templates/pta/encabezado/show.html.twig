@@ -150,7 +150,11 @@
 					{% set vb = indicador.valorBase|number_format(2, '.', '') %}
 					{% set mt = indicador.valor|number_format(2, '.', '') %}
 					{% set ac = ultimoValor|number_format(2, '.', '') %}
-					{% if indicador.esPorcentaje %}
+					{# Fórmula según tipo de indicador:
+						 - esPorcentaje=false  → meta neto:       ((ac-vb)/(mt-vb))×100
+						 - esPorcentaje=true, capturaEnPorcentaje=false → meta=% cambio: ((ac-vb)/(vb×mt/100))×100
+						 - esPorcentaje=true, capturaEnPorcentaje=true  → meta=% objetivo:((ac-vb)/(mt-vb))×100 #}
+					{% if indicador.esPorcentaje and not indicador.capturaEnPorcentaje %}
 						{% set den = vb * mt / 100 %}
 						{% if indicador.tendencia == 'POSITIVA' %}
 							{% set pctHeader = den > 0 ? ((ac - vb) / den * 100)|round(1) : 0 %}
@@ -354,8 +358,14 @@
 										{% for mes in mesesReportablesOrdenados %}
 											{% set valorMes = indicador.valorMensual[mes] ?? null %}
 											<div class="ia-mes-show {{ valorMes is not null ? 'ia-mes-show--con-valor' : 'ia-mes-show--vacio' }}">
-												<span class="ia-mes-label">{{ mes }}</span>
-												<span class="ia-mes-valor">{{ valorMes is not null ? valorMes : '—' }}</span>
+												<span class="ia-mes-label">
+													{{ mes }}{% if indicador.capturaEnPorcentaje %}<span style="color:rgba(13,202,240,.6);font-size:.6rem;"> %</span>{% endif %}
+												</span>
+												<span class="ia-mes-valor">
+													{% if valorMes is not null %}
+														{{ valorMes }}{% if indicador.capturaEnPorcentaje %}<small style="font-size:.75rem;">%</small>{% endif %}
+													{% else %}—{% endif %}
+												</span>
 											</div>
 										{% endfor %}
 									</div>

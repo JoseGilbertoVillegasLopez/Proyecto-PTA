@@ -1061,6 +1061,72 @@ select[name$="[anioEjecucion]"].pta-input {
 }
 
 /* =========================================================
+   CAPTURA EN PORCENTAJE — bloque condicional en indicador
+   ---------------------------------------------------------
+   Solo visible cuando esPorcentaje=true.
+   Pregunta al usuario cómo registrará su avance mensual.
+   ========================================================= */
+
+.captura-pct-wrap {
+    background: rgba(13, 202, 240, 0.05);
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.captura-pct-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #9fb3c8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.captura-pct-label i {
+    color: #0dcaf0;
+}
+
+/* Botones del toggle de captura */
+.captura-abs-btn,
+.captura-pct-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.78rem;
+    padding: 6px 12px;
+    height: auto;
+}
+
+.captura-abs-btn.active {
+    background: rgba(29, 209, 161, 0.18);
+    border-color: rgba(29, 209, 161, 0.5);
+    color: #1dd1a1;
+}
+
+.captura-pct-btn.active {
+    background: rgba(13, 202, 240, 0.18);
+    border-color: rgba(13, 202, 240, 0.5);
+    color: #0dcaf0;
+}
+
+.captura-abs-btn:hover:not(.active),
+.captura-pct-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+/* Hint explicativo debajo de los botones */
+.captura-pct-hint {
+    font-size: 0.72rem;
+    color: rgba(159, 179, 200, 0.65);
+    margin-top: 6px;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+/* =========================================================
    CONTENEDOR DE ACCIONES
    ========================================================= */
 .acciones-container {

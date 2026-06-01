@@ -146,6 +146,23 @@ class IndicadoresType extends AbstractType
             ->add('esPorcentaje', CheckboxType::class, [
                 'required' => false,
                 'attr'     => ['class' => 'es-porcentaje-hidden'],
+            ])
+
+            /**
+             * =============================================
+             * MODO DE CAPTURA MENSUAL (solo si esPorcentaje=true)
+             * ---------------------------------------------
+             * false → captura absoluta (misma unidad que valorBase)
+             * true  → captura en porcentaje (0-100)
+             *         aplica cuando el indicador se mide en %
+             *         (ej. eficiencia terminal, satisfacción)
+             *
+             * El JS muestra/oculta este campo según esPorcentaje.
+             * =============================================
+             */
+            ->add('capturaEnPorcentaje', CheckboxType::class, [
+                'required' => false,
+                'attr'     => ['class' => 'captura-pct-hidden'],
             ]);
     }
 

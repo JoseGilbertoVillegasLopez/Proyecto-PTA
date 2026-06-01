@@ -402,6 +402,14 @@ initPersonalSearch({
                 esPorcentajeCheck.value = '0';
             }
 
+            // capturaEnPorcentaje: convertir checkbox → hidden
+            // El bloque visual se añade dentro del card HTML
+            const capturaPctCheck = temp.querySelector('[name$="[capturaEnPorcentaje]"]');
+            if (capturaPctCheck) {
+                capturaPctCheck.type = 'hidden';
+                capturaPctCheck.value = '0';
+            }
+
             // Número secuencial visible del card
             const cardNum = indicadoresHolder.querySelectorAll(".indicator-card").length + 1;
 
@@ -452,10 +460,33 @@ initPersonalSearch({
                             <div class="meta-input-wrap">
                                 ${temp.querySelector('[name$="[valor]"]').outerHTML}
                                 ${esPorcentajeCheck ? esPorcentajeCheck.outerHTML : ''}
+                                ${capturaPctCheck   ? capturaPctCheck.outerHTML   : ''}
                                 <div class="tipo-toggle btn-group btn-group-sm" role="group">
                                     <button type="button" class="btn tipo-btn tipo-abs active" title="Valor absoluto">#</button>
                                     <button type="button" class="btn tipo-btn tipo-pct" title="Porcentaje">%</button>
                                 </div>
+                            </div>
+
+                            <!--
+                                Bloque capturaEnPorcentaje — solo visible cuando esPorcentaje=true.
+                                Pregunta al usuario cómo capturará el avance mensual:
+                                  - Valor absoluto: misma unidad que valorBase
+                                  - Porcentaje: el indicador se mide en % (ej. eficiencia terminal)
+                            -->
+                            <div class="captura-pct-wrap" style="display:none; margin-top:10px;">
+                                <div class="captura-pct-label">
+                                    <i class="bi bi-pencil-square"></i>
+                                    ¿Cómo registrarás el avance mensual?
+                                </div>
+                                <div class="btn-group btn-group-sm" role="group" style="margin-top:6px;">
+                                    <button type="button" class="btn captura-abs-btn active" title="Captura en valor absoluto (misma unidad que el valor base)">
+                                        <i class="bi bi-123"></i> Valor absoluto
+                                    </button>
+                                    <button type="button" class="btn captura-pct-btn" title="Captura en porcentaje (el indicador se mide en %)">
+                                        <i class="bi bi-percent"></i> Porcentaje %
+                                    </button>
+                                </div>
+                                <div class="captura-pct-hint"></div>
                             </div>
                         </div>
                         <div class="ic-field ic-field--periodo">
@@ -478,23 +509,79 @@ initPersonalSearch({
                 </div>
             `;
 
-            // Toggle # / %
+            // Toggle # / % (esPorcentaje)
             const hiddenPct = card.querySelector('[name$="[esPorcentaje]"]');
             const btnAbs    = card.querySelector('.tipo-abs');
             const btnPct    = card.querySelector('.tipo-pct');
+
+            // Toggle de modo de captura (capturaEnPorcentaje) —
+            // solo visible cuando esPorcentaje=true.
+            // Pregunta al usuario si capturará % o valor absoluto mensualmente.
+            const hiddenCapturaPct = card.querySelector('[name$="[capturaEnPorcentaje]"]');
+            const capturaPctWrap   = card.querySelector('.captura-pct-wrap');
+
+            /**
+             * Sincroniza la visibilidad del bloque capturaEnPorcentaje
+             * según el estado actual de esPorcentaje.
+             */
+            function syncCapturaPctVisibility() {
+                if (!capturaPctWrap) return;
+                if (hiddenPct && hiddenPct.value === '1') {
+                    capturaPctWrap.style.display = 'block';
+                } else {
+                    capturaPctWrap.style.display = 'none';
+                    // Al ocultar, resetear capturaEnPorcentaje a false
+                    if (hiddenCapturaPct) hiddenCapturaPct.value = '0';
+                    // Resetear botones visibles si existen
+                    const btnCapAbs = capturaPctWrap?.querySelector('.captura-abs-btn');
+                    const btnCapPct = capturaPctWrap?.querySelector('.captura-pct-btn');
+                    if (btnCapAbs) btnCapAbs.classList.add('active');
+                    if (btnCapPct) btnCapPct.classList.remove('active');
+                }
+            }
 
             if (hiddenPct && btnAbs && btnPct) {
                 btnAbs.addEventListener('click', () => {
                     hiddenPct.value = '0';
                     btnAbs.classList.add('active');
                     btnPct.classList.remove('active');
+                    syncCapturaPctVisibility();
                 });
                 btnPct.addEventListener('click', () => {
                     hiddenPct.value = '1';
                     btnPct.classList.add('active');
                     btnAbs.classList.remove('active');
+                    syncCapturaPctVisibility();
                 });
             }
+
+            // Toggle dentro de capturaEnPorcentaje (Absoluto / Porcentaje)
+            const btnCapAbs  = card.querySelector('.captura-abs-btn');
+            const btnCapPct  = card.querySelector('.captura-pct-btn');
+            const capturHint = card.querySelector('.captura-pct-hint');
+
+            const HINT_ABS = 'Registrarás números en la misma unidad que el valor base (alumnos, pesos, proyectos…)';
+            const HINT_PCT = 'Registrarás porcentajes (0-100). Úsalo cuando el indicador se mide en % (eficiencia terminal, satisfacción…)';
+
+            if (hiddenCapturaPct && btnCapAbs && btnCapPct) {
+                btnCapAbs.addEventListener('click', () => {
+                    hiddenCapturaPct.value = '0';
+                    btnCapAbs.classList.add('active');
+                    btnCapPct.classList.remove('active');
+                    if (capturHint) capturHint.textContent = HINT_ABS;
+                });
+                btnCapPct.addEventListener('click', () => {
+                    hiddenCapturaPct.value = '1';
+                    btnCapPct.classList.add('active');
+                    btnCapAbs.classList.remove('active');
+                    if (capturHint) capturHint.textContent = HINT_PCT;
+                });
+                // Hint inicial
+                if (capturHint) capturHint.textContent = HINT_ABS;
+            }
+
+            // Estado inicial (oculto porque esPorcentaje empieza en false)
+            syncCapturaPctVisibility();
 
             // Re-aplicar enforceOnlyDigits sobre los elementos reales del card
             const cardValorBase = card.querySelector('[name$="[valorBase]"]');

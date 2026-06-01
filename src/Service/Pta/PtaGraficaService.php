@@ -97,7 +97,14 @@ class PtaGraficaService
                 }
             }
 
-            $porcentaje = $this->calcularPorcentaje($ultimoValor, $valorBase, $meta, $tendencia, $esPorcentaje);
+            $porcentaje = $this->calcularPorcentaje(
+                $ultimoValor,
+                $valorBase,
+                $meta,
+                $tendencia,
+                $esPorcentaje,
+                $indicador->isCapturaEnPorcentaje()
+            );
 
             /* =====================================================
              * 4) RESUMEN DE ACCIONES ASOCIADAS
@@ -110,12 +117,13 @@ class PtaGraficaService
              * 5) RESULTADO PARA ESTE INDICADOR
              * ===================================================== */
             $graficas[] = [
-                'indicador'    => $indicador->getIndicador(),
-                'tendencia'    => $tendencia,
-                'valor_base'   => $valorBase,
-                'meta'         => $meta,
-                'es_porcentaje' => $esPorcentaje,
-                'serie'        => $serie,
+                'indicador'          => $indicador->getIndicador(),
+                'tendencia'          => $tendencia,
+                'valor_base'         => $valorBase,
+                'meta'               => $meta,
+                'es_porcentaje'      => $esPorcentaje,
+                'captura_porcentaje' => $indicador->isCapturaEnPorcentaje(),
+                'serie'              => $serie,
                 'porcentaje'   => $porcentaje,
                 'acciones'     => $accionesResumen,
             ];
@@ -154,9 +162,20 @@ class PtaGraficaService
     /**
      * Calcula el porcentaje de avance según la fórmula del indicador.
      *
-     * Cuando esPorcentaje=true, la meta representa el % de cambio
-     * relativo al valorBase (Opción A). El denominador es base * meta/100.
-     * Cuando esPorcentaje=false, la meta es un valor neto absoluto.
+     * Hay tres casos:
+     *
+     * 1. esPorcentaje=false:
+     *    Meta es un valor neto absoluto.
+     *    Fórmula: ((actual-base) / (meta-base)) × 100
+     *
+     * 2. esPorcentaje=true, capturaEnPorcentaje=false (Opción A):
+     *    Meta es un % de cambio relativo al base. Captura en absolutos.
+     *    Fórmula: ((actual-base) / (base × meta/100)) × 100
+     *
+     * 3. esPorcentaje=true, capturaEnPorcentaje=true:
+     *    El indicador se mide en %. Meta es el % objetivo directo.
+     *    Fórmula: ((actual-base) / (meta-base)) × 100
+     *    (misma que el caso 1, pero todas las cifras están en % 0-100)
      *
      * El resultado se acota al rango [0, 100].
      */
@@ -165,17 +184,18 @@ class PtaGraficaService
         float $valorBase,
         float $meta,
         string $tendencia,
-        bool $esPorcentaje
+        bool $esPorcentaje,
+        bool $capturaEnPorcentaje = false
     ): float {
         if ($ultimoValor === null) {
             return 0.0;
         }
 
-        if ($esPorcentaje) {
-            // Denominador = porcentaje de cambio esperado en términos absolutos
+        if ($esPorcentaje && !$capturaEnPorcentaje) {
+            // Caso 2: meta es % de cambio, captura en absolutos
             $denominador = $valorBase * $meta / 100;
         } else {
-            // Denominador = distancia entre base y meta
+            // Caso 1 y 3: denominador = distancia entre base y meta
             $denominador = abs($meta - $valorBase);
         }
 
@@ -186,7 +206,6 @@ class PtaGraficaService
         if ($tendencia === 'POSITIVA') {
             $porcentaje = (($ultimoValor - $valorBase) / $denominador) * 100;
         } else {
-            // NEGATIVA: queremos que el valor baje
             $porcentaje = (($valorBase - $ultimoValor) / $denominador) * 100;
         }
 
