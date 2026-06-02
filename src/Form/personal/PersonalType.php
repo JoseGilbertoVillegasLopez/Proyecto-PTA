@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\personal;
 // Namespace del formulario dentro de la carpeta Form
 
 use App\Entity\Departamento;
@@ -30,7 +30,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 // Permite configurar opciones del formulario (como data_class)
 
-
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class PersonalType extends AbstractType
 // Formulario base para CREAR un registro de Personal
@@ -167,6 +169,56 @@ class PersonalType extends AbstractType
                         ->orderBy('d.nombre', 'ASC');
                         // Ordena alfabéticamente
                 },
+            ])
+
+            ->add('nombramiento_pdf', FileType::class, [
+                'label' => 'Dictamen PDF',
+                'mapped' => false,
+                'required' => false,
+
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'application/pdf',
+                        ],
+                        'mimeTypesMessage' => 'Solo se permiten archivos PDF',
+                    ])
+                ],
+
+                'attr' => [
+                    'accept' => '.pdf',
+                    'class' => 'personal-new-file'
+                ]
+            ])
+
+            ->add('nombramiento_tipo', ChoiceType::class, [
+
+                'label' => 'Tipo de nombramiento',
+
+                'mapped' => false,
+
+                'required' => false,
+
+                'placeholder' => 'Selecciona un tipo',
+
+                'choices' => [
+
+                    'Temporal' => 'Temporal',
+
+                    'Fijo' => 'Fijo',
+
+                    'Interino' => 'Interino',
+
+                    'Honorarios' => 'Honorarios',
+
+                    'Otro' => 'Otro',
+
+                ],
+
+                'attr' => [
+                    'class' => 'personal-new-select'
+                ]
             ])
 
         ;

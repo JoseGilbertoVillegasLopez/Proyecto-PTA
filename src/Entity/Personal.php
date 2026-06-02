@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Nombramiento;
 use App\Repository\PersonalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -27,7 +28,7 @@ class Personal
     #[ORM\Column(length: 255)]
     private ?string $correo = null;
 
-    #[ORM\Column (options: ['default' => true])]
+    #[ORM\Column(options: ['default' => true])]
     private ?bool $activo = true;
 
     #[ORM\ManyToOne]
@@ -59,12 +60,23 @@ class Personal
     #[ORM\OneToMany(targetEntity: Responsables::class, mappedBy: 'aval')]
     private Collection $aval;
 
+    /**
+     * @var Collection<int, Nombramiento>
+     */
+    #[ORM\OneToMany(
+        targetEntity: Nombramiento::class,
+        mappedBy: 'personal',
+        orphanRemoval: true,
+        cascade: ['persist', 'remove']
+    )]
+    private Collection $nombramientos;
 
     public function __construct()
     {
         $this->pta = new ArrayCollection();
         $this->supervisor = new ArrayCollection();
         $this->aval = new ArrayCollection();
+        $this->nombramientos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,7 +175,6 @@ class Personal
 
     public function setUser(User $user): static
     {
-        // set the owning side of the relation if necessary
         if ($user->getPersonal() !== $this) {
             $user->setPersonal($this);
         }
@@ -194,7 +205,6 @@ class Personal
     public function removePtum(Encabezado $ptum): static
     {
         if ($this->pta->removeElement($ptum)) {
-            // set the owning side to null (unless already changed)
             if ($ptum->getResponsable() === $this) {
                 $ptum->setResponsable(null);
             }
@@ -224,7 +234,6 @@ class Personal
     public function removeSupervisor(Responsables $supervisor): static
     {
         if ($this->supervisor->removeElement($supervisor)) {
-            // set the owning side to null (unless already changed)
             if ($supervisor->getSupervisor() === $this) {
                 $supervisor->setSupervisor(null);
             }
@@ -254,7 +263,6 @@ class Personal
     public function removeAval(Responsables $aval): static
     {
         if ($this->aval->removeElement($aval)) {
-            // set the owning side to null (unless already changed)
             if ($aval->getAval() === $this) {
                 $aval->setAval(null);
             }
@@ -263,10 +271,37 @@ class Personal
         return $this;
     }
 
-    //agregando funcion para mostrar el nombre completo en el formulario de Usuario
+    /**
+     * @return Collection<int, Nombramiento>
+     */
+    public function getNombramientos(): Collection
+    {
+        return $this->nombramientos;
+    }
+
+    public function addNombramiento(Nombramiento $nombramiento): static
+    {
+        if (!$this->nombramientos->contains($nombramiento)) {
+            $this->nombramientos->add($nombramiento);
+            $nombramiento->setPersonal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNombramiento(Nombramiento $nombramiento): static
+    {
+        if ($this->nombramientos->removeElement($nombramiento)) {
+            if ($nombramiento->getPersonal() === $this) {
+                $nombramiento->setPersonal(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function __toString(): string
     {
         return $this->nombre . ' ' . $this->ap_paterno . ' ' . $this->ap_materno;
     }
-
 }

@@ -1,110 +1,42 @@
 <turbo-frame id="content">
-	<section class="personal-show-card">
-
+	<section class="personal-show-card nombramiento-personal-historial">
 		<header class="personal-show-header">
-
-			<!-- IZQUIERDA: VOLVER -->
-			<a href="{{ path('app_personal_index') }}"
+			<a href="{{ volver_path }}"
 			   data-turbo-frame="content"
 			   data-turbo-action="replace"
 			   class="personal-show-back-btn"
-			   title="Volver">
+			   title="Volver al historial general">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 
-			<!-- CENTRO: TÍTULO -->
 			<h1 class="personal-show-title">
-				Información del personal
+				Historial de nombramientos de {{ personal }}
 			</h1>
 
-			<!-- DERECHA: EDITAR -->
 			<div class="personal-show-header-actions">
-				<a href="{{ path('app_personal_edit', {'id': personal.id}) }}"
+				<a href="{{ path('app_personal_edit', { id: personal.id }) }}"
 				   data-turbo-frame="content"
 				   data-turbo-action="advance"
 				   class="personal-show-edit-btn"
-				   title="Editar">
+				   title="Editar personal">
 					<i class="bi bi-pencil"></i>
 				</a>
 			</div>
-
 		</header>
 
-		<div class="personal-show-table-wrapper">
-			<table class="personal-show-table">
-				<tbody>
-					<tr>
-						<th>Nombre</th>
-						<td>{{ personal.nombre }}</td>
-					</tr>
-
-					<tr>
-						<th>Apellido paterno</th>
-						<td>{{ personal.apPaterno }}</td>
-					</tr>
-
-					<tr>
-						<th>Apellido materno</th>
-						<td>{{ personal.apMaterno }}</td>
-					</tr>
-
-					<tr>
-						<th>Correo</th>
-						<td>{{ personal.correo }}</td>
-					</tr>
-
-					<tr>
-						<th>Puesto</th>
-						<td>{{ personal.puesto.nombre }}</td>
-					</tr>
-
-					<tr>
-						<th>Departamento</th>
-						<td>{{ personal.departamento.nombre }}</td>
-					</tr>
-
-					<tr>
-						<th>Estado</th>
-						<td>
-							<span class="personal-show-status-badge {{ personal.activo ? 'personal-show-status-badge--active' : 'personal-show-status-badge--inactive' }}">
-								{{ personal.activo ? 'Activo' : 'Inactivo' }}
-							</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-
-		<section class="personal-nombramientos-card personal-show-nombramientos-card">
-
+		<section class="personal-nombramientos-card">
 			<div class="personal-nombramientos-header">
-
 				<h2 class="personal-nombramientos-title">
-					Dictámenes activos
+					Dictamenes activos e inactivos
 				</h2>
-
-				<a href="{{ path('app_nombramiento_historial_personal', { id: personal.id, origen: 'show' }) }}"
-				   data-turbo-frame="content"
-				   data-turbo-action="advance"
-				   class="personal-nombramientos-history-btn">
-					<i class="bi bi-clock-history"></i>
-					Ver historial
-				</a>
-
 			</div>
 
-			{% set nombramientosActivos = personal.nombramientos|filter(n => n.activo) %}
-
-			{% if nombramientosActivos|length > 0 %}
-
+			{% if personal.nombramientos|length > 0 %}
 				<div class="personal-nombramientos-list">
-
-					{% for nombramiento in nombramientosActivos %}
-
+					{% for nombramiento in personal.nombramientos %}
 						{% set nombramientoUrl = asset('uploads/nombramientos/' ~ nombramiento.archivo) %}
 
 						<div class="personal-nombramiento-item">
-
 							<button type="button"
 									class="personal-nombramiento-preview-btn personal-show-nombramiento-preview-btn"
 									data-pdf-url="{{ nombramientoUrl }}"
@@ -112,49 +44,43 @@
 									data-pdf-tipo="{{ nombramiento.tipo }}"
 									data-pdf-fecha="{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}"
 									aria-label="Ver dictamen {{ nombramiento.nombreOriginal }}">
-
 								<iframe src="{{ nombramientoUrl }}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"
 										class="personal-nombramiento-preview-frame"
 										title="Vista previa de {{ nombramiento.nombreOriginal }}"
 										tabindex="-1"
 										loading="lazy"></iframe>
-
 							</button>
 
 							<div class="personal-nombramiento-details">
-
 								<p class="personal-nombramiento-name">
 									{{ nombramiento.nombreOriginal }}
 								</p>
 
 								<small class="personal-nombramiento-meta">
-									Tipo:
-									{{ nombramiento.tipo }}
+									Tipo: {{ nombramiento.tipo }}
 									<br>
-									Subido:
-									{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}
+									Subido: {{ nombramiento.fechaSubida|date('d/m/Y H:i') }}
+									{% if nombramiento.fechaDesactivacion %}
+										<br>
+										Baja: {{ nombramiento.fechaDesactivacion|date('d/m/Y H:i') }}
+									{% endif %}
 								</small>
-
 							</div>
 
+							<span class="personal-show-status-badge {{ nombramiento.activo ? 'personal-show-status-badge--active' : 'personal-show-status-badge--inactive' }}">
+								{{ nombramiento.activo ? 'Activo' : 'Inactivo' }}
+							</span>
 						</div>
-
 					{% endfor %}
-
 				</div>
-
 			{% else %}
-
 				<div class="personal-nombramiento-empty">
 					<p class="personal-nombramiento-empty-text">
-						No hay nombramientos activos.
+						Este personal no tiene nombramientos registrados.
 					</p>
 				</div>
-
 			{% endif %}
-
 		</section>
-
 	</section>
 
 	<div class="personal-nombramiento-pdf-preview-modal personal-nombramiento-pdf-preview-modal-hidden"
@@ -163,7 +89,6 @@
 		 aria-labelledby="personal-nombramiento-pdf-preview-title"
 		 hidden>
 		<div class="personal-nombramiento-pdf-preview-modal-box">
-
 			<div class="personal-nombramiento-pdf-preview-modal-header">
 				<h3 id="personal-nombramiento-pdf-preview-title"
 					class="personal-nombramiento-pdf-preview-modal-title"></h3>
@@ -179,16 +104,9 @@
 					title="Vista previa del dictamen"></iframe>
 
 			<div class="personal-nombramiento-pdf-preview-modal-meta">
-				<p>
-					<strong>Tipo:</strong>
-					<span data-pdf-preview-tipo></span>
-				</p>
-				<p>
-					<strong>Subido:</strong>
-					<span data-pdf-preview-fecha></span>
-				</p>
+				<p><strong>Tipo:</strong> <span data-pdf-preview-tipo></span></p>
+				<p><strong>Subido:</strong> <span data-pdf-preview-fecha></span></p>
 			</div>
-
 		</div>
 	</div>
 </turbo-frame>

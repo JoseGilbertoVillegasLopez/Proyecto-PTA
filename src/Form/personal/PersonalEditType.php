@@ -2,7 +2,6 @@
 
 namespace App\Form\personal;
 
-use App\Form\PersonalType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
@@ -20,7 +19,7 @@ class PersonalEditType extends PersonalType
                 'Activo' => true,
                 'Inactivo' => false,
             ],
-            'expanded' => false, // select
+            'expanded' => false,
             'multiple' => false,
         ]);
     }

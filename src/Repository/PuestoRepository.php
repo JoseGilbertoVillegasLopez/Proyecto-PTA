@@ -57,14 +57,49 @@ class PuestoRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-    public function findByDepartamentoIds(array $departamentoIds): array
-{
-    return $this->createQueryBuilder('p')
-        ->andWhere('p.departamento IN (:departamentos)')
-        ->setParameter('departamentos', $departamentoIds)
-        ->orderBy('p.nombre', 'ASC')
-        ->getQuery()
-        ->getResult();
-}
+    /**
+     * En la jerarquia institucional, los puestos con subordinados funcionan
+     * como nodos de departamento.
+     *
+     * @return Puesto[]
+     */
+    public function findDepartamentosJerarquicos(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.subordinados', 'subordinado')
+            ->distinct()
+            ->orderBy('p.nombre', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Puesto[]
+     */
+    public function findAllOrdenados(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->orderBy('p.nombre', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Puesto[]
+     */
+    public function findSubordinadosRecursivosOrdenados(Puesto $departamento): array
+    {
+        $puestos = $departamento->getSubordinadosRecursivos()->toArray();
+
+        usort(
+            $puestos,
+            static fn (Puesto $a, Puesto $b): int => strcmp(
+                $a->getNombre() ?? '',
+                $b->getNombre() ?? ''
+            )
+        );
+
+        return $puestos;
+    }
 
 }
