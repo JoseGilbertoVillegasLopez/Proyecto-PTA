@@ -107,11 +107,15 @@ function initPtaGraficas(root) {
             }
         });
 
-        // Si no hay ningún dato, mostrar placeholder
+        // Si no hay ningún dato, reemplazar el canvas con un placeholder.
+        // Usamos el padre inmediato (.pta-chart-wrap, .pta-card__body o
+        // cualquier contenedor) para ser compatibles con graficas Y historial.
         if (labelsConDato.length === 0) {
-            const placeholder = canvas.closest('.pta-card__body');
-            if (placeholder) {
-                placeholder.innerHTML = `
+            const contenedor = canvas.closest('.pta-chart-wrap')
+                            ?? canvas.closest('.pta-card__body')
+                            ?? canvas.parentElement;
+            if (contenedor) {
+                contenedor.innerHTML = `
                     <div class="pta-chart-placeholder">
                         <i class="bi bi-graph-up"></i>
                         Sin datos registrados todavía
