@@ -84,28 +84,51 @@ function initPtaGraficas(root) {
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        // El service ya manda la serie FINAL (valores snapshot por mes)
+        // El service ya manda la serie FINAL (valores snapshot por mes).
+        // Los meses sin dato vienen como null — se filtran antes de graficar
+        // para que la línea no caiga a 0 en meses sin registro.
         const serieObj = JSON.parse(canvas.dataset.serie || "{}");
 
-        const labels  = Object.keys(serieObj);
-        // Filtrar nulls para el cálculo de escala
-        const valores = Object.values(serieObj).map(v => v !== null ? Number(v) : null);
+        const meta       = Number(canvas.dataset.meta || 0);
+        const tendencia  = canvas.dataset.tendencia;
+        const capturaPct = canvas.dataset.capturaPct === '1';
+        const valorBase  = Number(canvas.dataset.valorBase || 0);
 
-        const meta        = Number(canvas.dataset.meta || 0);
-        const tendencia   = canvas.dataset.tendencia;
-        const capturaPct  = canvas.dataset.capturaPct === '1';
-        const valorBase   = Number(canvas.dataset.valorBase || 0);
+        // ── Filtrar solo los meses con valor registrado (no null) ──
+        // Así la gráfica termina en el último dato real y no cae a 0
+        // en meses futuros o aún sin captura.
+        const labelsConDato = [];
+        const valoresConDato = [];
+
+        Object.entries(serieObj).forEach(([mes, val]) => {
+            if (val !== null && val !== undefined) {
+                labelsConDato.push(mes);
+                valoresConDato.push(Number(val));
+            }
+        });
+
+        // Si no hay ningún dato, mostrar placeholder
+        if (labelsConDato.length === 0) {
+            const placeholder = canvas.closest('.pta-card__body');
+            if (placeholder) {
+                placeholder.innerHTML = `
+                    <div class="pta-chart-placeholder">
+                        <i class="bi bi-graph-up"></i>
+                        Sin datos registrados todavía
+                    </div>`;
+            }
+            return;
+        }
 
         // Escala Y:
-        //  - capturaEnPorcentaje: el eje va de 0 a 100 (porcentaje siempre)
+        //  - capturaEnPorcentaje: eje fijo 0-100 (porcentaje)
         //  - Normal: escala dinámica con 25% de margen
-        const valoresNoNull = valores.filter(v => v !== null);
-        const maxSerie = valoresNoNull.length > 0 ? Math.max(...valoresNoNull, meta) : meta;
+        const maxSerie = Math.max(...valoresConDato, meta);
         const yMax = capturaPct
             ? 100
             : (maxSerie > 0 ? maxSerie * 1.25 : 10);
         const yMin = capturaPct
-            ? Math.max(0, Math.min(valorBase, ...valoresNoNull) * 0.9)
+            ? Math.max(0, Math.min(valorBase, ...valoresConDato) * 0.9)
             : 0;
 
         const colorAvance =
@@ -114,16 +137,17 @@ function initPtaGraficas(root) {
                 : "rgba(220, 53, 69, 1)";
 
         const colorMeta = "rgba(13, 202, 240, 0.9)";
-        const metaData = labels.map(() => meta);
+        // La línea de meta abarca solo los meses con datos registrados
+        const metaData = labelsConDato.map(() => meta);
 
         new Chart(ctx, {
             type: "line",
             data: {
-                labels,
+                labels: labelsConDato,
                 datasets: [
                     {
                         label: "Avance",
-                        data: valores,
+                        data: valoresConDato,
                         borderColor: colorAvance,
                         backgroundColor: colorAvance,
                         tension: 0,
