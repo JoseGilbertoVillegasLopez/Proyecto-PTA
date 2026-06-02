@@ -96,7 +96,14 @@
 
 				{# ================= BODY GRÁFICA ================= #}
 				<div class="pta-card__body">
-					<canvas class="pta-chart" data-indicador="{{ grafica.indicador }}" data-meta="{{ grafica.meta }}" data-tendencia="{{ grafica.tendencia }}" data-serie='{{ grafica.serie|json_encode|raw }}'></canvas>
+					<canvas class="pta-chart"
+						data-indicador="{{ grafica.indicador }}"
+						data-meta="{{ grafica.meta }}"
+						data-tendencia="{{ grafica.tendencia }}"
+						data-serie='{{ grafica.serie|json_encode|raw }}'
+						data-captura-pct="{{ grafica.captura_porcentaje is defined and grafica.captura_porcentaje ? '1' : '0' }}"
+						data-valor-base="{{ grafica.valor_base }}">
+					</canvas>
 				</div>
 
 				{# ================= RESUMEN ACCIONES ================= #}

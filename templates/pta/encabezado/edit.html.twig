@@ -170,9 +170,6 @@
 												<span class="ic-label">Meta</span>
 												<div class="ic-display ic-display--num">
 													{{ indicador.valor }}{% if indicador.esPorcentaje %}<span class="ic-pct-badge">%</span>{% endif %}
-													{% if indicador.esPorcentaje %}
-														<div class="ic-meta-hint">≈ {{ (indicador.valorBase * indicador.valor / 100 + indicador.valorBase)|round(0) }} absoluto</div>
-													{% endif %}
 												</div>
 											</div>
 											<div class="ic-field">
@@ -189,6 +186,23 @@
 													{% endif %}
 												</div>
 											</div>
+											{# Modo de captura — solo cuando la meta es % #}
+											{% if indicador.esPorcentaje %}
+											<div class="ic-field">
+												<span class="ic-label">Captura mensual</span>
+												<div class="ic-display ic-display--center">
+													{% if indicador.capturaEnPorcentaje %}
+														<span class="pta-badge pta-badge-pct">
+															<i class="bi bi-percent"></i> En porcentaje
+														</span>
+													{% else %}
+														<span class="pta-badge pta-badge-abs">
+															<i class="bi bi-123"></i> Valor absoluto
+														</span>
+													{% endif %}
+												</div>
+											</div>
+											{% endif %}
 										</div>
 									</div>
 

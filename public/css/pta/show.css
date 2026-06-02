@@ -404,15 +404,15 @@
 }
 
 .pta-show .pta-badge-pct {
-    background: rgba(253, 203, 110, 0.18);
-    color: #fdcb6e;
-    border: 1px solid rgba(253, 203, 110, 0.4);
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.4);
 }
 
 .pta-show .pta-badge-abs {
-    background: rgba(116, 185, 255, 0.18);
-    color: #74b9ff;
-    border: 1px solid rgba(116, 185, 255, 0.4);
+    background: rgba(29, 209, 161, 0.15);
+    color: #1dd1a1;
+    border: 1px solid rgba(29, 209, 161, 0.4);
 }
 
 /* =========================================================

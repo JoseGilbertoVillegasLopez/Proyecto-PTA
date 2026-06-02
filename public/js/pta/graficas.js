@@ -84,17 +84,29 @@ function initPtaGraficas(root) {
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        // 🔥 El service ya manda la serie FINAL
+        // El service ya manda la serie FINAL (valores snapshot por mes)
         const serieObj = JSON.parse(canvas.dataset.serie || "{}");
 
         const labels  = Object.keys(serieObj);
-        const valores = Object.values(serieObj).map(v => Number(v));
+        // Filtrar nulls para el cálculo de escala
+        const valores = Object.values(serieObj).map(v => v !== null ? Number(v) : null);
 
-        const meta      = Number(canvas.dataset.meta || 0);
-        const tendencia = canvas.dataset.tendencia;
+        const meta        = Number(canvas.dataset.meta || 0);
+        const tendencia   = canvas.dataset.tendencia;
+        const capturaPct  = canvas.dataset.capturaPct === '1';
+        const valorBase   = Number(canvas.dataset.valorBase || 0);
 
-        const maxSerie = Math.max(...valores, meta);
-        const yMax = maxSerie > 0 ? maxSerie * 1.25 : 10;
+        // Escala Y:
+        //  - capturaEnPorcentaje: el eje va de 0 a 100 (porcentaje siempre)
+        //  - Normal: escala dinámica con 25% de margen
+        const valoresNoNull = valores.filter(v => v !== null);
+        const maxSerie = valoresNoNull.length > 0 ? Math.max(...valoresNoNull, meta) : meta;
+        const yMax = capturaPct
+            ? 100
+            : (maxSerie > 0 ? maxSerie * 1.25 : 10);
+        const yMin = capturaPct
+            ? Math.max(0, Math.min(valorBase, ...valoresNoNull) * 0.9)
+            : 0;
 
         const colorAvance =
             tendencia === "POSITIVA"
@@ -140,6 +152,18 @@ function initPtaGraficas(root) {
                             font: { weight: "500" },
                         },
                     },
+                    tooltip: {
+                        callbacks: {
+                            // Añadir % en el tooltip cuando la captura es porcentual
+                            label: (ctx) => {
+                                const label = ctx.dataset.label || '';
+                                const val   = ctx.parsed.y;
+                                return capturaPct
+                                    ? ` ${label}: ${val}%`
+                                    : ` ${label}: ${val}`;
+                            },
+                        },
+                    },
                 },
                 scales: {
                     x: {
@@ -147,9 +171,13 @@ function initPtaGraficas(root) {
                         grid: { color: "rgba(255,255,255,0.05)" },
                     },
                     y: {
-                        min: 0,
+                        min: yMin,
                         max: yMax,
-                        ticks: { color: "#adb5bd" },
+                        ticks: {
+                            color: "#adb5bd",
+                            // Añadir símbolo % en el eje cuando la captura es porcentual
+                            callback: (value) => capturaPct ? value + "%" : value,
+                        },
                         grid: { color: "rgba(255,255,255,0.08)" },
                     },
                 },
