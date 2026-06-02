@@ -6,7 +6,7 @@ namespace App\Controller;
 use App\Entity\Personal;
 // Importa la entidad Personal (representa la tabla personal en la BD)
 
-use App\Form\PersonalType;
+use App\Form\personal\PersonalType;
 // Importa el formulario usado para crear Personal
 
 use App\Form\personal\PersonalEditType;
@@ -35,6 +35,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\Routing\Attribute\Route;
 // Permite definir rutas usando atributos (PHP 8+)
+
+use App\Entity\Nombramiento;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 #[Route('admin/personal')]
 // Prefijo de ruta: todas las rutas de este controlador comienzan con /admin/personal
@@ -89,15 +92,118 @@ final class PersonalController extends AbstractController
         $form->handleRequest($request);
         // Procesa la petición HTTP y llena el formulario con los datos enviados
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             // Verifica que el formulario fue enviado y pasó validaciones
+
+
+            $pdf = $form->get('nombramiento_pdf')->getData();
+
+            $tipoNombramiento = $form->get('nombramiento_tipo')->getData();
+
+            // =====================================================
+            // VALIDAR PDF ↔ TIPO
+            // =====================================================
+
+            // Si subió PDF pero NO seleccionó tipo
+            if ($pdf && !$tipoNombramiento) {
+
+                $form->get('nombramiento_tipo')->addError(
+                    new \Symfony\Component\Form\FormError(
+                        'Debes elegir un tipo de nombramiento.'
+                    )
+                );
+            }
+
+            // Si seleccionó tipo pero NO subió PDF
+            if (!$pdf && $tipoNombramiento) {
+
+                $form->get('nombramiento_pdf')->addError(
+                    new \Symfony\Component\Form\FormError(
+                        'Debes agregar un archivo PDF.'
+                    )
+                );
+            }
+
+            // Si hubo errores, volver a renderizar
+            if (!$form->isValid()) {
+
+                $isTurbo = $request->headers->get('Turbo-Frame');
+
+                if ($isTurbo) {
+
+                    return $this->render('admin/personal/new.html.twig', [
+                        'personal' => $personal,
+                        'form' => $form,
+                    ]);
+                }
+
+                return $this->render('dashboard/index.html.twig', [
+                    'section' => 'personal',
+                    'content_url' => $this->generateUrl('app_personal_new'),
+                ]);
+            }
+
+
+
+
 
             // ✅ FORZAMOS ACTIVO AL CREAR
             $personal->setActivo(true);
             // Garantiza que el personal nuevo siempre se cree como activo
 
+                        // =========================================
+            // PREPARAR PERSONAL
+            // =========================================
+
             $entityManager->persist($personal);
-            // Marca la entidad para ser guardada en la BD
+
+            // =========================================
+            // MANEJO PDF NOMBRAMIENTO
+            // =========================================
+
+            if ($pdf) {
+
+                // FORZAR EXTENSIÓN PDF
+                $nombreArchivo = uniqid() . '.pdf';
+
+                try {
+
+                    $pdf->move(
+                        $this->getParameter('kernel.project_dir') . '/public/uploads/nombramientos',
+                        $nombreArchivo
+                    );
+
+                } catch (FileException $e) {
+
+                    $this->addFlash('error', 'Error al subir el PDF.');
+
+                    return $this->redirectToRoute('app_personal_new');
+                }
+
+                $nombramiento = new Nombramiento();
+
+                $nombramiento->setArchivo($nombreArchivo);
+
+                $nombramiento->setNombreOriginal(
+                    $pdf->getClientOriginalName()
+                );
+
+                $nombramiento->setTipo($tipoNombramiento);
+
+                $nombramiento->setActivo(true);
+
+                $nombramiento->setFechaSubida(new \DateTime());
+
+                $nombramiento->setFechaDesactivacion(null);
+
+                $nombramiento->setPersonal($personal);
+
+                $entityManager->persist($nombramiento);
+            }
+
+            // =========================================
+            // GUARDAR TODO
+            // =========================================
 
             $entityManager->flush();
             // Ejecuta el INSERT en la base de datos
@@ -171,19 +277,125 @@ final class PersonalController extends AbstractController
         $form->handleRequest($request);
         // Procesa los datos enviados
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Verifica envío y validez del formulario
+        if ($form->isSubmitted()) {
 
-            $entityManager->flush();
-            // Guarda los cambios en la BD (UPDATE)
+            // =====================================================
+            // OBTENER CAMPOS NOMBRAMIENTO
+            // =====================================================
 
-            // 🔥 PRIMERO sincronizar el usuario (incluye activo/inactivo)
-            $this->userUpdater->updateFromPersonal($personal);
-            // Sincroniza el usuario asociado (correo, activo, etc.)
-            // usando los datos actuales de Personal
+            $pdf = $form->get('nombramiento_pdf')->getData();
 
-            return $this->redirectToRoute('app_personal_index');
+            $tipoNombramiento = $form->get('nombramiento_tipo')->getData();
 
+            // =====================================================
+            // VALIDAR PDF ↔ TIPO
+            // =====================================================
+
+            // PDF SIN TIPO
+            if ($pdf && !$tipoNombramiento) {
+
+                $form->get('nombramiento_tipo')->addError(
+                    new \Symfony\Component\Form\FormError(
+                        'Debes elegir un tipo de nombramiento.'
+                    )
+                );
+            }
+
+            // TIPO SIN PDF
+            if (!$pdf && $tipoNombramiento) {
+
+                $form->get('nombramiento_pdf')->addError(
+                    new \Symfony\Component\Form\FormError(
+                        'Debes agregar un archivo PDF.'
+                    )
+                );
+            }
+
+            // =====================================================
+            // VALIDAR FORMULARIO COMPLETO
+            // =====================================================
+
+            if ($form->isValid()) {
+
+                // =================================================
+                // SUBIR NOMBRAMIENTO SOLO SI EXISTE
+                // =================================================
+
+                if ($pdf) {
+
+                    $nombreArchivo = uniqid() . '.pdf';
+
+                    try {
+
+                        $pdf->move(
+                            $this->getParameter('kernel.project_dir') . '/public/uploads/nombramientos',
+                            $nombreArchivo
+                        );
+
+                    } catch (FileException $e) {
+
+                        $this->addFlash(
+                            'error',
+                            'Error al subir el PDF.'
+                        );
+
+                        return $this->redirectToRoute(
+                            'app_personal_edit',
+                            [
+                                'id' => $personal->getId()
+                            ]
+                        );
+                    }
+
+                    // =============================================
+                    // CREAR NOMBRAMIENTO
+                    // =============================================
+
+                    $nombramiento = new Nombramiento();
+
+                    $nombramiento->setArchivo($nombreArchivo);
+
+                    $nombramiento->setNombreOriginal(
+                        $pdf->getClientOriginalName()
+                    );
+
+                    $nombramiento->setTipo($tipoNombramiento);
+
+                    $nombramiento->setActivo(true);
+
+                    $nombramiento->setFechaSubida(
+                        new \DateTime()
+                    );
+
+                    $nombramiento->setFechaDesactivacion(null);
+
+                    $nombramiento->setPersonal($personal);
+
+                    $entityManager->persist($nombramiento);
+                }
+
+                // =================================================
+                // GUARDAR CAMBIOS
+                // =================================================
+
+                $entityManager->flush();
+
+                // =================================================
+                // ACTUALIZAR USER
+                // =================================================
+
+                $this->userUpdater->updateFromPersonal(
+                    $personal
+                );
+
+                // =================================================
+                // REDIRECCIONAR AL INDEX
+                // =================================================
+
+                return $this->redirectToRoute(
+                    'app_personal_index'
+                );
+            }
         }
         $isTurbo = $request->headers->get('Turbo-Frame');
         if ($isTurbo) {
@@ -202,6 +414,41 @@ final class PersonalController extends AbstractController
         ]),
     ]);
     }
+
+    #[Route(
+        '/{id}/nombramientos/historial',
+        name: 'app_nombramiento_historial',
+        methods: ['GET']
+    )]
+    public function historialNombramientos(
+        Request $request,
+        Personal $personal
+    ): Response {
+
+        $isTurbo = $request->headers->get('Turbo-Frame');
+
+        if ($isTurbo) {
+
+            return $this->render(
+                'admin/nombramiento/historial_nombramiento.html.twig',
+                [
+                    'personal' => $personal,
+                ]
+            );
+        }
+
+        return $this->render('dashboard/index.html.twig', [
+            'section' => 'personal',
+            'content_url' => $this->generateUrl(
+                'app_nombramiento_historial',
+                [
+                    'id' => $personal->getId(),
+                ]
+            ),
+        ]);
+    }
+
+
 
     #[Route('/{id}', name: 'app_personal_delete', methods: ['POST'])]
     // Ruta para eliminar un Personal (solo POST por seguridad)

@@ -29,63 +29,305 @@
 		</header>
 
 		{{ form_start(form, {
-            action: path('app_personal_edit', { id: personal.id }),
-            attr: {
-                'data-turbo-frame': 'content',
-                'class': 'personal-edit-form'
-            }
-        }) }}
+			action: path('app_personal_edit', { id: personal.id }),
+			attr: {
+				'data-turbo-frame': 'content',
+				'class': 'personal-edit-form',
+				'enctype': 'multipart/form-data'
+			}
+		}) }}
 
-			<div class="personal-edit-group">
-				{{ form_label(form.nombre, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
-				{{ form_widget(form.nombre, {'attr': {'class': 'personal-edit-input'}}) }}
-				{{ form_errors(form.nombre) }}
+			<div class="personal-edit-fields-grid personal-edit-fields-grid--identity">
+				<div class="personal-edit-group personal-edit-group--no-divider">
+					{{ form_label(form.nombre, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
+					{{ form_widget(form.nombre, {'attr': {'class': 'personal-edit-input'}}) }}
+					{{ form_errors(form.nombre) }}
+				</div>
+
+				<div class="personal-edit-group personal-edit-group--no-divider">
+					{{ form_label(form.ap_paterno, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
+					{{ form_widget(form.ap_paterno, {'attr': {'class': 'personal-edit-input'}}) }}
+					{{ form_errors(form.ap_paterno) }}
+				</div>
+
+				<div class="personal-edit-group personal-edit-group--no-divider">
+					{{ form_label(form.ap_materno, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
+					{{ form_widget(form.ap_materno, {'attr': {'class': 'personal-edit-input'}}) }}
+					{{ form_errors(form.ap_materno) }}
+				</div>
+
+				<div class="personal-edit-group">
+					{{ form_label(form.correo, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
+					{{ form_widget(form.correo, {'attr': {'class': 'personal-edit-input'}}) }}
+					{{ form_errors(form.correo) }}
+				</div>
 			</div>
 
-			<div class="personal-edit-group">
-				{{ form_label(form.ap_paterno, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
-				{{ form_widget(form.ap_paterno, {'attr': {'class': 'personal-edit-input'}}) }}
-				{{ form_errors(form.ap_paterno) }}
+			<div class="personal-edit-fields-grid personal-edit-fields-grid--work">
+				<div class="personal-edit-group personal-edit-group--no-divider">
+					{{ form_label(form.puesto, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
+					{{ form_widget(form.puesto, {'attr': {'class': 'personal-edit-select'}}) }}
+					{{ form_errors(form.puesto) }}
+				</div>
+
+				<div class="personal-edit-group personal-edit-group--no-divider">
+					{{ form_label(form.departamento, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
+					{{ form_widget(form.departamento, {'attr': {'class': 'personal-edit-select'}}) }}
+					{{ form_errors(form.departamento) }}
+				</div>
+
+				<div class="personal-edit-group">
+					{{ form_label(form.activo, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
+					{{ form_widget(form.activo, {'attr': {'class': 'personal-edit-select'}}) }}
+					{{ form_errors(form.activo) }}
+				</div>
 			</div>
 
-			<div class="personal-edit-group">
-				{{ form_label(form.ap_materno, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
-				{{ form_widget(form.ap_materno, {'attr': {'class': 'personal-edit-input'}}) }}
-				{{ form_errors(form.ap_materno) }}
+			<hr>
+
+
+		<section class="personal-nombramientos-card personal-edit-nombramientos-card">
+
+			<div class="personal-nombramientos-header">
+
+					<h2 class="personal-nombramientos-title">
+						Dictámenes activos
+					</h2>
+
+					<a href="{{ path('app_nombramiento_historial_personal', { id: personal.id, origen: 'edit' }) }}"
+					   data-turbo-frame="content"
+					   data-turbo-action="advance"
+					   class="personal-nombramientos-history-btn">
+						<i class="bi bi-clock-history"></i>
+						Ver historial
+					</a>
+
 			</div>
 
-			<div class="personal-edit-group">
-				{{ form_label(form.correo, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
-				{{ form_widget(form.correo, {'attr': {'class': 'personal-edit-input'}}) }}
-				{{ form_errors(form.correo) }}
-			</div>
+				{% set nombramientosActivos = personal.nombramientos|filter(n => n.activo) %}
 
-			<div class="personal-edit-group">
-				{{ form_label(form.puesto, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
-				{{ form_widget(form.puesto, {'attr': {'class': 'personal-edit-select'}}) }}
-				{{ form_errors(form.puesto) }}
-			</div>
+				{% if nombramientosActivos|length > 0 %}
 
-			<div class="personal-edit-group">
-				{{ form_label(form.departamento, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
-				{{ form_widget(form.departamento, {'attr': {'class': 'personal-edit-select'}}) }}
-				{{ form_errors(form.departamento) }}
-			</div>
+					<div class="personal-nombramientos-list">
 
-			<div class="personal-edit-group">
-				{{ form_label(form.activo, null, {'label_attr': {'class': 'personal-edit-label'}}) }}
-				{{ form_widget(form.activo, {'attr': {'class': 'personal-edit-select'}}) }}
-				{{ form_errors(form.activo) }}
-			</div>
+						{% for nombramiento in nombramientosActivos %}
+
+							<div class="personal-nombramiento-item">
+
+								{% set nombramientoUrl = asset('uploads/nombramientos/' ~ nombramiento.archivo) %}
+
+								<button type="button"
+										class="personal-nombramiento-preview-btn"
+										data-pdf-url="{{ nombramientoUrl }}"
+										data-pdf-name="{{ nombramiento.nombreOriginal }}"
+										data-pdf-tipo="{{ nombramiento.tipo }}"
+										data-pdf-fecha="{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}"
+										aria-label="Ver dictamen {{ nombramiento.nombreOriginal }}">
+
+									<iframe src="{{ nombramientoUrl }}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"
+											class="personal-nombramiento-preview-frame"
+											title="Vista previa de {{ nombramiento.nombreOriginal }}"
+											tabindex="-1"
+											loading="lazy"></iframe>
+
+								</button>
+
+								<div class="personal-nombramiento-details">
+
+									<p class="personal-nombramiento-name">
+										{{ nombramiento.nombreOriginal }}
+									</p>
+
+									<small class="personal-nombramiento-meta">
+										Tipo:
+										{{ nombramiento.tipo }}
+										<br>
+										Subido:
+										{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}
+									</small>
+
+								</div>
+
+								<div class="personal-edit-nombramiento-actions">
+
+									<button type="submit"
+											form="personal-edit-desactivar-nombramiento-{{ nombramiento.id }}"
+											class="personal-edit-delete-pdf-btn">
+
+										<i class="bi bi-x-lg"></i>
+
+									</button>
+
+								</div>
+
+							</div>
+
+						{% endfor %}
+
+					</div>
+
+				{% else %}
+
+					<div class="personal-nombramiento-empty">
+
+						<p class="personal-nombramiento-empty-text">
+							No hay nombramientos activos.
+						</p>
+
+					</div>
+
+				{% endif %}
+
+				<hr>
+
+				<div class="personal-edit-upload-wrapper">
+
+					<button type="button"
+							class="personal-edit-add-btn personal-edit-toggle-upload-btn">
+
+						<i class="bi bi-plus-lg"></i>
+						Agregar nuevo nombramiento
+
+					</button>
+
+					<div class="personal-edit-upload-form personal-edit-upload-form-hidden">
+
+						<div class="personal-edit-group personal-edit-nombramiento-pdf-validation-group">
+
+							{{ form_widget(form.nombramiento_pdf, {
+								'attr': {
+									'class': 'personal-edit-upload-input'
+								}
+							}) }}
+
+							<div class="personal-edit-error">
+								{{ form_errors(form.nombramiento_pdf) }}
+							</div>
+
+							<p class="personal-edit-nombramiento-client-error personal-edit-nombramiento-client-error-hidden"
+							   data-error-for="pdf"
+							   aria-live="polite"
+							   hidden>
+								Debes agregar un archivo PDF.
+							</p>
+
+						</div>
+
+						<div class="personal-edit-group personal-edit-nombramiento-tipo-validation-group">
+
+							{{ form_widget(form.nombramiento_tipo, {
+								'attr': {
+									'class': 'personal-edit-upload-select'
+								}
+							}) }}
+
+							<div class="personal-edit-error">
+								{{ form_errors(form.nombramiento_tipo) }}
+							</div>
+
+							<p class="personal-edit-nombramiento-client-error personal-edit-nombramiento-client-error-hidden"
+							   data-error-for="tipo"
+							   aria-live="polite"
+							   hidden>
+								Debes elegir un tipo de nombramiento.
+							</p>
+
+						</div>
+
+					</div>
+				</div>
+
+		</section>
+
+
+
 
 			<div class="personal-edit-actions">
-				<button type="submit" class="personal-edit-save-btn" title="Guardar cambios">
+				<button type="submit"
+						class="personal-edit-save-btn"
+						title="Guardar cambios">
 					<i class="bi bi-check-lg"></i>
 				</button>
 			</div>
 
-		{{ form_rest(form) }}
 		{{ form_end(form) }}
 
+		{% for nombramiento in nombramientosActivos %}
+			<form id="personal-edit-desactivar-nombramiento-{{ nombramiento.id }}"
+				  method="post"
+				  action="{{ path('app_nombramiento_desactivar', { id: nombramiento.id }) }}"
+				  hidden>
+				<input type="hidden"
+					   name="_token"
+					   value="{{ csrf_token('desactivar' ~ nombramiento.id) }}">
+			</form>
+		{% endfor %}
+
+
+
+
 	</section>
+
+	<div class="personal-edit-nombramiento-validation-modal personal-edit-nombramiento-validation-modal-hidden"
+		 role="dialog"
+		 aria-modal="true"
+		 aria-labelledby="personal-edit-nombramiento-validation-title"
+		 aria-describedby="personal-edit-nombramiento-validation-message"
+		 hidden>
+		<div class="personal-edit-nombramiento-validation-modal-box">
+
+			<div class="personal-edit-nombramiento-validation-modal-icon">
+				<i class="bi bi-exclamation-triangle-fill"></i>
+			</div>
+
+			<h3 id="personal-edit-nombramiento-validation-title"
+				class="personal-edit-nombramiento-validation-modal-title">
+				Faltan datos del nombramiento
+			</h3>
+
+			<p id="personal-edit-nombramiento-validation-message"
+			   class="personal-edit-nombramiento-validation-modal-message"></p>
+
+			<button type="button"
+					class="personal-edit-nombramiento-validation-modal-close-btn">
+				Entendido
+			</button>
+
+		</div>
+	</div>
+
+	<div class="personal-nombramiento-pdf-preview-modal personal-nombramiento-pdf-preview-modal-hidden"
+		 role="dialog"
+		 aria-modal="true"
+		 aria-labelledby="personal-nombramiento-pdf-preview-title"
+		 hidden>
+		<div class="personal-nombramiento-pdf-preview-modal-box">
+
+			<div class="personal-nombramiento-pdf-preview-modal-header">
+				<h3 id="personal-nombramiento-pdf-preview-title"
+					class="personal-nombramiento-pdf-preview-modal-title"></h3>
+
+				<button type="button"
+						class="personal-nombramiento-pdf-preview-modal-close-btn"
+						aria-label="Cerrar vista previa">
+					<i class="bi bi-x-lg"></i>
+				</button>
+			</div>
+
+			<iframe class="personal-nombramiento-pdf-preview-modal-frame"
+					title="Vista previa del dictamen"></iframe>
+
+			<div class="personal-nombramiento-pdf-preview-modal-meta">
+				<p>
+					<strong>Tipo:</strong>
+					<span data-pdf-preview-tipo></span>
+				</p>
+				<p>
+					<strong>Subido:</strong>
+					<span data-pdf-preview-fecha></span>
+				</p>
+			</div>
+
+		</div>
+	</div>
 </turbo-frame>

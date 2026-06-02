@@ -1,0 +1,195 @@
+<turbo-frame id="content">
+	<section class="nombramiento-historial">
+		<header class="nombramiento-historial__header">
+			<a href="{{ path('app_personal_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="nombramiento-historial__back-btn"
+			   title="Volver al personal">
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<div>
+				<h1 class="nombramiento-historial__title">
+					<i class="bi bi-clock-history"></i>
+					Historial de nombramientos
+				</h1>
+				<p class="nombramiento-historial__subtitle">
+					Consulta los nombramientos activos e inactivos de todo el personal.
+				</p>
+			</div>
+		</header>
+
+		<div class="nombramiento-historial__summary">
+			<div class="nombramiento-historial__summary-card">
+				<span>Total</span>
+				<strong>{{ resumen.total }}</strong>
+			</div>
+			<div class="nombramiento-historial__summary-card nombramiento-historial__summary-card--active">
+				<span>Activos</span>
+				<strong>{{ resumen.activos }}</strong>
+			</div>
+			<div class="nombramiento-historial__summary-card nombramiento-historial__summary-card--inactive">
+				<span>Inactivos</span>
+				<strong>{{ resumen.inactivos }}</strong>
+			</div>
+		</div>
+
+		<form method="get"
+			  action="{{ path('app_nombramiento_historial_index') }}"
+			  data-turbo-frame="content"
+			  data-turbo-action="advance"
+			  class="nombramiento-historial__filters"
+			  data-puestos-por-departamento="{{ puestos_por_departamento|json_encode|e('html_attr') }}">
+			<div class="nombramiento-historial__filter">
+				<label for="nombramiento-departamento">Departamento</label>
+				<select id="nombramiento-departamento" name="departamento">
+					<option value="">Todos los departamentos</option>
+					{% for departamento in departamentos %}
+						<option value="{{ departamento.id }}" {{ filtros.departamento == departamento.id ? 'selected' : '' }}>
+							{{ departamento.nombre }}
+						</option>
+					{% endfor %}
+				</select>
+			</div>
+
+			<div class="nombramiento-historial__filter">
+				<label for="nombramiento-puesto">Puesto</label>
+				<select id="nombramiento-puesto" name="puesto">
+					<option value="">Todos los puestos</option>
+					{% for puesto in puestos %}
+						<option value="{{ puesto.id }}" {{ filtros.puesto == puesto.id ? 'selected' : '' }}>
+							{{ puesto.nombre }}
+						</option>
+					{% endfor %}
+				</select>
+			</div>
+
+			<div class="nombramiento-historial__filter">
+				<label for="nombramiento-estado">Estado</label>
+				<select id="nombramiento-estado" name="estado">
+					<option value="">Activos e inactivos</option>
+					<option value="activo" {{ filtros.estado is same as(true) ? 'selected' : '' }}>Activos</option>
+					<option value="inactivo" {{ filtros.estado is same as(false) ? 'selected' : '' }}>Inactivos</option>
+				</select>
+			</div>
+
+			<div class="nombramiento-historial__filter-actions">
+				<button type="submit" class="nombramiento-historial__filter-btn">
+					<i class="bi bi-funnel-fill"></i>
+					Filtrar
+				</button>
+
+				<a href="{{ path('app_nombramiento_historial_index') }}"
+				   data-turbo-frame="content"
+				   data-turbo-action="advance"
+				   class="nombramiento-historial__clear-btn">
+					<i class="bi bi-x-lg"></i>
+					Limpiar
+				</a>
+			</div>
+		</form>
+
+		<div class="nombramiento-historial__table-wrapper">
+			<table class="nombramiento-historial__table">
+				<thead>
+					<tr>
+						<th>Personal</th>
+						<th>Departamento</th>
+						<th>Puesto</th>
+						<th>Tipo</th>
+						<th>Fecha de subida</th>
+						<th>Fecha de baja</th>
+						<th>Estado</th>
+						<th class="text-center">Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for nombramiento in nombramientos %}
+						<tr>
+							<td>{{ nombramiento.personal }}</td>
+							<td>{{ nombramiento.personal.departamento.nombre }}</td>
+							<td>{{ nombramiento.personal.puesto.nombre }}</td>
+							<td>{{ nombramiento.tipo }}</td>
+							<td>{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}</td>
+							<td>{{ nombramiento.fechaDesactivacion ? nombramiento.fechaDesactivacion|date('d/m/Y H:i') : '-' }}</td>
+							<td>
+								<span class="nombramiento-historial__badge {{ nombramiento.activo ? 'nombramiento-historial__badge--active' : 'nombramiento-historial__badge--inactive' }}">
+									{{ nombramiento.activo ? 'Activo' : 'Inactivo' }}
+								</span>
+							</td>
+							<td>
+								<div class="nombramiento-historial__actions">
+									<button type="button"
+									   class="nombramiento-historial__action-btn nombramiento-historial__action-btn--pdf nombramiento-historial__pdf-preview-btn"
+									   data-pdf-url="{{ asset('uploads/nombramientos/' ~ nombramiento.archivo) }}"
+									   data-pdf-name="{{ nombramiento.nombreOriginal }}"
+									   data-pdf-tipo="{{ nombramiento.tipo }}"
+									   data-pdf-fecha="{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}"
+									   title="Ver PDF">
+										<i class="bi bi-file-earmark-pdf-fill"></i>
+									</button>
+
+									<a href="{{ path('app_nombramiento_historial_personal', {
+										id: nombramiento.personal.id,
+										origen: 'historial',
+										departamento: filtros.departamento,
+										puesto: filtros.puesto,
+										estado: app.request.query.get('estado')
+									}) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="nombramiento-historial__action-btn nombramiento-historial__action-btn--view"
+									   title="Ver historial del personal">
+										<i class="bi bi-eye-fill"></i>
+									</a>
+
+									<a href="{{ path('app_personal_edit', { id: nombramiento.personal.id }) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="nombramiento-historial__action-btn nombramiento-historial__action-btn--edit"
+									   title="Editar personal">
+										<i class="bi bi-pencil-square"></i>
+									</a>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="8" class="nombramiento-historial__empty">
+								No se encontraron nombramientos con los filtros seleccionados.
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+	<div class="personal-nombramiento-pdf-preview-modal personal-nombramiento-pdf-preview-modal-hidden"
+		 role="dialog"
+		 aria-modal="true"
+		 aria-labelledby="nombramiento-historial-pdf-preview-title"
+		 hidden>
+		<div class="personal-nombramiento-pdf-preview-modal-box">
+			<div class="personal-nombramiento-pdf-preview-modal-header">
+				<h3 id="nombramiento-historial-pdf-preview-title"
+					class="personal-nombramiento-pdf-preview-modal-title"></h3>
+
+				<button type="button"
+						class="personal-nombramiento-pdf-preview-modal-close-btn"
+						aria-label="Cerrar vista previa">
+					<i class="bi bi-x-lg"></i>
+				</button>
+			</div>
+
+			<iframe class="personal-nombramiento-pdf-preview-modal-frame"
+					title="Vista previa del dictamen"></iframe>
+
+			<div class="personal-nombramiento-pdf-preview-modal-meta">
+				<p><strong>Tipo:</strong> <span data-pdf-preview-tipo></span></p>
+				<p><strong>Subido:</strong> <span data-pdf-preview-fecha></span></p>
+			</div>
+		</div>
+	</div>
+</turbo-frame>
