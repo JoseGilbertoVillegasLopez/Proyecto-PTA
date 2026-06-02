@@ -209,6 +209,76 @@
 		</button>
 	</div>
 
+	{# ============================================================
+	   MODAL — MODO DE CAPTURA MENSUAL
+	   ------------------------------------------------------------
+	   Se abre automáticamente cuando el usuario activa el toggle
+	   "%" en un indicador. Pregunta si capturará el avance
+	   mensual como valor absoluto o como porcentaje (0-100).
+	   Solo aplica cuando esPorcentaje = true.
+	   ============================================================ #}
+	<div class="modal fade" id="modalCapturaPct" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content pta-modal">
+
+				<div class="modal-header pta-modal__header">
+					<h5 class="modal-title">
+						<i class="bi bi-pencil-square"></i>
+						¿Cómo registrarás el avance mensual?
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+
+				<div class="modal-body pta-modal__body">
+
+					<p class="pta-modal__info">
+						La meta del indicador es un <strong>porcentaje</strong>.
+						Define en qué unidad capturarás tu avance cada mes:
+					</p>
+
+					<div class="captura-opciones">
+
+						<button type="button" id="modalCapturaBtnAbs" class="captura-opcion active">
+							<div class="captura-opcion-icon">
+								<i class="bi bi-123"></i>
+							</div>
+							<div class="captura-opcion-texto">
+								<strong>Valor absoluto</strong>
+								<span>Registra números en la misma unidad que el valor base: alumnos, pesos, proyectos, etc.</span>
+								<em>Ejemplo: base=700 alumnos, meta=30% de aumento → capturas 750, 800…</em>
+							</div>
+						</button>
+
+						<button type="button" id="modalCapturaBtnPct" class="captura-opcion">
+							<div class="captura-opcion-icon">
+								<i class="bi bi-percent"></i>
+							</div>
+							<div class="captura-opcion-texto">
+								<strong>Porcentaje (0 – 100%)</strong>
+								<span>El indicador se mide en % directamente: eficiencia terminal, satisfacción, etc.</span>
+								<em>Ejemplo: base=60%, meta=85% → capturas 70%, 78%, 85%…</em>
+							</div>
+						</button>
+
+					</div>
+
+				</div>
+
+				<div class="modal-footer pta-modal__footer">
+					<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+						Cancelar
+					</button>
+					{# Inicia deshabilitado — JS lo habilita cuando el usuario elige una opción #}
+					<button type="button" class="btn pta-btn-primary" id="modalCapturaConfirm" disabled>
+						<i class="bi bi-check-lg"></i>
+						Confirmar
+					</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
 	{# ============================================================MODAL DE ERRORES- Usado por el JS para mostrar validaciones- El contenido se llena dinámicamente============================================================ #}
 	<div class="modal fade" id="erroresModal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-lg modal-dialog-centered">

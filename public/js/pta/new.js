@@ -206,6 +206,15 @@ function enforceOnlyDigits(input) {
     }
 
     
+    // =====================================================
+    // MODAL COMPARTIDO — MODO DE CAPTURA MENSUAL
+    // -----------------------------------------------------
+    // El modal es único para toda la vista. Cuando se abre,
+    // recibe la referencia al hidden field del indicador
+    // activo mediante modalEl._hiddenCapturaPct.
+    // =====================================================
+    initModalCapturaPct(frame);
+
     // Inicialización del buscador de Supervisor
     initPersonalSearch({
         inputSelector: ".supervisor-search",
@@ -402,12 +411,14 @@ initPersonalSearch({
                 esPorcentajeCheck.value = '0';
             }
 
-            // capturaEnPorcentaje: convertir checkbox → hidden
-            // El bloque visual se añade dentro del card HTML
+            // capturaEnPorcentaje: convertir checkbox → hidden.
+            // Se inicializa VACÍO ('') para detectar si el usuario
+            // nunca pasó por el modal de selección. Solo se asigna
+            // '0' o '1' al confirmar en el modal.
             const capturaPctCheck = temp.querySelector('[name$="[capturaEnPorcentaje]"]');
             if (capturaPctCheck) {
                 capturaPctCheck.type = 'hidden';
-                capturaPctCheck.value = '0';
+                capturaPctCheck.value = ''; // vacío = no elegido todavía
             }
 
             // Número secuencial visible del card
@@ -466,28 +477,8 @@ initPersonalSearch({
                                     <button type="button" class="btn tipo-btn tipo-pct" title="Porcentaje">%</button>
                                 </div>
                             </div>
-
-                            <!--
-                                Bloque capturaEnPorcentaje — solo visible cuando esPorcentaje=true.
-                                Pregunta al usuario cómo capturará el avance mensual:
-                                  - Valor absoluto: misma unidad que valorBase
-                                  - Porcentaje: el indicador se mide en % (ej. eficiencia terminal)
-                            -->
-                            <div class="captura-pct-wrap" style="display:none; margin-top:10px;">
-                                <div class="captura-pct-label">
-                                    <i class="bi bi-pencil-square"></i>
-                                    ¿Cómo registrarás el avance mensual?
-                                </div>
-                                <div class="btn-group btn-group-sm" role="group" style="margin-top:6px;">
-                                    <button type="button" class="btn captura-abs-btn active" title="Captura en valor absoluto (misma unidad que el valor base)">
-                                        <i class="bi bi-123"></i> Valor absoluto
-                                    </button>
-                                    <button type="button" class="btn captura-pct-btn" title="Captura en porcentaje (el indicador se mide en %)">
-                                        <i class="bi bi-percent"></i> Porcentaje %
-                                    </button>
-                                </div>
-                                <div class="captura-pct-hint"></div>
-                            </div>
+                            <!-- Badge que muestra el modo de captura elegido (actualizado por JS tras el modal) -->
+                            <div class="captura-modo-badge" style="display:none; margin-top:6px;"></div>
                         </div>
                         <div class="ic-field ic-field--periodo">
                             <label class="ic-label">
@@ -510,78 +501,84 @@ initPersonalSearch({
             `;
 
             // Toggle # / % (esPorcentaje)
-            const hiddenPct = card.querySelector('[name$="[esPorcentaje]"]');
-            const btnAbs    = card.querySelector('.tipo-abs');
-            const btnPct    = card.querySelector('.tipo-pct');
-
-            // Toggle de modo de captura (capturaEnPorcentaje) —
-            // solo visible cuando esPorcentaje=true.
-            // Pregunta al usuario si capturará % o valor absoluto mensualmente.
+            const hiddenPct       = card.querySelector('[name$="[esPorcentaje]"]');
             const hiddenCapturaPct = card.querySelector('[name$="[capturaEnPorcentaje]"]');
-            const capturaPctWrap   = card.querySelector('.captura-pct-wrap');
+            const btnAbs          = card.querySelector('.tipo-abs');
+            const btnPct          = card.querySelector('.tipo-pct');
+            const modoBadge       = card.querySelector('.captura-modo-badge');
 
             /**
-             * Sincroniza la visibilidad del bloque capturaEnPorcentaje
-             * según el estado actual de esPorcentaje.
+             * Actualiza el badge visual que muestra el modo de captura elegido.
+             * null/false → oculto  |  '0' → "Valor absoluto"  |  '1' → "Porcentaje %"
              */
-            function syncCapturaPctVisibility() {
-                if (!capturaPctWrap) return;
-                if (hiddenPct && hiddenPct.value === '1') {
-                    capturaPctWrap.style.display = 'block';
+            function actualizarModoBadge() {
+                if (!modoBadge || !hiddenCapturaPct) return;
+                if (hiddenPct?.value !== '1') {
+                    modoBadge.style.display = 'none';
+                    return;
+                }
+                modoBadge.style.display = 'block';
+                if (hiddenCapturaPct.value === '1') {
+                    modoBadge.innerHTML = `
+                        <span class="captura-badge captura-badge--pct">
+                            <i class="bi bi-percent"></i> Captura mensual: porcentaje (0-100%)
+                        </span>`;
                 } else {
-                    capturaPctWrap.style.display = 'none';
-                    // Al ocultar, resetear capturaEnPorcentaje a false
-                    if (hiddenCapturaPct) hiddenCapturaPct.value = '0';
-                    // Resetear botones visibles si existen
-                    const btnCapAbs = capturaPctWrap?.querySelector('.captura-abs-btn');
-                    const btnCapPct = capturaPctWrap?.querySelector('.captura-pct-btn');
-                    if (btnCapAbs) btnCapAbs.classList.add('active');
-                    if (btnCapPct) btnCapPct.classList.remove('active');
+                    modoBadge.innerHTML = `
+                        <span class="captura-badge captura-badge--abs">
+                            <i class="bi bi-123"></i> Captura mensual: valor absoluto
+                        </span>`;
                 }
             }
 
+            /**
+             * Abre el modal compartido de captura y asocia su
+             * confirmación al hidden field de este card específico.
+             */
+            function abrirModalCaptura() {
+                const modalEl = document.getElementById('modalCapturaPct');
+                if (!modalEl) return;
+
+                // Guardar referencia al campo de este card
+                modalEl._hiddenCapturaPct = hiddenCapturaPct;
+                modalEl._actualizarBadge  = actualizarModoBadge;
+
+                // Marcar el botón activo según el estado actual
+                const btnModalAbs = modalEl.querySelector('#modalCapturaBtnAbs');
+                const btnModalPct = modalEl.querySelector('#modalCapturaBtnPct');
+                const esActualPct = hiddenCapturaPct?.value === '1';
+
+                btnModalAbs?.classList.toggle('active', !esActualPct);
+                btnModalPct?.classList.toggle('active',  esActualPct);
+
+                bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            }
+
             if (hiddenPct && btnAbs && btnPct) {
+
                 btnAbs.addEventListener('click', () => {
                     hiddenPct.value = '0';
                     btnAbs.classList.add('active');
                     btnPct.classList.remove('active');
-                    syncCapturaPctVisibility();
+
+                    // Al volver a absoluto, resetear capturaEnPorcentaje a vacío
+                    // (se restablece como si nunca hubiera elegido, sin modal)
+                    if (hiddenCapturaPct) hiddenCapturaPct.value = '';
+                    actualizarModoBadge();
                 });
+
                 btnPct.addEventListener('click', () => {
                     hiddenPct.value = '1';
                     btnPct.classList.add('active');
                     btnAbs.classList.remove('active');
-                    syncCapturaPctVisibility();
+
+                    // Al activar %, abrir el modal para preguntar el modo de captura
+                    abrirModalCaptura();
                 });
             }
 
-            // Toggle dentro de capturaEnPorcentaje (Absoluto / Porcentaje)
-            const btnCapAbs  = card.querySelector('.captura-abs-btn');
-            const btnCapPct  = card.querySelector('.captura-pct-btn');
-            const capturHint = card.querySelector('.captura-pct-hint');
-
-            const HINT_ABS = 'Registrarás números en la misma unidad que el valor base (alumnos, pesos, proyectos…)';
-            const HINT_PCT = 'Registrarás porcentajes (0-100). Úsalo cuando el indicador se mide en % (eficiencia terminal, satisfacción…)';
-
-            if (hiddenCapturaPct && btnCapAbs && btnCapPct) {
-                btnCapAbs.addEventListener('click', () => {
-                    hiddenCapturaPct.value = '0';
-                    btnCapAbs.classList.add('active');
-                    btnCapPct.classList.remove('active');
-                    if (capturHint) capturHint.textContent = HINT_ABS;
-                });
-                btnCapPct.addEventListener('click', () => {
-                    hiddenCapturaPct.value = '1';
-                    btnCapPct.classList.add('active');
-                    btnCapAbs.classList.remove('active');
-                    if (capturHint) capturHint.textContent = HINT_PCT;
-                });
-                // Hint inicial
-                if (capturHint) capturHint.textContent = HINT_ABS;
-            }
-
-            // Estado inicial (oculto porque esPorcentaje empieza en false)
-            syncCapturaPctVisibility();
+            // Inicializar badge (para cuando se edita un PTA existente con datos ya guardados)
+            actualizarModoBadge();
 
             // Re-aplicar enforceOnlyDigits sobre los elementos reales del card
             const cardValorBase = card.querySelector('[name$="[valorBase]"]');
@@ -771,6 +768,58 @@ initPersonalSearch({
 
     if (ptaForm) {
         ptaForm.addEventListener("submit", (e) => {
+
+            // ===============================
+            // VALIDACIÓN: capturaEnPorcentaje
+            // --------------------------------
+            // Si algún indicador tiene esPorcentaje='1' pero
+            // capturaEnPorcentaje='' (el usuario cerró el modal
+            // sin elegir), bloquear el submit y abrir el modal
+            // de ese indicador. Al confirmar, se auto-resubmit.
+            // ===============================
+            const modalEl = document.getElementById('modalCapturaPct');
+
+            const indicadorSinCaptura = frame.querySelector(
+                'input[name$="[esPorcentaje]"][value="1"]'
+            ) && (() => {
+                // Buscar el primer indicador con esPorcentaje='1' y capturaEnPorcentaje=''
+                let encontrado = null;
+                frame.querySelectorAll('.indicator-row').forEach(row => {
+                    if (encontrado) return;
+                    const hPct = row.querySelector('[name$="[esPorcentaje]"]');
+                    const hCap = row.querySelector('[name$="[capturaEnPorcentaje]"]');
+                    if (hPct?.value === '1' && hCap?.value === '') {
+                        encontrado = { hCap, row };
+                    }
+                });
+                return encontrado;
+            })();
+
+            if (indicadorSinCaptura && modalEl) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                // Obtener el badge updater de ese card
+                const card = indicadorSinCaptura.row;
+                const badge = card.querySelector('.captura-modo-badge');
+
+                // Pasar la referencia al modal + flag de auto-submit
+                modalEl._hiddenCapturaPct = indicadorSinCaptura.hCap;
+                modalEl._actualizarBadge  = badge
+                    ? () => {
+                        // Actualizar el badge del card cuando confirme
+                        badge.style.display = 'block';
+                        badge.innerHTML = indicadorSinCaptura.hCap.value === '1'
+                            ? `<span class="captura-badge captura-badge--pct"><i class="bi bi-percent"></i> Captura mensual: porcentaje (0-100%)</span>`
+                            : `<span class="captura-badge captura-badge--abs"><i class="bi bi-123"></i> Captura mensual: valor absoluto</span>`;
+                      }
+                    : null;
+                modalEl._pendienteSubmit  = true;
+                modalEl._form             = ptaForm;
+
+                bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                return;
+            }
 
             // ===============================
             // VALIDACIÓN DE RESPONSABLES
@@ -1019,6 +1068,112 @@ frame.querySelectorAll(
     enforceOnlyDigits(input);
 });
 
+
+/**
+ * =====================================================
+ * MODAL COMPARTIDO — MODO DE CAPTURA MENSUAL
+ * -----------------------------------------------------
+ * Controla el modal que pregunta al usuario si capturará
+ * el avance mensual del indicador en valor absoluto o %.
+ *
+ * Soporta dos modos de apertura:
+ *   1. Normal: usuario activa el toggle %
+ *   2. Validación: el submit detectó que capturaEnPorcentaje
+ *      está vacío en algún indicador → abre el modal y al
+ *      confirmar re-lanza el submit automáticamente.
+ *
+ * Props que recibe en modalEl antes de .show():
+ *   _hiddenCapturaPct : HTMLInputElement (el hidden del card)
+ *   _actualizarBadge  : function()
+ *   _pendienteSubmit  : bool (true si fue lanzado por validación)
+ *   _form             : HTMLFormElement (para el auto-submit)
+ * =====================================================
+ */
+function initModalCapturaPct(frame) {
+
+    const modalEl    = document.getElementById('modalCapturaPct');
+    if (!modalEl) return;
+
+    const btnAbs     = modalEl.querySelector('#modalCapturaBtnAbs');
+    const btnPct     = modalEl.querySelector('#modalCapturaBtnPct');
+    const btnConfirm = modalEl.querySelector('#modalCapturaConfirm');
+
+    if (!btnAbs || !btnPct || !btnConfirm) return;
+
+    let seleccion = ''; // '' = no elegido, '0' = absoluto, '1' = porcentaje
+
+    // ── Botón "Valor absoluto" ──
+    btnAbs.addEventListener('click', () => {
+        seleccion = '0';
+        btnAbs.classList.add('active');
+        btnPct.classList.remove('active');
+        btnConfirm.disabled = false; // habilitar al elegir
+    });
+
+    // ── Botón "Porcentaje %" ──
+    btnPct.addEventListener('click', () => {
+        seleccion = '1';
+        btnPct.classList.add('active');
+        btnAbs.classList.remove('active');
+        btnConfirm.disabled = false; // habilitar al elegir
+    });
+
+    // ── Confirmar elección ──
+    btnConfirm.addEventListener('click', () => {
+
+        // Debe tener una selección antes de confirmar
+        if (seleccion === '') return;
+
+        const hidden          = modalEl._hiddenCapturaPct;
+        const actualizarBadge = modalEl._actualizarBadge;
+        const pendienteSubmit = modalEl._pendienteSubmit;
+        const formRef         = modalEl._form;
+
+        if (hidden) hidden.value = seleccion;
+        if (actualizarBadge) actualizarBadge();
+
+        bootstrap.Modal.getInstance(modalEl)?.hide();
+
+        // Si fue lanzado desde validación de submit, re-lanzar el submit
+        if (pendienteSubmit && formRef) {
+            // Pequeño delay para dejar que el modal cierre limpiamente
+            setTimeout(() => formRef.requestSubmit(), 100);
+        }
+    });
+
+    // ── Al abrir el modal: sincronizar selección con el estado actual ──
+    modalEl.addEventListener('show.bs.modal', () => {
+        const hidden = modalEl._hiddenCapturaPct;
+
+        // Si ya tiene valor confirmado previamente, pre-seleccionarlo
+        if (hidden?.value === '0') {
+            seleccion = '0';
+            btnAbs.classList.add('active');
+            btnPct.classList.remove('active');
+            btnConfirm.disabled = false;
+        } else if (hidden?.value === '1') {
+            seleccion = '1';
+            btnPct.classList.add('active');
+            btnAbs.classList.remove('active');
+            btnConfirm.disabled = false;
+        } else {
+            // Vacío ('') = sin elegir todavía → ninguna opción activa,
+            // botón Confirmar deshabilitado hasta que el usuario elija
+            seleccion = '';
+            btnAbs.classList.remove('active');
+            btnPct.classList.remove('active');
+            btnConfirm.disabled = true;
+        }
+    });
+
+    // ── Limpiar al cerrar ──
+    modalEl.addEventListener('hidden.bs.modal', () => {
+        modalEl._hiddenCapturaPct = null;
+        modalEl._actualizarBadge  = null;
+        modalEl._pendienteSubmit  = false;
+        modalEl._form             = null;
+    });
+}
 
 }// fin de la funcion de contencion
 

@@ -1061,69 +1061,144 @@ select[name$="[anioEjecucion]"].pta-input {
 }
 
 /* =========================================================
-   CAPTURA EN PORCENTAJE — bloque condicional en indicador
+   CAPTURA EN PORCENTAJE — MODAL DE SELECCIÓN
    ---------------------------------------------------------
-   Solo visible cuando esPorcentaje=true.
-   Pregunta al usuario cómo registrará su avance mensual.
+   El modal pregunta el modo de captura cuando el usuario
+   activa esPorcentaje=true en un indicador.
    ========================================================= */
 
-.captura-pct-wrap {
-    background: rgba(13, 202, 240, 0.05);
-    border: 1px solid rgba(13, 202, 240, 0.2);
-    border-radius: 10px;
-    padding: 10px 12px;
+/* Dos opciones de tarjeta dentro del modal */
+.captura-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
 }
 
-.captura-pct-label {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #9fb3c8;
+.captura-opcion {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+}
+
+.captura-opcion:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Icono de la opción */
+.captura-opcion-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-bottom: 4px;
-}
-
-.captura-pct-label i {
-    color: #0dcaf0;
-}
-
-/* Botones del toggle de captura */
-.captura-abs-btn,
-.captura-pct-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.07);
     color: rgba(255, 255, 255, 0.5);
-    font-size: 0.78rem;
-    padding: 6px 12px;
-    height: auto;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
-.captura-abs-btn.active {
-    background: rgba(29, 209, 161, 0.18);
+/* Texto de la opción */
+.captura-opcion-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.captura-opcion-texto strong {
+    font-size: 0.9rem;
+    color: #e6e6e6;
+}
+
+.captura-opcion-texto span {
+    font-size: 0.78rem;
+    color: #9fb3c8;
+    line-height: 1.4;
+}
+
+.captura-opcion-texto em {
+    font-size: 0.72rem;
+    color: rgba(159, 179, 200, 0.55);
+    font-style: italic;
+}
+
+/* Opción ACTIVA — valor absoluto (verde) */
+#modalCapturaBtnAbs.active {
     border-color: rgba(29, 209, 161, 0.5);
+    background: rgba(29, 209, 161, 0.08);
+    box-shadow: 0 0 0 1px rgba(29, 209, 161, 0.2);
+}
+
+#modalCapturaBtnAbs.active .captura-opcion-icon {
+    background: rgba(29, 209, 161, 0.15);
     color: #1dd1a1;
 }
 
-.captura-pct-btn.active {
-    background: rgba(13, 202, 240, 0.18);
+#modalCapturaBtnAbs.active .captura-opcion-texto strong {
+    color: #1dd1a1;
+}
+
+/* Botón Confirmar bloqueado si no hay selección */
+#modalCapturaConfirm:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+/* Opción ACTIVA — porcentaje (cian) */
+#modalCapturaBtnPct.active {
     border-color: rgba(13, 202, 240, 0.5);
+    background: rgba(13, 202, 240, 0.08);
+    box-shadow: 0 0 0 1px rgba(13, 202, 240, 0.2);
+}
+
+#modalCapturaBtnPct.active .captura-opcion-icon {
+    background: rgba(13, 202, 240, 0.15);
     color: #0dcaf0;
 }
 
-.captura-abs-btn:hover:not(.active),
-.captura-pct-btn:hover:not(.active) {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
+#modalCapturaBtnPct.active .captura-opcion-texto strong {
+    color: #0dcaf0;
 }
 
-/* Hint explicativo debajo de los botones */
-.captura-pct-hint {
+/* =========================================================
+   CAPTURA EN PORCENTAJE — BADGE DE CONFIRMACIÓN EN EL CARD
+   ---------------------------------------------------------
+   Se muestra debajo de los botones # / % después de que el
+   usuario elige en el modal. Indica el modo elegido.
+   ========================================================= */
+
+.captura-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
     font-size: 0.72rem;
-    color: rgba(159, 179, 200, 0.65);
-    margin-top: 6px;
-    font-style: italic;
-    line-height: 1.4;
+    font-weight: 600;
+}
+
+.captura-badge--abs {
+    background: rgba(29, 209, 161, 0.12);
+    border: 1px solid rgba(29, 209, 161, 0.3);
+    color: #1dd1a1;
+}
+
+.captura-badge--pct {
+    background: rgba(13, 202, 240, 0.12);
+    border: 1px solid rgba(13, 202, 240, 0.3);
+    color: #0dcaf0;
 }
 
 /* =========================================================
