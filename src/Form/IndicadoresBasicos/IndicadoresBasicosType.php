@@ -2,7 +2,9 @@
 
 namespace App\Form\IndicadoresBasicos;
 
+use App\Entity\GrupoIndicadoresBasicos;
 use App\Entity\IndicadoresBasicos;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -38,6 +40,17 @@ class IndicadoresBasicosType extends AbstractType
                 'attr' => [
                     'rows' => 4,
                     'placeholder' => 'Notas adicionales del indicador',
+                ],
+            ])
+
+            ->add('grupo', EntityType::class, [
+                'class' => GrupoIndicadoresBasicos::class,
+                'choice_label' => 'grupo',
+                'label' => 'Grupo',
+                'placeholder' => '— Sin grupo —',
+                'required' => false,
+                'attr' => [
+                    'class' => 'indicadores-select-pta',
                 ],
             ])
         ;

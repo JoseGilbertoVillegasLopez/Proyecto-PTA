@@ -8,6 +8,24 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * =========================================================
+ * ENTIDAD: Acciones
+ * ---------------------------------------------------------
+ * Representa una acción dentro del PTA.
+ * Cada acción pertenece a un Encabezado y está asociada
+ * lógicamente a un Indicador mediante su índice (no FK).
+ *
+ * MODELO DE SEGUIMIENTO:
+ * - mesesCumplidos: JSON que registra si la acción fue
+ *   cumplida (true) o no (false) en cada mes del periodo.
+ *   Ejemplo: {"Enero": true, "Febrero": false, "Marzo": null}
+ *   null = aún no registrado para ese mes.
+ *
+ * - El historial completo de cambios (incluyendo correcciones
+ *   de meses pasados) se guarda en HistorialAcciones.
+ * =========================================================
+ */
 #[ORM\Entity(repositoryClass: AccionesRepository::class)]
 class Acciones
 {
@@ -16,29 +34,59 @@ class Acciones
     #[ORM\Column]
     private ?int $id = null;
 
+    /**
+     * PTA al que pertenece esta acción.
+     */
     #[ORM\ManyToOne(inversedBy: 'acciones', targetEntity: Encabezado::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Encabezado $encabezado = null;
 
+    /**
+     * Descripción textual de la acción.
+     */
     #[ORM\Column(type: Types::TEXT)]
     private ?string $accion = null;
 
+    /**
+     * Meses del año en que se planea ejecutar esta acción.
+     * Almacenados como nombres en español: ["Enero", "Marzo", "Junio"]
+     * Se usa para saber qué meses son activos (editables) en el seguimiento.
+     */
     #[ORM\Column]
     private array $periodo = [];
 
+    /**
+     * Estado de cumplimiento por mes del periodo.
+     *
+     * Estructura:
+     *   { "NombreMes": true|false|null }
+     *   true  = acción cumplida ese mes
+     *   false = acción NO cumplida ese mes (requirió motivo)
+     *   null  = todavía no registrado
+     *
+     * Solo contiene los meses definidos en $periodo.
+     * Los meses futuros se ignoran hasta que llegue su turno.
+     */
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $valorAlcanzado = null;
+    private ?array $mesesCumplidos = null;
 
+    /**
+     * Índice lógico del indicador asociado a esta acción.
+     *
+     * IMPORTANTE: NO es el ID de la BD de Indicadores.
+     * Es el valor del campo Indicadores::$indice, que es un
+     * contador asignado por JS durante la creación del PTA.
+     * La relación indicador↔acción existe solo dentro del
+     * contexto de un mismo Encabezado.
+     */
     #[ORM\Column]
     private ?int $indicador = null;
 
     /**
-     * @var Collection<int, HistorialAccionesAtrasos>
-     */
-    #[ORM\OneToMany(targetEntity: HistorialAccionesAtrasos::class, mappedBy: 'accion')]
-    private Collection $historialAccionesAtrasos;
-
-    /**
+     * Historial completo de cambios de cumplimiento.
+     * Cada registro representa una captura o corrección,
+     * con motivo obligatorio si fue en mes pasado o marcada como ✗.
+     *
      * @var Collection<int, HistorialAcciones>
      */
     #[ORM\OneToMany(targetEntity: HistorialAcciones::class, mappedBy: 'accion')]
@@ -46,10 +94,8 @@ class Acciones
 
     public function __construct()
     {
-        $this->historialAccionesAtrasos = new ArrayCollection();
         $this->historialAcciones = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -64,7 +110,6 @@ class Acciones
     public function setEncabezado(?Encabezado $encabezado): static
     {
         $this->encabezado = $encabezado;
-
         return $this;
     }
 
@@ -76,7 +121,6 @@ class Acciones
     public function setAccion(string $accion): static
     {
         $this->accion = $accion;
-
         return $this;
     }
 
@@ -88,19 +132,17 @@ class Acciones
     public function setPeriodo(array $periodo): static
     {
         $this->periodo = $periodo;
-
         return $this;
     }
 
-    public function getValorAlcanzado(): ?array
+    public function getMesesCumplidos(): ?array
     {
-        return $this->valorAlcanzado;
+        return $this->mesesCumplidos;
     }
 
-    public function setValorAlcanzado(array $valorAlcanzado): static
+    public function setMesesCumplidos(?array $mesesCumplidos): static
     {
-        $this->valorAlcanzado = $valorAlcanzado;
-
+        $this->mesesCumplidos = $mesesCumplidos;
         return $this;
     }
 
@@ -112,37 +154,6 @@ class Acciones
     public function setIndicador(int $indicador): static
     {
         $this->indicador = $indicador;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, HistorialAccionesAtrasos>
-     */
-    public function getHistorialAccionesAtrasos(): Collection
-    {
-        return $this->historialAccionesAtrasos;
-    }
-
-    public function addHistorialAccionesAtraso(HistorialAccionesAtrasos $historialAccionesAtraso): static
-    {
-        if (!$this->historialAccionesAtrasos->contains($historialAccionesAtraso)) {
-            $this->historialAccionesAtrasos->add($historialAccionesAtraso);
-            $historialAccionesAtraso->setAccion($this);
-        }
-
-        return $this;
-    }
-
-    public function removeHistorialAccionesAtraso(HistorialAccionesAtrasos $historialAccionesAtraso): static
-    {
-        if ($this->historialAccionesAtrasos->removeElement($historialAccionesAtraso)) {
-            // set the owning side to null (unless already changed)
-            if ($historialAccionesAtraso->getAccion() === $this) {
-                $historialAccionesAtraso->setAccion(null);
-            }
-        }
-
         return $this;
     }
 
@@ -160,19 +171,16 @@ class Acciones
             $this->historialAcciones->add($historialAccione);
             $historialAccione->setAccion($this);
         }
-
         return $this;
     }
 
     public function removeHistorialAccione(HistorialAcciones $historialAccione): static
     {
         if ($this->historialAcciones->removeElement($historialAccione)) {
-            // set the owning side to null (unless already changed)
             if ($historialAccione->getAccion() === $this) {
                 $historialAccione->setAccion(null);
             }
         }
-
         return $this;
     }
 }

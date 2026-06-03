@@ -351,7 +351,7 @@ class ReportePtaWordExportService
         $table->addRow();
 
         $values = [
-            $indicador['indicador_basico'] ?? '',
+            $indicador['indicador_basico'] ?: 'No aplica',
             $indicador['indicador_pta'] ?? '',
             $indicador['unidad_medida'] ?? '',
             $this->normalizarValor($indicador['meta'] ?? ''),

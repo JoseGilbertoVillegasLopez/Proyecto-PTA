@@ -4,28 +4,30 @@ namespace App\Service\Pta;
 
 use App\Entity\Acciones;
 use App\Entity\Encabezado;
+use App\Entity\Indicadores;
 use App\Repository\EncabezadoRepository;
 
 /**
  * =========================================================
- * PTA — Missing Progress Resolver
+ * PtaMissingProgressResolver
  * ---------------------------------------------------------
- * Responsabilidad única:
- *  - Detectar ACCIONES que deben reportar en un mes dado,
- *    pero NO tienen avance registrado para ese mes.
+ * Detecta PTAs que tienen avances pendientes de captura
+ * en un mes/año dado. Usado para enviar notificaciones
+ * recordatorias al responsable.
  *
- * Reglas:
- *  - El mes se evalúa SOLO si está incluido en Acciones::$periodo
- *  - Un avance "0" es válido (sí cuenta como registrado)
- *  - Se considera "sin avance" cuando:
- *      - valorAlcanzado es null
- *      - o no existe la clave del mes
- *      - o la clave existe pero su valor es null
+ * NUEVO MODELO — dos tipos de pendiente:
  *
- * IMPORTANTE:
- *  - Este servicio NO envía correos
- *  - Este servicio NO decide qué día es (15/25/1)
- *  - Solo devuelve qué PTAs tienen acciones pendientes ese mes
+ * 1. ACCIÓN SIN MARCAR:
+ *    Un mes del periodo de una acción ya pasó y no tiene
+ *    ningún registro en HistorialAcciones para ese mes.
+ *    (antes se revisaba valorAlcanzado; ahora mesesCumplidos)
+ *
+ * 2. INDICADOR SIN VALOR:
+ *    Un mes reportable del indicador ya pasó y no tiene
+ *    valor registrado en Indicadores::$valorMensual.
+ *
+ * IMPORTANTE: este servicio NO envía correos ni decide
+ * qué día es. Solo devuelve qué PTAs tienen pendientes.
  * =========================================================
  */
 final class PtaMissingProgressResolver
@@ -35,48 +37,39 @@ final class PtaMissingProgressResolver
     ) {}
 
     /**
-     * Resuelve PTAs con acciones sin avance en el mes/año indicados.
+     * Devuelve los PTAs con acciones sin marcar O indicadores sin valor
+     * en el mes indicado.
      *
-     * @param int $anio  Año de ejecución (Encabezado::$anioEjecucion)
-     * @param int $mes   Mes numérico 1-12
+     * @param int $anio Año de ejecución (Encabezado::$anioEjecucion)
+     * @param int $mes  Mes numérico 1-12
      *
-     * @return array<int, array{encabezado: Encabezado, acciones: Acciones[]}>
-     *         - Un elemento por PTA (Encabezado)
-     *         - Con lista de acciones pendientes en ese mes
+     * @return array<int, array{
+     *   encabezado:       Encabezado,
+     *   acciones_pendientes: Acciones[],
+     *   indicadores_pendientes: Indicadores[]
+     * }>
      */
     public function resolve(int $anio, int $mes): array
     {
-        // 1) Traer PTAs activos del año (idealmente con acciones y responsables cargados)
         $ptas = $this->encabezadoRepository->findBy([
-            'status' => true,
-            'anioEjecucion' => $anio,
+            'status'         => true,
+            'anioEjecucion'  => $anio,
         ]);
 
-        // 2) Normalizar el mes a varias llaves posibles
-        //    (porque tu BD usa arrays y puede venir como número, string, nombre, etc.)
-        $monthKeys = $this->buildMonthKeys($mes);
+        $mesNombre = $this->mesANombre($mes);
+        $result    = [];
 
-        $result = [];
-
-        // 3) Revisar cada PTA y sus acciones
         foreach ($ptas as $pta) {
-            $accionesPendientes = [];
 
-            foreach ($pta->getAcciones() as $accion) {
-                if ($this->accionDebeEvaluarseEnMes($accion, $monthKeys) === false) {
-                    continue; // ese mes no aplica para esa acción
-                }
+            $accionesPendientes    = $this->resolverAccionesPendientes($pta, $mes, $mesNombre);
+            $indicadoresPendientes = $this->resolverIndicadoresPendientes($pta, $mes, $mesNombre);
 
-                if ($this->accionTieneAvanceEnMes($accion, $monthKeys) === false) {
-                    $accionesPendientes[] = $accion;
-                }
-            }
-
-            // 4) Si hay al menos una acción pendiente, este PTA entra al resultado
-            if (!empty($accionesPendientes)) {
+            // Solo incluir el PTA si tiene al menos un pendiente
+            if (!empty($accionesPendientes) || !empty($indicadoresPendientes)) {
                 $result[] = [
-                    'encabezado' => $pta,
-                    'acciones' => $accionesPendientes,
+                    'encabezado'              => $pta,
+                    'acciones_pendientes'     => $accionesPendientes,
+                    'indicadores_pendientes'  => $indicadoresPendientes,
                 ];
             }
         }
@@ -85,118 +78,100 @@ final class PtaMissingProgressResolver
     }
 
     /**
-     * Determina si una acción debe evaluarse en el mes indicado,
-     * basándose en Acciones::$periodo (array).
+     * Determina qué acciones del PTA no tienen registro de cumplimiento
+     * para el mes dado.
+     *
+     * Una acción está pendiente cuando:
+     *   - El mes está en su periodo de ejecución
+     *   - No hay ninguna entrada en HistorialAcciones para ese mes
+     *     (independientemente de si fue ✓ o ✗)
+     *
+     * @return Acciones[]
      */
-    private function accionDebeEvaluarseEnMes(Acciones $accion, array $monthKeys): bool
+    private function resolverAccionesPendientes(Encabezado $pta, int $mesNumero, string $mesNombre): array
     {
-        $periodo = $accion->getPeriodo(); // array (puede ser [1,2,3] o ["Enero", ...])
+        $pendientes = [];
 
-        // Si el periodo está vacío, por seguridad: NO evaluamos (evita falsos positivos)
-        if (empty($periodo)) {
-            return false;
-        }
+        foreach ($pta->getAcciones() as $accion) {
 
-        // Convertimos todo a strings comparables (normalización simple)
-        $periodoNorm = array_map(fn($v) => $this->normalizeKey($v), $periodo);
-
-        foreach ($monthKeys as $key) {
-            if (in_array($this->normalizeKey($key), $periodoNorm, true)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Determina si una acción tiene avance registrado en el mes:
-     * - Si valorAlcanzado es null -> NO hay avance
-     * - Si existe clave del mes y su valor NO es null -> SÍ hay avance
-     *   (incluye 0 como válido)
-     */
-    private function accionTieneAvanceEnMes(Acciones $accion, array $monthKeys): bool
-    {
-        $valor = $accion->getValorAlcanzado(); // ?array (JSON)
-
-        if ($valor === null) {
-            return false;
-        }
-
-        // Normalizamos llaves del JSON para comparar sin problemas
-        $valorNorm = [];
-        foreach ($valor as $k => $v) {
-            $valorNorm[$this->normalizeKey($k)] = $v;
-        }
-
-        foreach ($monthKeys as $key) {
-            $nk = $this->normalizeKey($key);
-
-            if (!array_key_exists($nk, $valorNorm)) {
+            // El mes debe estar en el periodo de la acción
+            if (!in_array($mesNombre, $accion->getPeriodo(), true)) {
                 continue;
             }
 
-            // Si existe la clave y su valor NO es null, cuenta como registrado.
-            // 0 es válido -> (0 !== null) => true
-            if ($valorNorm[$nk] !== null) {
-                return true;
+            // Revisar si existe algún registro en el historial para este mes
+            $tieneRegistro = false;
+            foreach ($accion->getHistorialAcciones() as $h) {
+                if ($h->getMes() === $mesNumero) {
+                    $tieneRegistro = true;
+                    break;
+                }
+            }
+
+            if (!$tieneRegistro) {
+                $pendientes[] = $accion;
             }
         }
 
-        return false;
+        return $pendientes;
     }
 
     /**
-     * Construye posibles llaves del mes para soportar varios formatos:
-     * - 1, "1", "01"
-     * - "enero", "Enero"
-     * - "jan", "january" (por si acaso)
+     * Determina qué indicadores del PTA no tienen valor snapshot
+     * registrado para el mes dado.
      *
-     * Esto evita que el resolver dependa de un único formato.
+     * Un indicador está pendiente cuando:
+     *   - El mes es reportable para ese indicador
+     *     (está en el periodo de al menos una de sus acciones)
+     *   - No hay valor en Indicadores::$valorMensual para ese mes
+     *
+     * @return Indicadores[]
      */
-    private function buildMonthKeys(int $mes): array
+    private function resolverIndicadoresPendientes(Encabezado $pta, int $mesNumero, string $mesNombre): array
     {
-        $mes = max(1, min(12, $mes));
+        $pendientes = [];
 
-        $n = (string) $mes;          // "1"
-        $n2 = str_pad($n, 2, '0', STR_PAD_LEFT); // "01"
+        foreach ($pta->getIndicadores() as $indicador) {
 
-        $es = [
-            1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
-            5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
-            9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre',
-        ];
+            // Calcular si el mes es reportable para este indicador
+            $esReportable = false;
+            foreach ($pta->getAcciones() as $accion) {
+                if ($accion->getIndicador() === $indicador->getIndice()
+                    && in_array($mesNombre, $accion->getPeriodo(), true)) {
+                    $esReportable = true;
+                    break;
+                }
+            }
 
-        $en = [
-            1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April',
-            5 => 'May', 6 => 'June', 7 => 'July', 8 => 'August',
-            9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December',
-        ];
+            if (!$esReportable) {
+                continue;
+            }
 
-        $enShort = [
-            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
-            5 => 'May', 6 => 'Jun', 7 => 'Jul', 8 => 'Aug',
-            9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Dec',
-        ];
+            // Revisar si ya tiene valor registrado para este mes
+            $valorMensual = $indicador->getValorMensual() ?? [];
+            $tieneValor   = isset($valorMensual[$mesNombre]) && $valorMensual[$mesNombre] !== null;
 
-        return [
-            $mes, $n, $n2,
-            $es[$mes], mb_strtolower($es[$mes]),
-            $en[$mes], mb_strtolower($en[$mes]),
-            $enShort[$mes], mb_strtolower($enShort[$mes]),
-        ];
+            if (!$tieneValor) {
+                $pendientes[] = $indicador;
+            }
+        }
+
+        return $pendientes;
     }
 
     /**
-     * Normaliza llaves para comparar:
-     * - trim
-     * - minúsculas
-     * - quita dobles espacios
+     * Convierte un número de mes (1-12) a su nombre en español.
+     * Devuelve cadena vacía si el número es inválido.
      */
-    private function normalizeKey(mixed $value): string
+    private function mesANombre(int $mes): string
     {
-        $s = trim((string) $value);
-        $s = preg_replace('/\s+/', ' ', $s);
-        return mb_strtolower($s);
+        $meses = [
+            1  => 'Enero',     2  => 'Febrero',   3  => 'Marzo',
+            4  => 'Abril',     5  => 'Mayo',       6  => 'Junio',
+            7  => 'Julio',     8  => 'Agosto',     9  => 'Septiembre',
+            10 => 'Octubre',   11 => 'Noviembre',  12 => 'Diciembre',
+        ];
+
+        return $meses[$mes] ?? '';
     }
 }

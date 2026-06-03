@@ -1,236 +1,369 @@
 {# ============================================================
-   PTA — HISTORIAL COMPLETO (MES = CARD COMPACTA)
+   PTA — HISTORIAL COMPLETO (nuevo modelo, diseño v3)
    ============================================================ #}
 
-<section
-	class="pta-historial">
+{% set meses_orden = {
+    'Enero': 1, 'Febrero': 2, 'Marzo': 3, 'Abril': 4,
+    'Mayo': 5, 'Junio': 6, 'Julio': 7, 'Agosto': 8,
+    'Septiembre': 9, 'Octubre': 10, 'Noviembre': 11, 'Diciembre': 12
+} %}
 
-	{# ================ENCABEZADO DEL PTA=================== #}
-	<header
-		class="pta-historial-header">
+{% set etiquetas_evento = {
+    'CAPTURA_CUMPLIDA':       'Captura ✓',
+    'CAPTURA_NO_CUMPLIDA':    'Captura ✗',
+    'CORRECCION_CUMPLIDA':    'Corrección ✓',
+    'CORRECCION_NO_CUMPLIDA': 'Corrección ✗',
+    'CAPTURA':                'Captura',
+    'CORRECCION':             'Corrección'
+} %}
 
-		<!-- BOTÓN VOLVER (ARRIBA) -->
-		<div class="pta-historial-header__back">
-			<a href="{{ volver_path }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-back-btn">
-				<i class="bi bi-arrow-left"></i>
-				Volver
-			</a>
-		</div>
+{# .pta-show activa los estilos de show.css para .ia-mes-show y .ac-mes-pill-show #}
+<section class="pta-historial pta-show">
 
-		<!-- INFO DEL PTA -->
-		<div class="pta-historial-header__info">
-			<h1 class="pta-historial-title">{{ encabezado.nombre }}</h1>
-
-			<p class="pta-historial-objetivo">
-				{{ encabezado.objetivo }}
-			</p>
-
-			<div class="pta-historial-meta-card">
-				<div class="pta-historial-meta-card__item pta-historial-meta-card__item--responsable">
-					<span class="pta-historial-meta-card__label">Responsable:</span>
-					<span class="pta-historial-meta-card__value">{{ encabezado.responsable }}</span>
-				</div>
-
-				<div class="pta-historial-meta-card__item pta-historial-meta-card__item--proyecto">
-					<span class="pta-historial-meta-card__label">Proyecto #</span>
-					<span class="pta-historial-meta-card__value">{{ encabezado.id }}</span>
-				</div>
-
-				<div class="pta-historial-meta-card__item pta-historial-meta-card__item--anio">
-					<span class="pta-historial-meta-card__label">Año:</span>
-					<span class="pta-historial-meta-card__value">{{ encabezado.anioEjecucion }}</span>
-				</div>
-			</div>
-		</div>
-
-	</header>
+    {# ============================================================
+       ENCABEZADO
+       ============================================================ #}
+    <header class="pta-historial-header">
+        <div class="pta-historial-header__back">
+            <a href="{{ volver_path }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-back-btn">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+        </div>
+        <div class="pta-historial-header__info">
+            <h1 class="pta-historial-title">{{ encabezado.nombre }}</h1>
+            <p class="pta-historial-objetivo">{{ encabezado.objetivo }}</p>
+            <div class="pta-historial-meta-card">
+                <div class="pta-historial-meta-card__item pta-historial-meta-card__item--responsable">
+                    <span class="pta-historial-meta-card__label">Responsable:</span>
+                    <span class="pta-historial-meta-card__value">{{ encabezado.responsable }}</span>
+                </div>
+                <div class="pta-historial-meta-card__item pta-historial-meta-card__item--proyecto">
+                    <span class="pta-historial-meta-card__label">Proyecto #</span>
+                    <span class="pta-historial-meta-card__value">{{ encabezado.id }}</span>
+                </div>
+                <div class="pta-historial-meta-card__item pta-historial-meta-card__item--anio">
+                    <span class="pta-historial-meta-card__label">Año:</span>
+                    <span class="pta-historial-meta-card__value">{{ encabezado.anioEjecucion }}</span>
+                </div>
+            </div>
+        </div>
+    </header>
 
 
-	{# =====================================================
-											       INDICADORES
-											       ===================================================== #}
-	{% for indicador in historial %}
+    {# ============================================================
+       LOOP DE INDICADORES
+       ============================================================ #}
+    {% for indice, item in historial %}
 
-		<section class="pta-indicador-card">
+        <section class="pta-indicador-card">
 
-			<div class="pta-historial-indicador-header">
-				<div class="pta-indicador-top">
-					<h2 class="pta-indicador-title">{{ indicador.info.indicador }}</h2>
+            {# --------------------------------------------------
+               HEADER DEL INDICADOR
+               -------------------------------------------------- #}
+            <div class="pta-historial-indicador-header">
+                <div class="pta-indicador-top">
+                    <h2 class="pta-indicador-title">{{ item.info.indicador }}</h2>
+                    <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                        {% if item.grafica is defined %}
+                            {% set pct = item.grafica.porcentaje %}
+                            <span class="pta-hist-pct-badge {{ pct >= 80 ? 'pta-hist-pct--ok' : (pct >= 40 ? 'pta-hist-pct--mid' : 'pta-hist-pct--low') }}">
+                                <i class="bi bi-activity"></i> {{ pct }}%
+                            </span>
+                        {% endif %}
+                        <span class="pta-badge {{ item.info.tendencia == 'POSITIVA' ? 'pta-badge-ok' : 'pta-badge-bad' }}">
+                            {{ item.info.tendencia == 'POSITIVA' ? '↑ Positiva' : '↓ Negativa' }}
+                        </span>
+                    </div>
+                </div>
+                <div class="pta-indicador-data">
+                    <span><strong>Fórmula</strong>{{ item.info.formula }}</span>
+                    <span><strong>Valor base</strong>{{ item.info.valor_base }}</span>
+                    <span>
+                        <strong>Meta</strong>
+                        {{ item.info.meta }}{% if item.info.es_porcentaje %}%{% endif %}
+                        {% if item.info.es_porcentaje %}— ≈ {{ (item.info.valor_base * item.info.meta / 100 + item.info.valor_base)|round(0) }} absoluto{% endif %}
+                    </span>
+                </div>
+            </div>
 
-					<span class="pta-badge {{ indicador.info.tendencia == 'POSITIVA' ? 'pta-badge-ok' : 'pta-badge-bad' }}">
-						{{ indicador.info.tendencia }}
-					</span>
-				</div>
 
-				<div class="pta-indicador-data">
-					<span>
-						<strong>Fórmula:</strong>
-						{{ indicador.info.formula }}</span>
-					<span>
-						<strong>Valor base:</strong>
-						{{ indicador.info.valor_base }}</span>
-					<span>
-						<strong>Meta:</strong>
-						{{ indicador.info.meta }}</span>
-				</div>
-			</div>
+            {# ==================================================
+               A) AVANCE MENSUAL DEL INDICADOR
+               ==================================================
+               Stat cards glassmorphism con glow:
+               - Registrado: cyan brillante, valor grande
+               - Sin registro: ámbar, icono ⚠
+               - Pendiente: gris, dashed border
+               ================================================== #}
+            <div class="pta-hist-subseccion">
 
-			{# =================================================
-																																	               ACCIONES
-																																	               ================================================= #}
-			<div class="pta-acciones">
+                <div class="pta-hist-subseccion-label">
+                    <i class="bi bi-bar-chart-line"></i>
+                    Avance mensual del indicador
+                </div>
 
-				{% for accion in indicador.acciones %}
+                {% if item.grafica is defined %}
+                    {# Barra de progreso con base → último valor → meta #}
+                    <div class="pta-hist-progreso-barra">
+                        <span class="pta-hist-prog-label">Base: {{ item.info.valor_base }}</span>
+                        <div class="pta-hist-prog-track">
+                            <div class="pta-hist-prog-fill {{ item.grafica.porcentaje >= 80 ? 'pta-hist-prog--ok' : (item.grafica.porcentaje >= 40 ? 'pta-hist-prog--mid' : 'pta-hist-prog--low') }}"
+                                 style="width: {{ min(item.grafica.porcentaje, 100) }}%">
+                            </div>
+                        </div>
+                        <span class="pta-hist-prog-label">Meta: {{ item.info.meta }}{% if item.info.es_porcentaje %}%{% endif %}</span>
+                    </div>
+                {% endif %}
 
-					<details class="pta-accion">
-						<summary class="pta-accion-title">
-							{{ accion.nombre }}
-						</summary>
+                {% if item.indicador is empty %}
+                    <p class="pta-hist-empty">No hay valores registrados.</p>
+                {% else %}
 
-						<div
-							class="pta-accion-body">
+                    <div class="pta-hist-valores-grid">
 
-							{# ===============================
-																																																																													                               GRID DE MESES
-																																																																													                               =============================== #}
-							<div class="pta-meses-grid">
+                        {% for mes, num in meses_orden %}
+                            {% if mes in item.indicador|keys %}
 
-								{% for mes, data in accion.meses %}
-									{% set estado = data.estado %}
+                                {% set mesData = item.indicador[mes] %}
+                                {% set estado  = mesData.estado %}
+                                {% set tieneEventos = mesData.eventos is not empty %}
 
-									<article class="pta-mes-card pta-mes-{{ estado }}">
+                                <div class="pta-hist-val-card pta-hist-val-card--{{ estado }}">
 
-										<div class="pta-mes-head">
-											<h4 class="pta-mes-name">{{ mes }}</h4>
+                                    {# Chip de estado arriba del card #}
+                                    <div class="pta-hist-val-estado">
+                                        {% if estado == 'registrado' %}
+                                            <span class="pta-hist-chip pta-hist-chip--registrado">
+                                                <i class="bi bi-check2-circle"></i> Registrado
+                                            </span>
+                                        {% elseif estado == 'sin_registro' %}
+                                            <span class="pta-hist-chip pta-hist-chip--sin-registro">
+                                                <i class="bi bi-exclamation-triangle"></i> Sin dato
+                                            </span>
+                                        {% else %}
+                                            <span class="pta-hist-chip pta-hist-chip--pendiente">
+                                                <i class="bi bi-clock"></i> Pendiente
+                                            </span>
+                                        {% endif %}
+                                    </div>
 
-											{# ===== ESTADO (TEXTO CORREGIDO) ===== #}
-											{% if estado == 'ok' %}
-												<span class="pta-chip pta-chip-ok">En tiempo</span>
-											{% elseif estado == 'atraso' %}
-												<span class="pta-chip pta-chip-atraso">Atraso</span>
-											{% elseif estado == 'atraso_critico' %}
-												<span class="pta-chip pta-chip-critico">Crítico</span>
-											{% elseif estado == 'pendiente' %}
-												<span class="pta-chip pta-chip-pendiente">Pendiente</span>
-											{% else %}
-												<span class="pta-chip pta-chip-naplica">N/A</span>
-											{% endif %}
-										</div>
+                                    {# Nombre del mes #}
+                                    <div class="pta-hist-val-mes">{{ mes }}</div>
 
-										<div
-											class="pta-mes-body">
+                                    {# Valor principal #}
+                                    {% if estado == 'registrado' %}
+                                        <div class="pta-hist-val-numero">{{ mesData.valor }}</div>
+                                    {% else %}
+                                        <div class="pta-hist-val-numero pta-hist-val-numero--vacio">—</div>
+                                    {% endif %}
 
-											{# Fuera de periodo #}
-											{% if estado == 'fuera_periodo' %}
-												<p class="pta-mes-muted">
-													Fuera del periodo
-												</p>
+                                    {# Historial de capturas/correcciones #}
+                                    {% if tieneEventos %}
+                                        <div class="pta-hist-val-eventos">
+                                            {% for ev in mesData.eventos %}
+                                                <div class="pta-hist-val-ev pta-hist-val-ev--{{ ev.tipo|lower }}">
+                                                    <div class="pta-hist-val-ev-top">
+                                                        <span class="pta-hist-val-ev-tipo">{{ etiquetas_evento[ev.tipo] ?? ev.tipo }}</span>
+                                                        <span class="pta-hist-val-ev-fecha">{{ ev.fecha|date('d/m H:i') }}</span>
+                                                    </div>
+                                                    {% if ev.motivo %}
+                                                        <div class="pta-hist-val-ev-motivo">
+                                                            <i class="bi bi-chat-left-text"></i> {{ ev.motivo }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
 
-												{# Sin eventos #}
-											{% elseif data.eventos is empty %}
-												{% if estado == 'pendiente' %}
-													<p class="pta-mes-muted">
-														Mes futuro
-													</p>
-												{% else %}
-													<p class="pta-mes-alert">
-														Sin captura
-													</p>
-												{% endif %}
+                                </div>
 
-												{# Eventos #}
-											{% else %}
-												<div class="pta-eventos-mini">
-													{% for evento in data.eventos %}
-														<div class="pta-evento-mini">
+                            {% endif %}
+                        {% endfor %}
 
-															<div class="pta-evento-mini__row">
-																<span class="pta-evento-mini__label">
-																	Valor
-																</span>
-																<span class="pta-evento-mini__valor">
-																	{{ evento.valor }}
-																</span>
-															</div>
+                    </div>
 
-															<div class="pta-evento-mini__date">
-																{{ evento.fecha|date('d/m/Y H:i') }}
-															</div>
+                {% endif %}
 
-															{% if evento.motivo %}
-																<div class="pta-evento-mini__motivo">
-																	<i class="bi bi-exclamation-circle"></i>
-																	{{ evento.motivo }}
-																</div>
-															{% endif %}
+            </div>
 
-														</div>
-													{% endfor %}
-												</div>
-											{% endif %}
 
-										</div>
+            {# ==================================================
+               B) HISTORIAL DE ACCIONES
+               ==================================================
+               Cada acción: card con header (nombre + resumen),
+               grid de pills (6/fila), y timeline vertical de eventos.
+               ================================================== #}
+            <div class="pta-hist-subseccion">
 
-									</article>
-								{% endfor %}
+                <div class="pta-hist-subseccion-label">
+                    <i class="bi bi-list-check"></i>
+                    Historial de acciones
+                </div>
 
-							</div>
-						</div>
-					</details>
+                {% if item.acciones is empty %}
+                    <p class="pta-hist-empty">No hay acciones para este indicador.</p>
+                {% else %}
 
-				{% else %}
-					<p class="pta-muted">
-						No hay acciones para este indicador.
-					</p>
-				{% endfor %}
+                    {% for accionId, accion in item.acciones %}
 
-			</div>
+                        {# Contar cumplidas/total para el resumen #}
+                        {% set totalMeses = 0 %}
+                        {% set cumplidas  = 0 %}
+                        {% set eventosConMotivo = [] %}
 
-			{# =================================================
-																		   GRÁFICA (MISMA QUE SHOW)
-																		   ================================================= #}
-			<div class="pta-indicador-chart">
-				<div class="pta-chart-summary">
-					<div class="pta-chart-summary__item">
-						<span class="pta-chart-summary__label">Valor base</span>
-						<span class="pta-chart-summary__value">
-							{{ indicador.grafica.valor_base }}
-						</span>
-					</div>
+                        {% for mes, mesData in accion.meses %}
+                            {% if mesData.estado != 'fuera_periodo' %}
+                                {% set totalMeses = totalMeses + 1 %}
+                                {% if mesData.estado == 'ok' %}
+                                    {% set cumplidas = cumplidas + 1 %}
+                                {% endif %}
+                                {% for ev in mesData.eventos %}
+                                    {% if ev.motivo %}
+                                        {% set eventosConMotivo = eventosConMotivo|merge([{
+                                            mes: mes, tipo: ev.tipo,
+                                            fecha: ev.fecha, motivo: ev.motivo
+                                        }]) %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
 
-					<div class="pta-chart-summary__item">
-						<span class="pta-chart-summary__label">Meta</span>
-						<span class="pta-chart-summary__value">
-							{{ indicador.grafica.meta }}
-						</span>
-					</div>
+                        <div class="pta-hist-accion-bloque">
 
-					<div class="pta-chart-summary__item">
-						<span class="pta-chart-summary__label">Avance</span>
-						<span class="pta-chart-summary__value pta-chart-summary__value--accent">
-							{{ indicador.grafica.porcentaje }}%
-						</span>
-					</div>
-				</div>
+                            {# Header con nombre y resumen de cumplimiento #}
+                            <div class="pta-hist-accion-header">
+                                <div class="pta-hist-accion-nombre-wrap">
+                                    <div class="pta-hist-accion-icon">
+                                        <i class="bi bi-check2-square"></i>
+                                    </div>
+                                    <span class="pta-hist-accion-titulo">{{ accion.nombre }}</span>
+                                </div>
+                                <div class="pta-hist-accion-resumen">
+                                    <span class="pta-hist-res-num {{ cumplidas == totalMeses ? 'pta-hist-res--ok' : (cumplidas > 0 ? 'pta-hist-res--parcial' : 'pta-hist-res--cero') }}">
+                                        {{ cumplidas }}/{{ totalMeses }}
+                                    </span>
+                                    <span class="pta-hist-res-label">cumplidas</span>
+                                </div>
+                            </div>
 
-				{% if indicador.grafica is defined and indicador.grafica.serie is not empty %}
-					<div data-pta-view="graficas">
-						<canvas class="pta-chart" data-serie='{{ indicador.grafica.serie|json_encode|raw }}' data-meta="{{ indicador.grafica.meta }}" data-tendencia="{{ indicador.grafica.tendencia }}"></canvas>
-					</div>
-				{% else %}
-					<div class="pta-chart-placeholder">
-						<i class="bi bi-graph-up"></i>
-						Gráfica de avance del indicador
-					</div>
-				{% endif %}
-			</div>
+                            {# Grid de pills — máx 6 por fila #}
+                            <div class="ac-cumplimiento-show pta-hist-pills-wrap">
 
-		</div>
+                                {% for mes, num in meses_orden %}
+                                    {% if mes in accion.meses|keys %}
+                                        {% set mesData = accion.meses[mes] %}
+                                        {% set estado  = mesData.estado %}
+                                        {% if estado != 'fuera_periodo' %}
 
-	</section>
+                                            <div class="ac-mes-pill-show
+                                                {{ estado == 'ok'              ? 'ac-mes-pill-show--si'        : '' }}
+                                                {{ estado == 'no_cumplida'     ? 'ac-mes-pill-show--no'        : '' }}
+                                                {{ estado == 'atraso_critico'  ? 'pta-hist-pill-critico'       : '' }}
+                                                {{ estado == 'pendiente'       ? 'ac-mes-pill-show--pendiente' : '' }}"
+                                                title="{{ mes }}: {{ estado|replace({'_': ' '}) }}">
+                                                <span class="ac-mes-nombre">{{ mes }}</span>
+                                                <span class="ac-mes-estado">
+                                                    {% if estado == 'ok'             %}<i class="bi bi-check-lg"></i>
+                                                    {% elseif estado == 'no_cumplida'%}<i class="bi bi-x-lg"></i>
+                                                    {% elseif estado == 'atraso_critico'%}<i class="bi bi-exclamation-triangle"></i>
+                                                    {% else %}<i class="bi bi-dash"></i>{% endif %}
+                                                </span>
+                                            </div>
 
-{% else %}
-	<p class="pta-muted text-center">
-		No hay historial disponible.
-	</p>
-{% endfor %}</section>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+
+                            </div>
+
+                            {# Timeline vertical de eventos con motivo #}
+                            {% if eventosConMotivo is not empty %}
+                                <div class="pta-hist-timeline">
+
+                                    <div class="pta-hist-tl-header-label">
+                                        <i class="bi bi-journal-text"></i>
+                                        Registro de cambios
+                                    </div>
+
+                                    {% for ev in eventosConMotivo %}
+                                        <div class="pta-hist-tl-item pta-hist-tl-item--{{ ev.tipo|lower }}">
+
+                                            {# Dot del timeline #}
+                                            <div class="pta-hist-tl-dot"></div>
+
+                                            {# Contenido del evento #}
+                                            <div class="pta-hist-tl-content">
+                                                <div class="pta-hist-tl-top">
+                                                    <span class="pta-hist-tl-mes-chip">{{ ev.mes }}</span>
+                                                    <span class="pta-hist-tl-tipo">{{ etiquetas_evento[ev.tipo] ?? ev.tipo }}</span>
+                                                    <span class="pta-hist-tl-fecha">
+                                                        <i class="bi bi-calendar3"></i>
+                                                        {{ ev.fecha|date('d/m/Y H:i') }}
+                                                    </span>
+                                                </div>
+                                                <div class="pta-hist-tl-motivo">
+                                                    <i class="bi bi-chat-left-text"></i>
+                                                    {{ ev.motivo }}
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                {% endif %}
+
+            </div>
+
+
+            {# GRÁFICA #}
+            {% if item.grafica is defined %}
+                <div class="pta-indicador-chart">
+                    <div class="pta-chart-summary">
+                        <div class="pta-chart-summary__item">
+                            <span class="pta-chart-summary__label">Valor base</span>
+                            <span class="pta-chart-summary__value">{{ item.info.valor_base }}</span>
+                        </div>
+                        <div class="pta-chart-summary__item">
+                            <span class="pta-chart-summary__label">Meta</span>
+                            <span class="pta-chart-summary__value">{{ item.info.meta }}{% if item.info.es_porcentaje %}%{% endif %}</span>
+                        </div>
+                        <div class="pta-chart-summary__item">
+                            <span class="pta-chart-summary__label">Avance</span>
+                            <span class="pta-chart-summary__value pta-chart-summary__value--accent">{{ item.grafica.porcentaje }}%</span>
+                        </div>
+                    </div>
+                    {# La condición usa item.grafica defined porque serie puede tener
+                       solo nulls (meses sin dato) — el JS maneja ese caso con placeholder. #}
+                    {% if item.grafica is defined %}
+                        <div data-pta-view="graficas" class="pta-chart-wrap">
+                            <canvas class="pta-chart"
+                                data-serie='{{ item.grafica.serie|json_encode|raw }}'
+                                data-meta="{{ item.grafica.meta_grafica }}"
+                                data-tendencia="{{ item.grafica.tendencia }}"
+                                data-captura-pct="{{ item.grafica.captura_porcentaje is defined and item.grafica.captura_porcentaje ? '1' : '0' }}"
+                                data-valor-base="{{ item.grafica.valor_base ?? 0 }}">
+                            </canvas>
+                        </div>
+                    {% else %}
+                        <div class="pta-chart-placeholder">
+                            <i class="bi bi-graph-up"></i> Sin datos suficientes para graficar
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+        </section>
+
+    {% else %}
+        <p class="text-center py-5" style="color:var(--pta-muted);">No hay historial disponible.</p>
+    {% endfor %}
+
+</section>

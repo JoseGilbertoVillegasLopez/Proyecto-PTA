@@ -84,37 +84,93 @@ function initPtaGraficas(root) {
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        // 🔥 El service ya manda la serie FINAL
+        // El service ya manda la serie FINAL (valores snapshot por mes).
+        // Los meses sin dato vienen como null — se filtran antes de graficar
+        // para que la línea no caiga a 0 en meses sin registro.
         const serieObj = JSON.parse(canvas.dataset.serie || "{}");
 
-        const labels  = Object.keys(serieObj);
-        const valores = Object.values(serieObj).map(v => Number(v));
+        const meta       = Number(canvas.dataset.meta || 0);
+        const tendencia  = canvas.dataset.tendencia;
+        const capturaPct = canvas.dataset.capturaPct === '1';
+        const valorBase  = Number(canvas.dataset.valorBase || 0);
 
-        const meta      = Number(canvas.dataset.meta || 0);
-        const tendencia = canvas.dataset.tendencia;
+        // ── Filtrar solo los meses con valor registrado (no null) ──
+        // Así la gráfica termina en el último dato real y no cae a 0
+        // en meses futuros o aún sin captura.
+        const labelsConDato = [];
+        const valoresConDato = [];
 
-        const maxSerie = Math.max(...valores, meta);
-        const yMax = maxSerie > 0 ? maxSerie * 1.25 : 10;
+        Object.entries(serieObj).forEach(([mes, val]) => {
+            if (val !== null && val !== undefined) {
+                labelsConDato.push(mes);
+                valoresConDato.push(Number(val));
+            }
+        });
+
+        // Insertar el valorBase como punto de partida de la gráfica.
+        // Así la línea siempre arranca desde el valor inicial del indicador,
+        // dando contexto visual de dónde comenzó el responsable.
+        labelsConDato.unshift('Base');
+        valoresConDato.unshift(valorBase);
+
+        // Si no hay ningún dato registrado (solo queda el punto Base),
+        // reemplazar el canvas con un placeholder.
+        if (labelsConDato.length <= 1) {
+            const contenedor = canvas.closest('.pta-chart-wrap')
+                            ?? canvas.closest('.pta-card__body')
+                            ?? canvas.parentElement;
+            if (contenedor) {
+                contenedor.innerHTML = `
+                    <div class="pta-chart-placeholder">
+                        <i class="bi bi-graph-up"></i>
+                        Sin datos registrados todavía
+                    </div>`;
+            }
+            return;
+        }
+
+        // Escala Y:
+        //  - capturaEnPorcentaje=true: eje fijo 0-100
+        //  - Normal: el rango debe incluir tanto los valores de la serie
+        //    como la línea de meta (meta ya viene en las mismas unidades
+        //    que la serie gracias a meta_grafica del servicio).
+        //    Se añade un 15% de margen superior para legibilidad.
+        const maxSerie = Math.max(...valoresConDato, meta, valorBase);
+        const minSerie = Math.min(...valoresConDato, valorBase);
+
+        const yMax = capturaPct
+            ? 100
+            : maxSerie * 1.15;
+
+        // yMin: arrancar desde 0 o desde el valor más bajo con un pequeño margen
+        const yMin = capturaPct
+            ? 0
+            : Math.max(0, minSerie * 0.9);
 
         const colorAvance =
             tendencia === "POSITIVA"
                 ? "rgba(25, 135, 84, 1)"
                 : "rgba(220, 53, 69, 1)";
 
-        const colorMeta = "rgba(13, 202, 240, 0.9)";
-        const metaData = labels.map(() => meta);
+        const colorMeta     = "rgba(13, 202, 240, 0.9)";
+        const colorBase     = "rgba(253, 203, 110, 0.6)";
+
+        // Líneas horizontales de referencia (meta y base)
+        // abarcan todos los meses con dato para servir de contexto visual
+        const metaData  = labelsConDato.map(() => meta);
+        const baseData  = labelsConDato.map(() => valorBase);
 
         new Chart(ctx, {
             type: "line",
             data: {
-                labels,
+                labels: labelsConDato,
                 datasets: [
                     {
-                        label: "Avance",
-                        data: valores,
+                        label: "Total",
+                        data: valoresConDato,
                         borderColor: colorAvance,
                         backgroundColor: colorAvance,
-                        tension: 0,
+                        tension: 0.2,
                         borderWidth: 3,
                         pointRadius: 5,
                         pointHoverRadius: 7,
@@ -124,9 +180,19 @@ function initPtaGraficas(root) {
                         label: "Meta",
                         data: metaData,
                         borderColor: colorMeta,
-                        borderDash: [6, 6],
+                        borderDash: [8, 4],
                         borderWidth: 2,
                         pointRadius: 0,
+                        fill: false,
+                    },
+                    {
+                        label: "Base",
+                        data: baseData,
+                        borderColor: colorBase,
+                        borderDash: [3, 4],
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        fill: false,
                     },
                 ],
             },
@@ -140,6 +206,18 @@ function initPtaGraficas(root) {
                             font: { weight: "500" },
                         },
                     },
+                    tooltip: {
+                        callbacks: {
+                            // Añadir % en el tooltip cuando la captura es porcentual
+                            label: (ctx) => {
+                                const label = ctx.dataset.label || '';
+                                const val   = ctx.parsed.y;
+                                return capturaPct
+                                    ? ` ${label}: ${val}%`
+                                    : ` ${label}: ${val}`;
+                            },
+                        },
+                    },
                 },
                 scales: {
                     x: {
@@ -147,9 +225,13 @@ function initPtaGraficas(root) {
                         grid: { color: "rgba(255,255,255,0.05)" },
                     },
                     y: {
-                        min: 0,
+                        min: yMin,
                         max: yMax,
-                        ticks: { color: "#adb5bd" },
+                        ticks: {
+                            color: "#adb5bd",
+                            // Añadir símbolo % en el eje cuando la captura es porcentual
+                            callback: (value) => capturaPct ? value + "%" : value,
+                        },
                         grid: { color: "rgba(255,255,255,0.08)" },
                     },
                 },

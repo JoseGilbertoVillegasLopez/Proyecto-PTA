@@ -1,42 +1,55 @@
-{# =========================================================
-       TOP BAR
-       ---------------------------------------------------------
-       IZQUIERDA:
-       - Volver al index
-       - Acceso a gráficas
-       DERECHA:
-       - Año de ejecución activo
-       ========================================================= #}
 <div class="pta-show">
+
+	{# =========================================================
+	   MAPA DE MESES
+	   ========================================================= #}
+	{% set meses_orden = {
+		'Enero': 1, 'Febrero': 2, 'Marzo': 3, 'Abril': 4,
+		'Mayo': 5, 'Junio': 6, 'Julio': 7, 'Agosto': 8,
+		'Septiembre': 9, 'Octubre': 10, 'Noviembre': 11, 'Diciembre': 12
+	} %}
+
+	{# =========================================================
+	   TOP BAR
+	   ========================================================= #}
 	<div class="pta-topbar">
 		{% set from = from|default('index') %}
 
 		<div class="pta-topbar-left">
 
 			{% if from in ['monitoreo', 'tabla'] %}
-				<a href="{{ path('pta_monitoreo_index', { root_type: app.request.get('root_type'), root_id: app.request.get('root_id'), anio: filtros.anio }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-back-btn">
-					<i class="bi bi-arrow-left"></i>
-					<span>Volver</span>
+				<a href="{{ path('pta_monitoreo_index', {
+					root_type: app.request.get('root_type'),
+					root_id:   app.request.get('root_id'),
+					anio:      filtros.anio
+				}) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-back-btn">
+					<i class="bi bi-arrow-left"></i><span>Volver</span>
 				</a>
 			{% else %}
-				<a href="{{ path('app_encabezado_index', { anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-back-btn">
-					<i class="bi bi-arrow-left"></i>
-					<span>Volver</span>
+				<a href="{{ path('app_encabezado_index', {
+					anio:         filtros.anio,
+					departamento: filtros.departamento,
+					puesto:       filtros.puesto
+				}) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-back-btn">
+					<i class="bi bi-arrow-left"></i><span>Volver</span>
 				</a>
 			{% endif %}
 
-
-			<a href="{{ path('app_encabezado_graficas', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-action="advance" {% if app.user and 'ROLE_ADMIN' in app.user.roles %} data-turbo-frame="content" data-turbo-action="advance" {% endif %} class="pta-graph-btn">
-				<i class="bi bi-bar-chart-line"></i>
-				<span>Gráficas</span>
+			<a href="{{ path('app_encabezado_graficas', {
+				id:           encabezado.id,
+				anio:         filtros.anio,
+				departamento: filtros.departamento,
+				puesto:       filtros.puesto
+			}) }}" data-turbo-action="advance"
+				{% if app.user and 'ROLE_ADMIN' in app.user.roles %}data-turbo-frame="content"{% endif %}
+				class="pta-graph-btn">
+				<i class="bi bi-bar-chart-line"></i><span>Gráficas</span>
 			</a>
 
-
-			<a href="{{ path('app_encabezado_export_excel', { id: encabezado.id }) }}" data-turbo="false" class="pta-graph-btn">
-				<i class="bi bi-file-earmark-excel"></i>
-				<span>Excel</span>
+			<a href="{{ path('app_encabezado_export_excel', { id: encabezado.id }) }}"
+				data-turbo="false" class="pta-graph-btn">
+				<i class="bi bi-file-earmark-excel"></i><span>Excel</span>
 			</a>
-
 
 		</div>
 
@@ -47,223 +60,413 @@
 				<strong>{{ encabezado.anioEjecucion }}</strong>
 			</div>
 		</div>
-
 	</div>
 
 
-	{# ==============ENCABEZADO DEL PROYECTO (SOLO LECTURA)=============== #}
-	<div class="card pta-card pta-header-box mb-4">
-
-		<div class="pta-header-row">
-			<div class="pta-header-label">
-				NOMBRE DEL PROYECTO
-			</div>
-			<div class="pta-header-value">
-				{{ encabezado.nombre }}
-			</div>
-		</div>
-
-		<div class="pta-header-row">
-
-			<div class="pta-header-col-numero">
-				<div class="pta-header-label small">
-					NÚMERO DE PROYECTO
-				</div>
-				<div class="pta-header-value small">
-					{{ encabezado.id }}
-				</div>
-			</div>
-
-			<div class="pta-header-col-objetivo">
-				<div class="pta-header-objetivo-label">
-					OBJETIVO
-				</div>
-				<div class="pta-header-objetivo-value">
-					{{ encabezado.objetivo }}
-				</div>
-			</div>
-
-		</div>
-
-	</div>
-
-
-	{# =========================================================INDICADORES (SOLO LECTURA)========================================================= #}
-	<div class="card pta-card mb-4">
+	{# =========================================================
+	   1. INFORMACIÓN DEL PROYECTO
+	   ========================================================= #}
+	<div class="card pta-card pta-info-card mb-4">
 
 		<h4 class="pta-title">
-			<i class="bi bi-graph-up"></i>
-			Indicadores
+			<i class="bi bi-file-earmark-text"></i> Información del Proyecto
 		</h4>
 
-		{% if encabezado.indicadores is empty %}
-
-			<p class="pta-muted">
-				No hay indicadores registrados.
-			</p>
-
-		{% else %}
-
-			<div class="pta-indicadores-head">
-				<span>Indicador</span>
-				<span>Fórmula</span>
-				<span>Base</span>
-				<span>Meta</span>
-				<span>Periodo</span>
+		<div class="pta-info-grid">
+			<div class="pta-info-col-main">
+				<div class="pta-field-group">
+					<label class="pta-field-label">
+						<i class="bi bi-pencil-square"></i> Nombre del Proyecto
+					</label>
+					<div class="pta-show-text pta-show-text--nombre">{{ encabezado.nombre }}</div>
+				</div>
+				<div class="pta-field-group mt-3">
+					<label class="pta-field-label">
+						<i class="bi bi-bullseye"></i> Objetivo del Proyecto
+					</label>
+					<div class="pta-show-text pta-show-text--objetivo">{{ encabezado.objetivo }}</div>
+				</div>
 			</div>
-
-
-			<table class="pta-indicadores-table">
-
-				<tbody>
-					{% for indicador in encabezado.indicadores %}
-						<tr>
-							<td>{{ indicador.indicador }}</td>
-							<td>{{ indicador.formula }}</td>
-							<td class="text-center">
-								<strong>{{ indicador.valorBase }}</strong>
-							</td>
-							<td class="text-center">
-								<strong>{{ indicador.valor }}</strong>
-							</td>
-							<td class="text-center">
-								{{ indicador.periodo }}
-							</td>
-							<td class="text-center">
-								{% if indicador.tendencia == 'POSITIVA' %}
-									<span class="pta-badge pta-badge-positive">Positiva</span>
-								{% else %}
-									<span class="pta-badge pta-badge-negative">Negativa</span>
-								{% endif %}
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-
-			</table>
-
-		{% endif %}
+			<div class="pta-info-col-side">
+				<div class="pta-anio-card">
+					<div class="pta-anio-icon"><i class="bi bi-calendar-check"></i></div>
+					<label class="pta-field-label mb-2">Año de Ejecución</label>
+					<div class="pta-show-year">{{ encabezado.anioEjecucion }}</div>
+					<p class="pta-anio-hint">Proyecto #{{ encabezado.id }}</p>
+				</div>
+			</div>
+		</div>
 	</div>
 
 
-	{# =========================================================ACCIONES / AVANCE MENSUAL (SOLO LECTURA)========================================================= #}
-	<div class="card pta-card mb-4">
+	{# =========================================================
+	   2. ACCORDION POR INDICADOR
+	   ---------------------------------------------------------
+	   Cada indicador tiene su card expandible con:
+	     A) Info del indicador
+	     B) Acciones con pills ✓/✗
+	     C) Avance mensual (valores snapshot + barra de progreso)
+	   ========================================================= #}
+	{% if encabezado.indicadores is empty %}
+		<div class="card pta-card mb-4 p-4 text-center" style="color: var(--pta-muted);">
+			No hay indicadores registrados.
+		</div>
+	{% else %}
 
-		<h4 class="pta-title">
-			<i class="bi bi-list-task"></i>
-			Acciones / Avance mensual
-		</h4>
+		<div class="accordion pta-accordion mb-4" id="pta-show-accordion">
 
-		<table class="pta-acciones-table">
+			{% for indicador in encabezado.indicadores %}
 
-			<thead>
-				<tr>
-					<th style="width: 25%">Indicador</th>
-					<th style="width: 30%">Acción</th>
-					<th style="width: 45%">Periodo de ejecución</th>
-				</tr>
-			</thead>
-
-			<tbody>
-
-				{% set meses = [
-                    'Enero','Febrero','Marzo','Abril','Mayo','Junio',
-                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'
-                ] %}
-
+				{# Meses reportables = unión de periodos de las acciones del indicador #}
+				{% set mesesReportables = [] %}
 				{% for accion in encabezado.acciones %}
-					<tr>
-
-						<td>
-							{% set nombreIndicador = '—' %}
-							{% for ind in encabezado.indicadores %}
-								{% if ind.indice == accion.indicador %}
-									{% set nombreIndicador = ind.indicador %}
-								{% endif %}
-							{% endfor %}
-							{{ nombreIndicador }}
-						</td>
-
-						<td>
-							{{ accion.accion }}
-						</td>
-
-						<td>
-							<div class="meses-grid">
-								{% for mes in meses %}
-									{% set activo = mes in accion.periodo %}
-									{% set valor = accion.valorAlcanzado[mes] ?? '' %}
-
-									<span class="mes-pill {{ activo ? 'mes-activo' : 'mes-inactivo' }}">
-										{{ mes }}
-										{% if valor is not empty %}:
-											{{ valor }}
-										{% endif %}
-									</span>
-								{% endfor %}
-							</div>
-						</td>
-
-					</tr>
+					{% if accion.indicador == indicador.indice %}
+						{% for mes in accion.periodo %}
+							{% if mes not in mesesReportables %}
+								{% set mesesReportables = mesesReportables|merge([mes]) %}
+							{% endif %}
+						{% endfor %}
+					{% endif %}
 				{% endfor %}
 
-			</tbody>
-		</table>
+				{# Ordenar meses reportables por posición en el año #}
+				{% set mesesReportablesOrdenados = [] %}
+				{% for mes, num in meses_orden %}
+					{% if mes in mesesReportables %}
+						{% set mesesReportablesOrdenados = mesesReportablesOrdenados|merge([mes]) %}
+					{% endif %}
+				{% endfor %}
 
-	</div>
+				{# Calcular último valor y porcentaje para el badge del header #}
+				{% set ultimoValor = null %}
+				{% for mes in mesesReportablesOrdenados %}
+					{% set v = indicador.valorMensual[mes] ?? null %}
+					{% if v is not null %}{% set ultimoValor = v %}{% endif %}
+				{% endfor %}
+
+				{# Porcentaje de avance para el header #}
+				{% set pctHeader = 0 %}
+				{% if ultimoValor is not null %}
+					{% set vb = indicador.valorBase|number_format(2, '.', '') %}
+					{% set mt = indicador.valor|number_format(2, '.', '') %}
+					{% set ac = ultimoValor|number_format(2, '.', '') %}
+					{# Fórmula según tipo de indicador:
+						 - esPorcentaje=false  → meta neto:       ((ac-vb)/(mt-vb))×100
+						 - esPorcentaje=true, capturaEnPorcentaje=false → meta=% cambio: ((ac-vb)/(vb×mt/100))×100
+						 - esPorcentaje=true, capturaEnPorcentaje=true  → meta=% objetivo:((ac-vb)/(mt-vb))×100 #}
+					{% if indicador.esPorcentaje and not indicador.capturaEnPorcentaje %}
+						{% set den = vb * mt / 100 %}
+						{% if indicador.tendencia == 'POSITIVA' %}
+							{% set pctHeader = den > 0 ? ((ac - vb) / den * 100)|round(1) : 0 %}
+						{% else %}
+							{% set pctHeader = den > 0 ? ((vb - ac) / den * 100)|round(1) : 0 %}
+						{% endif %}
+					{% else %}
+						{% if indicador.tendencia == 'POSITIVA' %}
+							{% set pctHeader = (mt - vb) != 0 ? ((ac - vb) / (mt - vb) * 100)|round(1) : 0 %}
+						{% else %}
+							{% set pctHeader = (vb - mt) != 0 ? ((vb - ac) / (vb - mt) * 100)|round(1) : 0 %}
+						{% endif %}
+					{% endif %}
+					{% set pctHeader = max(0, min(100, pctHeader)) %}
+				{% endif %}
+
+				<div class="accordion-item pta-accordion-item">
+
+					{# -----------------------------------------------
+					   CABECERA DEL ACCORDION
+					   ----------------------------------------------- #}
+					<h2 class="accordion-header" id="show-acc-header-{{ indicador.id }}">
+						<button
+							class="accordion-button {% if not loop.first %}collapsed{% endif %}"
+							type="button"
+							data-bs-toggle="collapse"
+							data-bs-target="#show-acc-collapse-{{ indicador.id }}"
+							aria-expanded="{{ loop.first ? 'true' : 'false' }}"
+							aria-controls="show-acc-collapse-{{ indicador.id }}">
+
+							<span class="pta-acc-num">{{ loop.index }}</span>
+
+							<span class="pta-acc-title">
+								{{ indicador.indicador|slice(0, 70) }}{% if indicador.indicador|length > 70 %}…{% endif %}
+							</span>
+
+							<span class="pta-acc-badges">
+								{% if ultimoValor is not null %}
+									<span class="pta-acc-badge {{ pctHeader >= 80 ? 'pta-acc-badge--positiva' : (pctHeader >= 40 ? 'pta-acc-badge--meta' : 'pta-acc-badge--negativa') }}">
+										{{ pctHeader }}%
+									</span>
+								{% endif %}
+								<span class="pta-acc-badge pta-acc-badge--meta">
+									Meta {{ indicador.valor }}{% if indicador.esPorcentaje %}%{% endif %}
+								</span>
+								<span class="pta-acc-badge {{ indicador.tendencia == 'POSITIVA' ? 'pta-acc-badge--positiva' : 'pta-acc-badge--negativa' }}">
+									{{ indicador.tendencia == 'POSITIVA' ? '↑' : '↓' }}
+								</span>
+							</span>
+
+						</button>
+					</h2>
+
+					{# -----------------------------------------------
+					   CUERPO DEL ACCORDION
+					   ----------------------------------------------- #}
+					<div
+						id="show-acc-collapse-{{ indicador.id }}"
+						class="accordion-collapse collapse {% if loop.first %}show{% endif %}"
+						data-bs-parent="#pta-show-accordion"
+						aria-labelledby="show-acc-header-{{ indicador.id }}">
+
+						<div class="accordion-body">
+
+							{# ===================================
+							   A) INFORMACIÓN DEL INDICADOR
+							   =================================== #}
+							<div class="pta-acc-section pta-acc-section--info">
+
+								<div class="pta-acc-section-label">
+									<i class="bi bi-info-circle"></i> Datos del Indicador
+								</div>
+
+								<div class="ic-body">
+									<div class="ic-row-main">
+										<div class="ic-field">
+											<span class="ic-label">Indicador</span>
+											<div class="ic-display ic-display--textarea">{{ indicador.indicador }}</div>
+										</div>
+										<div class="ic-field">
+											<span class="ic-label">Fórmula</span>
+											<div class="ic-display ic-display--textarea">{{ indicador.formula }}</div>
+										</div>
+									</div>
+									<div class="ic-row-meta">
+										<div class="ic-field">
+											<span class="ic-label">Valor Base</span>
+											<div class="ic-display ic-display--num">{{ indicador.valorBase }}</div>
+										</div>
+										<div class="ic-field">
+											<span class="ic-label">Meta</span>
+											<div class="ic-display ic-display--num">
+												{{ indicador.valor }}{% if indicador.esPorcentaje %}<span class="ic-pct-badge">%</span>{% endif %}
+											</div>
+										</div>
+										{# Captura: va a la derecha de Meta, antes de Periodo #}
+										{% if indicador.esPorcentaje %}
+										<div class="ic-field">
+											<span class="ic-label">Captura</span>
+											<div class="ic-display ic-display--center">
+												{% if indicador.capturaEnPorcentaje %}
+													<span class="pta-badge pta-badge-pct">
+														<i class="bi bi-percent"></i> Porcentaje
+													</span>
+												{% else %}
+													<span class="pta-badge pta-badge-abs">
+														<i class="bi bi-123"></i> Absoluto
+													</span>
+												{% endif %}
+											</div>
+										</div>
+										{% else %}
+										<div class="ic-field"></div>{# columna vacía #}
+										{% endif %}
+										<div class="ic-field">
+											<span class="ic-label">Periodo</span>
+											<div class="ic-periodo-static"><i class="bi bi-calendar3"></i> {{ indicador.periodo }}</div>
+										</div>
+										<div class="ic-field">
+											<span class="ic-label">Tendencia</span>
+											<div class="ic-display ic-display--center">
+												{% if indicador.tendencia == 'POSITIVA' %}
+													<span class="pta-badge pta-badge-positive">Positiva</span>
+												{% else %}
+													<span class="pta-badge pta-badge-negative">Negativa</span>
+												{% endif %}
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
 
 
-	{# =========================================================RESPONSABLES DEL PROYECTO========================================================= #}
+							{# ===================================
+							   B) ACCIONES (pills ✓/✗)
+							   =================================== #}
+							<div class="pta-acc-section pta-acc-section--acciones">
+
+								<div class="pta-acc-section-label">
+									<i class="bi bi-list-task"></i> Acciones — Cumplimiento mensual
+								</div>
+
+								{% set hayAcciones = false %}
+								<div class="pta-acc-acciones-grid">
+								{% for accion in encabezado.acciones %}
+									{% if accion.indicador == indicador.indice %}
+										{% set hayAcciones = true %}
+
+										<div class="accion-card">
+
+											<div class="ac-header">
+												<div class="ac-num">
+													<i class="bi bi-list-task"></i>
+													<span class="ac-num-text">{{ accion.accion|slice(0,80) }}{% if accion.accion|length > 80 %}…{% endif %}</span>
+												</div>
+											</div>
+
+											<div class="ac-body">
+
+												<div class="ac-field">
+													<span class="ic-label">Cumplimiento mensual</span>
+													<div class="ac-cumplimiento-show">
+														{% for mes, numMes in meses_orden %}
+															{% set esActivo = mes in accion.periodo %}
+															{% if esActivo %}
+																{% set cumplida = accion.mesesCumplidos[mes] ?? null %}
+																{% if cumplida is same as(true) %}
+																	<div class="ac-mes-pill-show ac-mes-pill-show--si" title="{{ mes }}: cumplida">
+																		<span class="ac-mes-nombre">{{ mes }}</span>
+																		<span class="ac-mes-estado"><i class="bi bi-check-lg"></i></span>
+																	</div>
+																{% elseif cumplida is same as(false) %}
+																	<div class="ac-mes-pill-show ac-mes-pill-show--no" title="{{ mes }}: no cumplida">
+																		<span class="ac-mes-nombre">{{ mes }}</span>
+																		<span class="ac-mes-estado"><i class="bi bi-x-lg"></i></span>
+																	</div>
+																{% else %}
+																	<div class="ac-mes-pill-show ac-mes-pill-show--pendiente" title="{{ mes }}: pendiente">
+																		<span class="ac-mes-nombre">{{ mes }}</span>
+																		<span class="ac-mes-estado">—</span>
+																	</div>
+																{% endif %}
+															{% endif %}
+														{% endfor %}
+													</div>
+												</div>
+
+											</div>
+										</div>
+
+									{% endif %}
+								{% endfor %}
+								</div>{# /pta-acc-acciones-grid #}
+
+								{% if not hayAcciones %}
+									<p class="pta-acc-empty">No hay acciones asociadas a este indicador.</p>
+								{% endif %}
+
+							</div>
+
+
+							{# ===================================
+							   C) AVANCE MENSUAL DEL INDICADOR
+							   =================================== #}
+							<div class="pta-acc-section pta-acc-section--avance">
+
+								<div class="pta-acc-section-label">
+									<i class="bi bi-bar-chart-line"></i> Avance Mensual
+								</div>
+
+								{% if mesesReportablesOrdenados is empty %}
+									<p class="pta-acc-empty">Sin meses reportables configurados.</p>
+								{% else %}
+
+									<div class="ia-meses-show">
+										{% for mes in mesesReportablesOrdenados %}
+											{% set valorMes = indicador.valorMensual[mes] ?? null %}
+											<div class="ia-mes-show {{ valorMes is not null ? 'ia-mes-show--con-valor' : 'ia-mes-show--vacio' }}">
+												<span class="ia-mes-label">
+													{{ mes }}{% if indicador.capturaEnPorcentaje %}<span style="color:rgba(13,202,240,.6);font-size:.6rem;"> %</span>{% endif %}
+												</span>
+												<span class="ia-mes-valor">
+													{% if valorMes is not null %}
+														{{ valorMes }}{% if indicador.capturaEnPorcentaje %}<small style="font-size:.75rem;">%</small>{% endif %}
+													{% else %}—{% endif %}
+												</span>
+											</div>
+										{% endfor %}
+									</div>
+
+									{# Barra de progreso con el último valor registrado #}
+									{% if ultimoValor is not null %}
+										<div class="ia-progreso mt-3">
+											<div class="ia-progreso-label">
+												Avance: <strong>{{ pctHeader }}%</strong>
+												<span class="ia-progreso-detalle">(último valor: {{ ultimoValor }})</span>
+											</div>
+											<div class="progress ia-progress-bar">
+												<div class="progress-bar {{ pctHeader >= 80 ? 'bg-success' : (pctHeader >= 50 ? 'bg-warning' : 'bg-danger') }}"
+													style="width: {{ pctHeader }}%"
+													role="progressbar"
+													aria-valuenow="{{ pctHeader }}"
+													aria-valuemin="0"
+													aria-valuemax="100">
+												</div>
+											</div>
+										</div>
+									{% endif %}
+
+								{% endif %}
+
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+
+			{% endfor %}
+
+		</div>
+
+	{% endif %}
+
+
+	{# =========================================================
+	   3. RESPONSABLES DEL PROYECTO
+	   ========================================================= #}
 	<div class="card pta-card mb-4">
 
 		<div class="d-flex justify-content-between align-items-center mb-3">
-
 			<h4 class="pta-title mb-0">
-				<i class="bi bi-people-fill"></i>
-				Responsables del Proyecto
+				<i class="bi bi-people-fill"></i> Responsables del Proyecto
 			</h4>
-
 			{% if is_granted('ROLE_ADMIN') %}
-				<a href="{{ path('app_encabezado_responsables_edit', { id: encabezado.id, anio: filtros.anio, departamento: filtros.departamento, puesto: filtros.puesto }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-edit" title="Cambiar responsables del proyecto">
+				<a href="{{ path('app_encabezado_responsables_edit', {
+					id:           encabezado.id,
+					anio:         filtros.anio,
+					departamento: filtros.departamento,
+					puesto:       filtros.puesto
+				}) }}" data-turbo-frame="content" data-turbo-action="advance"
+					class="pta-action-btn pta-action-edit" title="Cambiar responsables">
 					<i class="bi bi-pencil-square"></i>
 				</a>
 			{% endif %}
-
 		</div>
 
+		<div class="resp-grid resp-grid--3">
 
-		<table class="pta-responsables-table">
+			<div class="resp-card">
+				<div class="resp-icon-wrap"><i class="bi bi-person-fill"></i></div>
+				<div class="resp-role">Responsable del Proyecto</div>
+				<div class="resp-name">{{ encabezado.responsable ?? '—' }}</div>
+				<div class="resp-puesto">{{ encabezado.responsable.puesto.nombre ?? '—' }}</div>
+			</div>
 
-			<thead>
-				<tr>
-					<th>Rol</th>
-					<th>Nombre</th>
-					<th>Puesto</th>
-				</tr>
-			</thead>
+			<div class="resp-card">
+				<div class="resp-icon-wrap"><i class="bi bi-person-badge"></i></div>
+				<div class="resp-role">Supervisor del Proyecto</div>
+				<div class="resp-name">{{ encabezado.responsables.supervisor }}</div>
+				<div class="resp-puesto">{{ encabezado.responsables.supervisor.puesto.nombre ?? '—' }}</div>
+			</div>
 
-			<tbody>
+			<div class="resp-card">
+				<div class="resp-icon-wrap"><i class="bi bi-person-check"></i></div>
+				<div class="resp-role">Aval del Proyecto</div>
+				<div class="resp-name">{{ encabezado.responsables.aval }}</div>
+				<div class="resp-puesto">{{ encabezado.responsables.aval.puesto.nombre ?? '—' }}</div>
+			</div>
 
-				<tr>
-					<td>Responsable del proyecto</td>
-					<td>{{ encabezado.responsable ?? '—' }}</td>
-					<td>{{ encabezado.responsable.puesto.nombre ?? '—' }}</td>
-				</tr>
-
-				<tr>
-					<td>Supervisor del proyecto</td>
-					<td>{{ encabezado.responsables.supervisor }}</td>
-					<td>{{ encabezado.responsables.supervisor.puesto.nombre ?? '—' }}</td>
-				</tr>
-
-				<tr>
-					<td>Aval del proyecto</td>
-					<td>{{ encabezado.responsables.aval }}</td>
-					<td>{{ encabezado.responsables.aval.puesto.nombre ?? '—' }}</td>
-				</tr>
-
-			</tbody>
-		</table>
-
+		</div>
 	</div>
+
 </div>

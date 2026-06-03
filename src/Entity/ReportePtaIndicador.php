@@ -21,7 +21,7 @@ class ReportePtaIndicador
     private ?ReportePtaTrimestre $reporteTrimestre = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?IndicadoresBasicos $indicadorBasico = null;
 
     #[ORM\ManyToOne]

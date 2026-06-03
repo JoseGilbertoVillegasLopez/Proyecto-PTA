@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 
 /**
@@ -56,7 +57,7 @@ class IndicadoresType extends AbstractType
                 'attr' => [
                     'rows' => 3,
                     'class' => 'indicator-textarea',
-                    'placeholder' => 'Descripción del indicador'
+                    'placeholder' => 'Escriba el indicador que corresponde'
                 ],
             ])
 
@@ -123,12 +124,8 @@ class IndicadoresType extends AbstractType
              * - Valor por defecto: Anual
              * =============================================
              */
-            ->add('periodo', ChoiceType::class, [
-                'choices' => [
-                    'Semestral' => 'Semestral',
-                    'Anual' => 'Anual',
-                ],
-                'data' => 'Anual', // valor por defecto
+            ->add('periodo', HiddenType::class, [
+                'data' => 'Anual',
             ])
 
             /**
@@ -145,6 +142,42 @@ class IndicadoresType extends AbstractType
                     'Positiva' => 'POSITIVA',
                     'Negativa' => 'NEGATIVA',
                 ],
+            ])
+            /**
+             * =============================================
+             * META EXPRESADA COMO PORCENTAJE
+             * ---------------------------------------------
+             * El JS convierte este checkbox a un hidden con
+             * value="1" (porcentaje) o value="0" (absoluto).
+             *
+             * false_values es OBLIGATORIO aquí:
+             * Symfony trata cualquier campo presente en POST
+             * como true, incluyendo value="0". Con false_values,
+             * "0" y "" se mapean correctamente a false.
+             * =============================================
+             */
+            ->add('esPorcentaje', CheckboxType::class, [
+                'required'     => false,
+                'false_values' => ['0', '', false],
+                'attr'         => ['class' => 'es-porcentaje-hidden'],
+            ])
+
+            /**
+             * =============================================
+             * MODO DE CAPTURA MENSUAL (solo si esPorcentaje=true)
+             * ---------------------------------------------
+             * false → captura absoluta (misma unidad que valorBase)
+             * true  → captura en porcentaje (0-100)
+             *
+             * Mismo problema que esPorcentaje: necesita false_values.
+             * Además, el campo arranca en "" (vacío = no elegido aún),
+             * que también debe mapearse a false.
+             * =============================================
+             */
+            ->add('capturaEnPorcentaje', CheckboxType::class, [
+                'required'     => false,
+                'false_values' => ['0', '', false],
+                'attr'         => ['class' => 'captura-pct-hidden'],
             ]);
     }
 
