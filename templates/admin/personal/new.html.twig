@@ -23,12 +23,13 @@
 		</header>
 
 		{{ form_start(form, {
-            action: path('app_personal_new'),
-            attr: {
-                'data-turbo-frame': 'content',
-                'class': 'personal-new-form'
-            }
-        }) }}
+			action: path('app_personal_new'),
+			attr: {
+				'data-turbo-frame': 'content',
+				'class': 'personal-new-form',
+				'enctype': 'multipart/form-data'
+			}
+		}) }}
 
 			<div class="personal-new-group">
 				{{ form_label(form.nombre, null, {'label_attr': {'class': 'personal-new-label'}}) }}
@@ -66,6 +67,61 @@
 				{{ form_errors(form.departamento) }}
 			</div>
 
+			<div class="personal-new-group personal-new-nombramiento-pdf-validation-group">
+
+				{{ form_label(form.nombramiento_pdf, null, {
+					'label_attr': {
+						'class': 'personal-new-label'
+					}
+				}) }}
+
+				{{ form_widget(form.nombramiento_pdf, {
+					'attr': {
+						'class': 'personal-new-input-file'
+					}
+				}) }}
+
+				<div class="personal-new-error">
+					{{ form_errors(form.nombramiento_pdf) }}
+				</div>
+
+				<p class="personal-new-nombramiento-client-error personal-new-nombramiento-client-error-hidden"
+				   data-new-error-for="pdf"
+				   aria-live="polite"
+				   hidden>
+					Debes agregar un archivo PDF.
+				</p>
+
+			</div>
+
+
+			<div class="personal-new-group personal-new-nombramiento-tipo-validation-group">
+
+				{{ form_label(form.nombramiento_tipo, null, {
+					'label_attr': {
+						'class': 'personal-new-label'
+					}
+				}) }}
+
+				{{ form_widget(form.nombramiento_tipo, {
+					'attr': {
+						'class': 'personal-new-select'
+					}
+				}) }}
+
+				<div class="personal-new-error">
+					{{ form_errors(form.nombramiento_tipo) }}
+				</div>
+
+				<p class="personal-new-nombramiento-client-error personal-new-nombramiento-client-error-hidden"
+				   data-new-error-for="tipo"
+				   aria-live="polite"
+				   hidden>
+					Debes elegir un tipo de nombramiento.
+				</p>
+
+			</div>
+
 			<div class="personal-new-actions">
 				<button type="submit" class="personal-new-submit-btn" title="Guardar">
 					<i class="bi bi-check-lg"></i>
@@ -75,4 +131,32 @@
 		{{ form_end(form) }}
 
 	</section>
+
+	<div class="personal-new-nombramiento-validation-modal personal-new-nombramiento-validation-modal-hidden"
+		 role="dialog"
+		 aria-modal="true"
+		 aria-labelledby="personal-new-nombramiento-validation-title"
+		 aria-describedby="personal-new-nombramiento-validation-message"
+		 hidden>
+		<div class="personal-new-nombramiento-validation-modal-box">
+
+			<div class="personal-new-nombramiento-validation-modal-icon">
+				<i class="bi bi-exclamation-triangle-fill"></i>
+			</div>
+
+			<h3 id="personal-new-nombramiento-validation-title"
+				class="personal-new-nombramiento-validation-modal-title">
+				Faltan datos del nombramiento
+			</h3>
+
+			<p id="personal-new-nombramiento-validation-message"
+			   class="personal-new-nombramiento-validation-modal-message"></p>
+
+			<button type="button"
+					class="personal-new-nombramiento-validation-modal-close-btn">
+				Entendido
+			</button>
+
+		</div>
+	</div>
 </turbo-frame>
