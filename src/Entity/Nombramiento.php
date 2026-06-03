@@ -26,10 +26,10 @@ class Nombramiento
     #[ORM\Column(options: ['default' => true])]
     private ?bool $activo = true;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'date')]
     private ?\DateTimeInterface $fecha_subida = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(type: 'date', nullable: true)]
     private ?\DateTimeInterface $fecha_desactivacion = null;
 
     #[ORM\ManyToOne(inversedBy: 'nombramientos')]

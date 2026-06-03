@@ -121,7 +121,7 @@
 										data-pdf-url="{{ nombramientoUrl }}"
 										data-pdf-name="{{ nombramiento.nombreOriginal }}"
 										data-pdf-tipo="{{ nombramiento.tipo }}"
-										data-pdf-fecha="{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}"
+										data-pdf-fecha="{{ nombramiento.fechaSubida|date('d/m/Y') }}"
 										aria-label="Ver dictamen {{ nombramiento.nombreOriginal }}">
 
 									<iframe src="{{ nombramientoUrl }}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"
@@ -143,7 +143,7 @@
 										{{ nombramiento.tipo }}
 										<br>
 										Subido:
-										{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}
+										{{ nombramiento.fechaSubida|date('d/m/Y') }}
 									</small>
 
 								</div>

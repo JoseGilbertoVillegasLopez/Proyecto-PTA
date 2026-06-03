@@ -239,7 +239,7 @@ final class NombramientoController extends AbstractController
 
         $nombramiento->setActivo(true);
 
-        $nombramiento->setFechaSubida(new \DateTime());
+        $nombramiento->setFechaSubida(new \DateTimeImmutable('today'));
 
         $nombramiento->setFechaDesactivacion(null);
 
@@ -270,9 +270,7 @@ final class NombramientoController extends AbstractController
 
         $nombramiento->setActivo(false);
 
-        $nombramiento->setFechaDesactivacion(
-            new \DateTime()
-        );
+        $nombramiento->setFechaDesactivacion(new \DateTimeImmutable('today'));
 
         $entityManager->flush();
 

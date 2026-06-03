@@ -1650,3 +1650,96 @@
     color: #ffffff;
     transform: translateY(-1px);
 }
+/* =========================================================
+   LAYOUT ORGANIZADO PARA NEW, SHOW Y EDIT
+   ========================================================= */
+.departamento-new-page-card,
+.departamento-edit-page-card,
+.departamento-show-page-card {
+    max-width: 1240px;
+}
+
+.departamento-new-page-form,
+.departamento-edit-page-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 18px;
+}
+
+.departamento-new-page-group:nth-of-type(2),
+.departamento-edit-page-group:nth-of-type(2),
+.departamento-new-page-actions,
+.departamento-edit-page-actions {
+    grid-column: 1 / -1;
+}
+
+.departamento-show-page-table {
+    background: transparent;
+    box-shadow: none;
+}
+
+.departamento-show-page-table tbody {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.departamento-show-page-table tbody tr {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 15px 16px;
+    border-radius: 14px;
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+    border: 1px solid rgba(13, 202, 240, 0.15);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+        0 8px 20px rgba(0, 0, 0, 0.32);
+    overflow: hidden;
+}
+
+.departamento-show-page-table tbody tr:last-child {
+    grid-column: 1 / -1;
+}
+
+.departamento-show-page-table th,
+.departamento-show-page-table td {
+    width: 100% !important;
+    padding: 0;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none;
+}
+
+.departamento-show-page-table th {
+    margin-bottom: 8px;
+    color: #dbeafe !important;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+}
+
+.departamento-show-page-table th::before {
+    display: none;
+}
+
+.departamento-show-page-table td {
+    color: #e6f1ff !important;
+    font-size: 0.96rem;
+    font-weight: 500;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+    .departamento-new-page-form,
+    .departamento-edit-page-form,
+    .departamento-show-page-table tbody {
+        grid-template-columns: 1fr;
+    }
+}

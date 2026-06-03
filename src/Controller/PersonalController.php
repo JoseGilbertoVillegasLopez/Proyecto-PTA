@@ -192,7 +192,7 @@ final class PersonalController extends AbstractController
 
                 $nombramiento->setActivo(true);
 
-                $nombramiento->setFechaSubida(new \DateTime());
+                $nombramiento->setFechaSubida(new \DateTimeImmutable('today'));
 
                 $nombramiento->setFechaDesactivacion(null);
 
@@ -364,7 +364,7 @@ final class PersonalController extends AbstractController
                     $nombramiento->setActivo(true);
 
                     $nombramiento->setFechaSubida(
-                        new \DateTime()
+                        new \DateTimeImmutable('today')
                     );
 
                     $nombramiento->setFechaDesactivacion(null);
