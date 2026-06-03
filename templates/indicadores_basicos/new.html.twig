@@ -48,6 +48,12 @@
 				{{ form_errors(form.observaciones) }}
 			</div>
 
+			<div class="indicadores-basicos-new-group">
+				{{ form_label(form.grupo, null, {'label_attr': {'class': 'indicadores-basicos-new-label'}}) }}
+				{{ form_widget(form.grupo) }}
+				{{ form_errors(form.grupo) }}
+			</div>
+
 			<div class="indicadores-basicos-new-actions">
 				<button type="submit" class="indicadores-basicos-new-submit-btn" title="Guardar">
 					<i class="bi bi-check-lg"></i>

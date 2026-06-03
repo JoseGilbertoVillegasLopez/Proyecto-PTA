@@ -206,6 +206,15 @@ function enforceOnlyDigits(input) {
     }
 
     
+    // =====================================================
+    // MODAL COMPARTIDO — MODO DE CAPTURA MENSUAL
+    // -----------------------------------------------------
+    // El modal es único para toda la vista. Cuando se abre,
+    // recibe la referencia al hidden field del indicador
+    // activo mediante modalEl._hiddenCapturaPct.
+    // =====================================================
+    initModalCapturaPct(frame);
+
     // Inicialización del buscador de Supervisor
     initPersonalSearch({
         inputSelector: ".supervisor-search",
@@ -281,7 +290,7 @@ initPersonalSearch({
          */
         frame.querySelectorAll(".accion-row").forEach(row => {
 
-            const select = row.querySelector("select");
+            const select = row.querySelector(".ac-select");
 
             // Hidden real que se enviará al backend
             const hidden = row.querySelector(
@@ -294,7 +303,7 @@ initPersonalSearch({
             const valorActual = hidden.value;
 
             // Reset del select
-            select.innerHTML = `<option value="">Seleccione un indicador</option>`;
+            select.innerHTML = `<option value="">— Seleccione un indicador —</option>`;
 
             let sigueExistiendo = false;
 
@@ -335,11 +344,7 @@ initPersonalSearch({
     function activateRemoveButtons(root, selector) {
         root.querySelectorAll(selector).forEach(btn => {
             btn.onclick = () => {
-
-                // Elimina la fila completa (tr)
-                btn.closest("tr").remove();
-
-                // Re-sincroniza indicadores con acciones
+                btn.closest("tr, .indicator-card, .accion-card").remove();
                 syncIndicadoresConAcciones(root);
             };
         });
@@ -359,7 +364,7 @@ initPersonalSearch({
 
         // Inicializar índice del CollectionType
         indicadoresHolder.dataset.index =
-            indicadoresHolder.querySelectorAll("tr").length;
+            indicadoresHolder.querySelectorAll(".indicator-card").length;
 
         /**
          * Cuando se escribe en el nombre del indicador,
@@ -384,44 +389,238 @@ initPersonalSearch({
             temp.innerHTML = prototype.replace(/__name__/g, index);
 
             // ===============================
-// SOLO DÍGITOS — BASE Y META
-// ===============================
-const valorBaseInput = temp.querySelector('[name$="[valorBase]"]');
-const metaInput = temp.querySelector('[name$="[valor]"]');
+            // SOLO DÍGITOS — BASE Y META
+            // ===============================
+            const valorBaseInput = temp.querySelector('[name$="[valorBase]"]');
+            const metaInput = temp.querySelector('[name$="[valor]"]');
 
-if (valorBaseInput) enforceOnlyDigits(valorBaseInput);
-if (metaInput) enforceOnlyDigits(metaInput);
+            if (valorBaseInput) enforceOnlyDigits(valorBaseInput);
+            if (metaInput) enforceOnlyDigits(metaInput);
 
-
-            // Campo hidden de índice lógico
+            // Índice lógico del indicador
             const indiceInput = temp.querySelector('[name$="[indice]"]');
             if (indiceInput) {
                 indiceInput.value = indicadorIndiceGlobal;
                 indicadorIndiceGlobal++;
             }
 
-            // Crear fila de tabla
-            const row = document.createElement("tr");
-            row.classList.add("indicator-row");
+            // esPorcentaje: convertir checkbox → hidden
+            const esPorcentajeCheck = temp.querySelector('[name$="[esPorcentaje]"]');
+            if (esPorcentajeCheck) {
+                esPorcentajeCheck.type = 'hidden';
+                esPorcentajeCheck.value = '0';
+            }
 
-            row.innerHTML = `
-                <td class="p-2">
-                    ${temp.querySelector('[name$="[indicador]"]').outerHTML}
-                    ${indiceInput ? indiceInput.outerHTML : ''}
-                </td>
-                <td class="p-1">${temp.querySelector('[name$="[formula]"]').outerHTML}</td>
-                <td class="p-1">${temp.querySelector('[name$="[valorBase]"]').outerHTML}</td>
-                <td class="p-1">${temp.querySelector('[name$="[valor]"]').outerHTML}</td>
-                <td class="p-1">${temp.querySelector('[name$="[periodo]"]').outerHTML}</td>
-                <td class="p-1">${temp.querySelector('[name$="[tendencia]"]').outerHTML}</td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-danger btn-sm remove-indicador">
-                        <i class="bi bi-trash"></i>
+            // capturaEnPorcentaje: convertir checkbox → hidden.
+            // Se inicializa VACÍO ('') para detectar si el usuario
+            // nunca pasó por el modal de selección. Solo se asigna
+            // '0' o '1' al confirmar en el modal.
+            const capturaPctCheck = temp.querySelector('[name$="[capturaEnPorcentaje]"]');
+            if (capturaPctCheck) {
+                capturaPctCheck.type = 'hidden';
+                capturaPctCheck.value = ''; // vacío = no elegido todavía
+            }
+
+            // Número secuencial visible del card
+            const cardNum = indicadoresHolder.querySelectorAll(".indicator-card").length + 1;
+
+            // Card contenedor
+            const card = document.createElement("div");
+            card.classList.add("indicator-card", "indicator-row");
+
+            card.innerHTML = `
+                <div class="ic-header">
+                    <span class="ic-num">
+                        <i class="bi bi-graph-up"></i>
+                        <span class="ic-num-text">Indicador <strong>#${cardNum}</strong></span>
+                    </span>
+                    <button type="button" class="ic-remove-btn remove-indicador" title="Eliminar indicador">
+                        <i class="bi bi-trash3"></i>
                     </button>
-                </td>
+                </div>
+
+                <div class="ic-body">
+
+                    <div class="ic-row-main">
+                        <div class="ic-field ic-field--desc">
+                            <label class="ic-label">
+                                <i class="bi bi-card-text"></i> Indicador
+                            </label>
+                            ${temp.querySelector('[name$="[indicador]"]').outerHTML}
+                            ${indiceInput ? indiceInput.outerHTML : ''}
+                        </div>
+                        <div class="ic-field ic-field--formula">
+                            <label class="ic-label">
+                                <i class="bi bi-calculator"></i> Fórmula de Cálculo
+                            </label>
+                            ${temp.querySelector('[name$="[formula]"]').outerHTML}
+                        </div>
+                    </div>
+
+                    <div class="ic-row-meta">
+                        <div class="ic-field ic-field--base">
+                            <label class="ic-label">
+                                <i class="bi bi-bar-chart-line"></i> Valor Base
+                            </label>
+                            ${temp.querySelector('[name$="[valorBase]"]').outerHTML}
+                        </div>
+                        <div class="ic-field ic-field--meta">
+                            <label class="ic-label">
+                                <i class="bi bi-bullseye"></i> Meta
+                            </label>
+                            <div class="meta-input-wrap">
+                                ${temp.querySelector('[name$="[valor]"]').outerHTML}
+                                ${esPorcentajeCheck ? esPorcentajeCheck.outerHTML : ''}
+                                ${capturaPctCheck   ? capturaPctCheck.outerHTML   : ''}
+                                <div class="tipo-toggle btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn tipo-btn tipo-abs active" title="Valor absoluto">#</button>
+                                    <button type="button" class="btn tipo-btn tipo-pct" title="Porcentaje">%</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campo "Tipo de captura" — aparece al lado de Meta cuando esPorcentaje=true -->
+                        <div class="ic-field ic-field--captura">
+                            <label class="ic-label">
+                                <i class="bi bi-pencil-square"></i> Captura
+                            </label>
+                            <div class="captura-modo-badge"></div>
+                        </div>
+                        <div class="ic-field ic-field--periodo">
+                            <label class="ic-label">
+                                <i class="bi bi-calendar3"></i> Periodo
+                            </label>
+                            ${temp.querySelector('[name$="[periodo]"]').outerHTML}
+                            <div class="ic-periodo-static">
+                                <i class="bi bi-check2-circle"></i> Anual
+                            </div>
+                        </div>
+                        <div class="ic-field ic-field--tendencia">
+                            <label class="ic-label">
+                                <i class="bi bi-arrow-up-right-circle"></i> Tendencia
+                            </label>
+                            ${temp.querySelector('[name$="[tendencia]"]').outerHTML}
+                        </div>
+                    </div>
+
+                </div>
             `;
 
-            indicadoresHolder.appendChild(row);
+            // Toggle # / % (esPorcentaje)
+            const hiddenPct       = card.querySelector('[name$="[esPorcentaje]"]');
+            const hiddenCapturaPct = card.querySelector('[name$="[capturaEnPorcentaje]"]');
+            const btnAbs          = card.querySelector('.tipo-abs');
+            const btnPct          = card.querySelector('.tipo-pct');
+            const modoBadge       = card.querySelector('.captura-modo-badge');
+
+            // Referencia a la columna ic-field--captura (está en el mismo ic-row-meta)
+            const capturaField = card.querySelector('.ic-field--captura');
+
+            /**
+             * Muestra u oculta la columna "Captura" en ic-row-meta,
+             * y actualiza el badge con el modo elegido.
+             * La columna solo es visible cuando esPorcentaje=true.
+             */
+            function actualizarModoBadge() {
+                if (!modoBadge || !hiddenCapturaPct) return;
+
+                const esPct = hiddenPct?.value === '1';
+
+                // Mostrar/ocultar la columna completa
+                if (capturaField) {
+                    capturaField.style.display = esPct ? 'block' : 'none';
+                }
+
+                if (!esPct) return;
+
+                // Actualizar el contenido del badge
+                if (hiddenCapturaPct.value === '1') {
+                    modoBadge.innerHTML = `
+                        <span class="captura-badge captura-badge--pct">
+                            <i class="bi bi-percent"></i> Porcentaje %
+                        </span>`;
+                } else if (hiddenCapturaPct.value === '0') {
+                    modoBadge.innerHTML = `
+                        <span class="captura-badge captura-badge--abs">
+                            <i class="bi bi-123"></i> Absoluto
+                        </span>`;
+                } else {
+                    // Aún no elegido — mostrar indicación
+                    modoBadge.innerHTML = `
+                        <span class="captura-badge" style="opacity:.5;border-style:dashed;">
+                            <i class="bi bi-question-circle"></i> Sin elegir
+                        </span>`;
+                }
+            }
+
+            /**
+             * Abre el modal compartido de captura y asocia su
+             * confirmación al hidden field de este card específico.
+             */
+            function abrirModalCaptura() {
+                const modalEl = document.getElementById('modalCapturaPct');
+                if (!modalEl) return;
+
+                // Guardar referencia al campo de este card
+                modalEl._hiddenCapturaPct = hiddenCapturaPct;
+                modalEl._actualizarBadge  = actualizarModoBadge;
+
+                // Marcar el botón activo según el estado actual
+                const btnModalAbs = modalEl.querySelector('#modalCapturaBtnAbs');
+                const btnModalPct = modalEl.querySelector('#modalCapturaBtnPct');
+                const esActualPct = hiddenCapturaPct?.value === '1';
+
+                btnModalAbs?.classList.toggle('active', !esActualPct);
+                btnModalPct?.classList.toggle('active',  esActualPct);
+
+                bootstrap.Modal.getOrCreateInstance(modalEl).show();
+            }
+
+            if (hiddenPct && btnAbs && btnPct) {
+
+                btnAbs.addEventListener('click', () => {
+                    hiddenPct.value = '0';
+                    btnAbs.classList.add('active');
+                    btnPct.classList.remove('active');
+
+                    // Al volver a absoluto, resetear capturaEnPorcentaje a vacío
+                    // (se restablece como si nunca hubiera elegido, sin modal)
+                    if (hiddenCapturaPct) hiddenCapturaPct.value = '';
+                    actualizarModoBadge();
+                });
+
+                btnPct.addEventListener('click', () => {
+                    hiddenPct.value = '1';
+                    btnPct.classList.add('active');
+                    btnAbs.classList.remove('active');
+
+                    // Al activar %, abrir el modal para preguntar el modo de captura
+                    abrirModalCaptura();
+                });
+            }
+
+            // Inicializar badge (para cuando se edita un PTA existente con datos ya guardados)
+            actualizarModoBadge();
+
+            // Re-aplicar enforceOnlyDigits sobre los elementos reales del card
+            const cardValorBase = card.querySelector('[name$="[valorBase]"]');
+            const cardMeta = card.querySelector('[name$="[valor]"]:not([type="hidden"])');
+            if (cardValorBase) enforceOnlyDigits(cardValorBase);
+            if (cardMeta) enforceOnlyDigits(cardMeta);
+
+            // Actualizar encabezado del card en tiempo real
+            const indicadorTextarea = card.querySelector('[name$="[indicador]"]');
+            const icNumText = card.querySelector('.ic-num-text');
+            if (indicadorTextarea && icNumText) {
+                indicadorTextarea.addEventListener('input', () => {
+                    const val = indicadorTextarea.value.trim();
+                    icNumText.innerHTML = val
+                        ? `Indicador: <strong>${val}</strong>`
+                        : `Indicador <strong>#${cardNum}</strong>`;
+                });
+            }
+
+            indicadoresHolder.appendChild(card);
             indicadoresHolder.dataset.index++;
 
             activateRemoveButtons(frame, ".remove-indicador");
@@ -444,13 +643,9 @@ if (metaInput) enforceOnlyDigits(metaInput);
 
     if (addAccionBtn && accionesHolder) {
 
-        // Inicializar índice del CollectionType
         accionesHolder.dataset.index =
-            accionesHolder.querySelectorAll("tr").length;
+            accionesHolder.querySelectorAll(".accion-card").length;
 
-        /**
-         * Agregar nueva acción
-         */
         addAccionBtn.addEventListener("click", () => {
 
             const index = accionesHolder.dataset.index;
@@ -459,82 +654,115 @@ if (metaInput) enforceOnlyDigits(metaInput);
             const temp = document.createElement("div");
             temp.innerHTML = prototype.replace(/__name__/g, index);
 
-            const row = document.createElement("tr");
-            row.classList.add("accion-row");
+            const accionInput  = temp.querySelector('[name$="[accion]"]');
+            const mesesInput   = temp.querySelectorAll('[type="checkbox"]');
+            const indicadorHidden = temp.querySelector('[name$="[indicador]"]');
 
-            const accionInput = temp.querySelector('[name$="[accion]"]');
-            const mesesInput = temp.querySelectorAll('[type="checkbox"]');
+            const cardNum = accionesHolder.querySelectorAll(".accion-card").length + 1;
 
-            /**
-             * Select visible de indicador
-             * (el real es un hidden)
-             */
+            // Select visual de indicador
             const indicadorSelect = document.createElement("select");
-            indicadorSelect.classList.add("pta-input");
-            indicadorSelect.innerHTML = `<option value="">Seleccione un indicador</option>`;
+            indicadorSelect.classList.add("ac-select");
+            indicadorSelect.innerHTML = `<option value="">— Seleccione un indicador —</option>`;
 
-            // Poblar con indicadores existentes
-            frame.querySelectorAll(".indicator-row").forEach(row => {
-                const nombreInput = row.querySelector('[name$="[indicador]"]');
-                const indiceInput = row.querySelector('[name$="[indice]"]');
-                if (!nombreInput || !indiceInput) return;
-                if (nombreInput.value.trim() === "") return;
-
-                const option = document.createElement("option");
-                option.value = indiceInput.value;
-                option.textContent = nombreInput.value;
-                indicadorSelect.appendChild(option);
+            frame.querySelectorAll(".indicator-row").forEach(ind => {
+                const nombreInput = ind.querySelector('[name$="[indicador]"]');
+                const indiceInput = ind.querySelector('[name$="[indice]"]');
+                if (!nombreInput || !indiceInput || nombreInput.value.trim() === "") return;
+                const opt = document.createElement("option");
+                opt.value = indiceInput.value;
+                opt.textContent = nombreInput.value;
+                indicadorSelect.appendChild(opt);
             });
 
-            // Campo hidden real del formulario
-            const indicadorHidden = temp.querySelector('[name$="[indicador]"]');
             indicadorSelect.addEventListener("change", () => {
                 indicadorHidden.value = indicadorSelect.value;
             });
 
-            row.innerHTML = `
-                <td class="p-2"></td>
-                <td class="p-2">${accionInput.outerHTML}</td>
-                <td class="p-2 meses-col"></td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-danger btn-sm remove-accion">
-                        <i class="bi bi-trash"></i>
+            // Card
+            const card = document.createElement("div");
+            card.classList.add("accion-card", "accion-row");
+
+            card.innerHTML = `
+                <div class="ac-header">
+                    <span class="ac-num">
+                        <i class="bi bi-list-check"></i>
+                        <span class="ac-num-text">Acción <strong>#${cardNum}</strong></span>
+                    </span>
+                    <button type="button" class="ic-remove-btn remove-accion" title="Eliminar acción">
+                        <i class="bi bi-trash3"></i>
                     </button>
-                </td>
+                </div>
+                <div class="ac-body">
+                    <div class="ac-field ac-field--indicador">
+                        <label class="ic-label">
+                            <i class="bi bi-graph-up"></i> Indicador asociado
+                        </label>
+                    </div>
+                    <div class="ac-field ac-field--accion">
+                        <label class="ic-label">
+                            <i class="bi bi-pencil"></i> Descripción de la Acción
+                        </label>
+                        ${accionInput.outerHTML}
+                    </div>
+                    <div class="ac-field ac-field--meses">
+                        <label class="ic-label">
+                            <i class="bi bi-calendar3-range"></i> Meses de Ejecución
+                        </label>
+                        <div class="ac-meses-grid"></div>
+                    </div>
+                </div>
             `;
 
-            // Insertar select + hidden
-            const indicadorTd = row.querySelector("td");
-            indicadorTd.appendChild(indicadorSelect);
-            indicadorTd.appendChild(indicadorHidden);
+            // Insertar select + hidden en el campo indicador
+            const indicadorField = card.querySelector(".ac-field--indicador");
+            indicadorField.appendChild(indicadorSelect);
+            indicadorField.appendChild(indicadorHidden);
 
-            /**
-             * Renderizado visual de meses
-             */
-            const mesesTd = row.querySelector(".meses-col");
-            const nombresMeses = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+            // Pills de meses
+            const mesesGrid = card.querySelector(".ac-meses-grid");
+            const nombresMeses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
 
             mesesInput.forEach((mes, i) => {
-                const wrapper = document.createElement("label");
-                wrapper.classList.add("mes-label");
-                wrapper.style.display = "inline-flex";
-                wrapper.style.alignItems = "center";
-                wrapper.style.marginRight = "12px";
-                wrapper.style.cursor = "pointer";
+                const pill = document.createElement("label");
+                pill.classList.add("ac-mes-pill");
+
+                mes.style.position  = "absolute";
+                mes.style.opacity   = "0";
+                mes.style.width     = "0";
+                mes.style.height    = "0";
+                mes.style.pointerEvents = "none";
 
                 const span = document.createElement("span");
                 span.textContent = nombresMeses[i];
-                span.style.marginLeft = "4px";
 
-                wrapper.appendChild(mes);
-                wrapper.appendChild(span);
-                mesesTd.appendChild(wrapper);
+                pill.appendChild(mes);
+                pill.appendChild(span);
+
+                mes.addEventListener("change", () => {
+                    pill.classList.toggle("ac-mes-pill--active", mes.checked);
+                });
+
+                mesesGrid.appendChild(pill);
             });
 
-            accionesHolder.appendChild(row);
+            // Actualizar encabezado en tiempo real
+            const accionTextarea = card.querySelector('[name$="[accion]"]');
+            const acNumText = card.querySelector('.ac-num-text');
+            if (accionTextarea && acNumText) {
+                accionTextarea.addEventListener('input', () => {
+                    const val = accionTextarea.value.trim();
+                    acNumText.innerHTML = val
+                        ? `Acción: <strong>${val}</strong>`
+                        : `Acción <strong>#${cardNum}</strong>`;
+                });
+            }
+
+            accionesHolder.appendChild(card);
             accionesHolder.dataset.index++;
 
             activateRemoveButtons(frame, ".remove-accion");
+            syncIndicadoresConAcciones(frame);
         });
 
         activateRemoveButtons(frame, ".remove-accion");
@@ -562,6 +790,58 @@ if (metaInput) enforceOnlyDigits(metaInput);
 
     if (ptaForm) {
         ptaForm.addEventListener("submit", (e) => {
+
+            // ===============================
+            // VALIDACIÓN: capturaEnPorcentaje
+            // --------------------------------
+            // Si algún indicador tiene esPorcentaje='1' pero
+            // capturaEnPorcentaje='' (el usuario cerró el modal
+            // sin elegir), bloquear el submit y abrir el modal
+            // de ese indicador. Al confirmar, se auto-resubmit.
+            // ===============================
+            const modalEl = document.getElementById('modalCapturaPct');
+
+            const indicadorSinCaptura = frame.querySelector(
+                'input[name$="[esPorcentaje]"][value="1"]'
+            ) && (() => {
+                // Buscar el primer indicador con esPorcentaje='1' y capturaEnPorcentaje=''
+                let encontrado = null;
+                frame.querySelectorAll('.indicator-row').forEach(row => {
+                    if (encontrado) return;
+                    const hPct = row.querySelector('[name$="[esPorcentaje]"]');
+                    const hCap = row.querySelector('[name$="[capturaEnPorcentaje]"]');
+                    if (hPct?.value === '1' && hCap?.value === '') {
+                        encontrado = { hCap, row };
+                    }
+                });
+                return encontrado;
+            })();
+
+            if (indicadorSinCaptura && modalEl) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                // Obtener el badge updater de ese card
+                const card = indicadorSinCaptura.row;
+                const badge = card.querySelector('.captura-modo-badge');
+
+                // Pasar la referencia al modal + flag de auto-submit
+                modalEl._hiddenCapturaPct = indicadorSinCaptura.hCap;
+                modalEl._actualizarBadge  = badge
+                    ? () => {
+                        // Actualizar el badge del card cuando confirme
+                        badge.style.display = 'block';
+                        badge.innerHTML = indicadorSinCaptura.hCap.value === '1'
+                            ? `<span class="captura-badge captura-badge--pct"><i class="bi bi-percent"></i> Captura mensual: porcentaje (0-100%)</span>`
+                            : `<span class="captura-badge captura-badge--abs"><i class="bi bi-123"></i> Captura mensual: valor absoluto</span>`;
+                      }
+                    : null;
+                modalEl._pendienteSubmit  = true;
+                modalEl._form             = ptaForm;
+
+                bootstrap.Modal.getOrCreateInstance(modalEl).show();
+                return;
+            }
 
             // ===============================
             // VALIDACIÓN DE RESPONSABLES
@@ -647,7 +927,7 @@ if (metaInput) enforceOnlyDigits(metaInput);
 
                 if (!indicadorHidden || indicadorHidden.value === "") {
                     erroresAccion.push("sin indicador");
-                    const selectVisible = row.querySelector("select");
+                    const selectVisible = row.querySelector(".ac-select");
                     if (selectVisible) {
                         selectVisible.classList.add("field-error");
                         if (!primerCampoConError) primerCampoConError = selectVisible;
@@ -805,11 +1085,117 @@ frame.querySelectorAll('.fixed-textarea').forEach(textarea => {
  * =====================================================
  */
 frame.querySelectorAll(
-    '[name$="[valorBase]"], [name$="[valor]"]'
+    '[name$="[valorBase]"], [name$="[valor]"]:not([type="hidden"])'
 ).forEach(input => {
     enforceOnlyDigits(input);
 });
 
+
+/**
+ * =====================================================
+ * MODAL COMPARTIDO — MODO DE CAPTURA MENSUAL
+ * -----------------------------------------------------
+ * Controla el modal que pregunta al usuario si capturará
+ * el avance mensual del indicador en valor absoluto o %.
+ *
+ * Soporta dos modos de apertura:
+ *   1. Normal: usuario activa el toggle %
+ *   2. Validación: el submit detectó que capturaEnPorcentaje
+ *      está vacío en algún indicador → abre el modal y al
+ *      confirmar re-lanza el submit automáticamente.
+ *
+ * Props que recibe en modalEl antes de .show():
+ *   _hiddenCapturaPct : HTMLInputElement (el hidden del card)
+ *   _actualizarBadge  : function()
+ *   _pendienteSubmit  : bool (true si fue lanzado por validación)
+ *   _form             : HTMLFormElement (para el auto-submit)
+ * =====================================================
+ */
+function initModalCapturaPct(frame) {
+
+    const modalEl    = document.getElementById('modalCapturaPct');
+    if (!modalEl) return;
+
+    const btnAbs     = modalEl.querySelector('#modalCapturaBtnAbs');
+    const btnPct     = modalEl.querySelector('#modalCapturaBtnPct');
+    const btnConfirm = modalEl.querySelector('#modalCapturaConfirm');
+
+    if (!btnAbs || !btnPct || !btnConfirm) return;
+
+    let seleccion = ''; // '' = no elegido, '0' = absoluto, '1' = porcentaje
+
+    // ── Botón "Valor absoluto" ──
+    btnAbs.addEventListener('click', () => {
+        seleccion = '0';
+        btnAbs.classList.add('active');
+        btnPct.classList.remove('active');
+        btnConfirm.disabled = false; // habilitar al elegir
+    });
+
+    // ── Botón "Porcentaje %" ──
+    btnPct.addEventListener('click', () => {
+        seleccion = '1';
+        btnPct.classList.add('active');
+        btnAbs.classList.remove('active');
+        btnConfirm.disabled = false; // habilitar al elegir
+    });
+
+    // ── Confirmar elección ──
+    btnConfirm.addEventListener('click', () => {
+
+        // Debe tener una selección antes de confirmar
+        if (seleccion === '') return;
+
+        const hidden          = modalEl._hiddenCapturaPct;
+        const actualizarBadge = modalEl._actualizarBadge;
+        const pendienteSubmit = modalEl._pendienteSubmit;
+        const formRef         = modalEl._form;
+
+        if (hidden) hidden.value = seleccion;
+        if (actualizarBadge) actualizarBadge();
+
+        bootstrap.Modal.getInstance(modalEl)?.hide();
+
+        // Si fue lanzado desde validación de submit, re-lanzar el submit
+        if (pendienteSubmit && formRef) {
+            // Pequeño delay para dejar que el modal cierre limpiamente
+            setTimeout(() => formRef.requestSubmit(), 100);
+        }
+    });
+
+    // ── Al abrir el modal: sincronizar selección con el estado actual ──
+    modalEl.addEventListener('show.bs.modal', () => {
+        const hidden = modalEl._hiddenCapturaPct;
+
+        // Si ya tiene valor confirmado previamente, pre-seleccionarlo
+        if (hidden?.value === '0') {
+            seleccion = '0';
+            btnAbs.classList.add('active');
+            btnPct.classList.remove('active');
+            btnConfirm.disabled = false;
+        } else if (hidden?.value === '1') {
+            seleccion = '1';
+            btnPct.classList.add('active');
+            btnAbs.classList.remove('active');
+            btnConfirm.disabled = false;
+        } else {
+            // Vacío ('') = sin elegir todavía → ninguna opción activa,
+            // botón Confirmar deshabilitado hasta que el usuario elija
+            seleccion = '';
+            btnAbs.classList.remove('active');
+            btnPct.classList.remove('active');
+            btnConfirm.disabled = true;
+        }
+    });
+
+    // ── Limpiar al cerrar ──
+    modalEl.addEventListener('hidden.bs.modal', () => {
+        modalEl._hiddenCapturaPct = null;
+        modalEl._actualizarBadge  = null;
+        modalEl._pendienteSubmit  = false;
+        modalEl._form             = null;
+    });
+}
 
 }// fin de la funcion de contencion
 

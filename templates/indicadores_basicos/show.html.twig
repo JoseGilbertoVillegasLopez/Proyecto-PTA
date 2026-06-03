@@ -36,6 +36,11 @@
 					</tr>
 
 					<tr>
+						<th>Grupo</th>
+						<td>{{ indicador.grupo ? indicador.grupo.grupo : '—' }}</td>
+					</tr>
+
+					<tr>
 						<th>Estado</th>
 						<td>
 							<span class="indicadores-basicos-show-status-badge {{ indicador.activo ? 'indicadores-basicos-show-status-badge--active' : 'indicadores-basicos-show-status-badge--inactive' }}">

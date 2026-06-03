@@ -55,6 +55,12 @@
 			</div>
 
 			<div class="indicadores-basicos-edit-group">
+				{{ form_label(form.grupo, null, {'label_attr': {'class': 'indicadores-basicos-edit-label'}}) }}
+				{{ form_widget(form.grupo) }}
+				{{ form_errors(form.grupo) }}
+			</div>
+
+			<div class="indicadores-basicos-edit-group">
 				{{ form_label(form.activo, null, {'label_attr': {'class': 'indicadores-basicos-edit-label'}}) }}
 				{{ form_widget(form.activo, {'attr': {'class': 'indicadores-basicos-edit-select'}}) }}
 				{{ form_errors(form.activo) }}

@@ -25,6 +25,10 @@ class IndicadoresBasicos
     #[ORM\Column(options: ['default' => true])]
     private ?bool $activo = true;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?GrupoIndicadoresBasicos $grupo = null;
+
 
     public function getId(): ?int
     {
@@ -75,6 +79,18 @@ class IndicadoresBasicos
     public function setActivo(bool $activo): static
     {
         $this->activo = $activo;
+
+        return $this;
+    }
+
+    public function getGrupo(): ?GrupoIndicadoresBasicos
+    {
+        return $this->grupo;
+    }
+
+    public function setGrupo(?GrupoIndicadoresBasicos $grupo): static
+    {
+        $this->grupo = $grupo;
 
         return $this;
     }

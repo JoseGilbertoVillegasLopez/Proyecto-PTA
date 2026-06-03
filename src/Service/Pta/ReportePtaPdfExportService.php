@@ -313,7 +313,7 @@ class ReportePtaPdfExportService
     $html .= '</tr>';
 
     $html .= '<tr>';
-    $html .= '<td class="center w0">' . $this->esc((string)($indicador['indicador_basico'] ?? '')) . '</td>';
+    $html .= '<td class="center w0">' . $this->esc($indicador['indicador_basico'] ?: 'No aplica') . '</td>';
     $html .= '<td class="center w1">' . $this->esc((string)($indicador['indicador_pta'] ?? '')) . '</td>';
     $html .= '<td class="center w2">' . $this->esc((string)($indicador['unidad_medida'] ?? '')) . '</td>';
     $html .= '<td class="center w3">' . $this->esc($this->normalizarValor($indicador['meta'] ?? '')) . '</td>';

@@ -46,12 +46,12 @@ class ConstructorVistaReportePtaShowService
             // =========================
             // Indicador básico (puede venir como relación o como ID)
             // =========================
-            $indicadorBasicoNombre = '';
+            $indicadorBasicoNombre = 'No aplica';
             if (method_exists($indicador, 'getIndicadorBasico') && $indicador->getIndicadorBasico()) {
-                $indicadorBasicoNombre = $indicador->getIndicadorBasico()?->getNombreIndicador() ?? '';
+                $indicadorBasicoNombre = $indicador->getIndicadorBasico()->getNombreIndicador() ?? 'No aplica';
             } elseif (method_exists($indicador, 'getIndicadorBasicoId') && $indicador->getIndicadorBasicoId()) {
                 $ib = $this->indicadoresBasicosRepo->find($indicador->getIndicadorBasicoId());
-                $indicadorBasicoNombre = $ib?->getNombreIndicador() ?? '';
+                $indicadorBasicoNombre = $ib?->getNombreIndicador() ?? 'No aplica';
             }
 
             // =========================
@@ -103,20 +103,25 @@ class ConstructorVistaReportePtaShowService
                     }
 
                     $partidas[$partidaIndex] = [
+                        'partida_id'   => $pp?->getId(),
                         'capitulo'     => $pp?->getCapitulo(),
                         'partida'      => $pp?->getPartida(),
                         'descripcion'  => $pp?->getDescripcion(),
                         'monto'        => $monto,
+                        'cantidad'     => $monto,
                     ];
 
                     $partidaIndex++;
                 }
 
                 $acciones[$accionIndex] = [
-                    'descripcion'         => method_exists($accion, 'getAccion') ? $accion->getAccion() : '',
-                    'proceso_estrategico' => $procesoEstrategicoNombre,
-                    'proceso_clave'       => $procesoClaveNombre,
-                    'partidas'            => $partidas,
+                    'descripcion'            => method_exists($accion, 'getAccion') ? $accion->getAccion() : '',
+                    'tiene_gastos'           => $accion->getProcesoEstrategico() !== null,
+                    'proceso_estrategico'    => $procesoEstrategicoNombre,
+                    'proceso_estrategico_id' => $accion->getProcesoEstrategico()?->getId(),
+                    'proceso_clave'          => $procesoClaveNombre,
+                    'proceso_clave_id'       => $accion->getProcesoClave()?->getId(),
+                    'partidas'               => $partidas,
                 ];
 
                 $accionIndex++;

@@ -95,40 +95,19 @@
 				</div>
 
 				{# ================= BODY GRÁFICA ================= #}
-				<div class="pta-card__body">
-					<canvas class="pta-chart" data-indicador="{{ grafica.indicador }}" data-meta="{{ grafica.meta }}" data-tendencia="{{ grafica.tendencia }}" data-serie='{{ grafica.serie|json_encode|raw }}'></canvas>
+				<div class="pta-card__body pta-chart-wrap">
+					<canvas class="pta-chart"
+						data-indicador="{{ grafica.indicador }}"
+						data-meta="{{ grafica.meta_grafica }}"
+						data-tendencia="{{ grafica.tendencia }}"
+						data-serie='{{ grafica.serie|json_encode|raw }}'
+						data-captura-pct="{{ grafica.captura_porcentaje is defined and grafica.captura_porcentaje ? '1' : '0' }}"
+						data-valor-base="{{ grafica.valor_base }}">
+					</canvas>
 				</div>
 
-				{# ================= RESUMEN ACCIONES ================= #}
-				<div class="pta-actions">
-
-					{% for accion in grafica.acciones %}
-
-						<div class="pta-action-card">
-
-							<div class="pta-action-header">
-								<strong>{{ accion.nombre }}</strong>
-								<span>{{ accion.porcentaje }}%</span>
-							</div>
-
-							<div class="pta-action-bar">
-								<div class="pta-action-bar-fill" style="width: {{ accion.porcentaje }}%"></div>
-							</div>
-
-							<div class="pta-action-months">
-								{% for mes, valor in accion.meses %}
-									<span>
-										<strong>{{ mes|slice(0,3) }}</strong>:
-										{{ valor }}
-									</span>
-								{% endfor %}
-							</div>
-
-						</div>
-
-					{% endfor %}
-
-				</div>
+				{# Sección de desglose por acciones eliminada:
+				   el avance ya no se registra por acción sino por indicador #}
 
 			</div>
 

@@ -151,8 +151,9 @@ function activarBotonesAgregar(root) {
                            name="acciones[${indicadorIndex}][${accionIndex}][descripcion]">
 
                     <button type="button"
-                            class="btn btn-danger btn-sm remove-accion">
-                        X
+                            class="btn btn-danger btn-sm remove-accion"
+                            title="Eliminar acción">
+                        <i class="bi bi-trash"></i>
                     </button>
                 </div>
             `;
@@ -270,28 +271,49 @@ function createGastoCard(root, indicadorIndex, accionIndex) {
         Acción ${accionIndex}
     </div>
 
-    <div class="pta-rnew-gasto-body">
-
-        <div class="mb-3">
-            <label class="form-label">Proceso Estratégico</label>
-            <select class="form-select"
-                    name="gastos[${indicadorIndex}][${accionIndex}][proceso_estrategico]">
-                <option value="">Seleccione...</option>
-                ${procesosEstrategicos
-                    .map((p) => `<option value="${p.id}">${p.nombre}</option>`)
-                    .join("")}
-            </select>
+    <div class="gasto-toggle-zone d-flex align-items-center gap-3 py-2 px-1 mb-2 border-bottom">
+        <span class="fw-semibold text-secondary small">¿Produjo gastos?</span>
+        <div class="form-check form-check-inline mb-0">
+            <input class="form-check-input gasto-toggle-radio" type="radio"
+                   name="gastos[${indicadorIndex}][${accionIndex}][produjo_gastos]"
+                   value="1"
+                   id="gstos_si_${indicadorIndex}_${accionIndex}">
+            <label class="form-check-label" for="gstos_si_${indicadorIndex}_${accionIndex}">Sí</label>
         </div>
+        <div class="form-check form-check-inline mb-0">
+            <input class="form-check-input gasto-toggle-radio" type="radio"
+                   name="gastos[${indicadorIndex}][${accionIndex}][produjo_gastos]"
+                   value="0"
+                   id="gstos_no_${indicadorIndex}_${accionIndex}"
+                   checked>
+            <label class="form-check-label" for="gstos_no_${indicadorIndex}_${accionIndex}">No</label>
+        </div>
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label">Proceso Clave</label>
-            <select class="form-select"
-                    name="gastos[${indicadorIndex}][${accionIndex}][proceso_clave]">
-                <option value="">Seleccione...</option>
-                ${procesosClave
-                    .map((p) => `<option value="${p.id}">${p.nombre}</option>`)
-                    .join("")}
-            </select>
+    <div class="pta-rnew-gasto-body" style="display:none;">
+
+        <div class="pta-rnew-procesos-grid">
+            <div class="mb-3">
+                <label class="form-label">Proceso Estratégico</label>
+                <select class="form-select"
+                        name="gastos[${indicadorIndex}][${accionIndex}][proceso_estrategico]">
+                    <option value="">Seleccione...</option>
+                    ${procesosEstrategicos
+                        .map((p) => `<option value="${p.id}">${p.nombre}</option>`)
+                        .join("")}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Proceso Clave</label>
+                <select class="form-select"
+                        name="gastos[${indicadorIndex}][${accionIndex}][proceso_clave]">
+                    <option value="">Seleccione...</option>
+                    ${procesosClave
+                        .map((p) => `<option value="${p.id}">${p.nombre}</option>`)
+                        .join("")}
+                </select>
+            </div>
         </div>
 
         <hr>
@@ -311,6 +333,13 @@ function createGastoCard(root, indicadorIndex, accionIndex) {
 `;
 
     gastosContainer.appendChild(card);
+
+    const body = card.querySelector(".pta-rnew-gasto-body");
+    card.querySelectorAll(".gasto-toggle-radio").forEach((radio) => {
+        radio.addEventListener("change", function () {
+            body.style.display = this.value === "1" ? "" : "none";
+        });
+    });
 
     const addBtn = card.querySelector(".add-partida");
 
@@ -364,6 +393,20 @@ function reorderGastos(root, indicadorIndex) {
             header.textContent = inputAccion.value.trim();
         } else {
             header.textContent = `Acción ${contador}`;
+        }
+
+        const radios = card.querySelectorAll(".gasto-toggle-radio");
+        if (radios[0]) {
+            radios[0].name = `gastos[${indicadorIndex}][${contador}][produjo_gastos]`;
+            radios[0].id = `gstos_si_${indicadorIndex}_${contador}`;
+            const labelSi = card.querySelector(`label[for^="gstos_si_"]`);
+            if (labelSi) labelSi.setAttribute("for", `gstos_si_${indicadorIndex}_${contador}`);
+        }
+        if (radios[1]) {
+            radios[1].name = `gastos[${indicadorIndex}][${contador}][produjo_gastos]`;
+            radios[1].id = `gstos_no_${indicadorIndex}_${contador}`;
+            const labelNo = card.querySelector(`label[for^="gstos_no_"]`);
+            if (labelNo) labelNo.setAttribute("for", `gstos_no_${indicadorIndex}_${contador}`);
         }
 
         const selects = card.querySelectorAll("select");
@@ -436,9 +479,9 @@ function createPartida(root, indicadorIndex, accionIndex) {
     div.dataset.partidaIndex = partidaIndex;
 
     div.innerHTML = `
-        <div class="row g-2">
+        <div class="row g-2 align-items-end">
 
-            <div class="col-md-6">
+            <div class="col-8">
                 <label class="form-label">Partida Presupuestal</label>
                 <select class="form-select"
                         name="gastos[${indicadorIndex}][${accionIndex}][partidas][${partidaIndex}][partida_id]">
@@ -454,7 +497,7 @@ function createPartida(root, indicadorIndex, accionIndex) {
                 </select>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-3">
                 <label class="form-label">Monto</label>
                 <input type="number"
                        step="0.01"
@@ -462,10 +505,11 @@ function createPartida(root, indicadorIndex, accionIndex) {
                        name="gastos[${indicadorIndex}][${accionIndex}][partidas][${partidaIndex}][monto]">
             </div>
 
-            <div class="col-md-2 d-flex align-items-end">
+            <div class="col-1 d-flex align-items-end">
                 <button type="button"
-                        class="btn btn-danger btn-sm remove-partida">
-                    X
+                        class="btn btn-danger btn-sm remove-partida"
+                        title="Eliminar partida">
+                    <i class="bi bi-trash"></i>
                 </button>
             </div>
 
@@ -610,8 +654,9 @@ function activarBotonesAgregarEvidencia(root) {
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <strong>Evidencia ${bloqueIndex}</strong>
                     <button type="button"
-                            class="btn btn-danger btn-sm remove-evidencia">
-                        Eliminar
+                            class="btn btn-danger btn-sm remove-evidencia"
+                            title="Eliminar evidencia">
+                        <i class="bi bi-trash"></i>
                     </button>
                 </div>
 
@@ -625,7 +670,7 @@ function activarBotonesAgregarEvidencia(root) {
 
                 <div class="mb-3">
                     <label class="form-label">Imágenes (máx 4) *</label>
-                    <div class="evidencia-preview-container d-flex gap-2 flex-wrap"></div>
+                    <div class="evidencia-preview-container d-flex flex-wrap"></div>
                 </div>
             `;
 
@@ -708,8 +753,8 @@ function renderBotonAgregar(container, bloque, indicadorIndex, bloqueIndex) {
     const card = document.createElement("div");
     card.classList.add("evidencia-card", "add-button");
 
-    card.style.width = "150px";
-    card.style.height = "150px";
+    card.style.width = "188px";
+    card.style.height = "188px";
     card.style.border = "2px dashed #ccc";
     card.style.display = "flex";
     card.style.alignItems = "center";
@@ -769,8 +814,8 @@ function mostrarPreview(
 ) {
     const card = document.createElement("div");
     card.classList.add("evidencia-card");
-    card.style.width = "150px";
-    card.style.height = "150px";
+    card.style.width = "188px";
+    card.style.height = "188px";
     card.style.position = "relative";
     card.style.border = "1px solid #ddd";
 
@@ -837,8 +882,8 @@ function crearCardImagenExistente(
 
     const card = document.createElement("div");
     card.classList.add("evidencia-card");
-    card.style.width = "150px";
-    card.style.height = "150px";
+    card.style.width = "188px";
+    card.style.height = "188px";
     card.style.position = "relative";
     card.style.border = "1px solid #ddd";
 
@@ -1017,8 +1062,9 @@ function hidratarFormulario(root, datosIniciales, uploadsBase) {
                            value="${accion.descripcion || ""}">
 
                     <button type="button"
-                            class="btn btn-danger btn-sm remove-accion">
-                        X
+                            class="btn btn-danger btn-sm remove-accion"
+                            title="Eliminar acción">
+                        <i class="bi bi-trash"></i>
                     </button>
                 </div>
             `;
@@ -1046,51 +1092,64 @@ function hidratarFormulario(root, datosIniciales, uploadsBase) {
                         texto !== "" ? texto : `Acción ${accionIndex}`;
                 }
 
-                const selects = gastoCard.querySelectorAll("select");
+                const body = gastoCard.querySelector(".pta-rnew-gasto-body");
+                const tieneGastos = accion.tiene_gastos === true;
 
-                if (selects[0] && accion.proceso_estrategico_id) {
-                    selects[0].value = accion.proceso_estrategico_id;
-                }
+                if (tieneGastos) {
+                    const radioSi = gastoCard.querySelector(".gasto-toggle-radio[value='1']");
+                    if (radioSi) radioSi.checked = true;
+                    if (body) body.style.display = "";
 
-                if (selects[1] && accion.proceso_clave_id) {
-                    selects[1].value = accion.proceso_clave_id;
-                }
+                    const selects = gastoCard.querySelectorAll("select");
 
-                const partidasContainer = gastoCard.querySelector(
-                    ".partidas-container",
-                );
+                    if (selects[0] && accion.proceso_estrategico_id) {
+                        selects[0].value = accion.proceso_estrategico_id;
+                    }
 
-                Object.keys(accion.partidas || {}).forEach(
-                    (partidaIndexRaw) => {
-                        const partidaIndex = parseInt(partidaIndexRaw, 10);
-                        const partidaData = accion.partidas[partidaIndex];
+                    if (selects[1] && accion.proceso_clave_id) {
+                        selects[1].value = accion.proceso_clave_id;
+                    }
 
-                        createPartida(root, indice, accionIndex);
+                    const partidasContainer = gastoCard.querySelector(
+                        ".partidas-container",
+                    );
 
-                        const partidaCard = partidasContainer
-                            ? partidasContainer.querySelector(
-                                  `[data-partida-index="${partidaIndex}"]`,
-                              )
-                            : null;
+                    Object.keys(accion.partidas || {}).forEach(
+                        (partidaIndexRaw) => {
+                            const partidaIndex = parseInt(partidaIndexRaw, 10);
+                            const partidaData = accion.partidas[partidaIndex];
 
-                        if (partidaCard) {
-                            const select = partidaCard.querySelector("select");
-                            const input = partidaCard.querySelector("input");
+                            createPartida(root, indice, accionIndex);
 
-                            if (select && partidaData.partida_id) {
-                                select.value = partidaData.partida_id;
+                            const partidaCard = partidasContainer
+                                ? partidasContainer.querySelector(
+                                      `[data-partida-index="${partidaIndex}"]`,
+                                  )
+                                : null;
+
+                            if (partidaCard) {
+                                const select = partidaCard.querySelector("select");
+                                const input = partidaCard.querySelector("input");
+
+                                if (select && partidaData.partida_id) {
+                                    select.value = partidaData.partida_id;
+                                }
+
+                                if (
+                                    input &&
+                                    partidaData.cantidad !== undefined &&
+                                    partidaData.cantidad !== null
+                                ) {
+                                    input.value = partidaData.cantidad;
+                                }
                             }
-
-                            if (
-                                input &&
-                                partidaData.cantidad !== undefined &&
-                                partidaData.cantidad !== null
-                            ) {
-                                input.value = partidaData.cantidad;
-                            }
-                        }
-                    },
-                );
+                        },
+                    );
+                } else {
+                    const radioNo = gastoCard.querySelector(".gasto-toggle-radio[value='0']");
+                    if (radioNo) radioNo.checked = true;
+                    if (body) body.style.display = "none";
+                }
             }
         });
 
@@ -1121,8 +1180,9 @@ function hidratarFormulario(root, datosIniciales, uploadsBase) {
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <strong>Evidencia ${bloqueIndex}</strong>
                     <button type="button"
-                            class="btn btn-danger btn-sm remove-evidencia">
-                        Eliminar
+                            class="btn btn-danger btn-sm remove-evidencia"
+                            title="Eliminar evidencia">
+                        <i class="bi bi-trash"></i>
                     </button>
                 </div>
 
@@ -1135,7 +1195,7 @@ function hidratarFormulario(root, datosIniciales, uploadsBase) {
 
                 <div class="mb-3">
                     <label class="form-label">Imágenes</label>
-                    <div class="evidencia-preview-container d-flex gap-2 flex-wrap"></div>
+                    <div class="evidencia-preview-container d-flex flex-wrap"></div>
                 </div>
             `;
 
@@ -1199,8 +1259,9 @@ function activarValidacionEnvio(root) {
                    CAMPOS INDICADOR
                 =============================== */
 
-                item.querySelectorAll("[name^='reporte[indicadores]']").forEach(
-                    (input) => {
+                Array.from(item.querySelectorAll("input[name], select[name], textarea[name]"))
+                    .filter((el) => el.name.startsWith("reporte[indicadores]") && !el.dataset.opcional)
+                    .forEach((input) => {
                         if (input.value.trim() === "") {
                             const label =
                                 input
@@ -1217,8 +1278,7 @@ function activarValidacionEnvio(root) {
                             marcarError(input);
                             if (!primerCampoError) primerCampoError = input;
                         }
-                    },
-                );
+                    });
 
                 /* ===============================
                    ACCIONES
@@ -1257,6 +1317,14 @@ function activarValidacionEnvio(root) {
 
                 item.querySelectorAll(".partidas-container").forEach(
                     (container, accionIndex) => {
+                        const gastoCard = container.closest(".pta-rnew-gasto-card");
+                        const radioSi = gastoCard
+                            ? gastoCard.querySelector(".gasto-toggle-radio[value='1']")
+                            : null;
+                        const produjoGastos = radioSi ? radioSi.checked : true;
+
+                        if (!produjoGastos) return;
+
                         const numeroAccion = accionIndex + 1;
                         const partidas = container.querySelectorAll(
                             "[data-partida-index]",
@@ -1264,7 +1332,7 @@ function activarValidacionEnvio(root) {
 
                         if (partidas.length === 0) {
                             erroresAgrupados[numeroIndicador].push({
-                                mensaje: `⚠ Acción ${numeroAccion} sin partidas.`,
+                                mensaje: `⚠ Acción ${numeroAccion} marcada con gastos pero sin partidas.`,
                                 elemento: container,
                                 collapse: collapse,
                             });

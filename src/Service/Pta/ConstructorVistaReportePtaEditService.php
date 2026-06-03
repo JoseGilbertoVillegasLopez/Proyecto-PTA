@@ -74,6 +74,7 @@ class ConstructorVistaReportePtaEditService
 
                 $inicial[$indice]['acciones'][$accionIndex] = [
                     'descripcion'           => $accion->getAccion(),
+                    'tiene_gastos'          => $accion->getProcesoEstrategico() !== null,
                     'proceso_estrategico_id'=> $accion->getProcesoEstrategico()?->getId(),
                     'proceso_clave_id'      => $accion->getProcesoClave()?->getId(),
                     'partidas'              => []

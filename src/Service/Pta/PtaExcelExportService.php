@@ -229,20 +229,28 @@ class PtaExcelExportService
 
             $this->autoHeightByText($sheet, $row, $accion->getAccion());
 
-            $valores = $accion->getValorAlcanzado() ?? [];
-
-            $periodoAccion = $accion->getPeriodo() ?? [];
+            // mesesCumplidos: {"Enero": true|false|null}
+            // true = ✓ cumplida, false = ✗ no cumplida, null = sin registrar
+            $mesesCumplidos = $accion->getMesesCumplidos() ?? [];
+            $periodoAccion  = $accion->getPeriodo() ?? [];
 
             foreach ($meses as $i => $mes) {
                 $col = chr(ord('F') + $i);
 
-                // 1️⃣ Valor (si existe)
-                if (array_key_exists($mes, $valores) && $valores[$mes] !== null) {
-                    $sheet->setCellValue("{$col}{$row}", $valores[$mes]);
+                // Mostrar símbolo de cumplimiento si el mes fue registrado
+                if (array_key_exists($mes, $mesesCumplidos) && $mesesCumplidos[$mes] !== null) {
+                    $simbolo = $mesesCumplidos[$mes] === true ? '✓' : '✗';
+                    $sheet->setCellValue("{$col}{$row}", $simbolo);
                     $this->centerRange($sheet, "{$col}{$row}");
+
+                    // Verde para cumplida, rojo para no cumplida
+                    $colorFuente = $mesesCumplidos[$mes] === true ? '1A7A1A' : 'B22222';
+                    $sheet->getStyle("{$col}{$row}")->getFont()
+                        ->setBold(true)
+                        ->getColor()->setRGB($colorFuente);
                 }
 
-                // 2️⃣ Color amarillo SOLO depende del periodo
+                // Fondo amarillo para los meses del periodo (sin importar cumplimiento)
                 if (in_array($mes, $periodoAccion, true)) {
                     $sheet->getStyle("{$col}{$row}")
                         ->getFill()

@@ -486,6 +486,378 @@
 }
 
 /* =========================================================
+   HISTORIAL — SUB-SECCIONES DENTRO DEL CARD INDICADOR
+   ---------------------------------------------------------
+   Cada indicador tiene dos sub-secciones:
+     A) Avance mensual  → valores snapshot del indicador
+     B) Acciones        → historial de cumplimiento ✓/✗
+   ========================================================= */
+
+.pta-historial .pta-hist-section {
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(13, 202, 240, 0.1);
+}
+
+/* Etiqueta de sub-sección */
+.pta-historial .pta-hist-section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--pta-muted);
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pta-historial .pta-hist-section-label i {
+    color: var(--pta-primary);
+    font-size: 0.9rem;
+}
+
+/* =========================================================
+   A) AVANCE MENSUAL DEL INDICADOR — cards por mes
+   ---------------------------------------------------------
+   Grid auto-fit: todos los meses ocupan el mismo ancho.
+   Cada card muestra: nombre, valor snapshot, estado y eventos.
+   ========================================================= */
+
+.pta-historial .pta-hist-meses-valores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 14px;
+}
+
+/* Card de un mes de valor */
+.pta-historial .pta-hist-mes-valor {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px 12px;
+    border-radius: 14px;
+    background: rgba(17, 25, 40, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+    transition: box-shadow 0.2s ease;
+}
+
+.pta-historial .pta-hist-mes-nombre {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--pta-muted);
+}
+
+/* Valor registrado */
+.pta-historial .pta-hist-mes-valor-num {
+    font-size: 1.5rem;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: var(--pta-primary);
+    line-height: 1;
+}
+
+/* Estado: registrado → cian */
+.pta-historial .pta-hist-mes-valor--registrado {
+    border-color: rgba(13, 202, 240, 0.4);
+    background: rgba(13, 202, 240, 0.08);
+    box-shadow: 0 0 16px rgba(13, 202, 240, 0.1);
+}
+
+.pta-historial .pta-hist-mes-valor--registrado .pta-hist-mes-nombre {
+    color: rgba(13, 202, 240, 0.7);
+}
+
+/* Estado: sin_registro → ámbar */
+.pta-historial .pta-hist-mes-valor--sin_registro {
+    border-color: rgba(254, 202, 87, 0.35);
+    background: rgba(254, 202, 87, 0.05);
+}
+
+.pta-historial .pta-hist-mes-valor--sin_registro .pta-hist-mes-nombre {
+    color: rgba(254, 202, 87, 0.7);
+}
+
+.pta-historial .pta-hist-mes-valor--sin_registro .pta-hist-mes-valor-num {
+    color: rgba(254, 202, 87, 0.6);
+    font-size: 1rem;
+}
+
+/* Estado: pendiente → gris */
+.pta-historial .pta-hist-mes-valor--pendiente {
+    opacity: 0.45;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+/* Mini-historial de eventos dentro del card de valor */
+.pta-historial .pta-hist-valor-eventos {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 8px;
+}
+
+.pta-historial .pta-hist-valor-evento {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.pta-historial .pta-hist-valor-evento-tipo {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pta-hist-valor-evento-tipo--captura   { color: #1dd1a1; }
+.pta-hist-valor-evento-tipo--correccion { color: var(--pta-warning); }
+
+.pta-historial .pta-hist-valor-evento-fecha {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.pta-historial .pta-hist-valor-evento-motivo {
+    font-size: 0.72rem;
+    background: rgba(254, 202, 87, 0.1);
+    border-left: 2px solid rgba(254, 202, 87, 0.5);
+    color: #ffeaa7;
+    padding: 4px 8px;
+    border-radius: 0 6px 6px 0;
+    text-align: left;
+    width: 100%;
+}
+
+/* =========================================================
+   B) HISTORIAL DE ACCIONES — pills por mes
+   ---------------------------------------------------------
+   Cada acción es un card con su nombre y un grid de pills
+   (máx 6 por fila). Debajo, si hay eventos con motivo,
+   una línea de tiempo compacta.
+   ========================================================= */
+
+.pta-historial .pta-hist-acciones-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Card de una acción */
+.pta-historial .pta-hist-accion-card {
+    background: rgba(17, 25, 40, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 14px 16px;
+    backdrop-filter: blur(8px);
+}
+
+.pta-historial .pta-hist-accion-nombre {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #c8d8e8;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+}
+
+.pta-historial .pta-hist-accion-nombre i {
+    color: var(--pta-primary);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Grid de pills — máx 6 columnas */
+.pta-historial .pta-hist-pills-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .pta-historial .pta-hist-pills-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Pill de mes de acción */
+.pta-historial .pta-hist-mes-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(17, 25, 40, 0.5);
+    text-align: center;
+    cursor: default;
+}
+
+.pta-historial .pta-hist-pill-mes {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.pta-historial .pta-hist-pill-icono {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+/* CUMPLIDA ✓ — verde */
+.pta-historial .pta-hist-mes-pill--ok {
+    background: rgba(29, 209, 161, 0.1);
+    border-color: rgba(29, 209, 161, 0.45);
+    box-shadow: 0 0 12px rgba(29, 209, 161, 0.1);
+}
+
+.pta-historial .pta-hist-mes-pill--ok .pta-hist-pill-mes {
+    color: rgba(29, 209, 161, 0.65);
+}
+
+.pta-historial .pta-hist-mes-pill--ok .pta-hist-pill-icono {
+    color: #1dd1a1;
+}
+
+/* NO CUMPLIDA ✗ — rojo */
+.pta-historial .pta-hist-mes-pill--no_cumplida {
+    background: rgba(255, 107, 107, 0.1);
+    border-color: rgba(255, 107, 107, 0.45);
+    box-shadow: 0 0 12px rgba(255, 107, 107, 0.1);
+}
+
+.pta-historial .pta-hist-mes-pill--no_cumplida .pta-hist-pill-mes {
+    color: rgba(255, 107, 107, 0.65);
+}
+
+.pta-historial .pta-hist-mes-pill--no_cumplida .pta-hist-pill-icono {
+    color: #ff6b6b;
+}
+
+/* ATRASO CRÍTICO ⚠ — rojo oscuro, sin registro */
+.pta-historial .pta-hist-mes-pill--atraso_critico {
+    background: rgba(220, 53, 69, 0.12);
+    border-color: rgba(220, 53, 69, 0.5);
+    border-style: dashed;
+}
+
+.pta-historial .pta-hist-mes-pill--atraso_critico .pta-hist-pill-mes {
+    color: rgba(255, 107, 107, 0.7);
+}
+
+.pta-historial .pta-hist-mes-pill--atraso_critico .pta-hist-pill-icono {
+    color: rgba(255, 107, 107, 0.7);
+}
+
+/* PENDIENTE — gris */
+.pta-historial .pta-hist-mes-pill--pendiente {
+    opacity: 0.4;
+    border-style: dashed;
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Línea de tiempo de eventos debajo del grid de pills */
+.pta-historial .pta-hist-accion-eventos {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pta-historial .pta-hist-evento-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.8rem;
+    padding: 7px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Chip del mes del evento */
+.pta-historial .pta-hist-evento-mes {
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.pta-historial .pta-hist-evento-tipo {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.pta-historial .pta-hist-evento-fecha {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.72rem;
+    white-space: nowrap;
+}
+
+.pta-historial .pta-hist-evento-motivo {
+    flex: 1;
+    color: #ffeaa7;
+    font-style: italic;
+    min-width: 0;
+    word-break: break-word;
+}
+
+/* Colores por tipo de evento */
+.pta-historial .pta-hist-evento--captura_cumplida .pta-hist-evento-mes {
+    background: rgba(29, 209, 161, 0.15);
+    color: #1dd1a1;
+    border: 1px solid rgba(29, 209, 161, 0.3);
+}
+
+.pta-historial .pta-hist-evento--captura_cumplida .pta-hist-evento-tipo {
+    color: #1dd1a1;
+}
+
+.pta-historial .pta-hist-evento--captura_no_cumplida .pta-hist-evento-mes {
+    background: rgba(255, 107, 107, 0.15);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.pta-historial .pta-hist-evento--captura_no_cumplida .pta-hist-evento-tipo {
+    color: #ff6b6b;
+}
+
+.pta-historial .pta-hist-evento--correccion_cumplida .pta-hist-evento-mes,
+.pta-historial .pta-hist-evento--correccion_no_cumplida .pta-hist-evento-mes {
+    background: rgba(254, 202, 87, 0.15);
+    color: #feca57;
+    border: 1px solid rgba(254, 202, 87, 0.3);
+}
+
+.pta-historial .pta-hist-evento--correccion_cumplida .pta-hist-evento-tipo,
+.pta-historial .pta-hist-evento--correccion_no_cumplida .pta-hist-evento-tipo {
+    color: #feca57;
+}
+
+/* =========================================================
    GRÁFICA
    ========================================================= */
 
@@ -767,4 +1139,835 @@
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
+}
+
+/* =========================================================
+   HISTORIAL — NUEVO MODELO (v2)
+   ---------------------------------------------------------
+   El template usa .pta-show en la sección raíz, lo que
+   activa los estilos de show.css para:
+     - .ia-mes-show, .ia-meses-show (valores indicador)
+     - .ac-mes-pill-show, .ac-cumplimiento-show (acciones)
+   Estas clases solo necesitan el parent .pta-show.
+
+   A continuación los estilos propios del historial que
+   NO están en show.css.
+   ========================================================= */
+
+/* Sub-sección dentro del card indicador */
+.pta-historial .pta-hist-subseccion {
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(13, 202, 240, 0.12);
+}
+
+/* Etiqueta de sub-sección — igual que pta-acc-section-label */
+.pta-historial .pta-hist-subseccion-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #9fb3c8;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.pta-historial .pta-hist-subseccion-label i {
+    color: #0dcaf0;
+    font-size: 0.9rem;
+}
+
+/* Mensaje "vacío" */
+.pta-historial .pta-hist-empty {
+    color: #9fb3c8;
+    font-size: 0.88rem;
+    opacity: 0.7;
+}
+
+/* =========================================================
+   EXTENSIONES SOBRE ia-mes-show (valores del indicador)
+   ========================================================= */
+
+/* Wrapper para agregar contenido extra debajo del valor */
+.pta-historial .pta-hist-mes-valor-wrap {
+    min-height: 90px;
+    justify-content: center;
+}
+
+/* Icono ⚠ sin dato */
+.pta-historial .pta-hist-sin-registro {
+    color: rgba(254, 202, 87, 0.7) !important;
+    font-size: 1.1rem !important;
+}
+
+/* Etiqueta de estado debajo del valor */
+.pta-historial .pta-hist-estado-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-top: -2px;
+}
+
+.pta-historial .pta-hist-estado--sin-registro {
+    color: rgba(254, 202, 87, 0.65);
+}
+
+/* Mini-eventos dentro de un mes del indicador */
+.pta-historial .pta-hist-eventos-mes {
+    width: 100%;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.pta-historial .pta-hist-ev {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.68rem;
+}
+
+.pta-historial .pta-hist-ev-tipo {
+    font-weight: 800;
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.pta-historial .pta-hist-ev--captura .pta-hist-ev-tipo      { color: #1dd1a1; }
+.pta-historial .pta-hist-ev--correccion .pta-hist-ev-tipo   { color: #feca57; }
+
+.pta-historial .pta-hist-ev-fecha {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.65rem;
+}
+
+.pta-historial .pta-hist-ev-motivo {
+    font-size: 0.68rem;
+    color: #ffeaa7;
+    font-style: italic;
+    background: rgba(254, 202, 87, 0.08);
+    border-left: 2px solid rgba(254, 202, 87, 0.4);
+    padding: 3px 6px;
+    border-radius: 0 4px 4px 0;
+    width: 100%;
+    text-align: left;
+}
+
+/* =========================================================
+   ACCIONES — CARD BLOQUE + PILL CRÍTICO + TIMELINE
+   ========================================================= */
+
+/* Bloque de una acción dentro del historial */
+.pta-historial .pta-hist-accion-bloque {
+    background: rgba(18, 27, 36, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    backdrop-filter: blur(8px);
+}
+
+.pta-historial .pta-hist-accion-bloque:last-child {
+    margin-bottom: 0;
+}
+
+/* Título de la acción */
+.pta-historial .pta-hist-accion-titulo {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #c8d8e8;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.4;
+}
+
+.pta-historial .pta-hist-accion-titulo i {
+    color: #0dcaf0;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+/* Pill crítico — estado atraso_critico (extensión de ac-mes-pill-show) */
+.pta-historial .ac-cumplimiento-show .pta-hist-pill-critico {
+    background: rgba(220, 53, 69, 0.15) !important;
+    border-color: rgba(220, 53, 69, 0.5) !important;
+    border-style: dashed !important;
+    box-shadow: none !important;
+    color: #ff6b6b !important;
+}
+
+.pta-historial .ac-cumplimiento-show .pta-hist-pill-critico .ac-mes-nombre {
+    color: rgba(255, 107, 107, 0.65) !important;
+}
+
+.pta-historial .ac-cumplimiento-show .pta-hist-pill-critico .ac-mes-estado {
+    color: #ff6b6b !important;
+}
+
+/* =========================================================
+   TIMELINE — eventos con motivo debajo del grid de pills
+   ========================================================= */
+
+.pta-historial .pta-hist-timeline {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pta-historial .pta-hist-timeline-item {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.8rem;
+}
+
+/* Chip del mes */
+.pta-historial .pta-hist-tl-mes {
+    font-size: 0.68rem;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    background: rgba(13, 202, 240, 0.12);
+    border: 1px solid rgba(13, 202, 240, 0.3);
+    color: #0dcaf0;
+}
+
+/* Tipo de evento */
+.pta-historial .pta-hist-tl-tipo {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Colores por tipo */
+.pta-historial .pta-hist-tl--captura_cumplida .pta-hist-tl-tipo       { color: #1dd1a1; }
+.pta-historial .pta-hist-tl--captura_no_cumplida .pta-hist-tl-tipo    { color: #ff6b6b; }
+.pta-historial .pta-hist-tl--correccion_cumplida .pta-hist-tl-tipo    { color: #feca57; }
+.pta-historial .pta-hist-tl--correccion_no_cumplida .pta-hist-tl-tipo { color: #feca57; }
+
+.pta-historial .pta-hist-tl-fecha {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.72rem;
+    white-space: nowrap;
+}
+
+.pta-historial .pta-hist-tl-motivo {
+    flex: 1;
+    min-width: 0;
+    color: #ffeaa7;
+    font-style: italic;
+    font-size: 0.8rem;
+    word-break: break-word;
+}
+
+/* =========================================================
+   BADGE DE PORCENTAJE EN EL HEADER DEL INDICADOR
+   ========================================================= */
+
+.pta-historial .pta-hist-pct-badge {
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+}
+
+.pta-hist-pct--ok  { background: rgba(29,209,161,.15); color: #1dd1a1; border: 1px solid rgba(29,209,161,.3); }
+.pta-hist-pct--mid { background: rgba(254,202,87,.15);  color: #feca57; border: 1px solid rgba(254,202,87,.3); }
+.pta-hist-pct--low { background: rgba(255,107,107,.15); color: #ff6b6b; border: 1px solid rgba(255,107,107,.3); }
+
+/* =========================================================
+   HISTORIAL — DISEÑO v3 (STAT CARDS + TIMELINE)
+   ---------------------------------------------------------
+   Diseño inspirado en patrones de activity feed y stat cards.
+   Variables propias para no depender del árbol de selectores.
+   ========================================================= */
+
+/* ─────────────────────────────────────────────────────────
+   BARRA DE PROGRESO (Base → valor actual → Meta)
+   ───────────────────────────────────────────────────────── */
+
+.pta-historial .pta-hist-progreso-barra {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.pta-historial .pta-hist-prog-label {
+    font-size: 0.75rem;
+    color: #9fb3c8;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.pta-historial .pta-hist-prog-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.pta-historial .pta-hist-prog-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pta-hist-prog--ok  { background: linear-gradient(90deg, #1dd1a1, #00d2d3); box-shadow: 0 0 8px rgba(29,209,161,.5); }
+.pta-hist-prog--mid { background: linear-gradient(90deg, #feca57, #ff9f43); box-shadow: 0 0 8px rgba(254,202,87,.4); }
+.pta-hist-prog--low { background: linear-gradient(90deg, #ff6b6b, #ee5a24); box-shadow: 0 0 8px rgba(255,107,107,.4); }
+
+/* ─────────────────────────────────────────────────────────
+   STAT CARDS — VALORES MENSUALES DEL INDICADOR
+   ─────────────────────────────────────────────────────────
+   Basadas en el patrón: layered box-shadow + glow.
+   Mínimo 3 por fila, máximo 6, auto-fit.
+   ───────────────────────────────────────────────────────── */
+
+.pta-historial .pta-hist-valores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 14px;
+}
+
+/* Card base */
+.pta-historial .pta-hist-val-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 12px 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(12, 20, 30, 0.9);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+    /* Layered shadow — patrón de stat cards premium */
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.pta-historial .pta-hist-val-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Nombre del mes */
+.pta-historial .pta-hist-val-mes {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: rgba(159, 179, 200, 0.6);
+    line-height: 1;
+}
+
+/* Número grande (valor snapshot) */
+.pta-historial .pta-hist-val-numero {
+    font-size: 1.9rem;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    color: #0dcaf0;
+    line-height: 1;
+    letter-spacing: -1px;
+
+    /* Gradient text */
+    background: linear-gradient(135deg, #0dcaf0 0%, #74b9ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.pta-historial .pta-hist-val-numero--vacio {
+    background: none;
+    -webkit-text-fill-color: rgba(255, 255, 255, 0.2);
+    font-size: 1.4rem;
+}
+
+/* Chip de estado arriba del card */
+.pta-historial .pta-hist-val-estado {
+    width: 100%;
+}
+
+.pta-historial .pta-hist-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+
+.pta-historial .pta-hist-chip--registrado {
+    background: rgba(29, 209, 161, 0.15);
+    border: 1px solid rgba(29, 209, 161, 0.35);
+    color: #1dd1a1;
+}
+
+.pta-historial .pta-hist-chip--sin-registro {
+    background: rgba(254, 202, 87, 0.15);
+    border: 1px solid rgba(254, 202, 87, 0.35);
+    color: #feca57;
+}
+
+.pta-historial .pta-hist-chip--pendiente {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.35);
+}
+
+/* Estado REGISTRADO — cyan glow */
+.pta-historial .pta-hist-val-card--registrado {
+    border-color: rgba(13, 202, 240, 0.35);
+    background: rgba(13, 202, 240, 0.07);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.12),
+        0 0 20px rgba(13, 202, 240, 0.15),
+        0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.pta-historial .pta-hist-val-card--registrado .pta-hist-val-mes {
+    color: rgba(13, 202, 240, 0.6);
+}
+
+.pta-historial .pta-hist-val-card--registrado:hover {
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.25),
+        0 0 30px rgba(13, 202, 240, 0.25),
+        0 12px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* Estado SIN_REGISTRO — ámbar */
+.pta-historial .pta-hist-val-card--sin_registro {
+    border-color: rgba(254, 202, 87, 0.3);
+    border-style: dashed;
+    background: rgba(254, 202, 87, 0.05);
+}
+
+.pta-historial .pta-hist-val-card--sin_registro .pta-hist-val-mes {
+    color: rgba(254, 202, 87, 0.6);
+}
+
+.pta-historial .pta-hist-val-card--sin_registro .pta-hist-val-numero {
+    background: none;
+    -webkit-text-fill-color: rgba(254, 202, 87, 0.5);
+    font-size: 1.4rem;
+}
+
+/* Estado PENDIENTE — gris, opaco */
+.pta-historial .pta-hist-val-card--pendiente {
+    opacity: 0.42;
+    border-style: dashed;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: none;
+}
+
+/* Mini eventos dentro del card de valor */
+.pta-historial .pta-hist-val-eventos {
+    width: 100%;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pta-historial .pta-hist-val-ev {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    text-align: left;
+}
+
+.pta-historial .pta-hist-val-ev-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.pta-historial .pta-hist-val-ev-tipo {
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.pta-historial .pta-hist-val-ev--captura .pta-hist-val-ev-tipo,
+.pta-historial .pta-hist-val-ev--captura_cumplida .pta-hist-val-ev-tipo,
+.pta-historial .pta-hist-val-ev--captura_no_cumplida .pta-hist-val-ev-tipo {
+    color: #1dd1a1;
+}
+
+.pta-historial .pta-hist-val-ev--correccion .pta-hist-val-ev-tipo,
+.pta-historial .pta-hist-val-ev--correccion_cumplida .pta-hist-val-ev-tipo,
+.pta-historial .pta-hist-val-ev--correccion_no_cumplida .pta-hist-val-ev-tipo {
+    color: #feca57;
+}
+
+.pta-historial .pta-hist-val-ev-fecha {
+    font-size: 0.62rem;
+    color: rgba(255, 255, 255, 0.35);
+    margin-left: auto;
+}
+
+.pta-historial .pta-hist-val-ev-motivo {
+    font-size: 0.7rem;
+    color: #ffeaa7;
+    font-style: italic;
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    line-height: 1.35;
+}
+
+.pta-historial .pta-hist-val-ev-motivo i {
+    flex-shrink: 0;
+    margin-top: 2px;
+    opacity: 0.7;
+}
+
+/* ─────────────────────────────────────────────────────────
+   ACCIÓN CARD — header con nombre + resumen
+   ───────────────────────────────────────────────────────── */
+
+.pta-historial .pta-hist-accion-bloque {
+    background: rgba(12, 20, 30, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.pta-historial .pta-hist-accion-bloque:last-child {
+    margin-bottom: 0;
+}
+
+/* Header de la acción */
+.pta-historial .pta-hist-accion-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.08),
+        rgba(13, 202, 240, 0.03) 60%
+    );
+    border-bottom: 1px solid rgba(13, 202, 240, 0.12);
+}
+
+.pta-historial .pta-hist-accion-nombre-wrap {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Ícono en círculo */
+.pta-historial .pta-hist-accion-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(13, 202, 240, 0.15);
+    border: 1px solid rgba(13, 202, 240, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #0dcaf0;
+    font-size: 0.85rem;
+}
+
+.pta-historial .pta-hist-accion-titulo {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #c8d8e8;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* Resumen X/Y cumplidas */
+.pta-historial .pta-hist-accion-resumen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.pta-historial .pta-hist-res-num {
+    font-size: 1.1rem;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+}
+
+.pta-hist-res--ok      { color: #1dd1a1; }
+.pta-hist-res--parcial { color: #feca57; }
+.pta-hist-res--cero    { color: #ff6b6b; }
+
+.pta-historial .pta-hist-res-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #9fb3c8;
+}
+
+/* Contenedor pills dentro del bloque acción */
+.pta-historial .pta-hist-pills-wrap {
+    padding: 14px 16px 10px !important;
+}
+
+/* Extensión: pill crítico (atraso sin registro) */
+.pta-historial .ac-cumplimiento-show .pta-hist-pill-critico {
+    background: rgba(220, 53, 69, 0.12) !important;
+    border-color: rgba(220, 53, 69, 0.45) !important;
+    border-style: dashed !important;
+    box-shadow: none !important;
+    color: #ff6b6b !important;
+}
+
+.pta-historial .ac-cumplimiento-show .pta-hist-pill-critico .ac-mes-nombre {
+    color: rgba(255, 107, 107, 0.6) !important;
+}
+
+.pta-historial .ac-cumplimiento-show .pta-hist-pill-critico .ac-mes-estado {
+    color: #ff6b6b !important;
+}
+
+/* ─────────────────────────────────────────────────────────
+   TIMELINE VERTICAL — eventos con motivo
+   ─────────────────────────────────────────────────────────
+   Patrón: línea vertical con ::before, dot con ::before.
+   Basado en el patrón de W3Schools / Flowbite.
+   ───────────────────────────────────────────────────────── */
+
+.pta-historial .pta-hist-timeline {
+    margin: 0;
+    padding: 14px 16px 14px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Etiqueta "Registro de cambios" */
+.pta-historial .pta-hist-tl-header-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: rgba(159, 179, 200, 0.5);
+    margin-bottom: 14px;
+}
+
+.pta-historial .pta-hist-tl-header-label i {
+    color: #0dcaf0;
+}
+
+/* Contenedor de ítems — la línea vertical */
+.pta-historial .pta-hist-tl-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding-bottom: 16px;
+}
+
+/* Línea vertical que conecta los dots */
+.pta-historial .pta-hist-tl-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 20px;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+        to bottom,
+        rgba(13, 202, 240, 0.3),
+        rgba(13, 202, 240, 0.05)
+    );
+}
+
+/* Dot del timeline */
+.pta-historial .pta-hist-tl-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0a1520;
+    border: 2px solid rgba(13, 202, 240, 0.5);
+    box-shadow: 0 0 8px rgba(13, 202, 240, 0.35);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+    margin-top: 2px;
+}
+
+/* Color del dot según tipo de evento */
+.pta-hist-tl-item--captura_cumplida .pta-hist-tl-dot,
+.pta-hist-tl-item--captura .pta-hist-tl-dot {
+    border-color: rgba(29, 209, 161, 0.6);
+    box-shadow: 0 0 8px rgba(29, 209, 161, 0.4);
+}
+
+.pta-hist-tl-item--captura_no_cumplida .pta-hist-tl-dot {
+    border-color: rgba(255, 107, 107, 0.6);
+    box-shadow: 0 0 8px rgba(255, 107, 107, 0.4);
+}
+
+.pta-hist-tl-item--correccion_cumplida .pta-hist-tl-dot,
+.pta-hist-tl-item--correccion_no_cumplida .pta-hist-tl-dot,
+.pta-hist-tl-item--correccion .pta-hist-tl-dot {
+    border-color: rgba(254, 202, 87, 0.6);
+    box-shadow: 0 0 8px rgba(254, 202, 87, 0.35);
+}
+
+/* Contenido del evento */
+.pta-historial .pta-hist-tl-content {
+    flex: 1;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+/* Fila superior: chip mes + tipo + fecha */
+.pta-historial .pta-hist-tl-top {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+/* Chip del mes */
+.pta-historial .pta-hist-tl-mes-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    background: rgba(13, 202, 240, 0.12);
+    border: 1px solid rgba(13, 202, 240, 0.25);
+    color: #0dcaf0;
+    white-space: nowrap;
+}
+
+/* Tipo del evento */
+.pta-historial .pta-hist-tl-tipo {
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.pta-hist-tl-item--captura_cumplida .pta-hist-tl-tipo      { color: #1dd1a1; }
+.pta-hist-tl-item--captura_no_cumplida .pta-hist-tl-tipo   { color: #ff6b6b; }
+.pta-hist-tl-item--correccion_cumplida .pta-hist-tl-tipo   { color: #feca57; }
+.pta-hist-tl-item--correccion_no_cumplida .pta-hist-tl-tipo{ color: #feca57; }
+
+/* Fecha */
+.pta-historial .pta-hist-tl-fecha {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.35);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+}
+
+/* Motivo (cita) */
+.pta-historial .pta-hist-tl-motivo {
+    font-size: 0.82rem;
+    color: #ffeaa7;
+    font-style: italic;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.45;
+    padding: 6px 8px;
+    background: rgba(254, 202, 87, 0.07);
+    border-left: 2px solid rgba(254, 202, 87, 0.4);
+    border-radius: 0 6px 6px 0;
+}
+
+.pta-historial .pta-hist-tl-motivo i {
+    color: rgba(254, 202, 87, 0.6);
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+/* ─────────────────────────────────────────────────────────
+   RESPONSIVE
+   ───────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .pta-historial .pta-hist-valores-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+    }
+
+    .pta-historial .pta-hist-val-numero {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .pta-historial .pta-hist-valores-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .pta-historial .pta-hist-progreso-barra {
+        flex-direction: column;
+        gap: 6px;
+    }
 }
