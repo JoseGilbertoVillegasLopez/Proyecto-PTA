@@ -143,9 +143,23 @@ class IndicadoresType extends AbstractType
                     'Negativa' => 'NEGATIVA',
                 ],
             ])
+            /**
+             * =============================================
+             * META EXPRESADA COMO PORCENTAJE
+             * ---------------------------------------------
+             * El JS convierte este checkbox a un hidden con
+             * value="1" (porcentaje) o value="0" (absoluto).
+             *
+             * false_values es OBLIGATORIO aquí:
+             * Symfony trata cualquier campo presente en POST
+             * como true, incluyendo value="0". Con false_values,
+             * "0" y "" se mapean correctamente a false.
+             * =============================================
+             */
             ->add('esPorcentaje', CheckboxType::class, [
-                'required' => false,
-                'attr'     => ['class' => 'es-porcentaje-hidden'],
+                'required'     => false,
+                'false_values' => ['0', '', false],
+                'attr'         => ['class' => 'es-porcentaje-hidden'],
             ])
 
             /**
@@ -154,15 +168,16 @@ class IndicadoresType extends AbstractType
              * ---------------------------------------------
              * false → captura absoluta (misma unidad que valorBase)
              * true  → captura en porcentaje (0-100)
-             *         aplica cuando el indicador se mide en %
-             *         (ej. eficiencia terminal, satisfacción)
              *
-             * El JS muestra/oculta este campo según esPorcentaje.
+             * Mismo problema que esPorcentaje: necesita false_values.
+             * Además, el campo arranca en "" (vacío = no elegido aún),
+             * que también debe mapearse a false.
              * =============================================
              */
             ->add('capturaEnPorcentaje', CheckboxType::class, [
-                'required' => false,
-                'attr'     => ['class' => 'captura-pct-hidden'],
+                'required'     => false,
+                'false_values' => ['0', '', false],
+                'attr'         => ['class' => 'captura-pct-hidden'],
             ]);
     }
 

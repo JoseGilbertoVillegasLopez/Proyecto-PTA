@@ -477,8 +477,14 @@ initPersonalSearch({
                                     <button type="button" class="btn tipo-btn tipo-pct" title="Porcentaje">%</button>
                                 </div>
                             </div>
-                            <!-- Badge que muestra el modo de captura elegido (actualizado por JS tras el modal) -->
-                            <div class="captura-modo-badge" style="display:none; margin-top:6px;"></div>
+                        </div>
+
+                        <!-- Campo "Tipo de captura" — aparece al lado de Meta cuando esPorcentaje=true -->
+                        <div class="ic-field ic-field--captura">
+                            <label class="ic-label">
+                                <i class="bi bi-pencil-square"></i> Captura
+                            </label>
+                            <div class="captura-modo-badge"></div>
                         </div>
                         <div class="ic-field ic-field--periodo">
                             <label class="ic-label">
@@ -507,26 +513,42 @@ initPersonalSearch({
             const btnPct          = card.querySelector('.tipo-pct');
             const modoBadge       = card.querySelector('.captura-modo-badge');
 
+            // Referencia a la columna ic-field--captura (está en el mismo ic-row-meta)
+            const capturaField = card.querySelector('.ic-field--captura');
+
             /**
-             * Actualiza el badge visual que muestra el modo de captura elegido.
-             * null/false → oculto  |  '0' → "Valor absoluto"  |  '1' → "Porcentaje %"
+             * Muestra u oculta la columna "Captura" en ic-row-meta,
+             * y actualiza el badge con el modo elegido.
+             * La columna solo es visible cuando esPorcentaje=true.
              */
             function actualizarModoBadge() {
                 if (!modoBadge || !hiddenCapturaPct) return;
-                if (hiddenPct?.value !== '1') {
-                    modoBadge.style.display = 'none';
-                    return;
+
+                const esPct = hiddenPct?.value === '1';
+
+                // Mostrar/ocultar la columna completa
+                if (capturaField) {
+                    capturaField.style.display = esPct ? 'block' : 'none';
                 }
-                modoBadge.style.display = 'block';
+
+                if (!esPct) return;
+
+                // Actualizar el contenido del badge
                 if (hiddenCapturaPct.value === '1') {
                     modoBadge.innerHTML = `
                         <span class="captura-badge captura-badge--pct">
-                            <i class="bi bi-percent"></i> Captura mensual: porcentaje (0-100%)
+                            <i class="bi bi-percent"></i> Porcentaje %
                         </span>`;
-                } else {
+                } else if (hiddenCapturaPct.value === '0') {
                     modoBadge.innerHTML = `
                         <span class="captura-badge captura-badge--abs">
-                            <i class="bi bi-123"></i> Captura mensual: valor absoluto
+                            <i class="bi bi-123"></i> Absoluto
+                        </span>`;
+                } else {
+                    // Aún no elegido — mostrar indicación
+                    modoBadge.innerHTML = `
+                        <span class="captura-badge" style="opacity:.5;border-style:dashed;">
+                            <i class="bi bi-question-circle"></i> Sin elegir
                         </span>`;
                 }
             }

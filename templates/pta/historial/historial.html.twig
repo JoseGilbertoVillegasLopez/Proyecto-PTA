@@ -346,7 +346,7 @@
                         <div data-pta-view="graficas" class="pta-chart-wrap">
                             <canvas class="pta-chart"
                                 data-serie='{{ item.grafica.serie|json_encode|raw }}'
-                                data-meta="{{ item.grafica.meta }}"
+                                data-meta="{{ item.grafica.meta_grafica }}"
                                 data-tendencia="{{ item.grafica.tendencia }}"
                                 data-captura-pct="{{ item.grafica.captura_porcentaje is defined and item.grafica.captura_porcentaje ? '1' : '0' }}"
                                 data-valor-base="{{ item.grafica.valor_base ?? 0 }}">

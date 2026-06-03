@@ -79,20 +79,25 @@ class PtaTrimestreCalculoService
 
         foreach ($encabezado->getIndicadores() as $indicador) {
 
-            $indice       = $indicador->getIndice();
-            $valorBase    = (float) ($indicador->getValorBase() ?? 0);
-            $meta         = (float) $indicador->getValor();
-            $tendencia    = strtoupper($indicador->getTendencia());
-            $esPorcentaje = $indicador->isEsPorcentaje();
-            $valorMensual = $indicador->getValorMensual() ?? [];
+            $indice              = $indicador->getIndice();
+            $valorBase           = (float) ($indicador->getValorBase() ?? 0);
+            $meta                = (float) $indicador->getValor();
+            $tendencia           = strtoupper($indicador->getTendencia());
+            $esPorcentaje        = $indicador->isEsPorcentaje();
+            $capturaEnPorcentaje = $indicador->isCapturaEnPorcentaje();
+            $valorMensual        = $indicador->getValorMensual() ?? [];
+
+            // meta_abs para conversión (mismo cálculo que PtaGraficaService)
+            $metaAbsParaConversion = null;
+            if ($esPorcentaje && $capturaEnPorcentaje) {
+                $metaAbsParaConversion = $tendencia === 'POSITIVA'
+                    ? $valorBase + $valorBase * $meta / 100
+                    : $valorBase - $valorBase * $meta / 100;
+            }
 
             /* =====================================================
-             * BUSCAR EL ÚLTIMO VALOR DISPONIBLE
-             * hasta el mes de corte del trimestre (inclusive).
-             *
-             * Se recorren TODOS los meses del año hasta el corte,
-             * no solo los del trimestre. Así, si el trimestre 2
-             * no tiene datos pero el trimestre 1 sí, se usa ese.
+             * BUSCAR EL ÚLTIMO VALOR DISPONIBLE hasta el corte.
+             * Si capturaEnPorcentaje=true, convertir % → absoluto.
              * ===================================================== */
             $ultimoValor = null;
 
@@ -103,7 +108,16 @@ class PtaTrimestreCalculoService
                 }
 
                 if (isset($valorMensual[$nombreMes]) && $valorMensual[$nombreMes] !== null) {
-                    $ultimoValor = (float) $valorMensual[$nombreMes];
+                    $v = (float) $valorMensual[$nombreMes];
+
+                    // Convertir % → absoluto (misma fórmula que PtaGraficaService)
+                    if ($metaAbsParaConversion !== null) {
+                        $v = $tendencia === 'POSITIVA'
+                            ? $valorBase + $valorBase * $v / 100
+                            : $valorBase - $valorBase * $v / 100;
+                    }
+
+                    $ultimoValor = $v;
                 }
             }
 
@@ -120,7 +134,8 @@ class PtaTrimestreCalculoService
                     $meta,
                     $tendencia,
                     $esPorcentaje,
-                    $indicador->isCapturaEnPorcentaje()
+                    $capturaEnPorcentaje,
+                    $metaAbsParaConversion
                 );
             }
 
@@ -143,14 +158,9 @@ class PtaTrimestreCalculoService
     }
 
     /**
-     * Aplica la fórmula de porcentaje de avance según el tipo de indicador.
+     * Aplica la fórmula de porcentaje de avance (misma lógica que PtaGraficaService).
      *
-     * Casos:
-     *   esPorcentaje=false → meta neto: ((actual-base)/(meta-base))×100
-     *   esPorcentaje=true, capturaEnPorcentaje=false → meta=% cambio: ((actual-base)/(base×meta/100))×100
-     *   esPorcentaje=true, capturaEnPorcentaje=true  → meta=% objetivo: ((actual-base)/(meta-base))×100
-     *
-     * Resultado acotado al rango [0, 100].
+     * @param float|null $metaAbs  objetivo absoluto; requerido cuando capturaEnPorcentaje=true
      */
     private function calcularPorcentaje(
         float $ultimoValor,
@@ -158,13 +168,30 @@ class PtaTrimestreCalculoService
         float $meta,
         string $tendencia,
         bool $esPorcentaje,
-        bool $capturaEnPorcentaje = false
+        bool $capturaEnPorcentaje = false,
+        ?float $metaAbs = null
     ): float {
+        // Caso capturaEnPorcentaje=true: valores ya en absoluto
+        // Fórmula: absolute / meta_abs × 100  (POSITIVA)
+        if ($esPorcentaje && $capturaEnPorcentaje && $metaAbs !== null) {
+            if ($tendencia === 'POSITIVA') {
+                $porcentaje = $metaAbs != 0
+                    ? ($ultimoValor / $metaAbs) * 100
+                    : 0.0;
+            } else {
+                $denominador = $valorBase - $metaAbs;
+                $porcentaje  = $denominador != 0
+                    ? (($valorBase - $ultimoValor) / $denominador) * 100
+                    : 0.0;
+            }
+            return (float) max(0, min(100, round($porcentaje, 2)));
+        }
+
         if ($esPorcentaje && !$capturaEnPorcentaje) {
-            // Meta es % de cambio relativo al base (Opción A)
+            // Meta es % de cambio relativo al base
             $denominador = $valorBase * $meta / 100;
         } else {
-            // Meta es valor neto o % objetivo directo
+            // Meta es valor neto absoluto
             $denominador = abs($meta - $valorBase);
         }
 

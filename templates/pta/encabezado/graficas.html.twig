@@ -98,7 +98,7 @@
 				<div class="pta-card__body pta-chart-wrap">
 					<canvas class="pta-chart"
 						data-indicador="{{ grafica.indicador }}"
-						data-meta="{{ grafica.meta }}"
+						data-meta="{{ grafica.meta_grafica }}"
 						data-tendencia="{{ grafica.tendencia }}"
 						data-serie='{{ grafica.serie|json_encode|raw }}'
 						data-captura-pct="{{ grafica.captura_porcentaje is defined and grafica.captura_porcentaje ? '1' : '0' }}"
@@ -106,42 +106,8 @@
 					</canvas>
 				</div>
 
-				{# ================= RESUMEN ACCIONES ================= #}
-				<div class="pta-actions">
-
-					{% for accion in grafica.acciones %}
-
-						{# Porcentaje de cumplimiento: cumplidas/total de la acción #}
-						{% set pctAccion = accion.total > 0 ? (accion.cumplidas / accion.total * 100)|round(1) : 0 %}
-
-						<div class="pta-action-card">
-
-							<div class="pta-action-header">
-								<strong>{{ accion.nombre }}</strong>
-								<span>{{ accion.cumplidas }}/{{ accion.total }} ({{ pctAccion }}%)</span>
-							</div>
-
-							<div class="pta-action-bar">
-								<div class="pta-action-bar-fill" style="width: {{ pctAccion }}%"></div>
-							</div>
-
-							{# Meses: ahora son booleanos (true=cumplida, false=no cumplida, null=pendiente) #}
-							<div class="pta-action-months">
-								{% for mes, cumplida in accion.meses %}
-									<span>
-										<strong>{{ mes|slice(0,3) }}</strong>:
-										{% if cumplida is same as(true) %}✓
-										{% elseif cumplida is same as(false) %}✗
-										{% else %}—{% endif %}
-									</span>
-								{% endfor %}
-							</div>
-
-						</div>
-
-					{% endfor %}
-
-				</div>
+				{# Sección de desglose por acciones eliminada:
+				   el avance ya no se registra por acción sino por indicador #}
 
 			</div>
 
