@@ -49,4 +49,35 @@ class IndicadoresBasicosRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findActivosGroupedByGrupo(): array
+    {
+        $indicadores = $this->createQueryBuilder('i')
+            ->leftJoin('i.grupo', 'g')
+            ->addSelect('g')
+            ->andWhere('i.activo = :activo')
+            ->setParameter('activo', true)
+            ->orderBy('g.id', 'ASC')
+            ->addOrderBy('i.id', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        $grupos = [];
+
+        foreach ($indicadores as $indicador) {
+            $grupo = $indicador->getGrupo();
+            $grupoId = $grupo?->getId() ?? 0;
+
+            if (!isset($grupos[$grupoId])) {
+                $grupos[$grupoId] = [
+                    'nombre' => $grupo?->getGrupo() ?? 'SIN GRUPO',
+                    'indicadores' => [],
+                ];
+            }
+
+            $grupos[$grupoId]['indicadores'][] = $indicador;
+        }
+
+        return array_values($grupos);
+    }
+
 }

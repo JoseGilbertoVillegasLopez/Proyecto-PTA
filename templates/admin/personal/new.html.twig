@@ -31,43 +31,48 @@
 			}
 		}) }}
 
-			<div class="personal-new-group">
-				{{ form_label(form.nombre, null, {'label_attr': {'class': 'personal-new-label'}}) }}
-				{{ form_widget(form.nombre, {'attr': {'class': 'personal-new-input'}}) }}
-				{{ form_errors(form.nombre) }}
+			<div class="personal-new-fields-grid personal-new-fields-grid--identity">
+				<div class="personal-new-group personal-new-group--no-divider">
+					{{ form_label(form.nombre, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+					{{ form_widget(form.nombre, {'attr': {'class': 'personal-new-input'}}) }}
+					{{ form_errors(form.nombre) }}
+				</div>
+
+				<div class="personal-new-group personal-new-group--no-divider">
+					{{ form_label(form.ap_paterno, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+					{{ form_widget(form.ap_paterno, {'attr': {'class': 'personal-new-input'}}) }}
+					{{ form_errors(form.ap_paterno) }}
+				</div>
+
+				<div class="personal-new-group personal-new-group--no-divider">
+					{{ form_label(form.ap_materno, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+					{{ form_widget(form.ap_materno, {'attr': {'class': 'personal-new-input'}}) }}
+					{{ form_errors(form.ap_materno) }}
+				</div>
+
+				<div class="personal-new-group">
+					{{ form_label(form.correo, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+					{{ form_widget(form.correo, {'attr': {'class': 'personal-new-input'}}) }}
+					{{ form_errors(form.correo) }}
+				</div>
 			</div>
 
-			<div class="personal-new-group">
-				{{ form_label(form.ap_paterno, null, {'label_attr': {'class': 'personal-new-label'}}) }}
-				{{ form_widget(form.ap_paterno, {'attr': {'class': 'personal-new-input'}}) }}
-				{{ form_errors(form.ap_paterno) }}
+			<div class="personal-new-fields-grid personal-new-fields-grid--work">
+				<div class="personal-new-group personal-new-group--no-divider">
+					{{ form_label(form.puesto, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+					{{ form_widget(form.puesto, {'attr': {'class': 'personal-new-select'}}) }}
+					{{ form_errors(form.puesto) }}
+				</div>
+
+				<div class="personal-new-group">
+					{{ form_label(form.departamento, null, {'label_attr': {'class': 'personal-new-label'}}) }}
+					{{ form_widget(form.departamento, {'attr': {'class': 'personal-new-select'}}) }}
+					{{ form_errors(form.departamento) }}
+				</div>
 			</div>
 
-			<div class="personal-new-group">
-				{{ form_label(form.ap_materno, null, {'label_attr': {'class': 'personal-new-label'}}) }}
-				{{ form_widget(form.ap_materno, {'attr': {'class': 'personal-new-input'}}) }}
-				{{ form_errors(form.ap_materno) }}
-			</div>
-
-			<div class="personal-new-group">
-				{{ form_label(form.correo, null, {'label_attr': {'class': 'personal-new-label'}}) }}
-				{{ form_widget(form.correo, {'attr': {'class': 'personal-new-input'}}) }}
-				{{ form_errors(form.correo) }}
-			</div>
-
-			<div class="personal-new-group">
-				{{ form_label(form.puesto, null, {'label_attr': {'class': 'personal-new-label'}}) }}
-				{{ form_widget(form.puesto, {'attr': {'class': 'personal-new-select'}}) }}
-				{{ form_errors(form.puesto) }}
-			</div>
-
-			<div class="personal-new-group">
-				{{ form_label(form.departamento, null, {'label_attr': {'class': 'personal-new-label'}}) }}
-				{{ form_widget(form.departamento, {'attr': {'class': 'personal-new-select'}}) }}
-				{{ form_errors(form.departamento) }}
-			</div>
-
-			<div class="personal-new-group personal-new-nombramiento-pdf-validation-group">
+			<div class="personal-new-fields-grid personal-new-fields-grid--nombramiento">
+				<div class="personal-new-group personal-new-group--no-divider personal-new-nombramiento-pdf-validation-group">
 
 				{{ form_label(form.nombramiento_pdf, null, {
 					'label_attr': {
@@ -95,7 +100,7 @@
 			</div>
 
 
-			<div class="personal-new-group personal-new-nombramiento-tipo-validation-group">
+				<div class="personal-new-group personal-new-nombramiento-tipo-validation-group">
 
 				{{ form_label(form.nombramiento_tipo, null, {
 					'label_attr': {
@@ -120,6 +125,7 @@
 					Debes elegir un tipo de nombramiento.
 				</p>
 
+				</div>
 			</div>
 
 			<div class="personal-new-actions">

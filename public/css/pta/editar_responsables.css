@@ -1,302 +1,436 @@
 /* =========================================================
-   PTA — RESPONSABLES
-   AISLADO POR CONTENEDOR .pta-responsables
+   PTA - EDITAR RESPONSABLES
+   Diseño compacto tipo ficha del proyecto
    ========================================================= */
 
-/* =========================================================
-   VARIABLES
-   ========================================================= */
-.pta-responsables {
-    --pta-primary: #0dcaf0;
-    --pta-success: #1dd1a1;
-    --pta-danger: #ff6b6b;
-    --pta-muted: #9fb3c8;
-
-    --pta-bg-main: radial-gradient(circle at top, #0f1c26, #0b1117 60%);
-    --pta-bg-card: #121b23;
-    --pta-bg-card-soft: #16222d;
-
-    --pta-border: rgba(13, 202, 240, 0.25);
-    --pta-border-soft: rgba(13, 202, 240, 0.15);
+.pta-resp-edit-page {
+    width: 100%;
+    min-height: calc(100vh - 90px);
+    padding: 26px 24px 38px;
+    color: #e6f1ff;
 }
 
-/* =========================================================
-   RESET BOOTSTRAP BÁSICO
-   ========================================================= */
-.pta-responsables *,
-.pta-responsables *::before,
-.pta-responsables *::after {
+.pta-resp-edit-page * {
     box-sizing: border-box;
 }
 
-/* =========================================================
-   CARD BASE (MISMO QUE SHOW)
-   ========================================================= */
-.pta-responsables .pta-card {
-    background: radial-gradient(
-        circle at top left,
-        rgba(13, 202, 240, 0.18),
-        rgba(6, 15, 22, 0.96) 55%
-    );
+.pta-resp-edit-shell {
+    width: min(100%, 1180px);
+    margin: 0 auto;
+}
 
-    border-radius: 16px;
-    border: 1px solid var(--pta-border);
-
+.pta-resp-edit-container {
+    width: min(100%, 1260px);
+    margin: 0 auto;
+    padding: 24px 30px 32px;
+    border-radius: 22px;
+    border: 1px solid rgba(13, 202, 240, 0.28);
+    background:
+        radial-gradient(circle at 10% 0%, rgba(13, 202, 240, 0.18), transparent 34%),
+        radial-gradient(circle at 92% 12%, rgba(29, 209, 161, 0.1), transparent 28%),
+        linear-gradient(145deg, rgba(11, 21, 31, 0.98), rgba(4, 9, 15, 0.97));
     box-shadow:
-        inset 0 0 0 1px rgba(13, 202, 240, 0.18),
-        0 18px 46px rgba(0, 0, 0, 0.8);
-
-    padding: 20px;
-    margin-bottom: 24px;
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.06),
+        0 26px 62px rgba(0, 0, 0, 0.78),
+        0 0 38px rgba(13, 202, 240, 0.08);
 }
 
-/* =========================================================
-   TOP BAR
-   ========================================================= */
-.pta-responsables .pta-topbar {
+.pta-resp-edit-topbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
-/* =========================================================
-   BOTÓN VOLVER
-   ========================================================= */
-.pta-responsables .pta-back-btn {
+.pta-resp-edit-back-btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-
-    padding: 8px 16px;
-    border-radius: 12px;
-
-    background: rgba(13, 202, 240, 0.15);
-    color: var(--pta-primary);
+    gap: 7px;
+    min-height: 34px;
+    padding: 7px 13px;
+    border-radius: 8px;
+    color: #63dfff;
+    background: rgba(13, 202, 240, 0.11);
+    border: 1px solid rgba(13, 202, 240, 0.24);
+    font-size: 0.84rem;
+    font-weight: 800;
     text-decoration: none;
-    font-weight: 600;
-
-    border: 1px solid var(--pta-border-soft);
-    transition: all 0.25s ease;
+    transition: background 0.22s ease, border-color 0.22s ease, color 0.22s ease,
+                box-shadow 0.22s ease, transform 0.16s ease;
 }
 
-.pta-responsables .pta-back-btn:hover {
-    background: rgba(13, 202, 240, 0.3);
+.pta-resp-edit-back-btn:hover {
     color: #ffffff;
-    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.35);
+    background: rgba(13, 202, 240, 0.2);
+    border-color: rgba(13, 202, 240, 0.46);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+    transform: translateY(-1px);
 }
 
 /* =========================================================
-   ENCABEZADO DEL PROYECTO (CLON SHOW)
+   Campos del proyecto - estilo show de personal
    ========================================================= */
-.pta-responsables .pta-header-box {
-    background: transparent;
+
+.pta-resp-project-details {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.pta-resp-project-detail {
+    grid-column: span 3;
+    min-width: 0;
+    padding: 15px 16px;
+    border-radius: 14px;
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+    border: 1px solid rgba(13, 202, 240, 0.15);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+        0 8px 20px rgba(0, 0, 0, 0.32);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+.pta-resp-project-detail:hover {
+    transform: translateY(-2px);
+    border-color: rgba(13, 202, 240, 0.45);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.14),
+        0 16px 36px rgba(0, 0, 0, 0.5);
+}
+
+.pta-resp-project-detail--name {
+    grid-column: span 4;
+}
+
+.pta-resp-project-detail--number {
+    grid-column: span 2;
+}
+
+.pta-resp-project-detail--objective {
+    grid-column: 1 / -1;
+}
+
+.pta-resp-project-detail-label,
+.pta-resp-project-detail-value {
+    display: block;
+}
+
+.pta-resp-project-detail-label {
+    margin-bottom: 8px;
+    color: #dbeafe;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+}
+
+.pta-resp-project-detail-value {
+    color: #e6f1ff;
+    font-size: 0.96rem;
+    font-weight: 500;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.pta-resp-project-detail--number .pta-resp-project-detail-value {
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 850;
+}
+
+/* =========================================================
+   Card responsables
+   ========================================================= */
+
+.pta-resp-edit-form {
+    margin: 0;
+}
+
+.pta-resp-card {
+    padding: 20px 22px 22px;
+    border-radius: 14px;
+    border: 1px solid rgba(13, 202, 240, 0.36);
+    background:
+        radial-gradient(circle at top left, rgba(13, 202, 240, 0.14), transparent 34%),
+        linear-gradient(145deg, rgba(9, 22, 31, 0.94), rgba(5, 13, 20, 0.94));
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.055),
+        inset 0 0 0 1px rgba(13, 202, 240, 0.08),
+        0 18px 42px rgba(0, 0, 0, 0.48),
+        0 0 24px rgba(13, 202, 240, 0.06);
+}
+
+.pta-resp-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 20px;
+    color: #f2fbff;
+    font-size: 1.08rem;
+    font-weight: 900;
+    line-height: 1.2;
+}
+
+.pta-resp-card-title i {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    color: #9feaff;
+    background: rgba(13, 202, 240, 0.13);
+    border: 1px solid rgba(13, 202, 240, 0.25);
+    font-size: 1rem;
+}
+
+.pta-resp-fields {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.pta-resp-field {
+    min-width: 0;
+}
+
+.pta-resp-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #aeefff;
+    font-size: 0.74rem;
+    font-weight: 850;
+    letter-spacing: 0.2px;
+}
+
+.pta-resp-input-wrap {
+    position: relative;
+}
+
+.pta-resp-input-wrap input[type="text"] {
+    width: 100%;
+    height: 38px;
+    padding: 8px 12px;
+    border-radius: 7px;
+    border: 1px solid rgba(13, 202, 240, 0.24);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.04));
+    color: #f8fbff;
+    font-size: 0.82rem;
+    font-weight: 650;
+    line-height: 1.2;
+    outline: none;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.035),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.22);
+    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pta-resp-input-wrap input[type="text"]:focus {
+    border-color: rgba(13, 202, 240, 0.82);
+    background: rgba(13, 202, 240, 0.095);
+    box-shadow:
+        0 0 0 3px rgba(13, 202, 240, 0.16),
+        0 8px 20px rgba(13, 202, 240, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.045);
+}
+
+.pta-resp-input-wrap input[type="text"]::placeholder {
+    color: rgba(169, 223, 241, 0.62);
+}
+
+.pta-resp-input-wrap .search-results {
+    position: absolute;
+    top: calc(100% + 7px);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    max-height: 230px;
+    overflow-y: auto;
+    padding: 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(13, 202, 240, 0.32);
+    background: linear-gradient(145deg, #0d1923, #070d13);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+        0 18px 36px rgba(0, 0, 0, 0.72);
+}
+
+.pta-resp-input-wrap .search-results:empty {
+    display: none;
+}
+
+.pta-resp-input-wrap .search-results div,
+.pta-resp-input-wrap .search-results .search-item {
+    padding: 9px 10px;
+    border-radius: 6px;
+    color: #e6f1ff;
+    cursor: pointer;
+    font-size: 0.84rem;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.pta-resp-input-wrap .search-results div:hover,
+.pta-resp-input-wrap .search-results .search-item:hover {
+    color: #ffffff;
+    background: rgba(13, 202, 240, 0.16);
+}
+
+.pta-resp-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 26px;
+}
+
+.pta-resp-save-btn,
+.pta-resp-cancel-btn {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 24px;
+    border-radius: 9px;
+    font-size: 0.78rem;
+    font-weight: 850;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease,
+                box-shadow 0.2s ease, transform 0.14s ease;
+}
+
+.pta-resp-save-btn {
+    min-width: 235px;
+    color: #eaf9ff;
+    background: linear-gradient(180deg, #1478ee, #0755bf);
+    border: 1px solid rgba(60, 156, 255, 0.55);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.13),
+        0 12px 26px rgba(0, 73, 170, 0.38),
+        0 0 20px rgba(13, 102, 212, 0.14);
+}
+
+.pta-resp-save-btn:hover {
+    color: #ffffff;
+    background: linear-gradient(180deg, #1677ee, #075ed2);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 12px 26px rgba(0, 89, 210, 0.42);
+    transform: translateY(-1px);
+}
+
+.pta-resp-cancel-btn {
+    min-width: 120px;
+    color: #9feaff;
+    background: rgba(13, 202, 240, 0.1);
+    border: 1px solid rgba(13, 202, 240, 0.25);
+}
+
+.pta-resp-cancel-btn:hover {
+    color: #ffffff;
+    background: rgba(13, 202, 240, 0.2);
+}
+
+/* =========================================================
+   Modal
+   ========================================================= */
+
+.pta-resp-modal {
+    color: #e6f1ff;
+    border-radius: 12px;
+    border: 1px solid rgba(13, 202, 240, 0.34);
+    background: linear-gradient(145deg, #0d171f, #070c12);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.035),
+        0 22px 54px rgba(0, 0, 0, 0.82);
+}
+
+.pta-resp-modal .modal-header,
+.pta-resp-modal .modal-footer {
+    border-color: rgba(13, 202, 240, 0.16);
+}
+
+.pta-resp-modal .modal-title {
+    color: #9feaff;
+    font-weight: 900;
+}
+
+.pta-resp-modal .modal-title i {
+    margin-right: 8px;
+}
+
+.pta-resp-modal-note {
+    margin: 0 0 14px;
+    padding: 10px 12px;
+    border-radius: 7px;
+    color: #d7e2ea;
+    background: rgba(13, 202, 240, 0.08);
+    border: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+.pta-resp-change-list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
     padding: 0;
 }
 
-/* FILAS */
-.pta-responsables .pta-header-row {
-    display: flex;
-    border-bottom: 1px solid var(--pta-border-soft);
+.pta-resp-change-list .list-group-item {
+    padding: 12px 14px !important;
+    border-radius: 8px !important;
+    color: #e6f1ff !important;
+    background: rgba(255, 255, 255, 0.055) !important;
+    border: 1px solid rgba(13, 202, 240, 0.17) !important;
 }
 
-/* LABEL */
-.pta-responsables .pta-header-label,
-.pta-responsables .pta-header-objetivo-label {
-    background: linear-gradient(
-        145deg,
-        rgba(10, 35, 65, 0.95),
-        rgba(6, 25, 45, 0.9)
-    );
-
-    color: var(--pta-primary);
-    font-weight: 700;
-    letter-spacing: 0.6px;
-    padding: 12px 16px;
-    min-width: 220px;
-    text-transform: uppercase;
+.pta-resp-change-list .text-info {
+    color: #63dfff !important;
 }
 
-/* VALUE */
-.pta-responsables .pta-header-value,
-.pta-responsables .pta-header-objetivo-value {
-    flex: 1;
-    padding: 14px 18px;
-
-    background: linear-gradient(
-        145deg,
-        rgba(18, 27, 35, 0.95),
-        rgba(10, 16, 22, 0.9)
-    );
-
-    color: #ffffff;
-    line-height: 1.5;
+.pta-resp-change-list .text-secondary {
+    color: #9fb3c8 !important;
 }
 
-/* SEGUNDA FILA */
-.pta-responsables .pta-header-col-numero {
-    display: flex;
-    width: 220px;
+@media (max-width: 900px) {
+    .pta-resp-edit-container {
+        padding: 22px;
+    }
+
+    .pta-resp-project-details,
+    .pta-resp-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .pta-resp-project-detail,
+    .pta-resp-project-detail--number,
+    .pta-resp-project-detail--objective {
+        grid-column: auto;
+    }
 }
 
-.pta-responsables .pta-header-col-numero .pta-header-value {
-    text-align: center;
-    font-size: 1.3rem;
-    font-weight: 700;
-}
+@media (max-width: 560px) {
+    .pta-resp-edit-page {
+        padding: 16px 14px 28px;
+    }
 
-.pta-responsables .pta-header-col-objetivo {
-    display: flex;
-    flex: 1;
-}
+    .pta-resp-edit-container {
+        padding: 16px;
+        border-radius: 14px;
+    }
 
-/* =========================================================
-   TITULOS
-   ========================================================= */
-.pta-responsables .pta-title {
-    color: #ffffff;
-    font-size: 1.05rem;
-    font-weight: 700;
+    .pta-resp-card {
+        padding: 16px;
+    }
 
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    margin-bottom: 12px;
-}
-
-.pta-responsables .pta-title i {
-    color: var(--pta-primary);
-}
-
-/* =========================================================
-   FORMULARIO RESPONSABLES
-   ========================================================= */
-.pta-responsables form {
-    width: 100%;
-}
-
-.pta-responsables .pta-form-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-/* LABELS */
-.pta-responsables label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--pta-primary);
-    text-transform: uppercase;
-}
-
-/* INPUTS */
-.pta-responsables input[type="text"] {
-    width: 100%;
-    padding: 12px 14px;
-    border-radius: 12px;
-
-    background: linear-gradient(
-        145deg,
-        rgba(18, 27, 35, 0.95),
-        rgba(10, 16, 22, 0.9)
-    );
-
-    border: 1px solid var(--pta-border-soft);
-    color: #ffffff;
-
-    font-size: 0.95rem;
-}
-
-.pta-responsables input[type="text"]:focus {
-    outline: none;
-    border-color: var(--pta-primary);
-    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.35);
-}
-
-/* =========================================================
-   SEARCH RESULTS (AUTOCOMPLETE)
-   ========================================================= */
-.pta-responsables .search-results {
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-
-    background: #0b1117;
-    border-radius: 12px;
-    border: 1px solid var(--pta-border-soft);
-
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.9);
-    z-index: 10;
-    overflow: hidden;
-}
-
-.pta-responsables .search-results div {
-    padding: 10px 14px;
-    cursor: pointer;
-    color: #ffffff;
-}
-
-.pta-responsables .search-results div:hover {
-    background: rgba(13, 202, 240, 0.18);
-}
-
-/* =========================================================
-   BOTÓN GUARDAR
-   ========================================================= */
-.pta-responsables .pta-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 28px;
-}
-
-.pta-responsables button#btn-confirmar {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-
-    padding: 12px 36px;
-    border-radius: 999px;
-
-    background: linear-gradient(
-        145deg,
-        rgba(13, 202, 240, 0.35),
-        rgba(13, 202, 240, 0.18)
-    );
-
-    color: #ffffff;
-    font-size: 1rem;
-    font-weight: 700;
-
-    border: 1px solid var(--pta-border);
-    cursor: pointer;
-
-    transition: all 0.25s ease;
-}
-
-.pta-responsables button#btn-confirmar:hover {
-    background: rgba(13, 202, 240, 0.45);
-    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.35);
-}
-
-/* =========================================================
-   MODAL CONFIRMACIÓN
-   ========================================================= */
-.pta-responsables .modal-content {
-    background: #0b1117;
-    border-radius: 16px;
-    border: 1px solid var(--pta-border);
-    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.9);
-}
-
-.pta-responsables .modal-title {
-    color: var(--pta-primary);
-    font-weight: 700;
-}
-
-.pta-responsables .modal-footer button {
-    border-radius: 12px;
+    .pta-resp-save-btn {
+        width: 100%;
+    }
 }

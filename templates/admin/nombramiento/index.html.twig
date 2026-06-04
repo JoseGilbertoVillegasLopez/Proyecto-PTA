@@ -111,8 +111,8 @@
 							<td>{{ nombramiento.personal.departamento.nombre }}</td>
 							<td>{{ nombramiento.personal.puesto.nombre }}</td>
 							<td>{{ nombramiento.tipo }}</td>
-							<td>{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}</td>
-							<td>{{ nombramiento.fechaDesactivacion ? nombramiento.fechaDesactivacion|date('d/m/Y H:i') : '-' }}</td>
+							<td>{{ nombramiento.fechaSubida|date('d/m/Y') }}</td>
+							<td>{{ nombramiento.fechaDesactivacion ? nombramiento.fechaDesactivacion|date('d/m/Y') : '-' }}</td>
 							<td>
 								<span class="nombramiento-historial__badge {{ nombramiento.activo ? 'nombramiento-historial__badge--active' : 'nombramiento-historial__badge--inactive' }}">
 									{{ nombramiento.activo ? 'Activo' : 'Inactivo' }}
@@ -125,7 +125,7 @@
 									   data-pdf-url="{{ asset('uploads/nombramientos/' ~ nombramiento.archivo) }}"
 									   data-pdf-name="{{ nombramiento.nombreOriginal }}"
 									   data-pdf-tipo="{{ nombramiento.tipo }}"
-									   data-pdf-fecha="{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}"
+									   data-pdf-fecha="{{ nombramiento.fechaSubida|date('d/m/Y') }}"
 									   title="Ver PDF">
 										<i class="bi bi-file-earmark-pdf-fill"></i>
 									</button>

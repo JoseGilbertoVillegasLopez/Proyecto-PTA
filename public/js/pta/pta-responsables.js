@@ -94,10 +94,10 @@ function bootPtaResponsables(context) {
     const modal = new bootstrap.Modal(modalEl);
 
     const lista = context.querySelector("#lista-cambios");
-    const btnConfirmar = context.querySelector("#btn-confirmar");
+    const botonesConfirmar = context.querySelectorAll(".js-confirmar-responsables, #btn-confirmar");
     const btnGuardarFinal = context.querySelector("#btn-guardar-final");
 
-    if (!lista || !btnConfirmar || !btnGuardarFinal) return;
+    if (!lista || botonesConfirmar.length === 0 || !btnGuardarFinal) return;
 
     const fields = [
         { label: "Responsable del proyecto", hidden: "responsable_id", input: ".responsable-search" },
@@ -114,7 +114,7 @@ function bootPtaResponsables(context) {
         };
     });
 
-    btnConfirmar.addEventListener("click", () => {
+    const abrirConfirmacion = () => {
 
         lista.innerHTML = "";
         let hayCambios = false;
@@ -179,6 +179,10 @@ function bootPtaResponsables(context) {
         }
 
         modal.show();
+    };
+
+    botonesConfirmar.forEach((btn) => {
+        btn.addEventListener("click", abrirConfirmacion);
     });
 
     btnGuardarFinal.addEventListener("click", () => {

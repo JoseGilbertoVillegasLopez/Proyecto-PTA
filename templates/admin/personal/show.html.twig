@@ -30,49 +30,45 @@
 
 		</header>
 
-		<div class="personal-show-table-wrapper">
-			<table class="personal-show-table">
-				<tbody>
-					<tr>
-						<th>Nombre</th>
-						<td>{{ personal.nombre }}</td>
-					</tr>
+		<div class="personal-show-details">
+			<div class="personal-show-detail">
+				<span class="personal-show-detail-label">Nombre</span>
+				<span class="personal-show-detail-value">{{ personal.nombre }}</span>
+			</div>
 
-					<tr>
-						<th>Apellido paterno</th>
-						<td>{{ personal.apPaterno }}</td>
-					</tr>
+			<div class="personal-show-detail">
+				<span class="personal-show-detail-label">Apellido paterno</span>
+				<span class="personal-show-detail-value">{{ personal.apPaterno }}</span>
+			</div>
 
-					<tr>
-						<th>Apellido materno</th>
-						<td>{{ personal.apMaterno }}</td>
-					</tr>
+			<div class="personal-show-detail">
+				<span class="personal-show-detail-label">Apellido materno</span>
+				<span class="personal-show-detail-value">{{ personal.apMaterno }}</span>
+			</div>
 
-					<tr>
-						<th>Correo</th>
-						<td>{{ personal.correo }}</td>
-					</tr>
+			<div class="personal-show-detail">
+				<span class="personal-show-detail-label">Correo</span>
+				<span class="personal-show-detail-value">{{ personal.correo }}</span>
+			</div>
 
-					<tr>
-						<th>Puesto</th>
-						<td>{{ personal.puesto.nombre }}</td>
-					</tr>
+			<div class="personal-show-detail">
+				<span class="personal-show-detail-label">Puesto</span>
+				<span class="personal-show-detail-value">{{ personal.puesto.nombre }}</span>
+			</div>
 
-					<tr>
-						<th>Departamento</th>
-						<td>{{ personal.departamento.nombre }}</td>
-					</tr>
+			<div class="personal-show-detail">
+				<span class="personal-show-detail-label">Departamento</span>
+				<span class="personal-show-detail-value">{{ personal.departamento.nombre }}</span>
+			</div>
 
-					<tr>
-						<th>Estado</th>
-						<td>
-							<span class="personal-show-status-badge {{ personal.activo ? 'personal-show-status-badge--active' : 'personal-show-status-badge--inactive' }}">
-								{{ personal.activo ? 'Activo' : 'Inactivo' }}
-							</span>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="personal-show-detail">
+				<span class="personal-show-detail-label">Estado</span>
+				<span class="personal-show-detail-value">
+					<span class="personal-show-status-badge {{ personal.activo ? 'personal-show-status-badge--active' : 'personal-show-status-badge--inactive' }}">
+						{{ personal.activo ? 'Activo' : 'Inactivo' }}
+					</span>
+				</span>
+			</div>
 		</div>
 
 		<section class="personal-nombramientos-card personal-show-nombramientos-card">
@@ -110,7 +106,7 @@
 									data-pdf-url="{{ nombramientoUrl }}"
 									data-pdf-name="{{ nombramiento.nombreOriginal }}"
 									data-pdf-tipo="{{ nombramiento.tipo }}"
-									data-pdf-fecha="{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}"
+									data-pdf-fecha="{{ nombramiento.fechaSubida|date('d/m/Y') }}"
 									aria-label="Ver dictamen {{ nombramiento.nombreOriginal }}">
 
 								<iframe src="{{ nombramientoUrl }}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH"
@@ -132,7 +128,7 @@
 									{{ nombramiento.tipo }}
 									<br>
 									Subido:
-									{{ nombramiento.fechaSubida|date('d/m/Y H:i') }}
+									{{ nombramiento.fechaSubida|date('d/m/Y') }}
 								</small>
 
 							</div>

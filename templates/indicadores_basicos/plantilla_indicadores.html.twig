@@ -1,0 +1,116 @@
+<turbo-frame id="content">
+	<section class="plantilla-indicadores-card" data-page="plantilla-indicadores">
+		<header class="plantilla-indicadores-header">
+			<a href="{{ path('app_indicadores_basicos_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="plantilla-indicadores-back-btn" title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<div class="plantilla-indicadores-header__center">
+				<h4 class="plantilla-indicadores-title">
+					<i class="bi bi-clipboard2-data-fill"></i>
+					Plantilla de indicadores
+				</h4>
+			</div>
+
+			<div class="plantilla-indicadores-header__actions">
+				{% if can_edit_plantilla %}
+					<a href="{{ path('app_indicadores_basicos_plantilla_indicadores_edit') }}" data-turbo-frame="content" data-turbo-action="advance" class="plantilla-indicadores-action-btn" title="Editar plantilla">
+						<i class="bi bi-pencil-square"></i>
+					</a>
+				{% endif %}
+			</div>
+		</header>
+
+		<form method="get" action="{{ path('app_indicadores_basicos_plantilla_indicadores') }}" data-turbo-frame="content" class="plantilla-indicadores-cycle-form">
+		<div class="plantilla-indicadores-table-wrapper">
+			<table class="plantilla-indicadores-table">
+				<thead>
+					<tr>
+						<th colspan="9" class="plantilla-indicadores-institution">
+							Instituto Tecnol&oacute;gico Superior de Cosamaloapan
+						</th>
+					</tr>
+					<tr>
+						<th class="plantilla-indicadores-col-indicador">Indicador</th>
+						{% for ciclo in ciclos %}
+							<th>Cantidad</th>
+							<th>
+								<span>%Ciclo</span>
+								{% if loop.index < 3 %}
+									<select name="ciclo_{{ loop.index }}" class="plantilla-indicadores-cycle-select" title="Seleccionar ciclo" onchange="this.form.requestSubmit()">
+										{% for cicloDisponible in ciclos_disponibles %}
+											<option value="{{ cicloDisponible.id }}" {{ cicloDisponible.id == ciclo.id ? 'selected' : '' }}>
+												{{ cicloDisponible.nombre }}
+											</option>
+										{% endfor %}
+									</select>
+								{% else %}
+									<span class="plantilla-indicadores-cycle-label">{{ ciclo.nombre }}</span>
+								{% endif %}
+							</th>
+						{% endfor %}
+						<th>Media estatal</th>
+						<th>Media nacional</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for grupo in grupos_indicadores %}
+						<tr class="plantilla-indicadores-group-row">
+							<td colspan="9">{{ grupo.nombre }}</td>
+						</tr>
+
+						{% for indicador in grupo.indicadores %}
+							{% set indicadorValores = valores[indicador.id] ?? {} %}
+							{% set indicadorMedia = medias[indicador.id] ?? null %}
+							{% set indicadorCambios = recent_changes[indicador.id] ?? {} %}
+							{% set indicadorSemaforo = semaforo_colores[indicador.id] ?? {} %}
+							<tr class="plantilla-indicadores-data-row">
+								<td rowspan="2" class="plantilla-indicadores-name">
+									{{ indicador.nombreIndicador }}
+								</td>
+								{% for ciclo in ciclos %}
+									{% set cicloValor = indicadorValores[ciclo.id] ?? null %}
+									{% set cicloCambios = indicadorCambios[ciclo.id] ?? {} %}
+									{% set resultadoCiclo = cicloValor and cicloValor.resultadoCiclo is not null ? cicloValor.resultadoCiclo : null %}
+									{% if resultadoCiclo is null and cicloValor and cicloValor.cantidad1 is not null and cicloValor.cantidad2 is not null and cicloValor.cantidad1 + 0 == 0 and cicloValor.cantidad2 + 0 == 0 %}
+										{% set resultadoCiclo = '0.00' %}
+									{% endif %}
+									<td class="plantilla-indicadores-value-cell {{ cicloCambios.cantidad1 is defined ? 'plantilla-indicadores-cell--recent' : '' }}">
+										{{ cicloValor and cicloValor.cantidad1 is not null ? cicloValor.cantidad1|number_format(0, '.', '') : '' }}
+									</td>
+									{% set colorSemaforo = indicadorSemaforo[ciclo.id] ?? null %}
+									<td rowspan="2" class="plantilla-indicadores-value-cell plantilla-indicadores-result-cell {{ colorSemaforo ? 'plantilla-indicadores-result-cell--' ~ colorSemaforo : '' }} {{ cicloCambios.resultado is defined ? 'plantilla-indicadores-cell--recent' : '' }}">
+										{{ resultadoCiclo is not null ? resultadoCiclo ~ '%' : '' }}
+									</td>
+								{% endfor %}
+								{% set mediaCambios = indicadorCambios.media ?? {} %}
+								<td rowspan="2" class="plantilla-indicadores-value-cell plantilla-indicadores-media-cell {{ mediaCambios.estatal is defined ? 'plantilla-indicadores-cell--recent' : '' }}">
+									{{ indicadorMedia ? indicadorMedia.mediaEstatal : '' }}
+								</td>
+								<td rowspan="2" class="plantilla-indicadores-value-cell plantilla-indicadores-media-cell {{ mediaCambios.nacional is defined ? 'plantilla-indicadores-cell--recent' : '' }}">
+									{{ indicadorMedia ? indicadorMedia.mediaNacional : '' }}
+								</td>
+							</tr>
+							<tr class="plantilla-indicadores-data-row plantilla-indicadores-data-row--second">
+								{% for ciclo in ciclos %}
+									{% set cicloValor = indicadorValores[ciclo.id] ?? null %}
+									{% set cicloCambios = indicadorCambios[ciclo.id] ?? {} %}
+									<td class="plantilla-indicadores-value-cell {{ cicloCambios.cantidad2 is defined ? 'plantilla-indicadores-cell--recent' : '' }}">
+										{{ cicloValor and cicloValor.cantidad2 is not null ? cicloValor.cantidad2|number_format(0, '.', '') : '' }}
+									</td>
+								{% endfor %}
+							</tr>
+						{% endfor %}
+					{% else %}
+						<tr>
+							<td colspan="9" class="plantilla-indicadores-empty-message">
+								No hay indicadores b&aacute;sicos activos para mostrar.
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		</form>
+	</section>
+</turbo-frame>
