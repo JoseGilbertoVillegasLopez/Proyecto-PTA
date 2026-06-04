@@ -90,10 +90,8 @@
             {# ==================================================
                A) AVANCE MENSUAL DEL INDICADOR
                ==================================================
-               Stat cards glassmorphism con glow:
-               - Registrado: cyan brillante, valor grande
-               - Sin registro: ámbar, icono ⚠
-               - Pendiente: gris, dashed border
+               Grid de stat cards (limpio, sin eventos dentro)
+               + Feed de movimientos debajo
                ================================================== #}
             <div class="pta-hist-subseccion">
 
@@ -103,7 +101,6 @@
                 </div>
 
                 {% if item.grafica is defined %}
-                    {# Barra de progreso con base → último valor → meta #}
                     <div class="pta-hist-progreso-barra">
                         <span class="pta-hist-prog-label">Base: {{ item.info.valor_base }}</span>
                         <div class="pta-hist-prog-track">
@@ -119,18 +116,31 @@
                     <p class="pta-hist-empty">No hay valores registrados.</p>
                 {% else %}
 
-                    <div class="pta-hist-valores-grid">
+                    {# Recopilar todos los eventos del indicador para el feed #}
+                    {% set feedEventos = [] %}
+                    {% for mes, num in meses_orden %}
+                        {% if mes in item.indicador|keys %}
+                            {% for ev in item.indicador[mes].eventos %}
+                                {% set feedEventos = feedEventos|merge([{
+                                    mes: mes,
+                                    valor: ev.valor,
+                                    tipo: ev.tipo,
+                                    fecha: ev.fecha,
+                                    motivo: ev.motivo
+                                }]) %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
 
+                    {# Grid de stat cards — solo valor + estado + badge de movimientos #}
+                    <div class="pta-hist-valores-grid">
                         {% for mes, num in meses_orden %}
                             {% if mes in item.indicador|keys %}
-
                                 {% set mesData = item.indicador[mes] %}
                                 {% set estado  = mesData.estado %}
-                                {% set tieneEventos = mesData.eventos is not empty %}
 
                                 <div class="pta-hist-val-card pta-hist-val-card--{{ estado }}">
 
-                                    {# Chip de estado arriba del card #}
                                     <div class="pta-hist-val-estado">
                                         {% if estado == 'registrado' %}
                                             <span class="pta-hist-chip pta-hist-chip--registrado">
@@ -147,41 +157,63 @@
                                         {% endif %}
                                     </div>
 
-                                    {# Nombre del mes #}
                                     <div class="pta-hist-val-mes">{{ mes }}</div>
 
-                                    {# Valor principal #}
                                     {% if estado == 'registrado' %}
                                         <div class="pta-hist-val-numero">{{ mesData.valor }}</div>
                                     {% else %}
                                         <div class="pta-hist-val-numero pta-hist-val-numero--vacio">—</div>
                                     {% endif %}
 
-                                    {# Historial de capturas/correcciones #}
-                                    {% if tieneEventos %}
-                                        <div class="pta-hist-val-eventos">
-                                            {% for ev in mesData.eventos %}
-                                                <div class="pta-hist-val-ev pta-hist-val-ev--{{ ev.tipo|lower }}">
-                                                    <div class="pta-hist-val-ev-top">
-                                                        <span class="pta-hist-val-ev-tipo">{{ etiquetas_evento[ev.tipo] ?? ev.tipo }}</span>
-                                                        <span class="pta-hist-val-ev-fecha">{{ ev.fecha|date('d/m H:i') }}</span>
-                                                    </div>
-                                                    {% if ev.motivo %}
-                                                        <div class="pta-hist-val-ev-motivo">
-                                                            <i class="bi bi-chat-left-text"></i> {{ ev.motivo }}
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-                                            {% endfor %}
+                                    {% if mesData.eventos is not empty %}
+                                        <div class="pta-hist-val-mov-badge">
+                                            <i class="bi bi-clock-history"></i>
+                                            {{ mesData.eventos|length }} mov.
                                         </div>
                                     {% endif %}
 
                                 </div>
-
                             {% endif %}
                         {% endfor %}
-
                     </div>
+
+                    {# ─────────────────────────────────────────────
+                       FEED DE MOVIMIENTOS DEL INDICADOR
+                       Muestra cada captura/corrección con:
+                       mes · tipo · valor registrado · fecha · motivo
+                       ───────────────────────────────────────────── #}
+                    {% if feedEventos is not empty %}
+                        <div class="pta-hist-feed">
+                            <div class="pta-hist-feed-header">
+                                <i class="bi bi-activity"></i>
+                                Historial de movimientos
+                                <span class="pta-hist-feed-count">{{ feedEventos|length }}</span>
+                            </div>
+                            <div class="pta-hist-feed-list">
+                                {% for ev in feedEventos %}
+                                    <div class="pta-hist-feed-item pta-hist-feed-item--{{ ev.tipo|lower }}">
+                                        <div class="pta-hist-feed-card-header">
+                                            <span class="pta-hist-feed-card-mes">{{ ev.mes }}</span>
+                                            <span class="pta-hist-feed-card-fecha">
+                                                <i class="bi bi-calendar3"></i> {{ ev.fecha|date('d/m H:i') }}
+                                            </span>
+                                        </div>
+                                        <div class="pta-hist-feed-tipo">{{ etiquetas_evento[ev.tipo] ?? ev.tipo }}</div>
+                                        {% if ev.valor is not null %}
+                                            <div class="pta-hist-feed-card-valor">{{ ev.valor }}</div>
+                                        {% else %}
+                                            <div class="pta-hist-feed-card-valor pta-hist-feed-card-valor--vacio">—</div>
+                                        {% endif %}
+                                        {% if ev.motivo %}
+                                            <div class="pta-hist-feed-card-motivo">
+                                                <i class="bi bi-chat-left-text"></i> {{ ev.motivo }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
 
                 {% endif %}
 
@@ -340,8 +372,6 @@
                             <span class="pta-chart-summary__value pta-chart-summary__value--accent">{{ item.grafica.porcentaje }}%</span>
                         </div>
                     </div>
-                    {# La condición usa item.grafica defined porque serie puede tener
-                       solo nulls (meses sin dato) — el JS maneja ese caso con placeholder. #}
                     {% if item.grafica is defined %}
                         <div data-pta-view="graficas" class="pta-chart-wrap">
                             <canvas class="pta-chart"
