@@ -187,6 +187,11 @@
     align-items: center;
 }
 
+.indicadores-basicos-index-toolbar__left {
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 /* =========================================================
    BOTÓN CREAR
    ========================================================= */
@@ -218,6 +223,17 @@
     color: #ffffff;
     box-shadow: 0 0 0 2px rgba(29, 209, 161, 0.35);
     transform: translateY(-2px);
+}
+
+.indicadores-basicos-index-add-btn--template {
+    background: rgba(13, 202, 240, 0.18);
+    color: #0dcaf0;
+    border-color: rgba(13, 202, 240, 0.48);
+}
+
+.indicadores-basicos-index-add-btn--template:hover {
+    background: rgba(13, 202, 240, 0.34);
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.28);
 }
 
 /* =========================================================
@@ -1188,18 +1204,32 @@
 .indicadores-basicos-new-select {
     width: 100%;
     min-height: 48px;
-    padding: 12px 14px;
+    padding: 12px 42px 12px 14px;
     border-radius: 14px;
     border: 1px solid rgba(13, 202, 240, 0.15);
-    background: linear-gradient(
-        145deg,
-        rgba(18, 27, 35, 0.95),
-        rgba(10, 16, 22, 0.9)
-    );
+    background-color: #121b23;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #9fd8e8 50%),
+        linear-gradient(135deg, #9fd8e8 50%, transparent 50%),
+        linear-gradient(145deg, rgba(18, 27, 35, 0.95), rgba(10, 16, 22, 0.9));
+    background-position:
+        calc(100% - 22px) 50%,
+        calc(100% - 16px) 50%,
+        0 0;
+    background-size:
+        6px 6px,
+        6px 6px,
+        100% 100%;
+    background-repeat: no-repeat;
     color: #e6f1ff;
     font-size: 0.95rem;
     font-weight: 500;
     outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color-scheme: dark;
     box-shadow: none;
     transition:
         border-color 0.2s ease,
@@ -1207,14 +1237,19 @@
         transform 0.2s ease;
 }
 
+.indicadores-basicos-new-select:hover {
+    border-color: rgba(13, 202, 240, 0.35);
+    background-color: #172532;
+}
+
 .indicadores-basicos-new-select:focus {
     border-color: #0dcaf0;
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
-    background: linear-gradient(
-        145deg,
-        rgba(20, 31, 41, 0.98),
-        rgba(12, 18, 25, 0.94)
-    );
+    background-color: #142333;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #c7f2ff 50%),
+        linear-gradient(135deg, #c7f2ff 50%, transparent 50%),
+        linear-gradient(145deg, rgba(20, 31, 41, 0.98), rgba(12, 18, 25, 0.94));
     color: #e6f1ff;
 }
 
@@ -1592,18 +1627,32 @@
 .indicadores-basicos-edit-select {
     width: 100%;
     min-height: 48px;
-    padding: 12px 14px;
+    padding: 12px 42px 12px 14px;
     border-radius: 14px;
     border: 1px solid rgba(13, 202, 240, 0.15);
-    background: linear-gradient(
-        145deg,
-        rgba(18, 27, 35, 0.95),
-        rgba(10, 16, 22, 0.9)
-    );
+    background-color: #121b23;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #9fd8e8 50%),
+        linear-gradient(135deg, #9fd8e8 50%, transparent 50%),
+        linear-gradient(145deg, rgba(18, 27, 35, 0.95), rgba(10, 16, 22, 0.9));
+    background-position:
+        calc(100% - 22px) 50%,
+        calc(100% - 16px) 50%,
+        0 0;
+    background-size:
+        6px 6px,
+        6px 6px,
+        100% 100%;
+    background-repeat: no-repeat;
     color: #e6f1ff;
     font-size: 0.95rem;
     font-weight: 500;
     outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color-scheme: dark;
     box-shadow: none;
     transition:
         border-color 0.2s ease,
@@ -1611,14 +1660,19 @@
         transform 0.2s ease;
 }
 
+.indicadores-basicos-edit-select:hover {
+    border-color: rgba(13, 202, 240, 0.35);
+    background-color: #172532;
+}
+
 .indicadores-basicos-edit-select:focus {
     border-color: #0dcaf0;
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
-    background: linear-gradient(
-        145deg,
-        rgba(20, 31, 41, 0.98),
-        rgba(12, 18, 25, 0.94)
-    );
+    background-color: #142333;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #c7f2ff 50%),
+        linear-gradient(135deg, #c7f2ff 50%, transparent 50%),
+        linear-gradient(145deg, rgba(20, 31, 41, 0.98), rgba(12, 18, 25, 0.94));
     color: #e6f1ff;
 }
 
@@ -1842,5 +1896,519 @@
     .indicadores-basicos-edit-form,
     .indicadores-basicos-show-table tbody {
         grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   PLANTILLA INDICADORES
+   ========================================================= */
+.plantilla-indicadores-card {
+    background: linear-gradient(
+        145deg,
+        rgba(14, 21, 30, 0.98),
+        rgba(8, 13, 20, 0.96)
+    );
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.035),
+        inset 0 0 0 1px rgba(126, 161, 189, 0.12),
+        0 18px 42px rgba(0, 0, 0, 0.72);
+    position: relative;
+    overflow: hidden;
+}
+
+.plantilla-indicadores-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(92, 132, 165, 0.045), transparent 32%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 120px);
+    pointer-events: none;
+}
+
+.plantilla-indicadores-header {
+    display: grid;
+    grid-template-columns: 42px 1fr 42px;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(13, 202, 240, 0.12);
+}
+
+.plantilla-indicadores-title {
+    margin: 0;
+    color: #edf4fb;
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.plantilla-indicadores-title i {
+    margin-right: 8px;
+}
+
+.plantilla-indicadores-back-btn {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    text-decoration: none;
+    background: rgba(69, 107, 139, 0.2);
+    color: #b9d2e8;
+    border: 1px solid rgba(132, 163, 191, 0.3);
+    transition: all 0.25s ease;
+}
+
+.plantilla-indicadores-back-btn:hover {
+    background: rgba(92, 132, 165, 0.28);
+    color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(132, 163, 191, 0.16);
+    transform: translateY(-2px);
+}
+
+.plantilla-indicadores-header__actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.plantilla-indicadores-action-btn {
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    text-decoration: none;
+    background: rgba(149, 123, 61, 0.2);
+    color: #d9c790;
+    border: 1px solid rgba(194, 170, 106, 0.32);
+    transition: all 0.25s ease;
+}
+
+.plantilla-indicadores-action-btn:hover {
+    background: rgba(149, 123, 61, 0.3);
+    color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(194, 170, 106, 0.15);
+    transform: translateY(-2px);
+}
+
+.plantilla-indicadores-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 14px;
+    border: 1px solid rgba(132, 163, 191, 0.2);
+    background:
+        linear-gradient(145deg, rgba(8, 14, 21, 0.94), rgba(13, 22, 31, 0.92));
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+        0 14px 30px rgba(0, 0, 0, 0.42);
+    position: relative;
+}
+
+.plantilla-indicadores-cycle-form {
+    margin: 0;
+}
+
+.plantilla-indicadores-table {
+    width: 100%;
+    min-width: 1180px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    color: #e9f0f7;
+    background:
+        linear-gradient(180deg, rgba(13, 22, 31, 0.98), rgba(8, 14, 21, 0.98));
+}
+
+.plantilla-indicadores-table th,
+.plantilla-indicadores-table td {
+    border: 1px solid rgba(123, 151, 176, 0.24);
+    padding: 9px 10px;
+    vertical-align: middle;
+}
+
+.plantilla-indicadores-table thead th {
+    background: linear-gradient(
+        180deg,
+        rgba(38, 66, 93, 1) 0%,
+        rgba(28, 51, 75, 0.99) 48%,
+        rgba(20, 36, 55, 0.98) 100%
+    );
+    color: #f2f6fa;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-align: center;
+    text-transform: uppercase;
+    line-height: 1.25;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.24);
+}
+
+.plantilla-indicadores-table thead th .plantilla-indicadores-cycle-select {
+    display: block;
+    width: 100%;
+    min-width: 98px;
+    height: 28px;
+    margin-top: 5px;
+    padding: 5px 24px 5px 8px;
+    border-radius: 7px;
+    border: 1px solid rgba(154, 180, 203, 0.34) !important;
+    background-color: #142233 !important;
+    background:
+        linear-gradient(180deg, rgba(21, 36, 51, 0.96), rgba(12, 22, 33, 0.96));
+    color: #edf4fb !important;
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color-scheme: dark;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 4px 12px rgba(0, 0, 0, 0.16);
+    background-image:
+        linear-gradient(45deg, transparent 50%, #b9d2e8 50%),
+        linear-gradient(135deg, #b9d2e8 50%, transparent 50%),
+        linear-gradient(180deg, rgba(21, 36, 51, 0.96), rgba(12, 22, 33, 0.96));
+    background-position:
+        calc(100% - 13px) 50%,
+        calc(100% - 8px) 50%,
+        0 0;
+    background-size:
+        5px 5px,
+        5px 5px,
+        100% 100%;
+    background-repeat: no-repeat;
+}
+
+.plantilla-indicadores-table thead th .plantilla-indicadores-cycle-select:hover {
+    border-color: rgba(185, 210, 232, 0.48) !important;
+    background-color: #182b3f !important;
+}
+
+.plantilla-indicadores-table thead th .plantilla-indicadores-cycle-select:focus {
+    border-color: rgba(185, 210, 232, 0.58);
+    box-shadow: 0 0 0 2px rgba(132, 163, 191, 0.12);
+}
+
+.plantilla-indicadores-table thead th .plantilla-indicadores-cycle-select option {
+    background: #111b26;
+    color: #edf4fb;
+}
+
+.plantilla-indicadores-cycle-label {
+    display: block;
+    margin-top: 5px;
+    padding: 5px 8px;
+    border-radius: 7px;
+    border: 1px solid rgba(154, 180, 203, 0.18);
+    background: rgba(12, 22, 33, 0.58);
+    color: #d9e6f1;
+    font-size: 0.76rem;
+    font-weight: 800;
+}
+
+.plantilla-indicadores-institution {
+    height: 48px;
+    background: linear-gradient(
+        180deg,
+        rgba(55, 86, 116, 0.98),
+        rgba(30, 54, 80, 0.98)
+    ) !important;
+    font-size: 1.08rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    color: #ffffff !important;
+}
+
+.plantilla-indicadores-col-indicador {
+    width: 37%;
+}
+
+.plantilla-indicadores-table thead th:nth-child(2),
+.plantilla-indicadores-table thead th:nth-child(4),
+.plantilla-indicadores-table thead th:nth-child(6) {
+    width: 8%;
+}
+
+.plantilla-indicadores-table thead th:nth-child(3),
+.plantilla-indicadores-table thead th:nth-child(5),
+.plantilla-indicadores-table thead th:nth-child(7),
+.plantilla-indicadores-table thead th:nth-child(8),
+.plantilla-indicadores-table thead th:nth-child(9) {
+    width: 9%;
+}
+
+.plantilla-indicadores-group-row td {
+    background: linear-gradient(
+        90deg,
+        rgba(29, 55, 78, 0.98),
+        rgba(45, 75, 101, 0.98) 48%,
+        rgba(29, 55, 78, 0.98)
+    );
+    color: #f4f7fb;
+    font-size: 0.92rem;
+    font-weight: 900;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    padding: 10px 12px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.38);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.24);
+}
+
+.plantilla-indicadores-data-row td {
+    height: 34px;
+    background: rgba(18, 27, 37, 0.97);
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.plantilla-indicadores-data-row--second td {
+    background: rgba(14, 22, 31, 0.97);
+}
+
+.plantilla-indicadores-data-row:hover td,
+.plantilla-indicadores-data-row:has(+ .plantilla-indicadores-data-row--second:hover) td,
+.plantilla-indicadores-data-row:hover + .plantilla-indicadores-data-row--second td {
+    background: rgba(25, 39, 52, 0.98);
+    border-color: rgba(132, 163, 191, 0.36);
+}
+
+.plantilla-indicadores-name {
+    color: #f3f7fb;
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1.32;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+    background: linear-gradient(
+        180deg,
+        rgba(23, 35, 47, 0.99),
+        rgba(16, 26, 37, 0.99)
+    ) !important;
+    border-left: 3px solid rgba(132, 163, 191, 0.5) !important;
+}
+
+.plantilla-indicadores-empty-cell {
+    color: #9fb0bf;
+    text-align: center;
+    position: relative;
+}
+
+.plantilla-indicadores-value-cell {
+    color: #e9f0f7;
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.plantilla-indicadores-result-cell,
+.plantilla-indicadores-media-cell {
+    background: rgba(20, 31, 43, 0.97) !important;
+}
+
+.plantilla-indicadores-result-cell--verde {
+    background: rgba(35, 91, 63, 0.9) !important;
+    color: #d9f2e5 !important;
+    border-color: rgba(118, 184, 145, 0.42) !important;
+}
+
+.plantilla-indicadores-result-cell--amarillo {
+    background: rgba(114, 91, 39, 0.88) !important;
+    color: #f5e9bd !important;
+    border-color: rgba(204, 177, 99, 0.42) !important;
+}
+
+.plantilla-indicadores-result-cell--rojo {
+    background: rgba(109, 52, 52, 0.88) !important;
+    color: #f2d6d6 !important;
+    border-color: rgba(196, 112, 112, 0.42) !important;
+}
+
+.plantilla-indicadores-empty-cell::after {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 1px;
+    margin: 0 auto;
+    background: rgba(159, 176, 191, 0.28);
+}
+
+.plantilla-indicadores-empty-cell.plantilla-indicadores-media-cell::after,
+.plantilla-indicadores-empty-cell.plantilla-indicadores-result-cell::after {
+    width: 42px;
+    background: rgba(132, 163, 191, 0.24);
+}
+
+.plantilla-indicadores-table--edit .plantilla-indicadores-result-cell {
+    color: #c8d4df;
+    font-weight: 800;
+}
+
+.plantilla-indicadores-input-cell {
+    background: rgba(18, 28, 38, 0.98) !important;
+    text-align: center;
+}
+
+.plantilla-indicadores-input {
+    width: 100%;
+    min-height: 30px;
+    padding: 5px 7px;
+    border-radius: 7px;
+    border: 1px solid rgba(132, 163, 191, 0.24);
+    background: rgba(7, 13, 20, 0.82);
+    color: #f3f7fb;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.plantilla-indicadores-input:hover {
+    border-color: rgba(157, 185, 209, 0.38);
+    background: rgba(11, 19, 28, 0.9);
+}
+
+.plantilla-indicadores-input:focus {
+    border-color: rgba(185, 210, 232, 0.62);
+    background: rgba(13, 23, 34, 0.98);
+    box-shadow: 0 0 0 2px rgba(132, 163, 191, 0.14);
+}
+
+.plantilla-indicadores-input-cell--locked {
+    background: rgba(14, 22, 31, 0.86) !important;
+}
+
+.plantilla-indicadores-input:disabled {
+    cursor: not-allowed;
+    opacity: 0.72;
+    border-color: rgba(123, 151, 176, 0.16);
+    background: rgba(8, 14, 21, 0.55);
+    color: #9fb0bf;
+}
+
+.plantilla-indicadores-input::-webkit-outer-spin-button,
+.plantilla-indicadores-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.plantilla-indicadores-form-actions {
+    display: flex;
+    justify-content: center;
+    padding-top: 18px;
+}
+
+.plantilla-indicadores-save-btn {
+    width: 52px;
+    height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    border: 1px solid rgba(92, 160, 128, 0.38);
+    background: rgba(51, 112, 84, 0.22);
+    color: #a9d8bf;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.plantilla-indicadores-save-btn:hover {
+    background: rgba(51, 112, 84, 0.32);
+    color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(92, 160, 128, 0.15);
+    transform: translateY(-2px);
+}
+
+.plantilla-indicadores-save-btn--header {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    font-size: 1.08rem;
+}
+
+.plantilla-indicadores-result-cell--live {
+    color: #d7e5ef !important;
+    background: rgba(31, 49, 63, 0.98) !important;
+}
+
+.plantilla-indicadores-cell--recent {
+    background: rgba(92, 132, 165, 0.34) !important;
+    border-color: rgba(185, 210, 232, 0.56) !important;
+    box-shadow:
+        inset 0 0 0 1px rgba(214, 231, 244, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.plantilla-indicadores-input-cell.plantilla-indicadores-cell--recent .plantilla-indicadores-input {
+    background: rgba(18, 37, 52, 0.94);
+    border-color: rgba(205, 225, 240, 0.54);
+    color: #ffffff;
+}
+
+.plantilla-indicadores-result-cell--verde.plantilla-indicadores-cell--recent {
+    background: rgba(35, 91, 63, 0.9) !important;
+    border-color: rgba(185, 210, 232, 0.56) !important;
+}
+
+.plantilla-indicadores-result-cell--amarillo.plantilla-indicadores-cell--recent {
+    background: rgba(114, 91, 39, 0.88) !important;
+    border-color: rgba(185, 210, 232, 0.56) !important;
+}
+
+.plantilla-indicadores-result-cell--rojo.plantilla-indicadores-cell--recent {
+    background: rgba(109, 52, 52, 0.88) !important;
+    border-color: rgba(185, 210, 232, 0.56) !important;
+}
+
+.plantilla-indicadores-empty-message {
+    padding: 18px !important;
+    color: #9fb3c8 !important;
+    font-style: italic;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .plantilla-indicadores-card {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .plantilla-indicadores-header {
+        grid-template-columns: 42px 1fr;
+        gap: 12px;
+    }
+
+    .plantilla-indicadores-header__spacer {
+        display: none;
+    }
+
+    .plantilla-indicadores-title {
+        font-size: 1.3rem;
+        text-align: left;
     }
 }

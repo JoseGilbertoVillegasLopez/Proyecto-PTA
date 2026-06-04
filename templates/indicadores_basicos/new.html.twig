@@ -50,7 +50,7 @@
 
 			<div class="indicadores-basicos-new-group">
 				{{ form_label(form.grupo, null, {'label_attr': {'class': 'indicadores-basicos-new-label'}}) }}
-				{{ form_widget(form.grupo) }}
+				{{ form_widget(form.grupo, {'attr': {'class': 'indicadores-basicos-new-select indicadores-select-pta'}}) }}
 				{{ form_errors(form.grupo) }}
 			</div>
 

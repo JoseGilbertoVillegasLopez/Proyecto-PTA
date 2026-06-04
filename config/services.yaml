@@ -49,3 +49,7 @@ services:
     App\Service\Pta\GuardarReportePtaService:
         arguments:
             $projectDir: "%kernel.project_dir%"
+
+    App\Service\Indicadores\CicloIndicadoresService:
+        arguments:
+            $fakeToday: "%env(default::INDICADORES_FAKE_TODAY)%"
