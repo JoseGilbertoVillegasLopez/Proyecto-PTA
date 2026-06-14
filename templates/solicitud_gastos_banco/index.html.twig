@@ -1,0 +1,96 @@
+<turbo-frame id="content">
+<div class="sgb-index" data-sgb-view="sgb-index">
+
+	<div class="sgb__topbar">
+		<h1 class="sgb__titulo">
+			<i class="bi bi-bank2"></i>
+			Bancos del Beneficiario
+		</h1>
+		<a href="{{ path('app_sg_banco_new') }}"
+		   class="sgb__btn-nuevo"
+		   data-turbo-frame="content"
+		   data-turbo-action="advance">
+			<i class="bi bi-plus-circle-fill"></i>
+			Agregar Banco
+		</a>
+		<a href="{{ path('app_solicitud_gastos_encargado_index') }}"
+		   class="sgb__btn-volver"
+		   data-turbo-frame="content"
+		   data-turbo-action="advance">
+			<i class="bi bi-arrow-left-circle-fill"></i>
+			<span>Volver</span>
+		</a>
+	</div>
+
+	{% for label, messages in app.flashes %}
+		{% for message in messages %}
+			<div class="sgb__flash sgb__flash--{{ label }}">
+				<i class="bi bi-{{ label == 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill' }}"></i>
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
+	<div class="sgb__card">
+		{% if bancos|length > 0 %}
+			<table class="sgb__table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>Nombre del Banco</th>
+						<th style="text-align:center">Estado</th>
+						<th style="text-align:right"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for banco in bancos %}
+						<tr class="{{ banco.estado == 'cancelado' ? 'sgb__row--cancelado' : '' }}">
+							<td class="sgb__td-id">{{ banco.id }}</td>
+							<td class="sgb__td-nombre">{{ banco.nombre }}</td>
+							<td class="sgb__td-estado">
+								{% if banco.estado == 'activo' %}
+									<span class="sgb__badge sgb__badge--activo">
+										<i class="bi bi-check-circle-fill"></i> Activo
+									</span>
+								{% else %}
+									<span class="sgb__badge sgb__badge--cancelado">
+										<i class="bi bi-x-circle-fill"></i> Cancelado
+									</span>
+								{% endif %}
+							</td>
+							<td class="sgb__td-action">
+								{% if banco.estado == 'activo' %}
+									<form method="POST"
+										  action="{{ path('app_sg_banco_cancelar', { id: banco.id }) }}"
+										  onsubmit="return confirm('¿Cancelar el banco {{ banco.nombre }}?')">
+										<input type="hidden" name="_token"
+											   value="{{ csrf_token('cancelar_banco_' ~ banco.id) }}">
+										<button type="submit" class="sgb__btn-cancelar" title="Cancelar banco">
+											<i class="bi bi-x-circle"></i>
+											Cancelar
+										</button>
+									</form>
+								{% else %}
+									<form method="POST"
+										  action="{{ path('app_sg_banco_reactivar', { id: banco.id }) }}"
+										  onsubmit="return confirm('¿Reactivar el banco {{ banco.nombre }}?')">
+										<input type="hidden" name="_token"
+											   value="{{ csrf_token('reactivar_banco_' ~ banco.id) }}">
+										<button type="submit" class="sgb__btn-reactivar" title="Reactivar banco">
+											<i class="bi bi-check-circle"></i>
+											Reactivar
+										</button>
+									</form>
+								{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		{% else %}
+			<p class="sgb__empty">No hay bancos registrados.</p>
+		{% endif %}
+	</div>
+
+</div>
+</turbo-frame>

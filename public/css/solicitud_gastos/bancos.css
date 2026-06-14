@@ -1,0 +1,310 @@
+/* =========================================================
+   SOLICITUD GASTOS BANCOS — CRUD
+   ========================================================= */
+
+.sgb__topbar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.sgb__titulo {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #e6f1ff;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sgb__btn-nuevo {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    border-radius: 10px;
+    background: rgba(29, 209, 161, 0.1);
+    border: 1px solid rgba(29, 209, 161, 0.35);
+    color: #1dd1a1;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.sgb__btn-nuevo:hover {
+    background: rgba(29, 209, 161, 0.25);
+    color: #fff;
+}
+
+.sgb__btn-volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border: 1px solid rgba(230, 241, 255, 0.22);
+    border-radius: 10px;
+    color: #e6f1ff;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.04);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.sgb__btn-volver:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(230, 241, 255, 0.45);
+    transform: translateX(-2px);
+}
+
+/* ── Flash messages ── */
+.sgb__flash {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.sgb__flash--success {
+    background: rgba(29, 209, 161, 0.1);
+    border: 1px solid rgba(29, 209, 161, 0.3);
+    color: #1dd1a1;
+}
+
+.sgb__flash--warning {
+    background: rgba(254, 202, 87, 0.1);
+    border: 1px solid rgba(254, 202, 87, 0.3);
+    color: #feca57;
+}
+
+/* ── Card ── */
+.sgb__card {
+    background: linear-gradient(160deg, #0f1923 0%, #0a1118 100%);
+    border: 1px solid rgba(13, 202, 240, 0.12);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.sgb__card--form {
+    max-width: 480px;
+    padding: 28px;
+}
+
+/* ── Table ── */
+.sgb__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.sgb__table thead th {
+    background: rgba(13, 202, 240, 0.08);
+    color: #0dcaf0;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(13, 202, 240, 0.25);
+    text-align: left;
+}
+
+.sgb__table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(13, 202, 240, 0.07);
+    color: #e6f1ff;
+    font-size: 0.88rem;
+    vertical-align: middle;
+}
+
+.sgb__table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.sgb__row--cancelado td {
+    opacity: 0.5;
+}
+
+.sgb__td-id {
+    color: #9fb3c8;
+    font-size: 0.78rem;
+    width: 60px;
+}
+
+.sgb__td-nombre {
+    font-weight: 600;
+}
+
+.sgb__td-estado {
+    width: 130px;
+}
+
+.sgb__td-action {
+    width: 120px;
+    text-align: right;
+}
+
+/* ── Badges ── */
+.sgb__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.sgb__badge--activo {
+    background: rgba(29, 209, 161, 0.12);
+    border: 1px solid rgba(29, 209, 161, 0.3);
+    color: #1dd1a1;
+}
+
+.sgb__badge--cancelado {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.25);
+    color: #ff6b6b;
+}
+
+/* ── Botón cancelar ── */
+.sgb__btn-cancelar {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: rgba(255, 107, 107, 0.07);
+    border: 1px solid rgba(255, 107, 107, 0.25);
+    color: #ff6b6b;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sgb__btn-cancelar:hover {
+    background: rgba(255, 107, 107, 0.2);
+    color: #fff;
+}
+
+/* ── Botón reactivar ── */
+.sgb__btn-reactivar {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: rgba(29, 209, 161, 0.08);
+    border: 1px solid rgba(29, 209, 161, 0.28);
+    color: #1dd1a1;
+    border-radius: 7px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sgb__btn-reactivar:hover {
+    background: rgba(29, 209, 161, 0.22);
+    color: #fff;
+}
+
+/* ── Empty state ── */
+.sgb__empty {
+    padding: 32px;
+    text-align: center;
+    color: #9fb3c8;
+    font-size: 0.9rem;
+}
+
+/* ── Form fields ── */
+.sgb__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 20px;
+}
+
+.sgb__label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #9fb3c8;
+}
+
+.sgb__input {
+    width: 100%;
+    background-color: #0d151d;
+    color: #e6f1ff;
+    border: 1px solid rgba(13, 202, 240, 0.12);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sgb__input::placeholder {
+    color: #3d5166;
+}
+
+.sgb__input:focus {
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.15);
+    background-color: #0b1520;
+}
+
+/* ── Form actions ── */
+.sgb__form-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.sgb__btn-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: rgba(29, 209, 161, 0.12);
+    border: 1px solid rgba(29, 209, 161, 0.4);
+    color: #1dd1a1;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sgb__btn-submit:hover {
+    background: rgba(29, 209, 161, 0.28);
+    color: #fff;
+}
+
+.sgb__btn-cancel {
+    color: #9fb3c8;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 10px;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.sgb__btn-cancel:hover {
+    color: #e6f1ff;
+    background: rgba(255, 255, 255, 0.05);
+}

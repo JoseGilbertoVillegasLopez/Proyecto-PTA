@@ -101,6 +101,20 @@ Sfjs.loadToolbar();
 						</li>
 					{% endif %}
 
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_admin_dashboard', { section: 'solicitud_gastos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+							Solicitud de Gastos
+						</a>
+					</li>
+
+					{% if is_granted('ROLE_ADMIN') %}
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'solicitud_gastos_encargado' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Gastos — Encargado
+							</a>
+						</li>
+						{% endif %}
+
 				</ul>
 
 			</div>
@@ -130,7 +144,10 @@ Sfjs.loadToolbar();
 	'partidas_presupuestales': path('app_partidas_presupuestales_index'),
 	'proceso_clave': path('app_proceso_clave_index'),
 	'proceso_estrategico': path('app_proceso_estrategico_index'),
-    'historial_pta': path('pta_historial_index')
+    'historial_pta': path('pta_historial_index'),
+    'solicitud_gastos': path('app_solicitud_gastos_index'),
+    'solicitud_gastos_encargado': path('app_solicitud_gastos_encargado_index'),
+    'solicitud_gastos_bancos': path('app_sg_banco_index')
 	} %}
 
 

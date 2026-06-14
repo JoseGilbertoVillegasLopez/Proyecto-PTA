@@ -1,0 +1,227 @@
+<turbo-frame id="content">
+<link rel="stylesheet" href="{{ asset('css/solicitud_gastos/index.css') }}">
+
+<div class="sg-index">
+
+	{# ===================================================== #}
+	{# HEADER: título centrado + botón bancos a la derecha #}
+	{# ===================================================== #}
+
+	<div class="sg-index__header sg-index__header--enc">
+		<h1 class="sg-index__titulo sg-index__titulo--enc">
+			<i class="bi bi-collection-fill"></i>
+			Solicitudes de Gastos
+		</h1>
+		<a href="{{ path('app_sg_banco_index') }}"
+		   class="sg-index__bancos-btn"
+		   data-turbo-frame="content"
+		   data-turbo-action="advance">
+			<i class="bi bi-bank2"></i>
+			Gestionar Bancos
+		</a>
+	</div>
+
+	{# ===================================================== #}
+	{# FILTROS — async, sin recarga de página #}
+	{# ===================================================== #}
+
+	<form id="sg-enc-filtros"
+		  action="{{ path('app_solicitud_gastos_encargado_index') }}"
+		  class="sg-filtros-wrap">
+
+		<div class="sg-filtro-group">
+			<label class="sg-filtro-group__label">Departamento</label>
+			<select name="departamento" id="sg-fil-departamento" class="sg-index__filtro-select">
+				<option value="">Todos</option>
+				{% for depto in departamentos %}
+					<option value="{{ depto.id }}" {{ departamento_sel == depto.id ? 'selected' : '' }}>
+						{{ depto.nombre }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="sg-filtro-group">
+			<label class="sg-filtro-group__label">Puesto</label>
+			<select name="puesto" id="sg-fil-puesto" class="sg-index__filtro-select">
+				<option value="">Todos</option>
+				{% for puesto in puestos %}
+					<option value="{{ puesto.id }}" {{ puesto_sel == puesto.id ? 'selected' : '' }}>
+						{{ puesto.nombre }}
+					</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="sg-filtro-group sg-filtro-group--sm">
+			<label class="sg-filtro-group__label">Estado</label>
+			<select name="estado" id="sg-fil-estado" class="sg-index__filtro-select">
+				<option value="">Todos</option>
+				<option value="pendiente" {{ estado_sel == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+				<option value="revisada"  {{ estado_sel == 'revisada'  ? 'selected' : '' }}>Revisada</option>
+			</select>
+		</div>
+
+		<div class="sg-filtro-group sg-filtro-group--periodo">
+			<label class="sg-filtro-group__label">Período</label>
+			<div class="sg-filtro-daterange">
+				<input type="text"
+					   id="sg-fil-desde"
+					   name="fecha_desde"
+					   class="sg-index__filtro-input"
+					   placeholder="Desde"
+					   value="{{ fecha_desde ?? '' }}"
+					   autocomplete="off"
+					   readonly>
+				<span class="sg-filtro-daterange__sep">—</span>
+				<input type="text"
+					   id="sg-fil-hasta"
+					   name="fecha_hasta"
+					   class="sg-index__filtro-input"
+					   placeholder="Hasta"
+					   value="{{ fecha_hasta ?? '' }}"
+					   autocomplete="off"
+					   readonly>
+			</div>
+		</div>
+
+		<button type="button" id="sg-fil-limpiar" class="sg-filtro-clear-btn" title="Limpiar filtros">
+			<i class="bi bi-x-lg"></i>
+		</button>
+
+	</form>
+
+	{# ===================================================== #}
+	{# TABLA #}
+	{# ===================================================== #}
+
+	<div class="sg-index__table-wrapper">
+		<table class="sg-index__table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Solicitante</th>
+					<th>Departamento</th>
+					<th>Tipo</th>
+					<th>Por concepto de</th>
+					<th>Para cuándo</th>
+					<th>Total</th>
+					<th>Estado</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="sg-tabla-body">
+				{% include 'solicitud_gastos/_tabla_encargado.html.twig' %}
+			</tbody>
+		</table>
+	</div>
+
+</div>
+
+<script>
+(function () {
+    var form       = document.getElementById('sg-enc-filtros');
+    var selDep     = document.getElementById('sg-fil-departamento');
+    var selPue     = document.getElementById('sg-fil-puesto');
+    var selEst     = document.getElementById('sg-fil-estado');
+    var inpDesde   = document.getElementById('sg-fil-desde');
+    var inpHasta   = document.getElementById('sg-fil-hasta');
+    var btnLimpiar = document.getElementById('sg-fil-limpiar');
+    var tbody      = document.getElementById('sg-tabla-body');
+
+    if (!form || !tbody) return;
+
+    var acUrl = form.action;
+
+    function filtrar() {
+        var params = new URLSearchParams();
+        if (selDep  && selDep.value)   params.set('departamento', selDep.value);
+        if (selPue  && selPue.value)   params.set('puesto',       selPue.value);
+        if (selEst  && selEst.value)   params.set('estado',       selEst.value);
+        if (inpDesde && inpDesde.value) params.set('fecha_desde', inpDesde.value);
+        if (inpHasta && inpHasta.value) params.set('fecha_hasta', inpHasta.value);
+
+        var url = acUrl + (params.toString() ? '?' + params.toString() : '');
+
+        tbody.style.opacity = '0.35';
+
+        fetch(url, { headers: { 'X-SG-Partial': 'tabla' } })
+            .then(function (r) { return r.text(); })
+            .then(function (html) {
+                tbody.innerHTML  = html;
+                tbody.style.opacity = '1';
+            })
+            .catch(function () { tbody.style.opacity = '1'; });
+    }
+
+    if (selDep) selDep.addEventListener('change', function () {
+        if (this.value && selPue) selPue.value = '';
+        filtrar();
+    });
+    if (selPue) selPue.addEventListener('change', function () {
+        if (this.value && selDep) selDep.value = '';
+        filtrar();
+    });
+    if (selEst) selEst.addEventListener('change', filtrar);
+
+    // Flatpickr para rangos de fecha
+    var locale = {
+        firstDayOfWeek: 1,
+        weekdays: {
+            shorthand: ['Do','Lu','Ma','Mi','Ju','Vi','Sa'],
+            longhand:  ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado']
+        },
+        months: {
+            shorthand: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+            longhand:  ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+        }
+    };
+
+    var fpDesde, fpHasta;
+
+    if (inpDesde && window.flatpickr) {
+        fpDesde = flatpickr(inpDesde, {
+            dateFormat:    'Y-m-d',
+            altInput:      true,
+            altFormat:     'd/m/Y',
+            disableMobile: true,
+            locale:        locale,
+            onChange: function (sel, dateStr) {
+                if (fpHasta && dateStr) fpHasta.set('minDate', dateStr);
+                filtrar();
+            },
+            onReady: function (sel, dateStr, fp) {
+                fp.altInput.classList.add('sg-index__filtro-input');
+            }
+        });
+    }
+
+    if (inpHasta && window.flatpickr) {
+        fpHasta = flatpickr(inpHasta, {
+            dateFormat:    'Y-m-d',
+            altInput:      true,
+            altFormat:     'd/m/Y',
+            disableMobile: true,
+            locale:        locale,
+            onChange: function (sel, dateStr) {
+                if (fpDesde && dateStr) fpDesde.set('maxDate', dateStr);
+                filtrar();
+            },
+            onReady: function (sel, dateStr, fp) {
+                fp.altInput.classList.add('sg-index__filtro-input');
+            }
+        });
+    }
+
+    if (btnLimpiar) btnLimpiar.addEventListener('click', function () {
+        if (selDep)  selDep.value  = '';
+        if (selPue)  selPue.value  = '';
+        if (selEst)  selEst.value  = '';
+        if (fpDesde) { fpDesde.clear(); if (fpHasta) fpHasta.set('minDate', null); }
+        if (fpHasta) { fpHasta.clear(); if (fpDesde) fpDesde.set('maxDate', null); }
+        filtrar();
+    });
+}());
+</script>
+
+</turbo-frame>

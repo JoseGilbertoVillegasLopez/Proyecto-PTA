@@ -1,0 +1,109 @@
+<turbo-frame id="content">
+<link rel="stylesheet" href="{{ asset('css/solicitud_gastos/index.css') }}">
+
+<div class="sg-index">
+
+	{# ===================================================== #}
+	{# TÍTULO #}
+	{# ===================================================== #}
+
+	<div class="sg-index__header">
+		<h1 class="sg-index__titulo">
+			<i class="bi bi-file-earmark-text"></i>
+			Mis Solicitudes de Gastos
+		</h1>
+	</div>
+
+	{# ===================================================== #}
+	{# TOOLBAR #}
+	{# ===================================================== #}
+
+	<div class="sg-index__toolbar">
+
+		<div class="sg-index__toolbar-left">
+			<a href="{{ path('app_solicitud_gastos_new') }}"
+			   class="sg-index__add-btn"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance">
+				<i class="bi bi-plus-circle-fill"></i>
+				<span>Nueva Solicitud</span>
+			</a>
+		</div>
+
+		<div class="sg-index__toolbar-right">
+			<form method="GET" action="{{ path('app_solicitud_gastos_index') }}" class="sg-index__filtros">
+				<label class="sg-index__filtro-label">Desde</label>
+				<input type="date" name="desde" value="{{ desde }}" class="sg-index__filtro-input">
+				<label class="sg-index__filtro-label">Hasta</label>
+				<input type="date" name="hasta" value="{{ hasta }}" class="sg-index__filtro-input">
+				<button type="submit" class="sg-index__filtro-btn" title="Filtrar">
+					<i class="bi bi-search"></i>
+				</button>
+				{% if desde or hasta %}
+					<a href="{{ path('app_solicitud_gastos_index') }}" class="sg-index__filtro-clear" title="Limpiar filtros">
+						<i class="bi bi-x-lg"></i>
+					</a>
+				{% endif %}
+			</form>
+		</div>
+
+	</div>
+
+	{# ===================================================== #}
+	{# TABLA #}
+	{# ===================================================== #}
+
+	<div class="sg-index__table-wrapper">
+		<table class="sg-index__table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Tipo</th>
+					<th>Por concepto de</th>
+					<th>Para cuándo</th>
+					<th>Total</th>
+					<th>Estado</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for solicitud in solicitudes %}
+					<tr>
+						<td class="sg-index__col-id">{{ solicitud.id }}</td>
+						<td class="sg-index__col-tipo">{{ solicitud.tipoSolicitud.nombre }}</td>
+						<td class="sg-index__col-concepto">{{ solicitud.porConceptoDe }}</td>
+						<td class="sg-index__col-fecha">{{ solicitud.fechaNecesita|date('d/m/Y') }}</td>
+						<td class="sg-index__col-total">$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}</td>
+						<td class="sg-index__col-estado">
+							<span class="sg-badge sg-badge--{{ solicitud.estado }}">
+								{% if solicitud.estado == 'pendiente' %}
+									<i class="bi bi-clock-fill"></i> Pendiente
+								{% else %}
+									<i class="bi bi-check-circle-fill"></i> Revisada
+								{% endif %}
+							</span>
+						</td>
+						<td class="sg-index__col-acciones">
+							<a href="{{ path('app_solicitud_gastos_show', { id: solicitud.id }) }}"
+							   class="sg-index__action-btn sg-index__action-btn--ver"
+							   data-turbo-frame="content"
+							   data-turbo-action="advance"
+							   title="Ver solicitud">
+								<i class="bi bi-eye"></i>
+							</a>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="7" class="sg-index__empty">
+							<i class="bi bi-inbox"></i>
+							<span>No tienes solicitudes registradas.</span>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+</div>
+</turbo-frame>

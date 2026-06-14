@@ -1,0 +1,100 @@
+/* =========================================================
+   SOLICITUD GASTOS — SHOW
+   Reutiliza las clases de new.css. Solo agrega lo exclusivo
+   de la vista de detalle.
+   ========================================================= */
+
+.sg-show {
+    padding: 8px 0;
+}
+
+/* Título + badge alineados a la derecha del topbar */
+.sg-show__topbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+/* ── Badges de estado ── */
+.sg-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sg-badge--pendiente {
+    background: rgba(254, 202, 87, 0.15);
+    color: #feca57;
+    border: 1px solid rgba(254, 202, 87, 0.4);
+}
+
+.sg-badge--revisada {
+    background: rgba(29, 209, 161, 0.15);
+    color: #1dd1a1;
+    border: 1px solid rgba(29, 209, 161, 0.4);
+}
+
+/* ── Campos de solo lectura: apariencia de input ── */
+.sg-show__display {
+    background-color: #0d151d;
+    color: #fff;
+    border: 1px solid rgba(13, 202, 240, 0.12);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+}
+
+.sg-show__display--textarea {
+    height: 70px;
+    align-items: flex-start;
+    word-break: break-word;
+    white-space: pre-wrap;
+    overflow: hidden;
+}
+
+/* ── Tabla show: sin inputs, sin columna de acción ── */
+.sg-show__detalle-table thead th:nth-child(1)  { width: 10%; }
+.sg-show__detalle-table thead th:nth-child(2)  { width: 13%; }
+.sg-show__detalle-table thead th:nth-child(3)  { width: 10%; }
+.sg-show__detalle-table thead th:nth-child(4)  { width: 8%;  }
+.sg-show__detalle-table thead th:nth-child(5)  { width: 10%; }
+.sg-show__detalle-table thead th:nth-child(6)  { width: 8%;  }
+.sg-show__detalle-table thead th:nth-child(7)  { width: 9%;  }
+.sg-show__detalle-table thead th:nth-child(8)  { width: 24%; }
+.sg-show__detalle-table thead th:nth-child(9)  { width: 8%;  }
+
+/* ── Botón revisar (al fondo igual que submit-btn) ── */
+.sg-show__revisar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 48px;
+    border-radius: 16px;
+    background: rgba(29, 209, 161, 0.15);
+    border: 1px solid rgba(29, 209, 161, 0.5);
+    color: #1dd1a1;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    letter-spacing: 0.3px;
+}
+
+.sg-show__revisar-btn:hover {
+    background: rgba(29, 209, 161, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(29, 209, 161, 0.2);
+}

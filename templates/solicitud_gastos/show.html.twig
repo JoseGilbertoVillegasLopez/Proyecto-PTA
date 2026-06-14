@@ -1,0 +1,223 @@
+<turbo-frame id="content">
+
+<div class="sg-show">
+
+	{# ===================================================== #}
+	{# TOPBAR: volver + título + badge de estado #}
+	{# ===================================================== #}
+
+	<div class="sg-new__topbar">
+		{% if esEncargado %}
+			<a href="{{ path('app_solicitud_gastos_encargado_index') }}"
+			   class="sg-new__volver"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance">
+				<i class="bi bi-arrow-left-circle-fill"></i>
+				<span>Volver</span>
+			</a>
+		{% else %}
+			<a href="{{ path('app_solicitud_gastos_index') }}"
+			   class="sg-new__volver"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance">
+				<i class="bi bi-arrow-left-circle-fill"></i>
+				<span>Volver</span>
+			</a>
+		{% endif %}
+
+		<div class="sg-show__topbar-right">
+			<h1 class="sg-new__titulo">Solicitud #{{ solicitud.id }}</h1>
+			<span class="sg-badge sg-badge--{{ solicitud.estado }}">
+				{% if solicitud.estado == 'pendiente' %}
+					<i class="bi bi-clock-fill"></i> Pendiente
+				{% else %}
+					<i class="bi bi-check-circle-fill"></i> Revisada
+				{% endif %}
+			</span>
+		</div>
+
+	</div>
+
+	{# ===================================================== #}
+	{# CONTENEDOR PRINCIPAL (igual que new) #}
+	{# ===================================================== #}
+
+	<div class="sg-new__form-container">
+
+		{# Strip: solicitante, depto, fecha de solicitud #}
+		<div class="sg-new__readonly-strip">
+			<div class="sg-new__readonly-item">
+				<span class="sg-new__readonly-label">Solicitante</span>
+				<span class="sg-new__readonly-value">{{ solicitud.solicitante }}</span>
+			</div>
+			<div class="sg-new__readonly-item">
+				<span class="sg-new__readonly-label">Solicitud de recursos</span>
+				<span class="sg-new__readonly-value">{{ solicitud.solicitante.departamento.nombre }}</span>
+			</div>
+			<div class="sg-new__readonly-item">
+				<span class="sg-new__readonly-label">Fecha y hora de solicitud</span>
+				<span class="sg-new__readonly-value">{{ solicitud.fechaSolicitud|date('d/m/Y H:i') }}</span>
+			</div>
+		</div>
+
+		<div class="sg-new__body">
+
+			{# Fila 1: tipo + fecha necesita + banco #}
+			<div class="sg-new__grid-3">
+				<div class="sg-new__field">
+					<span class="sg-new__label">Tipo de solicitud</span>
+					<div class="sg-show__display">{{ solicitud.tipoSolicitud.nombre }}</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Fecha en que se requiere</span>
+					<div class="sg-show__display">{{ solicitud.fechaNecesita|date('d/m/Y') }}</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Banco del beneficiario</span>
+					<div class="sg-show__display">{{ solicitud.banco ? solicitud.banco.nombre : '—' }}</div>
+				</div>
+			</div>
+
+			{# Fila 2: transferencia + cta + concepto (textareas display) #}
+			<div class="sg-concepto-row">
+				<div class="sg-new__field">
+					<span class="sg-new__label">Transferencia en beneficio de</span>
+					<div class="sg-show__display sg-show__display--textarea">
+						{{ solicitud.transferenciaEnBeneficioDe ?: '—' }}
+					</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Cta / Clave del beneficiario</span>
+					<div class="sg-show__display sg-show__display--textarea">
+						{{ solicitud.ctaClaveBeneficiario ?: '—' }}
+					</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Por concepto de</span>
+					<div class="sg-show__display sg-show__display--textarea">
+						{{ solicitud.porConceptoDe }}
+					</div>
+				</div>
+			</div>
+
+			{# Separador #}
+			<div class="sg-new__section-divider">
+				<span class="sg-new__section-label">
+					<i class="bi bi-receipt"></i>
+					Detalle del gasto
+				</span>
+			</div>
+
+			{# ===================================================== #}
+			{# TABLA DETALLE DEL GASTO (estilo igual que new) #}
+			{# ===================================================== #}
+
+			<div class="sg-detalle-wrapper">
+				<div class="sg-detalle-scroll">
+					<table class="sg-detalle-table sg-show__detalle-table">
+						<thead>
+							<tr>
+								<th>Proceso Estratégico</th>
+								<th>Proceso Clave</th>
+								<th>PEI</th>
+								<th>PAIG</th>
+								<th>Meta PDI/PTA</th>
+								<th>Capítulo</th>
+								<th>Partida</th>
+								<th>Descripción</th>
+								<th>Cantidad</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% set rowCount = solicitud.partidas|length %}
+							{% for item in solicitud.partidas %}
+								<tr>
+									{% if loop.first %}
+										<td class="sg-span-cell" rowspan="{{ rowCount }}">
+											<span class="sg-autofield">
+												{{ solicitud.procesoEstrategico ? solicitud.procesoEstrategico.nombre : '—' }}
+											</span>
+										</td>
+										<td class="sg-span-cell" rowspan="{{ rowCount }}">
+											<span class="sg-autofield">
+												{{ solicitud.procesoClave ? solicitud.procesoClave.nombre : '—' }}
+											</span>
+										</td>
+										<td class="sg-span-cell sg-autofield-cell" rowspan="{{ rowCount }}">
+											<span class="sg-autofield">
+												{{ solicitud.procesoClave ? solicitud.procesoClave.pei : '—' }}
+											</span>
+										</td>
+										<td class="sg-span-cell sg-autofield-cell" rowspan="{{ rowCount }}">
+											<span class="sg-autofield">
+												{{ solicitud.procesoClave ? solicitud.procesoClave.paig : '—' }}
+											</span>
+										</td>
+										<td class="sg-span-cell sg-autofield-cell" rowspan="{{ rowCount }}">
+											<span class="sg-autofield">
+												{{ solicitud.procesoClave ? solicitud.procesoClave.metaPdiPta : '—' }}
+											</span>
+										</td>
+									{% endif %}
+									<td class="sg-td-capitulo">
+										<span class="sg-autofield">{{ item.partida.capitulo }}</span>
+									</td>
+									<td class="sg-td-partida-code">
+										<span class="sg-autofield">{{ item.partida.partida }}</span>
+									</td>
+									<td class="sg-td-desc">
+										<span style="font-size:0.82rem;">{{ item.partida.descripcion }}</span>
+									</td>
+									<td class="sg-td-cantidad" style="text-align:right;">
+										<span style="font-weight:700; font-size:0.9rem;">
+											$ {{ item.monto|number_format(2, '.', ',') }}
+										</span>
+									</td>
+								</tr>
+							{% else %}
+								<tr>
+									<td colspan="9" style="text-align:center; color:#9fb3c8; padding:24px;">
+										Sin partidas registradas.
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+				{# Total #}
+				<div class="sg-detalle-footer">
+					<div class="sg-new__total-row">
+						<span class="sg-new__total-label">Total</span>
+						<span class="sg-new__total-valor">
+							$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}
+						</span>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		{# ===================================================== #}
+		{# ACCIÓN DEL ENCARGADO #}
+		{# ===================================================== #}
+
+		{% if esEncargado and solicitud.estado == 'pendiente' %}
+			<div class="sg-new__submit-wrapper">
+				<form method="POST"
+					  action="{{ path('app_solicitud_gastos_revisar', { id: solicitud.id }) }}">
+					<input type="hidden" name="_token"
+						   value="{{ csrf_token('revisar_' ~ solicitud.id) }}">
+					<button type="submit" class="sg-show__revisar-btn">
+						<i class="bi bi-check-circle-fill"></i>
+						Marcar como Revisada
+					</button>
+				</form>
+			</div>
+		{% endif %}
+
+	</div>
+
+</div>
+
+</turbo-frame>

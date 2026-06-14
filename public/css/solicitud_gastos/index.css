@@ -1,0 +1,472 @@
+/* =========================================================
+   SOLICITUD GASTOS — INDEX (usuario + encargado)
+   ========================================================= */
+
+:root {
+    --sg-primary:      #0dcaf0;
+    --sg-success:      #1dd1a1;
+    --sg-warning:      #feca57;
+    --sg-danger:       #ff6b6b;
+    --sg-muted:        #9fb3c8;
+    --sg-border:       rgba(13, 202, 240, 0.25);
+    --sg-border-soft:  rgba(13, 202, 240, 0.15);
+    --sg-bg-card:      #121b23;
+    --sg-bg-card-soft: #16222d;
+    --sg-bg-row:       linear-gradient(145deg, rgba(18, 27, 35, 0.95), rgba(10, 16, 22, 0.9));
+}
+
+/* =========================================================
+   CONTENEDOR
+   ========================================================= */
+
+.sg-index {
+    padding: 8px 0;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.sg-index__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.sg-index__titulo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #e6f1ff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.sg-index__titulo i {
+    color: var(--sg-primary);
+}
+
+/* Header encargado: título centrado, botón a la derecha */
+.sg-index__header--enc {
+    position: relative;
+    justify-content: center;
+}
+
+.sg-index__titulo--enc {
+    font-size: 1.85rem;
+    text-align: center;
+}
+
+.sg-index__header--enc .sg-index__bancos-btn {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 11px 22px;
+    font-size: 0.92rem;
+}
+
+/* =========================================================
+   TOOLBAR (usuario normal)
+   ========================================================= */
+
+.sg-index__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.sg-index__add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 14px;
+    background: rgba(29, 209, 161, 0.15);
+    color: var(--sg-success);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border: 1px solid rgba(29, 209, 161, 0.5);
+    transition: all 0.25s ease;
+}
+
+.sg-index__add-btn:hover {
+    background: rgba(29, 209, 161, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 2px rgba(29, 209, 161, 0.3);
+}
+
+/* =========================================================
+   FILTROS — encargado (card con grupos verticales)
+   ========================================================= */
+
+/* Contenedor card de filtros */
+.sg-filtros-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: rgba(10, 18, 26, 0.7);
+    border: 1px solid rgba(13, 202, 240, 0.12);
+    border-radius: 18px;
+    padding: 14px 20px;
+    margin-bottom: 22px;
+}
+
+/* Grupo individual: label arriba, input abajo */
+.sg-filtro-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 180px;
+    max-width: 320px;
+}
+
+.sg-filtro-group--sm {
+    flex: 0 0 120px;
+    min-width: 120px;
+    max-width: 120px;
+}
+
+.sg-filtro-group--periodo {
+    flex: 0 0 auto;
+    min-width: 220px;
+}
+
+.sg-filtro-group__label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* Inputs y selects dentro de grupos — llenan el ancho del grupo */
+.sg-filtro-group .sg-index__filtro-select,
+.sg-filtro-group .sg-index__filtro-input {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Par de fechas (Desde — Hasta) */
+.sg-filtro-daterange {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sg-filtro-daterange .sg-index__filtro-input {
+    flex: 1;
+    min-width: 0;
+    width: 105px;
+    cursor: pointer;
+    caret-color: transparent;
+}
+
+.sg-filtro-daterange__sep {
+    color: #475569;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+/* Botón limpiar — alineado al fondo */
+.sg-filtro-clear-btn {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 107, 107, 0.35);
+    background: rgba(255, 107, 107, 0.08);
+    color: var(--sg-danger);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sg-filtro-clear-btn:hover {
+    background: rgba(255, 107, 107, 0.22);
+    color: #fff;
+    border-color: rgba(255, 107, 107, 0.6);
+}
+
+/* =========================================================
+   BASE INPUTS / SELECTS (compartidos)
+   ========================================================= */
+
+.sg-index__filtro-input,
+.sg-index__filtro-select {
+    background: rgba(13, 21, 29, 0.9);
+    color: #e6f1ff;
+    border: 1px solid var(--sg-border-soft);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    appearance: none;
+    color-scheme: dark;
+}
+
+.sg-index__filtro-select option,
+.sg-index__filtro-select optgroup {
+    background-color: #0d151d;
+    color: #e6f1ff;
+}
+
+.sg-index__filtro-select {
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--sg-primary) 50%),
+        linear-gradient(135deg, var(--sg-primary) 50%, transparent 50%);
+    background-position:
+        calc(100% - 16px) calc(50% - 3px),
+        calc(100% - 10px) calc(50% - 3px);
+    background-size: 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 34px;
+}
+
+.sg-index__filtro-input:focus,
+.sg-index__filtro-select:focus {
+    outline: none;
+    border-color: var(--sg-primary);
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.18);
+}
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.sg-index__table-wrapper {
+    overflow-x: auto;
+}
+
+.sg-index__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    background: linear-gradient(145deg, rgba(10, 18, 26, 0.95), rgba(6, 12, 18, 0.9));
+    border-radius: 20px;
+    padding: 10px;
+    box-shadow: inset 0 0 0 1px rgba(13, 202, 240, 0.15), 0 16px 40px rgba(0, 0, 0, 0.8);
+}
+
+.sg-index__table thead th {
+    background: rgba(0, 0, 0, 0.6);
+    color: #e6f1ff;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    padding: 12px 14px;
+    border: none;
+    text-align: left;
+}
+
+.sg-index__table thead th:first-child { border-radius: 10px 0 0 10px; }
+.sg-index__table thead th:last-child  { border-radius: 0 10px 10px 0; }
+
+/* Alinear cada columna igual que sus <td> correspondientes */
+.sg-index__table thead th:nth-child(1) { text-align: center; }  /* # */
+.sg-index__table thead th:nth-child(4) { text-align: center; }  /* Para cuándo */
+.sg-index__table thead th:nth-child(5) { text-align: right;  }  /* Total */
+.sg-index__table thead th:nth-child(6) { text-align: center; }  /* Estado */
+.sg-index__table thead th:nth-child(7) { text-align: center; }  /* Acciones */
+
+.sg-index__table tbody tr {
+    background: var(--sg-bg-row);
+    box-shadow: inset 0 0 0 1px var(--sg-border-soft), 0 8px 22px rgba(0, 0, 0, 0.6);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sg-index__table tbody tr:hover {
+    transform: translateY(-2px);
+    box-shadow: inset 0 0 0 1px rgba(13, 202, 240, 0.4), 0 14px 32px rgba(0, 0, 0, 0.8);
+}
+
+.sg-index__table td,
+.sg-index__table th {
+    padding: 10px 14px;
+    border: none;
+    vertical-align: middle;
+}
+
+/* Todas las celdas de datos en blanco */
+.sg-index__table tbody td {
+    color: #fff;
+}
+
+.sg-index__col-id {
+    text-align: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    width: 4%;
+}
+
+.sg-index__col-tipo {
+    font-weight: 600;
+    font-size: 0.88rem;
+    max-width: 160px;
+}
+
+.sg-index__col-solicitante {
+    font-weight: 600;
+}
+
+.sg-index__col-depto {
+    font-size: 0.85rem;
+}
+
+.sg-index__col-concepto {
+    font-size: 0.88rem;
+    max-width: 220px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sg-index__col-fecha {
+    text-align: center;
+    font-family: monospace;
+    font-size: 0.88rem;
+    white-space: nowrap;
+}
+
+.sg-index__col-total {
+    text-align: right;
+    font-weight: 700;
+    color: var(--sg-success);
+    white-space: nowrap;
+}
+
+.sg-index__col-estado {
+    text-align: center;
+}
+
+.sg-index__col-acciones {
+    text-align: center;
+    width: 60px;
+}
+
+/* =========================================================
+   BADGE ESTADO
+   ========================================================= */
+
+.sg-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sg-badge--pendiente {
+    background: rgba(254, 202, 87, 0.15);
+    color: var(--sg-warning);
+    border: 1px solid rgba(254, 202, 87, 0.4);
+}
+
+.sg-badge--revisada {
+    background: rgba(29, 209, 161, 0.15);
+    color: var(--sg-success);
+    border: 1px solid rgba(29, 209, 161, 0.4);
+}
+
+/* =========================================================
+   BOTÓN ACCIÓN
+   ========================================================= */
+
+.sg-index__action-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.sg-index__action-btn--ver {
+    background: rgba(13, 202, 240, 0.15);
+    color: var(--sg-primary);
+}
+
+.sg-index__action-btn--ver:hover {
+    background: rgba(13, 202, 240, 0.3);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.sg-index__empty {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--sg-muted);
+}
+
+.sg-index__empty i {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+
+/* =========================================================
+   TOOLBAR ENCARGADO (con botón bancos + filtros en misma fila)
+   ========================================================= */
+
+.sg-index__toolbar--enc {
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.sg-index__bancos-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    border-radius: 12px;
+    background: rgba(13, 202, 240, 0.1);
+    border: 1px solid rgba(13, 202, 240, 0.35);
+    color: var(--sg-primary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.sg-index__bancos-btn:hover {
+    background: rgba(13, 202, 240, 0.22);
+    color: #fff;
+}
+
+/* Transition del tbody al filtrar */
+#sg-tabla-body {
+    transition: opacity 0.15s ease;
+}
