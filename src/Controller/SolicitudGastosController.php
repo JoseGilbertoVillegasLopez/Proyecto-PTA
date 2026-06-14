@@ -12,6 +12,7 @@ use App\Repository\PuestoRepository;
 use App\Repository\SolicitudGastosBancoRepository;
 use App\Repository\SolicitudGastosRepository;
 use App\Repository\TipoSolicitudRepository;
+use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use App\Service\SolicitudGastos\GuardarSolicitudGastosService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,10 +23,19 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/solicitud-gastos')]
 final class SolicitudGastosController extends AbstractController
 {
-    // TODO: reemplazar por ModuloAccesoResolver cuando módulo-accesos esté implementado
+    public function __construct(
+        private ModuloAccesoResolver $moduloAccesoResolver,
+    ) {}
+
     private function esEncargado(): bool
     {
-        return $this->isGranted('ROLE_ADMIN');
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            return false;
+        }
+
+        return $this->isGranted('ROLE_ADMIN')
+            || $this->moduloAccesoResolver->esEncargado($user, 'solicitud_gastos');
     }
 
     /* =====================================================

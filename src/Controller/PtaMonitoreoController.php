@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\EncabezadoRepository;
+use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use App\Service\Pta\PtaAccessResolver;
 use App\Service\Pta\PtaMonitoringService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +20,8 @@ class PtaMonitoreoController extends AbstractController
         Request $request,
         EncabezadoRepository $encabezadoRepository,
         PtaAccessResolver $ptaAccessResolver,
-        PtaMonitoringService $ptaMonitoringService
+        PtaMonitoringService $ptaMonitoringService,
+        ModuloAccesoResolver $moduloAccesoResolver,
     ): Response {
 
         $anioActual = (int) date('Y');
@@ -31,6 +34,20 @@ class PtaMonitoreoController extends AbstractController
         $personal = $usuario?->getPersonal();
 
         $access = $ptaAccessResolver->resolve($usuario);
+
+        // Si el usuario tiene acceso configurado al módulo monitoreo y su scope sería PROPIO,
+        // elevar a GLOBAL para que vea todos los PTAs.
+        if ($usuario instanceof User
+            && $moduloAccesoResolver->tieneAcceso($usuario, 'monitoreo')
+            && $access['scope'] === 'PROPIO'
+        ) {
+            $access = [
+                'scope'                  => 'GLOBAL',
+                'puestos_visibles'       => [],
+                'departamentos_visibles' => [],
+                'filters'                => ['anio' => true, 'puesto' => true, 'departamento' => true],
+            ];
+        }
 
         $filters = [
             'anio' => $anio,

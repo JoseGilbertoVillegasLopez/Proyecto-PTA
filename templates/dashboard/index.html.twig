@@ -53,6 +53,12 @@ Sfjs.loadToolbar();
 							</a>
 						</li>
 
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'modulos_acceso' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Gestión de Accesos
+							</a>
+						</li>
+
 					{% endif %}
 
 					<li class="pta-dashboard-menu-item">
@@ -93,7 +99,7 @@ Sfjs.loadToolbar();
 						</a>
 					</li>
 
-					{% if ptaAccess.scope in ['GLOBAL', 'JERARQUICO'] %}
+					{% if ptaAccess.scope in ['GLOBAL', 'JERARQUICO'] or tiene_acceso_modulo('monitoreo') %}
 						<li class="pta-dashboard-menu-item">
 							<a href="{{ path('app_admin_dashboard', { section: 'monitoreo' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 								Monitoreo PTA
@@ -107,13 +113,13 @@ Sfjs.loadToolbar();
 						</a>
 					</li>
 
-					{% if is_granted('ROLE_ADMIN') %}
+					{% if is_granted('ROLE_ADMIN') or es_encargado_modulo('solicitud_gastos') %}
 						<li class="pta-dashboard-menu-item">
 							<a href="{{ path('app_admin_dashboard', { section: 'solicitud_gastos_encargado' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 								Gastos — Encargado
 							</a>
 						</li>
-						{% endif %}
+					{% endif %}
 
 				</ul>
 
@@ -147,7 +153,8 @@ Sfjs.loadToolbar();
     'historial_pta': path('pta_historial_index'),
     'solicitud_gastos': path('app_solicitud_gastos_index'),
     'solicitud_gastos_encargado': path('app_solicitud_gastos_encargado_index'),
-    'solicitud_gastos_bancos': path('app_sg_banco_index')
+    'solicitud_gastos_bancos': path('app_sg_banco_index'),
+    'modulos_acceso': path('app_admin_modulo_acceso_index')
 	} %}
 
 

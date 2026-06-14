@@ -1,0 +1,136 @@
+<turbo-frame id="content">
+<div class="ma-edit-card" data-ma-view="edit">
+
+    <div class="ma-edit-header">
+        <a href="{{ path('app_admin_modulo_acceso_index') }}"
+           data-turbo-frame="content"
+           data-turbo-action="advance"
+           class="ma-edit-back">
+            <i class="bi bi-arrow-left-circle-fill"></i>
+            Volver al listado
+        </a>
+        <h4 class="ma-edit-title">
+            <i class="bi bi-shield-lock-fill"></i>
+            {{ modulo.label }}
+        </h4>
+        {% if modulo.descripcion %}
+            <p class="ma-edit-subtitle">{{ modulo.descripcion }}</p>
+        {% endif %}
+    </div>
+
+    <form id="ma-edit-form"
+          method="POST"
+          action="{{ path('app_admin_modulo_acceso_save', { id: modulo.id }) }}">
+
+        <input type="hidden" name="_token" value="{{ csrf_token('modulo_acceso_' ~ modulo.id) }}">
+        <div id="ma-inputs-encargados"></div>
+        <div id="ma-inputs-con-acceso"></div>
+
+        <div class="ma-edit-columns">
+
+            {# ─── ENCARGADOS ─── #}
+            <div class="ma-edit-col ma-edit-col--enc">
+                <div class="ma-edit-col-header">
+                    <i class="bi bi-person-fill-gear"></i>
+                    <span>Encargados</span>
+                    <span class="ma-col-count" id="count-encargados">{{ encargados|length }}</span>
+                </div>
+                <div class="ma-edit-col-body" id="list-encargados">
+                    {% for puesto in encargados %}
+                        <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
+                            <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
+                            <div class="ma-puesto-card-actions">
+                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--right"
+                                        data-from="encargados" data-to="con_acceso"
+                                        title="Mover a Con acceso">
+                                    <i class="bi bi-arrow-right"></i>
+                                </button>
+                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--remove"
+                                        data-from="encargados"
+                                        title="Quitar acceso">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# ─── CON ACCESO ─── #}
+            <div class="ma-edit-col ma-edit-col--acc">
+                <div class="ma-edit-col-header">
+                    <i class="bi bi-person-check-fill"></i>
+                    <span>Con acceso</span>
+                    <button type="button" class="ma-todos-btn" id="ma-todos-btn" title="Mover todos a Con acceso">
+                        <i class="bi bi-people-fill"></i> Todos
+                    </button>
+                    <span class="ma-col-count" id="count-con-acceso">{{ con_acceso|length }}</span>
+                </div>
+                <div class="ma-edit-col-body" id="list-con-acceso">
+                    {% for puesto in con_acceso %}
+                        <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
+                            <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
+                            <div class="ma-puesto-card-actions">
+                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--left"
+                                        data-from="con_acceso" data-to="encargados"
+                                        title="Promover a Encargado">
+                                    <i class="bi bi-arrow-left"></i>
+                                </button>
+                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--remove"
+                                        data-from="con_acceso"
+                                        title="Quitar acceso">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# ─── SIN ACCESO ─── #}
+            <div class="ma-edit-col ma-edit-col--sin">
+                <div class="ma-edit-col-header">
+                    <i class="bi bi-person-slash"></i>
+                    <span>Sin acceso</span>
+                    <span class="ma-col-count" id="count-sin-acceso">{{ sin_acceso|length }}</span>
+                </div>
+                <div class="ma-edit-col-body" id="list-sin-acceso">
+                    {% for puesto in sin_acceso %}
+                        <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
+                            <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
+                            <div class="ma-puesto-card-actions">
+                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--enc"
+                                        data-from="sin_acceso" data-to="encargados"
+                                        title="Agregar como Encargado">
+                                    <i class="bi bi-person-fill-gear"></i>
+                                </button>
+                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--acc"
+                                        data-from="sin_acceso" data-to="con_acceso"
+                                        title="Agregar con acceso">
+                                    <i class="bi bi-person-check-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>{# /.ma-edit-columns #}
+
+        <div class="ma-edit-footer">
+            <a href="{{ path('app_admin_modulo_acceso_index') }}"
+               data-turbo-frame="content"
+               data-turbo-action="advance"
+               class="ma-edit-cancel-btn">
+                Cancelar
+            </a>
+            <button type="submit" class="ma-edit-save-btn">
+                <i class="bi bi-floppy-fill"></i>
+                Guardar cambios
+            </button>
+        </div>
+
+    </form>
+
+</div>
+</turbo-frame>
