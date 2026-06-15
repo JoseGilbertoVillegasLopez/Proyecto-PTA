@@ -1,0 +1,97 @@
+<turbo-frame id="content">
+	<section class="reporte-indicadores-new" data-page="reporte-indicadores-new">
+		<header class="reporte-indicadores-new__header">
+			<a href="{{ path('app_reporte_indicadores_index') }}" data-turbo-frame="content" data-turbo-action="advance" class="reporte-indicadores-new__back-btn" title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<h1 class="reporte-indicadores-new__title">
+				<i class="bi bi-file-earmark-plus"></i>
+				Reportes trimestrales {{ datos.anio_actual }}
+			</h1>
+
+			<div class="reporte-indicadores-new__header-spacer"></div>
+		</header>
+
+		<section class="reporte-indicadores-new__calendar">
+			<h2 class="reporte-indicadores-new__section-title">Fechas de entrega</h2>
+			<div class="reporte-indicadores-new__calendar-list">
+				{% for item in datos.fechas_reporte %}
+					<article class="reporte-indicadores-new__calendar-item">
+						<div class="reporte-indicadores-new__calendar-period">{{ item.periodo }}</div>
+						<div class="reporte-indicadores-new__calendar-date">{{ item.fecha }}</div>
+					</article>
+				{% endfor %}
+			</div>
+		</section>
+
+		<section class="reporte-indicadores-new__trimestres">
+			<div class="reporte-indicadores-new__trimestres-grid">
+				{% for trimestre in datos.trimestres %}
+					<article class="reporte-indicadores-new__trimestre-card reporte-indicadores-new__trimestre-card--{{ trimestre.estado_key }}">
+						<div class="reporte-indicadores-new__trimestre-accent reporte-indicadores-new__trimestre-accent--{{ trimestre.estado_key }}"></div>
+
+						<header class="reporte-indicadores-new__trimestre-header">
+							<div>
+								<div class="reporte-indicadores-new__trimestre-number">Trimestre {{ trimestre.numero }}</div>
+								<h3 class="reporte-indicadores-new__trimestre-title">{{ trimestre.nombre }}</h3>
+							</div>
+							<span class="reporte-indicadores-new__trimestre-status reporte-indicadores-new__trimestre-status--{{ trimestre.estado_key }}">
+								{{ trimestre.estado_label }}
+							</span>
+						</header>
+
+						<div class="reporte-indicadores-new__trimestre-body">
+							<div class="reporte-indicadores-new__trimestre-info">
+								<span>Periodo</span>
+								<strong>{{ trimestre.periodo_label }}</strong>
+							</div>
+							<div class="reporte-indicadores-new__trimestre-info">
+								<span>Ventana de entrega</span>
+								<strong>{{ trimestre.ventana_texto }}</strong>
+							</div>
+							<div class="reporte-indicadores-new__trimestre-message reporte-indicadores-new__trimestre-message--{{ trimestre.estado_key }}">
+								{{ trimestre.estado_mensaje }}
+							</div>
+						</div>
+
+						<div class="reporte-indicadores-new__trimestre-actions">
+							{% if trimestre.puede_abrir and trimestre.reporte_id %}
+								<a href="{{ path('app_reporte_indicadores_trimestre_show', { id: trimestre.reporte_id }) }}" data-turbo-frame="content" data-turbo-action="advance" class="reporte-indicadores-new__trimestre-action reporte-indicadores-new__trimestre-action--open">
+									<i class="bi bi-eye"></i>
+									<span>Abrir reporte</span>
+								</a>
+								{% if trimestre.estado_key != 'entregado' %}
+									<a href="{{ path('app_reporte_indicadores_trimestre_edit', { id: trimestre.reporte_id }) }}" data-turbo-frame="content" data-turbo-action="advance" class="reporte-indicadores-new__trimestre-action reporte-indicadores-new__trimestre-action--edit">
+										<i class="bi bi-pencil-square"></i>
+										<span>Editar</span>
+									</a>
+									<form method="post" action="{{ path('app_reporte_indicadores_trimestre_entregar', { id: trimestre.reporte_id }) }}" data-turbo-frame="content">
+										<input type="hidden" name="_token" value="{{ csrf_token('reporte_indicadores_entregar') }}">
+										<button type="submit" class="reporte-indicadores-new__trimestre-action reporte-indicadores-new__trimestre-action--deliver">
+											<i class="bi bi-send-check"></i>
+											<span>Entregar</span>
+										</button>
+									</form>
+								{% endif %}
+							{% elseif trimestre.puede_crear %}
+								<form method="post" action="{{ path('app_reporte_indicadores_trimestre_crear', { trimestre: trimestre.numero }) }}" data-turbo-frame="content">
+									<input type="hidden" name="_token" value="{{ csrf_token('reporte_indicadores_trimestre_crear') }}">
+									<input type="hidden" name="anio" value="{{ datos.anio_actual }}">
+									<button type="submit" class="reporte-indicadores-new__trimestre-action reporte-indicadores-new__trimestre-action--create">
+										<i class="bi bi-plus-circle"></i>
+										<span>Crear reporte</span>
+									</button>
+								</form>
+							{% else %}
+								<div class="reporte-indicadores-new__trimestre-action-empty">
+									Sin acciones disponibles por el momento
+								</div>
+							{% endif %}
+						</div>
+					</article>
+				{% endfor %}
+			</div>
+		</section>
+	</section>
+</turbo-frame>
