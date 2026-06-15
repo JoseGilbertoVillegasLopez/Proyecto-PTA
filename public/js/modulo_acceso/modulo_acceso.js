@@ -7,129 +7,170 @@
         if (root.dataset.maInit === '1') return;
         root.dataset.maInit = '1';
 
+        // ── Estado independiente por columna ─────────────────────────────────
+        const encSet = new Set();
+        const accSet = new Set();
+
         // ── Helpers ──────────────────────────────────────────────────────────
 
-        function getList(name) {
-            return root.querySelector('#list-' + name);
+        function listEl(name) {
+            return root.querySelector('#list-' + name.replace(/_/g, '-'));
         }
 
         function updateCount(name) {
-            const list  = getList(name);
-            const count = root.querySelector('#count-' + name.replace(/_/g, '-'));
-            if (list && count) {
-                count.textContent = list.querySelectorAll('.ma-puesto-card').length;
+            const badge = root.querySelector('#count-' + name.replace(/_/g, '-'));
+            const list  = listEl(name);
+            if (badge && list) {
+                badge.textContent = list.querySelectorAll('.ma-puesto-card').length;
             }
         }
 
-        function buildActions(colName) {
-            if (colName === 'encargados') {
-                return `
-                    <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--right"
-                            data-from="encargados" data-to="con_acceso" title="Mover a Con acceso">
-                        <i class="bi bi-arrow-right"></i>
-                    </button>
-                    <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--remove"
-                            data-from="encargados" title="Quitar acceso">
-                        <i class="bi bi-x-lg"></i>
-                    </button>`;
+        // Reconstruye los botones del card en la columna "Puestos"
+        function refreshPuestosCard(id) {
+            const card = listEl('puestos').querySelector(`.ma-puesto-card[data-id="${id}"]`);
+            if (!card) return;
+
+            const actions = card.querySelector('.ma-puesto-card-actions');
+            actions.innerHTML = '';
+
+            if (!encSet.has(id)) {
+                const btn = document.createElement('button');
+                btn.type      = 'button';
+                btn.className = 'ma-puesto-card-btn ma-puesto-card-btn--enc';
+                btn.title     = 'Agregar como Encargado';
+                btn.innerHTML = '<i class="bi bi-person-fill-gear"></i>';
+                actions.appendChild(btn);
             }
-            if (colName === 'con_acceso') {
-                return `
-                    <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--left"
-                            data-from="con_acceso" data-to="encargados" title="Promover a Encargado">
-                        <i class="bi bi-arrow-left"></i>
-                    </button>
-                    <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--remove"
-                            data-from="con_acceso" title="Quitar acceso">
-                        <i class="bi bi-x-lg"></i>
-                    </button>`;
+            if (!accSet.has(id)) {
+                const btn = document.createElement('button');
+                btn.type      = 'button';
+                btn.className = 'ma-puesto-card-btn ma-puesto-card-btn--acc';
+                btn.title     = 'Agregar con acceso';
+                btn.innerHTML = '<i class="bi bi-person-check-fill"></i>';
+                actions.appendChild(btn);
             }
-            // sin_acceso
-            return `
-                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--enc"
-                        data-from="sin_acceso" data-to="encargados" title="Agregar como Encargado">
-                    <i class="bi bi-person-fill-gear"></i>
-                </button>
-                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--acc"
-                        data-from="sin_acceso" data-to="con_acceso" title="Agregar con acceso">
-                    <i class="bi bi-person-check-fill"></i>
-                </button>`;
+
+            bindPuestosCard(card);
         }
 
-        function moveCard(card, fromName, toName) {
-            const toList = getList(toName);
-            if (!toList) return;
+        // Card para Encargados / Con acceso (solo botón quitar)
+        function makeColCard(id, nombre, colName) {
+            const div = document.createElement('div');
+            div.className      = 'ma-puesto-card';
+            div.dataset.id     = id;
+            div.dataset.nombre = nombre;
 
-            card.querySelector('.ma-puesto-card-actions').innerHTML = buildActions(toName);
-            toList.appendChild(card);
+            const btn = document.createElement('button');
+            btn.type      = 'button';
+            btn.className = 'ma-puesto-card-btn ma-puesto-card-btn--remove';
+            btn.title     = colName === 'encargados' ? 'Quitar de Encargados' : 'Quitar de Con acceso';
+            btn.innerHTML = '<i class="bi bi-x-lg"></i>';
+            btn.addEventListener('click', () => removeFromCol(id, nombre, colName));
 
-            updateCount(fromName);
-            updateCount(toName);
-            bindCard(card);
+            div.innerHTML = `<span class="ma-puesto-card-nombre">${nombre}</span>`;
+            const actions = document.createElement('div');
+            actions.className = 'ma-puesto-card-actions';
+            actions.appendChild(btn);
+            div.appendChild(actions);
+
+            return div;
         }
 
-        function removeCard(card, fromName) {
-            card.querySelector('.ma-puesto-card-actions').innerHTML = buildActions('sin_acceso');
-            getList('sin_acceso').appendChild(card);
-            updateCount(fromName);
-            updateCount('sin_acceso');
-            bindCard(card);
+        // ── Operaciones ───────────────────────────────────────────────────────
+
+        function addToCol(id, nombre, colName) {
+            const set = colName === 'encargados' ? encSet : accSet;
+            if (set.has(id)) return;
+            set.add(id);
+
+            listEl(colName).appendChild(makeColCard(id, nombre, colName));
+            updateCount(colName);
+            refreshPuestosCard(id);
         }
 
-        function bindCard(card) {
-            card.querySelectorAll('button[data-from]').forEach(btn => {
+        function removeFromCol(id, nombre, colName) {
+            const set = colName === 'encargados' ? encSet : accSet;
+            set.delete(id);
+
+            const card = listEl(colName).querySelector(`.ma-puesto-card[data-id="${id}"]`);
+            if (card) card.remove();
+            updateCount(colName);
+            refreshPuestosCard(id);
+        }
+
+        function bindPuestosCard(card) {
+            card.querySelectorAll('button').forEach(btn => {
                 const fresh = btn.cloneNode(true);
                 btn.replaceWith(fresh);
-
                 fresh.addEventListener('click', () => {
-                    const from = fresh.dataset.from;
-                    const to   = fresh.dataset.to;
-                    if (fresh.classList.contains('ma-puesto-card-btn--remove')) {
-                        removeCard(card, from);
-                    } else {
-                        moveCard(card, from, to);
+                    const id     = card.dataset.id;
+                    const nombre = card.dataset.nombre;
+                    if (fresh.classList.contains('ma-puesto-card-btn--enc')) {
+                        addToCol(id, nombre, 'encargados');
+                    } else if (fresh.classList.contains('ma-puesto-card-btn--acc')) {
+                        addToCol(id, nombre, 'con_acceso');
                     }
                 });
             });
         }
 
-        // ── Botón "Todos" — mueve todos los de sin_acceso a con_acceso ────────
+        // ── Inicializar desde el DOM renderizado por Twig ─────────────────────
+
+        listEl('encargados').querySelectorAll('.ma-puesto-card').forEach(card => {
+            encSet.add(card.dataset.id);
+            const btn = card.querySelector('button');
+            if (btn) btn.addEventListener('click', () => {
+                removeFromCol(card.dataset.id, card.dataset.nombre, 'encargados');
+            });
+        });
+
+        listEl('con_acceso').querySelectorAll('.ma-puesto-card').forEach(card => {
+            accSet.add(card.dataset.id);
+            const btn = card.querySelector('button');
+            if (btn) btn.addEventListener('click', () => {
+                removeFromCol(card.dataset.id, card.dataset.nombre, 'con_acceso');
+            });
+        });
+
+        listEl('puestos').querySelectorAll('.ma-puesto-card').forEach(card => {
+            bindPuestosCard(card);
+        });
+
+        // ── Botón "Todos" — agrega todos los puestos a Con acceso ────────────
 
         const todosBtn = root.querySelector('#ma-todos-btn');
         if (todosBtn) {
             todosBtn.addEventListener('click', () => {
-                const sinList = getList('sin_acceso');
-                const cards   = Array.from(sinList.querySelectorAll('.ma-puesto-card'));
-                cards.forEach(card => moveCard(card, 'sin_acceso', 'con_acceso'));
+                listEl('puestos').querySelectorAll('.ma-puesto-card').forEach(card => {
+                    addToCol(card.dataset.id, card.dataset.nombre, 'con_acceso');
+                });
             });
         }
 
-        // ── Inicializar botones en todas las cards existentes ─────────────────
-
-        root.querySelectorAll('.ma-puesto-card').forEach(card => bindCard(card));
-
-        // ── Al submit: serializar ids en inputs hidden ─────────────────────────
+        // ── Serializar al submit ──────────────────────────────────────────────
 
         const form = root.querySelector('#ma-edit-form');
         if (form) {
             form.addEventListener('submit', () => {
-                root.querySelector('#ma-inputs-encargados').innerHTML = '';
-                root.querySelector('#ma-inputs-con-acceso').innerHTML  = '';
+                const encInputs = root.querySelector('#ma-inputs-encargados');
+                const accInputs = root.querySelector('#ma-inputs-con-acceso');
+                encInputs.innerHTML = '';
+                accInputs.innerHTML = '';
 
-                getList('encargados').querySelectorAll('.ma-puesto-card').forEach(card => {
-                    const input = document.createElement('input');
-                    input.type  = 'hidden';
-                    input.name  = 'encargados[]';
-                    input.value = card.dataset.id;
-                    root.querySelector('#ma-inputs-encargados').appendChild(input);
+                encSet.forEach(id => {
+                    const inp = document.createElement('input');
+                    inp.type  = 'hidden';
+                    inp.name  = 'encargados[]';
+                    inp.value = id;
+                    encInputs.appendChild(inp);
                 });
 
-                getList('con_acceso').querySelectorAll('.ma-puesto-card').forEach(card => {
-                    const input = document.createElement('input');
-                    input.type  = 'hidden';
-                    input.name  = 'con_acceso[]';
-                    input.value = card.dataset.id;
-                    root.querySelector('#ma-inputs-con-acceso').appendChild(input);
+                accSet.forEach(id => {
+                    const inp = document.createElement('input');
+                    inp.type  = 'hidden';
+                    inp.name  = 'con_acceso[]';
+                    inp.value = id;
+                    accInputs.appendChild(inp);
                 });
             });
         }

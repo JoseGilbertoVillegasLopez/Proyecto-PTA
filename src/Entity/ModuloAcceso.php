@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ModuloAccesoRepository::class)]
 #[ORM\Table(name: 'modulo_acceso')]
-#[ORM\UniqueConstraint(name: 'uniq_modulo_puesto', columns: ['modulo_id', 'puesto_id'])]
+#[ORM\UniqueConstraint(name: 'uniq_modulo_puesto_tipo', columns: ['modulo_id', 'puesto_id', 'tipo'])]
 class ModuloAcceso
 {
     #[ORM\Id]

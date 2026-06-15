@@ -99,7 +99,7 @@ Sfjs.loadToolbar();
 						</a>
 					</li>
 
-					{% if ptaAccess.scope in ['GLOBAL', 'JERARQUICO'] or tiene_acceso_modulo('monitoreo') %}
+					{% if tiene_acceso_modulo('monitoreo') %}
 						<li class="pta-dashboard-menu-item">
 							<a href="{{ path('app_admin_dashboard', { section: 'monitoreo' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 								Monitoreo PTA
@@ -107,13 +107,15 @@ Sfjs.loadToolbar();
 						</li>
 					{% endif %}
 
-					<li class="pta-dashboard-menu-item">
-						<a href="{{ path('app_admin_dashboard', { section: 'solicitud_gastos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
-							Solicitud de Gastos
-						</a>
-					</li>
+					{% if tiene_acceso_modulo('solicitud_gastos') %}
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'solicitud_gastos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Solicitud de Gastos
+							</a>
+						</li>
+					{% endif %}
 
-					{% if is_granted('ROLE_ADMIN') or es_encargado_modulo('solicitud_gastos') %}
+					{% if es_encargado_modulo('solicitud_gastos') %}
 						<li class="pta-dashboard-menu-item">
 							<a href="{{ path('app_admin_dashboard', { section: 'solicitud_gastos_encargado' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 								Gastos — Encargado

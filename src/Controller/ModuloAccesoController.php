@@ -76,24 +76,20 @@ final class ModuloAccesoController extends AbstractController
 
         $encargados = [];
         $conAcceso  = [];
-        $sinAcceso  = [];
 
         foreach ($todosLosPuestos as $puesto) {
             $pid = $puesto->getId();
-            if (in_array($pid, $encargadosIds, true)) {
-                $encargados[] = $puesto;
-            } elseif (in_array($pid, $conAccesoIds, true)) {
-                $conAcceso[] = $puesto;
-            } else {
-                $sinAcceso[] = $puesto;
-            }
+            if (in_array($pid, $encargadosIds, true)) { $encargados[] = $puesto; }
+            if (in_array($pid, $conAccesoIds,  true)) { $conAcceso[]  = $puesto; }
         }
 
         $vars = [
-            'modulo'     => $modulo,
-            'encargados' => $encargados,
-            'con_acceso' => $conAcceso,
-            'sin_acceso' => $sinAcceso,
+            'modulo'          => $modulo,
+            'encargados'      => $encargados,
+            'con_acceso'      => $conAcceso,
+            'todos_puestos'   => $todosLosPuestos,
+            'encargados_ids'  => $encargadosIds,
+            'con_acceso_ids'  => $conAccesoIds,
         ];
 
         if ($request->headers->get('Turbo-Frame')) {

@@ -27,6 +27,16 @@ final class SolicitudGastosController extends AbstractController
         private ModuloAccesoResolver $moduloAccesoResolver,
     ) {}
 
+    private function tieneAcceso(): bool
+    {
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            return false;
+        }
+
+        return $this->moduloAccesoResolver->tieneAcceso($user, 'solicitud_gastos');
+    }
+
     private function esEncargado(): bool
     {
         $user = $this->getUser();
@@ -34,8 +44,7 @@ final class SolicitudGastosController extends AbstractController
             return false;
         }
 
-        return $this->isGranted('ROLE_ADMIN')
-            || $this->moduloAccesoResolver->esEncargado($user, 'solicitud_gastos');
+        return $this->moduloAccesoResolver->esEncargado($user, 'solicitud_gastos');
     }
 
     /* =====================================================
@@ -50,6 +59,10 @@ final class SolicitudGastosController extends AbstractController
 
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
+        }
+
+        if (!$this->tieneAcceso()) {
+            throw $this->createAccessDeniedException('No tienes acceso al módulo de solicitud de gastos.');
         }
 
         $personal = $user->getPersonal();
@@ -95,6 +108,10 @@ final class SolicitudGastosController extends AbstractController
 
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
+        }
+
+        if (!$this->tieneAcceso()) {
+            throw $this->createAccessDeniedException('No tienes acceso al módulo de solicitud de gastos.');
         }
 
         $personal = $user->getPersonal();

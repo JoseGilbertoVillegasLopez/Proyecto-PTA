@@ -40,14 +40,8 @@
                         <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
                             <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
                             <div class="ma-puesto-card-actions">
-                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--right"
-                                        data-from="encargados" data-to="con_acceso"
-                                        title="Mover a Con acceso">
-                                    <i class="bi bi-arrow-right"></i>
-                                </button>
                                 <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--remove"
-                                        data-from="encargados"
-                                        title="Quitar acceso">
+                                        title="Quitar de Encargados">
                                     <i class="bi bi-x-lg"></i>
                                 </button>
                             </div>
@@ -61,7 +55,7 @@
                 <div class="ma-edit-col-header">
                     <i class="bi bi-person-check-fill"></i>
                     <span>Con acceso</span>
-                    <button type="button" class="ma-todos-btn" id="ma-todos-btn" title="Mover todos a Con acceso">
+                    <button type="button" class="ma-todos-btn" id="ma-todos-btn" title="Agregar todos">
                         <i class="bi bi-people-fill"></i> Todos
                     </button>
                     <span class="ma-col-count" id="count-con-acceso">{{ con_acceso|length }}</span>
@@ -71,14 +65,8 @@
                         <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
                             <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
                             <div class="ma-puesto-card-actions">
-                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--left"
-                                        data-from="con_acceso" data-to="encargados"
-                                        title="Promover a Encargado">
-                                    <i class="bi bi-arrow-left"></i>
-                                </button>
                                 <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--remove"
-                                        data-from="con_acceso"
-                                        title="Quitar acceso">
+                                        title="Quitar de Con acceso">
                                     <i class="bi bi-x-lg"></i>
                                 </button>
                             </div>
@@ -87,28 +75,30 @@
                 </div>
             </div>
 
-            {# ─── SIN ACCESO ─── #}
+            {# ─── TODOS LOS PUESTOS ─── #}
             <div class="ma-edit-col ma-edit-col--sin">
                 <div class="ma-edit-col-header">
-                    <i class="bi bi-person-slash"></i>
-                    <span>Sin acceso</span>
-                    <span class="ma-col-count" id="count-sin-acceso">{{ sin_acceso|length }}</span>
+                    <i class="bi bi-people"></i>
+                    <span>Puestos</span>
+                    <span class="ma-col-count" id="count-puestos">{{ todos_puestos|length }}</span>
                 </div>
-                <div class="ma-edit-col-body" id="list-sin-acceso">
-                    {% for puesto in sin_acceso %}
+                <div class="ma-edit-col-body" id="list-puestos">
+                    {% for puesto in todos_puestos %}
                         <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
                             <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
                             <div class="ma-puesto-card-actions">
-                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--enc"
-                                        data-from="sin_acceso" data-to="encargados"
-                                        title="Agregar como Encargado">
-                                    <i class="bi bi-person-fill-gear"></i>
-                                </button>
-                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--acc"
-                                        data-from="sin_acceso" data-to="con_acceso"
-                                        title="Agregar con acceso">
-                                    <i class="bi bi-person-check-fill"></i>
-                                </button>
+                                {% if puesto.id not in encargados_ids %}
+                                    <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--enc"
+                                            title="Agregar como Encargado">
+                                        <i class="bi bi-person-fill-gear"></i>
+                                    </button>
+                                {% endif %}
+                                {% if puesto.id not in con_acceso_ids %}
+                                    <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--acc"
+                                            title="Agregar con acceso">
+                                        <i class="bi bi-person-check-fill"></i>
+                                    </button>
+                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}
