@@ -236,17 +236,6 @@
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.28);
 }
 
-.indicadores-basicos-index-add-btn--reports {
-    background: rgba(254, 202, 87, 0.14);
-    color: #feca57;
-    border-color: rgba(254, 202, 87, 0.46);
-}
-
-.indicadores-basicos-index-add-btn--reports:hover {
-    background: rgba(254, 202, 87, 0.28);
-    box-shadow: 0 0 0 2px rgba(254, 202, 87, 0.22);
-}
-
 /* =========================================================
    BUSCADOR
    ========================================================= */
