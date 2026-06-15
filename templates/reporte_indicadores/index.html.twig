@@ -1,0 +1,68 @@
+<turbo-frame id="content">
+	<section class="reporte-indicadores-index" data-page="reporte-indicadores-index">
+		<header class="reporte-indicadores-index__header">
+			<a href="{{ path('app_indicadores_basicos_index') }}" data-turbo-frame="content" data-turbo-action="advance" class="reporte-indicadores-index__back-btn" title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<div class="reporte-indicadores-index__header-center">
+				<h1 class="reporte-indicadores-index__title">
+					<i class="bi bi-file-earmark-bar-graph"></i>
+					Reportes de indicadores
+				</h1>
+			</div>
+
+			<a href="{{ path('app_reporte_indicadores_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="reporte-indicadores-index__new-btn" title="Reportes">
+				<i class="bi bi-plus-circle"></i>
+				<span>Reportes</span>
+			</a>
+		</header>
+
+		{% for label, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="reporte-indicadores-index__flash reporte-indicadores-index__flash--{{ label }}">
+					<span>{{ message }}</span>
+				</div>
+			{% endfor %}
+		{% endfor %}
+
+		<div class="reporte-indicadores-index__table-wrapper">
+			<table class="reporte-indicadores-index__table">
+				<thead>
+					<tr>
+						<th>Reporte</th>
+						<th>Fecha de creacion</th>
+						<th>Fecha de entrega</th>
+						<th>Estado</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for reporte in reportes_indicadores %}
+						<tr class="reporte-indicadores-index__row">
+							<td class="reporte-indicadores-index__name">
+								Reporte de indicadores {{ reporte.anio }} - Trimestre {{ reporte.trimestre }}
+							</td>
+							<td>
+								{{ reporte.creadoFecha ? reporte.creadoFecha|date('d/m/Y') : 'Pendiente' }}
+							</td>
+							<td>
+								{{ reporte.entregadoFecha ? reporte.entregadoFecha|date('d/m/Y') : 'Sin entregar' }}
+							</td>
+							<td>
+								<span class="reporte-indicadores-index__status reporte-indicadores-index__status--{{ reporte.estado }}">
+									{{ reporte.estado|capitalize }}
+								</span>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="4" class="reporte-indicadores-index__empty">
+								Aun no has creado reportes de indicadores.
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</section>
+</turbo-frame>

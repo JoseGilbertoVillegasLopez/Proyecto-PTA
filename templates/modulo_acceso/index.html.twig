@@ -36,7 +36,11 @@
                         </td>
                         <td class="ma-index-desc">{{ item.modulo.descripcion ?? '—' }}</td>
                         <td class="text-center">
-                            <span class="ma-badge ma-badge--enc">{{ item.encargados }}</span>
+                            {% if item.modulo.usaEncargado %}
+                                <span class="ma-badge ma-badge--enc">{{ item.encargados }}</span>
+                            {% else %}
+                                <span class="ma-badge ma-badge--muted">N/A</span>
+                            {% endif %}
                         </td>
                         <td class="text-center">
                             <span class="ma-badge ma-badge--acc">{{ item.con_acceso }}</span>

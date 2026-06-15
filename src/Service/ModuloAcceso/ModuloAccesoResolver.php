@@ -21,10 +21,6 @@ class ModuloAccesoResolver
         return $this->repo->existsForModuloSlugAndPuesto($slug, $puestoId, 'encargado');
     }
 
-    /**
-     * Retorna true si el usuario tiene cualquier tipo de acceso al módulo
-     * (tanto 'encargado' como 'acceso').
-     */
     public function tieneAcceso(User $user, string $slug): bool
     {
         $puestoId = $this->getPuestoId($user);
@@ -32,7 +28,7 @@ class ModuloAccesoResolver
             return false;
         }
 
-        return $this->repo->existsForModuloSlugAndPuesto($slug, $puestoId, null);
+        return $this->repo->existsForModuloSlugAndPuesto($slug, $puestoId, 'acceso');
     }
 
     /**

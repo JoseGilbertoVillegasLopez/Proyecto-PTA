@@ -7,6 +7,9 @@
         if (root.dataset.maInit === '1') return;
         root.dataset.maInit = '1';
 
+        // ── Configuración del módulo ──────────────────────────────────────────
+        const usaEncargado = root.dataset.usaEncargado === '1';
+
         // ── Estado independiente por columna ─────────────────────────────────
         const encSet = new Set();
         const accSet = new Set();
@@ -33,7 +36,7 @@
             const actions = card.querySelector('.ma-puesto-card-actions');
             actions.innerHTML = '';
 
-            if (!encSet.has(id)) {
+            if (usaEncargado && !encSet.has(id)) {
                 const btn = document.createElement('button');
                 btn.type      = 'button';
                 btn.className = 'ma-puesto-card-btn ma-puesto-card-btn--enc';

@@ -1,5 +1,6 @@
 <turbo-frame id="content">
-<div class="ma-edit-card" data-ma-view="edit">
+<div class="ma-edit-card" data-ma-view="edit"
+     data-usa-encargado="{{ modulo.usaEncargado ? '1' : '0' }}">
 
     <div class="ma-edit-header">
         <a href="{{ path('app_admin_modulo_acceso_index') }}"
@@ -26,9 +27,10 @@
         <div id="ma-inputs-encargados"></div>
         <div id="ma-inputs-con-acceso"></div>
 
-        <div class="ma-edit-columns">
+        <div class="ma-edit-columns {{ not modulo.usaEncargado ? 'ma-edit-columns--2col' }}">
 
-            {# ─── ENCARGADOS ─── #}
+            {# ─── ENCARGADOS (solo si el módulo usa encargados) ─── #}
+            {% if modulo.usaEncargado %}
             <div class="ma-edit-col ma-edit-col--enc">
                 <div class="ma-edit-col-header">
                     <i class="bi bi-person-fill-gear"></i>
@@ -49,6 +51,10 @@
                     {% endfor %}
                 </div>
             </div>
+            {% else %}
+            {# Contenedor vacío para que el JS no falle al buscar #list-encargados #}
+            <div id="list-encargados" style="display:none"></div>
+            {% endif %}
 
             {# ─── CON ACCESO ─── #}
             <div class="ma-edit-col ma-edit-col--acc">
@@ -87,7 +93,7 @@
                         <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
                             <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
                             <div class="ma-puesto-card-actions">
-                                {% if puesto.id not in encargados_ids %}
+                                {% if modulo.usaEncargado and puesto.id not in encargados_ids %}
                                     <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--enc"
                                             title="Agregar como Encargado">
                                         <i class="bi bi-person-fill-gear"></i>

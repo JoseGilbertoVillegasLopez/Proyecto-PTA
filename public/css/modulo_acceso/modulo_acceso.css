@@ -175,6 +175,13 @@
     border: 1px solid rgba(255, 107, 107, 0.3);
 }
 
+.ma-badge--muted {
+    background: rgba(155, 163, 176, 0.08);
+    color: var(--ma-muted);
+    border: 1px solid rgba(155, 163, 176, 0.2);
+    font-style: italic;
+}
+
 /* Action button */
 .ma-index-action-btn {
     display: inline-flex;
@@ -254,8 +261,13 @@
     margin-bottom: 22px;
 }
 
+.ma-edit-columns--2col {
+    grid-template-columns: repeat(2, 1fr);
+}
+
 @media (max-width: 960px) {
-    .ma-edit-columns { grid-template-columns: 1fr; }
+    .ma-edit-columns,
+    .ma-edit-columns--2col { grid-template-columns: 1fr; }
 }
 
 .ma-edit-col {

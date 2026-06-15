@@ -1,0 +1,31 @@
+<turbo-frame id="content">
+	<section class="reporte-indicadores-show" data-page="reporte-indicadores-show">
+		<header class="reporte-indicadores-show__header">
+			<a href="{{ path('app_reporte_indicadores_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="reporte-indicadores-show__back-btn" title="Volver">
+				<i class="bi bi-arrow-left"></i>
+			</a>
+
+			<h1 class="reporte-indicadores-show__title">
+				<i class="bi bi-file-earmark-bar-graph"></i>
+				Reporte {{ reporte.anio }} - Trimestre {{ reporte.trimestre }}
+			</h1>
+
+			<div class="reporte-indicadores-show__header-spacer"></div>
+		</header>
+
+		<div class="reporte-indicadores-show__summary">
+			<article class="reporte-indicadores-show__summary-item">
+				<span>Estado</span>
+				<strong>{{ reporte.estado|capitalize }}</strong>
+			</article>
+			<article class="reporte-indicadores-show__summary-item">
+				<span>Creado</span>
+				<strong>{{ reporte.creadoFecha ? reporte.creadoFecha|date('d/m/Y') : 'Pendiente' }}</strong>
+			</article>
+			<article class="reporte-indicadores-show__summary-item">
+				<span>Entregado</span>
+				<strong>{{ reporte.entregadoFecha ? reporte.entregadoFecha|date('d/m/Y') : 'Sin entregar' }}</strong>
+			</article>
+		</div>
+	</section>
+</turbo-frame>
