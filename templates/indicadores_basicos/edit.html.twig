@@ -54,6 +54,32 @@
 				{{ form_errors(form.observaciones) }}
 			</div>
 
+			<div class="indicadores-basicos-edit-group" data-ib-dept-group>
+				<span class="indicadores-basicos-edit-label">Departamentos responsables</span>
+				{{ form_errors(form.departamentos) }}
+				<div class="ib-dept-hidden-select">
+					{{ form_widget(form.departamentos, {'attr': {'data-ib-dept-select': ''}}) }}
+				</div>
+				<div class="ib-dept-ui">
+					<div class="ib-dept-col ib-dept-col--resp">
+						<div class="ib-dept-col-header">
+							<i class="bi bi-building-check"></i>
+							<span>Responsables</span>
+							<span class="ib-dept-count" data-ib-dept-count="resp">0</span>
+						</div>
+						<div class="ib-dept-col-body" data-ib-dept-list="resp"></div>
+					</div>
+					<div class="ib-dept-col ib-dept-col--avail">
+						<div class="ib-dept-col-header">
+							<i class="bi bi-buildings"></i>
+							<span>Disponibles</span>
+							<span class="ib-dept-count" data-ib-dept-count="avail">0</span>
+						</div>
+						<div class="ib-dept-col-body" data-ib-dept-list="avail"></div>
+					</div>
+				</div>
+			</div>
+
 			<div class="indicadores-basicos-edit-group">
 				{{ form_label(form.grupo, null, {'label_attr': {'class': 'indicadores-basicos-edit-label'}}) }}
 				{{ form_widget(form.grupo, {'attr': {'class': 'indicadores-basicos-edit-select indicadores-select-pta'}}) }}

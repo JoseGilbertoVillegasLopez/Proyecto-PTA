@@ -41,6 +41,17 @@
 					</tr>
 
 					<tr>
+						<th>Responsable</th>
+						<td>
+							{% if indicador.departamentos|length > 0 %}
+								{% for dep in indicador.departamentos %}{{ dep.nombre }}{% if not loop.last %}, {% endif %}{% endfor %}
+							{% else %}
+								—
+							{% endif %}
+						</td>
+					</tr>
+
+					<tr>
 						<th>Estado</th>
 						<td>
 							<span class="indicadores-basicos-show-status-badge {{ indicador.activo ? 'indicadores-basicos-show-status-badge--active' : 'indicadores-basicos-show-status-badge--inactive' }}">

@@ -477,3 +477,44 @@
         initDepartamentoNewEditPageIndicadoresTagsSelector(frame);
     });
 })();
+
+// Badge contador de indicadores seleccionados
+(function () {
+    "use strict";
+
+    function updateDepartamentoIndicadoresBadge(select) {
+        var targetId = select.dataset.countTarget;
+        if (!targetId) return;
+        var badge = document.getElementById(targetId);
+        if (!badge) return;
+        badge.textContent = Array.from(select.options).filter(function (o) {
+            return o.selected;
+        }).length;
+    }
+
+    function initDepartamentoIndicadoresBadges(context) {
+        var scope = context || document;
+        scope.querySelectorAll("[data-count-target]").forEach(function (select) {
+            if (!(select instanceof HTMLSelectElement)) return;
+            updateDepartamentoIndicadoresBadge(select);
+        });
+    }
+
+    document.addEventListener("change", function (event) {
+        var select = event.target;
+        if (!(select instanceof HTMLSelectElement)) return;
+        updateDepartamentoIndicadoresBadge(select);
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        initDepartamentoIndicadoresBadges(document);
+    });
+
+    document.addEventListener("turbo:load", function () {
+        initDepartamentoIndicadoresBadges(document);
+    });
+
+    document.addEventListener("turbo:frame-load", function (event) {
+        initDepartamentoIndicadoresBadges(event.target instanceof HTMLElement ? event.target : document);
+    });
+})();

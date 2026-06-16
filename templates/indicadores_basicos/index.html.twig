@@ -48,6 +48,7 @@
 						<th>Indicador</th>
 						<th>Fórmula</th>
 						<th>Observaciones</th>
+						<th>Responsable</th>
 						{% if is_granted('ROLE_ADMIN') %}
 							<th class="text-center">Estado</th>
 						{% endif %}
@@ -65,6 +66,13 @@
 							</td>
 							<td class="indicadores-basicos-observaciones">
 								{{ indicador.observaciones ?: '—' }}
+							</td>
+							<td class="indicadores-basicos-responsable">
+								{% if indicador.departamentos|length > 0 %}
+									{% for dep in indicador.departamentos %}{{ dep.nombre }}{% if not loop.last %}, {% endif %}{% endfor %}
+								{% else %}
+									—
+								{% endif %}
 							</td>
 							{% if is_granted('ROLE_ADMIN') %}
 								<td class="text-center">
@@ -89,7 +97,7 @@
 						</tr>
 					{% else %}
 						<tr>
-							<td colspan="5" class="text-center text-muted indicadores-basicos-index-empty">
+							<td colspan="{{ is_granted('ROLE_ADMIN') ? 6 : 5 }}" class="text-center text-muted indicadores-basicos-index-empty">
 								No se encontraron indicadores básicos.
 							</td>
 						</tr>
