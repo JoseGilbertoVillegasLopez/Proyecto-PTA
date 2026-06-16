@@ -10,6 +10,7 @@ use App\Repository\IndicadoresBasicosRepository;
 use App\Repository\ReporteIndicadorActividadRepository;
 use App\Repository\ReporteIndicadorTrimestreRepository;
 use App\Service\Indicadores\ConstructorVistaReporteIndicadoresService;
+use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use App\Service\Pta\PtaAccessResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,13 +27,18 @@ final class ReporteIndicadoresController extends AbstractController
     public function index(
         Request $request,
         ReporteIndicadorTrimestreRepository $repository,
-        PtaAccessResolver $ptaAccessResolver
+        PtaAccessResolver $ptaAccessResolver,
+        ModuloAccesoResolver $moduloAccesoResolver
     ): Response
     {
         $user = $this->getUser();
 
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Debes iniciar sesion para ver tus reportes.');
+        }
+
+        if (!$moduloAccesoResolver->tieneAcceso($user, 'reporte_indicadores')) {
+            throw $this->createAccessDeniedException('No tienes acceso al módulo de reportes de indicadores.');
         }
 
         $personal = $user->getPersonal();
@@ -50,8 +56,40 @@ final class ReporteIndicadoresController extends AbstractController
         }
 
         return $this->render('dashboard/index.html.twig', [
-            'section' => 'indicadores_basicos',
+            'section' => 'reporte_indicadores',
             'content_url' => $this->generateUrl('app_reporte_indicadores_index'),
+            'ptaAccess' => $ptaAccessResolver->resolve($user),
+        ]);
+    }
+
+    #[Route('/encargado', name: 'app_reporte_indicadores_encargado_index', methods: ['GET'])]
+    public function encargadoIndex(
+        Request $request,
+        ReporteIndicadorTrimestreRepository $repository,
+        PtaAccessResolver $ptaAccessResolver,
+        ModuloAccesoResolver $moduloAccesoResolver
+    ): Response {
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('Debes iniciar sesion.');
+        }
+
+        if (!$moduloAccesoResolver->esEncargado($user, 'reporte_indicadores')) {
+            throw $this->createAccessDeniedException('No eres encargado del módulo de reportes de indicadores.');
+        }
+
+        $templateData = [
+            'reportes' => $repository->findAllOrderByRecent(),
+        ];
+
+        if ($request->headers->has('Turbo-Frame')) {
+            return $this->render('reporte_indicadores/encargado_index.html.twig', $templateData);
+        }
+
+        return $this->render('dashboard/index.html.twig', [
+            'section' => 'reporte_indicadores_encargado',
+            'content_url' => $this->generateUrl('app_reporte_indicadores_encargado_index'),
             'ptaAccess' => $ptaAccessResolver->resolve($user),
         ]);
     }
@@ -60,12 +98,17 @@ final class ReporteIndicadoresController extends AbstractController
     public function new(
         Request $request,
         ConstructorVistaReporteIndicadoresService $constructor,
-        PtaAccessResolver $ptaAccessResolver
+        PtaAccessResolver $ptaAccessResolver,
+        ModuloAccesoResolver $moduloAccesoResolver
     ): Response {
         $user = $this->getUser();
 
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Debes iniciar sesion para crear reportes.');
+        }
+
+        if (!$moduloAccesoResolver->tieneAcceso($user, 'reporte_indicadores')) {
+            throw $this->createAccessDeniedException('No tienes acceso al módulo de reportes de indicadores.');
         }
 
         $personal = $user->getPersonal();
@@ -94,7 +137,7 @@ final class ReporteIndicadoresController extends AbstractController
         }
 
         return $this->render('dashboard/index.html.twig', [
-            'section' => 'indicadores_basicos',
+            'section' => 'reporte_indicadores',
             'content_url' => $this->generateUrl('app_reporte_indicadores_new'),
             'ptaAccess' => $ptaAccessResolver->resolve($user),
         ]);
@@ -105,12 +148,17 @@ final class ReporteIndicadoresController extends AbstractController
         Request $request,
         int $trimestre,
         ReporteIndicadorTrimestreRepository $repository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ModuloAccesoResolver $moduloAccesoResolver
     ): Response {
         $user = $this->getUser();
 
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException('Debes iniciar sesion para crear reportes.');
+        }
+
+        if (!$moduloAccesoResolver->tieneAcceso($user, 'reporte_indicadores')) {
+            throw $this->createAccessDeniedException('No tienes acceso al módulo de reportes de indicadores.');
         }
 
         if ($trimestre < 1 || $trimestre > 4) {
@@ -159,12 +207,16 @@ final class ReporteIndicadoresController extends AbstractController
         IndicadoresBasicosRepository $indicadoresRepository,
         ReporteIndicadorActividadRepository $actividadRepository,
         EntityManagerInterface $em,
-        PtaAccessResolver $ptaAccessResolver
+        PtaAccessResolver $ptaAccessResolver,
+        ModuloAccesoResolver $moduloAccesoResolver
     ): Response {
         $user = $this->getUser();
 
-        if (!$user instanceof User || $reporte->getPersonal()?->getId() !== $user->getPersonal()?->getId()) {
-            throw $this->createAccessDeniedException('No tienes permiso para ver este reporte.');
+        if (!$user instanceof User
+            || !$moduloAccesoResolver->tieneAcceso($user, 'reporte_indicadores')
+            || $reporte->getPersonal()?->getId() !== $user->getPersonal()?->getId()
+        ) {
+            throw $this->createAccessDeniedException('No tienes permiso para editar este reporte.');
         }
 
         if ($reporte->isEntregado()) {
@@ -217,7 +269,7 @@ final class ReporteIndicadoresController extends AbstractController
         }
 
         return $this->render('dashboard/index.html.twig', [
-            'section' => 'indicadores_basicos',
+            'section' => 'reporte_indicadores',
             'content_url' => $this->generateUrl($formRoute, [
                 'id' => $reporte->getId(),
             ]),
@@ -230,25 +282,37 @@ final class ReporteIndicadoresController extends AbstractController
         Request $request,
         ReporteIndicadorTrimestre $reporte,
         ReporteIndicadorActividadRepository $actividadRepository,
-        PtaAccessResolver $ptaAccessResolver
+        PtaAccessResolver $ptaAccessResolver,
+        ModuloAccesoResolver $moduloAccesoResolver
     ): Response {
         $user = $this->getUser();
 
-        if (!$user instanceof User || $reporte->getPersonal()?->getId() !== $user->getPersonal()?->getId()) {
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('Debes iniciar sesion para ver este reporte.');
+        }
+
+        $esEncargado = $moduloAccesoResolver->esEncargado($user, 'reporte_indicadores');
+        $esOwner = $reporte->getPersonal()?->getId() === $user->getPersonal()?->getId()
+            && $moduloAccesoResolver->tieneAcceso($user, 'reporte_indicadores');
+
+        if (!$esOwner && !$esEncargado) {
             throw $this->createAccessDeniedException('No tienes permiso para ver este reporte.');
         }
 
         $templateData = [
             'reporte' => $reporte,
             'actividades' => $actividadRepository->findByReporteWithEvidencias($reporte),
+            'es_encargado' => $esEncargado,
         ];
 
         if ($request->headers->has('Turbo-Frame')) {
             return $this->render('reporte_indicadores/show.html.twig', $templateData);
         }
 
+        $section = (!$esOwner && $esEncargado) ? 'reporte_indicadores_encargado' : 'reporte_indicadores';
+
         return $this->render('dashboard/index.html.twig', [
-            'section' => 'indicadores_basicos',
+            'section' => $section,
             'content_url' => $this->generateUrl('app_reporte_indicadores_trimestre_show', [
                 'id' => $reporte->getId(),
             ]),
@@ -261,11 +325,15 @@ final class ReporteIndicadoresController extends AbstractController
         Request $request,
         ReporteIndicadorTrimestre $reporte,
         ReporteIndicadorActividadRepository $actividadRepository,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ModuloAccesoResolver $moduloAccesoResolver
     ): Response {
         $user = $this->getUser();
 
-        if (!$user instanceof User || $reporte->getPersonal()?->getId() !== $user->getPersonal()?->getId()) {
+        if (!$user instanceof User
+            || !$moduloAccesoResolver->tieneAcceso($user, 'reporte_indicadores')
+            || $reporte->getPersonal()?->getId() !== $user->getPersonal()?->getId()
+        ) {
             throw $this->createAccessDeniedException('No tienes permiso para entregar este reporte.');
         }
 

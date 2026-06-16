@@ -13,7 +13,7 @@
 			</div>
 
 			<div class="plantilla-indicadores-header__actions">
-				{% if can_edit_plantilla %}
+				{% if es_encargado_modulo('plantilla_indicadores') %}
 					<a href="{{ path('app_indicadores_basicos_plantilla_indicadores_edit') }}" data-turbo-frame="content" data-turbo-action="advance" class="plantilla-indicadores-action-btn" title="Editar plantilla">
 						<i class="bi bi-pencil-square"></i>
 					</a>

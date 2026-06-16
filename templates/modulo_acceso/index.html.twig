@@ -39,11 +39,15 @@
                             {% if item.modulo.usaEncargado %}
                                 <span class="ma-badge ma-badge--enc">{{ item.encargados }}</span>
                             {% else %}
-                                <span class="ma-badge ma-badge--muted">N/A</span>
+                                <span class="ma-badge ma-badge--muted">No aplica</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <span class="ma-badge ma-badge--acc">{{ item.con_acceso }}</span>
+                            {% if item.modulo.usaAcceso %}
+                                <span class="ma-badge ma-badge--acc">{{ item.con_acceso }}</span>
+                            {% else %}
+                                <span class="ma-badge ma-badge--muted">Todos</span>
+                            {% endif %}
                         </td>
                         <td class="text-center">
                             {% if item.modulo.activo %}

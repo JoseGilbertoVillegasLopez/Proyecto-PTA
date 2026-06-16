@@ -1,0 +1,84 @@
+<turbo-frame id="content">
+	<section class="reporte-indicadores-index" data-page="reporte-indicadores-encargado-index">
+		<header class="reporte-indicadores-index__header">
+			<div class="reporte-indicadores-index__header-center">
+				<h1 class="reporte-indicadores-index__title">
+					<i class="bi bi-file-earmark-bar-graph"></i>
+					Reportes de indicadores — Encargado
+				</h1>
+			</div>
+		</header>
+
+		{% for label, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="reporte-indicadores-index__flash reporte-indicadores-index__flash--{{ label }}">
+					<span>{{ message }}</span>
+				</div>
+			{% endfor %}
+		{% endfor %}
+
+		<div class="reporte-indicadores-index__table-wrapper">
+			<table class="reporte-indicadores-index__table">
+				<thead>
+					<tr>
+						<th>Responsable</th>
+						<th>Departamento</th>
+						<th>Reporte</th>
+						<th>Fecha de creación</th>
+						<th>Fecha de entrega</th>
+						<th>Estado</th>
+						<th>Acciones</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for reporte in reportes %}
+						<tr class="reporte-indicadores-index__row">
+							<td class="reporte-indicadores-index__name">
+								{{ reporte.personal.nombre }} {{ reporte.personal.apellidoPaterno }} {{ reporte.personal.apellidoMaterno }}
+							</td>
+							<td>
+								{{ reporte.departamento.nombre }}
+							</td>
+							<td>
+								{{ reporte.anio }} — Trimestre {{ reporte.trimestre }}
+							</td>
+							<td>
+								{{ reporte.creadoFecha ? reporte.creadoFecha|date('d/m/Y') : '—' }}
+							</td>
+							<td>
+								{{ reporte.entregadoFecha ? reporte.entregadoFecha|date('d/m/Y') : '—' }}
+							</td>
+							<td>
+								<span class="reporte-indicadores-index__status reporte-indicadores-index__status--{{ reporte.estado }}">
+									{{ reporte.estado|capitalize }}
+								</span>
+							</td>
+							<td>
+								{% if reporte.isEntregado() %}
+									<a href="{{ path('app_reporte_indicadores_trimestre_show', { id: reporte.id }) }}"
+									   data-turbo-frame="content"
+									   data-turbo-action="advance"
+									   class="reporte-indicadores-index__action-btn"
+									   title="Ver reporte">
+										<i class="bi bi-eye"></i>
+										Ver
+									</a>
+								{% else %}
+									<span class="reporte-indicadores-index__status reporte-indicadores-index__status--pendiente">
+										En borrador
+									</span>
+								{% endif %}
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="7" class="reporte-indicadores-index__empty">
+								No hay reportes de indicadores registrados.
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</section>
+</turbo-frame>

@@ -1,6 +1,7 @@
 <turbo-frame id="content">
 <div class="ma-edit-card" data-ma-view="edit"
-     data-usa-encargado="{{ modulo.usaEncargado ? '1' : '0' }}">
+     data-usa-encargado="{{ modulo.usaEncargado ? '1' : '0' }}"
+     data-usa-acceso="{{ modulo.usaAcceso ? '1' : '0' }}">
 
     <div class="ma-edit-header">
         <a href="{{ path('app_admin_modulo_acceso_index') }}"
@@ -27,7 +28,7 @@
         <div id="ma-inputs-encargados"></div>
         <div id="ma-inputs-con-acceso"></div>
 
-        <div class="ma-edit-columns {{ not modulo.usaEncargado ? 'ma-edit-columns--2col' }}">
+        <div class="ma-edit-columns {{ (not modulo.usaEncargado or not modulo.usaAcceso) ? 'ma-edit-columns--2col' }}">
 
             {# ─── ENCARGADOS (solo si el módulo usa encargados) ─── #}
             {% if modulo.usaEncargado %}
@@ -56,7 +57,8 @@
             <div id="list-encargados" style="display:none"></div>
             {% endif %}
 
-            {# ─── CON ACCESO ─── #}
+            {# ─── CON ACCESO (solo si el módulo usa acceso) ─── #}
+            {% if modulo.usaAcceso %}
             <div class="ma-edit-col ma-edit-col--acc">
                 <div class="ma-edit-col-header">
                     <i class="bi bi-person-check-fill"></i>
@@ -80,6 +82,10 @@
                     {% endfor %}
                 </div>
             </div>
+            {% else %}
+            {# Contenedor vacío para que el JS no falle al buscar #list-con-acceso #}
+            <div id="list-con-acceso" style="display:none"></div>
+            {% endif %}
 
             {# ─── TODOS LOS PUESTOS ─── #}
             <div class="ma-edit-col ma-edit-col--sin">
@@ -99,7 +105,7 @@
                                         <i class="bi bi-person-fill-gear"></i>
                                     </button>
                                 {% endif %}
-                                {% if puesto.id not in con_acceso_ids %}
+                                {% if modulo.usaAcceso and puesto.id not in con_acceso_ids %}
                                     <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--acc"
                                             title="Agregar con acceso">
                                         <i class="bi bi-person-check-fill"></i>

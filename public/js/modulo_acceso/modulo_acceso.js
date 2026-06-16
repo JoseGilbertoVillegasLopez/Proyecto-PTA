@@ -9,6 +9,7 @@
 
         // ── Configuración del módulo ──────────────────────────────────────────
         const usaEncargado = root.dataset.usaEncargado === '1';
+        const usaAcceso    = root.dataset.usaAcceso    === '1';
 
         // ── Estado independiente por columna ─────────────────────────────────
         const encSet = new Set();
@@ -44,7 +45,7 @@
                 btn.innerHTML = '<i class="bi bi-person-fill-gear"></i>';
                 actions.appendChild(btn);
             }
-            if (!accSet.has(id)) {
+            if (usaAcceso && !accSet.has(id)) {
                 const btn = document.createElement('button');
                 btn.type      = 'button';
                 btn.className = 'ma-puesto-card-btn ma-puesto-card-btn--acc';
@@ -127,13 +128,15 @@
             });
         });
 
-        listEl('con_acceso').querySelectorAll('.ma-puesto-card').forEach(card => {
-            accSet.add(card.dataset.id);
-            const btn = card.querySelector('button');
-            if (btn) btn.addEventListener('click', () => {
-                removeFromCol(card.dataset.id, card.dataset.nombre, 'con_acceso');
+        if (usaAcceso) {
+            listEl('con_acceso').querySelectorAll('.ma-puesto-card').forEach(card => {
+                accSet.add(card.dataset.id);
+                const btn = card.querySelector('button');
+                if (btn) btn.addEventListener('click', () => {
+                    removeFromCol(card.dataset.id, card.dataset.nombre, 'con_acceso');
+                });
             });
-        });
+        }
 
         listEl('puestos').querySelectorAll('.ma-puesto-card').forEach(card => {
             bindPuestosCard(card);

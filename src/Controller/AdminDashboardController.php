@@ -41,9 +41,19 @@ class AdminDashboardController extends AbstractController
             $section = 'pta';
         }
 
-        // 4. Fallback
-        if ($section === null) {
-            $section = $this->isGranted('ROLE_ADMIN') ? 'personal' : 'pta';
+        // 4. Secciones reporte_indicadores — controladas por UI de módulos
+        if (
+            $section === 'reporte_indicadores' &&
+            (!$user instanceof User || !$moduloAccesoResolver->tieneAcceso($user, 'reporte_indicadores'))
+        ) {
+            $section = 'pta';
+        }
+
+        if (
+            $section === 'reporte_indicadores_encargado' &&
+            (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'reporte_indicadores'))
+        ) {
+            $section = 'pta';
         }
 
         return $this->render('dashboard/index.html.twig', [

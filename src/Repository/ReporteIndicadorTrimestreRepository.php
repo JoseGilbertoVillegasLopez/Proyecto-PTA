@@ -55,4 +55,17 @@ class ReporteIndicadorTrimestreRepository extends ServiceEntityRepository
             'trimestre' => $trimestre,
         ]);
     }
+
+    /**
+     * @return ReporteIndicadorTrimestre[]
+     */
+    public function findAllOrderByRecent(): array
+    {
+        return $this->createQueryBuilder('reporte')
+            ->orderBy('reporte.anio', 'DESC')
+            ->addOrderBy('reporte.trimestre', 'DESC')
+            ->addOrderBy('reporte.creadoFecha', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -31,6 +31,9 @@ class ModuloSistema
     #[ORM\Column]
     private bool $usaEncargado = true;
 
+    #[ORM\Column]
+    private bool $usaAcceso = true;
+
     #[ORM\OneToMany(mappedBy: 'modulo', targetEntity: ModuloAcceso::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $accesos;
 
@@ -55,6 +58,9 @@ class ModuloSistema
 
     public function isUsaEncargado(): bool { return $this->usaEncargado; }
     public function setUsaEncargado(bool $usaEncargado): static { $this->usaEncargado = $usaEncargado; return $this; }
+
+    public function isUsaAcceso(): bool { return $this->usaAcceso; }
+    public function setUsaAcceso(bool $usaAcceso): static { $this->usaAcceso = $usaAcceso; return $this; }
 
     /** @return Collection<int, ModuloAcceso> */
     public function getAccesos(): Collection { return $this->accesos; }
