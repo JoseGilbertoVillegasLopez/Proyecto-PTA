@@ -37,37 +37,32 @@ use Symfony\Component\Routing\Attribute\Route;
 // Permite definir rutas usando atributos (PHP 8+)
 
 use App\Entity\Nombramiento;
+use App\Entity\User;
+use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 #[Route('admin/personal')]
-// Prefijo de ruta: todas las rutas de este controlador comienzan con /admin/personal
 final class PersonalController extends AbstractController
 {
     private UserCreator $userCreator;
-    // Propiedad privada para el servicio que crea usuarios
-
     private UserUpdater $userUpdater;
-    // Propiedad privada para el servicio que actualiza usuarios
 
     public function __construct(UserCreator $userCreator, UserUpdater $userUpdater)
     {
-        // Inyección de dependencias automática de Symfony
         $this->userCreator = $userCreator;
-        // Guarda el servicio UserCreator para usarlo en los métodos
-
         $this->userUpdater = $userUpdater;
-        // Guarda el servicio UserUpdater para usarlo en los métodos
     }
 
     #[Route(name: 'app_personal_index', methods: ['GET'])]
-    // Ruta GET /admin/personal
-    // Muestra el listado de personal
-    public function index(PersonalRepository $personalRepository): Response
+    public function index(PersonalRepository $personalRepository, ModuloAccesoResolver $resolver): Response
     {
-        // Renderiza la vista index con todos los registros de Personal
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'personal'))) {
+            throw $this->createAccessDeniedException();
+        }
+
         return $this->render('admin/personal/index.html.twig', [
             'personals' => $personalRepository->findAllOrderByNombre(),
-            // Obtiene todos los registros desde la BD
         ]);
     }
 
@@ -237,9 +232,13 @@ final class PersonalController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_personal_show', methods: ['GET'])]
-    // Ruta para ver el detalle de un Personal
-    public function show(Request $request, Personal $personal): Response
+    public function show(Request $request, Personal $personal, ModuloAccesoResolver $resolver): Response
     {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'personal'))) {
+            throw $this->createAccessDeniedException();
+        }
+
         $isTurbo = $request ->headers->get('Turbo-Frame');
         if ($isTurbo) {
             return $this->render('admin/personal/show.html.twig', [

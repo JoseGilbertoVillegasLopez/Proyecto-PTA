@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
+use App\Service\ModuloAcceso\ModuloAccesoResolver;
 
 #[Route('/pta/encabezado')]
 final class PtaEncabezadoController extends AbstractController
@@ -28,8 +29,13 @@ final class PtaEncabezadoController extends AbstractController
         Request $request,
         EncabezadoRepository $encabezadoRepository,
         PuestoRepository $puestoRepository,
-        \App\Service\Pta\PtaAccessResolver $ptaAccessResolver
+        \App\Service\Pta\PtaAccessResolver $ptaAccessResolver,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'reportes_pta'))) {
+            throw $this->createAccessDeniedException();
+        }
 
         $anioActual    = (int) date('Y');
         $anioEjecucion = $request->query->getInt('anio', $anioActual);
@@ -102,8 +108,14 @@ final class PtaEncabezadoController extends AbstractController
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
-        EncabezadoRepository $encabezadoRepository
+        EncabezadoRepository $encabezadoRepository,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'reportes_pta'))) {
+            throw $this->createAccessDeniedException();
+        }
+
         $anioActual    = (int) date('Y');
         $anioEjecucion = $request->query->getInt('anio', $anioActual);
 
@@ -195,8 +207,15 @@ final class PtaEncabezadoController extends AbstractController
      * SHOW — Ver detalle de un PTA (solo lectura)
      * ========================================================= */
     #[Route('/{id}', name: 'app_encabezado_show', methods: ['GET'])]
-    public function show(Request $request, Encabezado $encabezado): Response
+    public function show(Request $request, Encabezado $encabezado, ModuloAccesoResolver $resolver): Response
     {
+        $user = $this->getUser();
+        $tieneAcceso = $user instanceof User && $resolver->tieneAcceso($user, 'reportes_pta');
+        $esEncargado = $user instanceof User && $resolver->esEncargado($user, 'reportes_pta');
+        if (!$this->isGranted('ROLE_ADMIN') && !$tieneAcceso && !$esEncargado) {
+            throw $this->createAccessDeniedException();
+        }
+
         $filtros = [
             'anio'         => $request->query->get('anio'),
             'departamento' => $request->query->get('departamento'),
@@ -249,8 +268,13 @@ final class PtaEncabezadoController extends AbstractController
     public function edit(
         Request $request,
         Encabezado $encabezado,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'reportes_pta'))) {
+            throw $this->createAccessDeniedException();
+        }
 
         /* =====================================================
          * SEGURIDAD: solo el responsable puede capturar avances
@@ -522,8 +546,14 @@ final class PtaEncabezadoController extends AbstractController
     public function delete(
         Request $request,
         Encabezado $encabezado,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'reportes_pta'))) {
+            throw $this->createAccessDeniedException();
+        }
+
         if ($this->isCsrfTokenValid('delete' . $encabezado->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($encabezado);
             $entityManager->flush();
@@ -539,8 +569,16 @@ final class PtaEncabezadoController extends AbstractController
     public function graficas(
         Request $request,
         Encabezado $encabezado,
-        \App\Service\Pta\PtaGraficaService $ptaGraficaService
+        \App\Service\Pta\PtaGraficaService $ptaGraficaService,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        $tieneAcceso = $user instanceof User && $resolver->tieneAcceso($user, 'reportes_pta');
+        $esEncargado = $user instanceof User && $resolver->esEncargado($user, 'reportes_pta');
+        if (!$this->isGranted('ROLE_ADMIN') && !$tieneAcceso && !$esEncargado) {
+            throw $this->createAccessDeniedException();
+        }
+
 
         $filtros = [
             'anio'         => $request->query->get('anio'),

@@ -36,12 +36,6 @@ Sfjs.loadToolbar();
 					{# ============================SOLO ADMIN============================ #}
 					{% if is_granted('ROLE_ADMIN') %}
 						<li class="pta-dashboard-menu-item">
-							<a href="{{ path('app_admin_dashboard', { section: 'personal' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
-								Personal
-							</a>
-						</li>
-
-						<li class="pta-dashboard-menu-item">
 							<a href="{{ path('app_admin_dashboard', { section: 'departamentos' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 								Departamentos
 							</a>
@@ -87,17 +81,35 @@ Sfjs.loadToolbar();
 
 
 					{# ============================TODOS LOS USUARIOS============================ #}
-					<li class="pta-dashboard-menu-item">
-						<a href="{{ path('app_admin_dashboard', { section: 'pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
-							PTA
-						</a>
-					</li>
+					{% if is_granted('ROLE_ADMIN') or tiene_acceso_modulo('personal') %}
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'personal' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Personal
+							</a>
+						</li>
+					{% endif %}
 
-					<li class="pta-dashboard-menu-item">
-						<a href="{{ path('app_admin_dashboard', { section: 'historial_pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
-							Historial PTA
-						</a>
-					</li>
+					{% if is_granted('ROLE_ADMIN') or tiene_acceso_modulo('reportes_pta') or es_encargado_modulo('reportes_pta') %}
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								PTA
+							</a>
+						</li>
+
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'historial_pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Historial PTA
+							</a>
+						</li>
+					{% endif %}
+
+					{% if is_granted('ROLE_ADMIN') or es_encargado_modulo('reportes_pta') %}
+						<li class="pta-dashboard-menu-item">
+							<a href="{{ path('app_admin_dashboard', { section: 'reporte_pta_encargado' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
+								Reporte PTA
+							</a>
+						</li>
+					{% endif %}
 
 					{% if tiene_acceso_modulo('monitoreo') %}
 						<li class="pta-dashboard-menu-item">
@@ -159,6 +171,7 @@ Sfjs.loadToolbar();
     'solicitud_gastos_bancos': path('app_sg_banco_index'),
     'reporte_indicadores': path('app_reporte_indicadores_index'),
     'reporte_indicadores_encargado': path('app_reporte_indicadores_encargado_index'),
+    'reporte_pta_encargado': path('app_reporte_pta_encargado_index'),
     'modulos_acceso': path('app_admin_modulo_acceso_index')
 	} %}
 
@@ -166,8 +179,10 @@ Sfjs.loadToolbar();
 			{# ============================SECCIÓN INICIAL POR ROL============================ #}
 			{% if is_granted('ROLE_ADMIN') %}
 				{% set defaultSection = 'personal' %}
-			{% else %}
+			{% elseif tiene_acceso_modulo('reportes_pta') or es_encargado_modulo('reportes_pta') %}
 				{% set defaultSection = 'pta' %}
+			{% else %}
+				{% set defaultSection = 'indicadores_basicos' %}
 			{% endif %}
 
 			<turbo-frame id="content" src="{{ content_url is defined ? content_url : srcMap[section] ?? srcMap[defaultSection] }}"></turbo-frame>
