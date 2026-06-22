@@ -81,7 +81,16 @@
                     <span>
                         <strong>Meta</strong>
                         {{ item.info.meta }}{% if item.info.es_porcentaje %}%{% endif %}
-                        {% if item.info.es_porcentaje %}— ≈ {{ (item.info.valor_base * item.info.meta / 100 + item.info.valor_base)|round(0) }} absoluto{% endif %}
+                    </span>
+                    <span>
+                        <strong>Tipo de seguimiento</strong>
+                        {% if not item.info.es_porcentaje %}
+                            Absoluto
+                        {% elseif item.info.captura_porcentaje %}
+                            Porcentaje directo
+                        {% else %}
+                            % sobre base
+                        {% endif %}
                     </span>
                 </div>
             </div>

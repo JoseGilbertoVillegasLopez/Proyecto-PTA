@@ -456,6 +456,22 @@
 }
 
 /* =========================================================
+   SHOW — IC-ROW-META: flex wrap para redistribuir espacio
+   cuando Captura no se muestra
+   ========================================================= */
+
+.pta-show .ic-row-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pta-show .ic-row-meta .ic-field {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* =========================================================
    SHOW — IC-DISPLAY (valores dentro de indicator-card)
    ========================================================= */
 

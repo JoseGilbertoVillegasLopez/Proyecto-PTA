@@ -88,16 +88,16 @@
 
 											<div class="pta-rnew-metric pta-rnew-metric--meta">
 												<div class="pta-rnew-metric__label">Meta Año</div>
-												<div class="pta-rnew-metric__value">{{ data.meta }}</div>
+												<div class="pta-rnew-metric__value">{{ data.meta }}{% if data.es_porcentaje %}%{% endif %}</div>
 											</div>
 
 											<div class="pta-rnew-metric pta-rnew-metric--resultado">
 												<div class="pta-rnew-metric__label">Resultado Trimestre</div>
-												<div class="pta-rnew-metric__value">{{ data.resultado }}</div>
+												<div class="pta-rnew-metric__value">{{ data.resultado ?? '—' }}</div>
 											</div>
 
 											<div class="pta-rnew-metric pta-rnew-metric--porcentaje">
-												<div class="pta-rnew-metric__label">Porcentaje</div>
+												<div class="pta-rnew-metric__label">Porcentaje de avance</div>
 												<div class="pta-rnew-metric__value">{{ data.porcentaje }}%</div>
 											</div>
 

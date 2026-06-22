@@ -71,9 +71,7 @@ class PtaTrimestreCalculoService
             throw new \InvalidArgumentException('Trimestre inválido. Debe ser 1, 2, 3 o 4.');
         }
 
-        // Mes de corte = último mes del trimestre
         $mesesDelTrimestre = self::MESES_POR_TRIMESTRE[$trimestre];
-        $mesCorteTrimestre = max($mesesDelTrimestre);
 
         $resultados = [];
 
@@ -96,12 +94,14 @@ class PtaTrimestreCalculoService
             }
 
             /* =====================================================
-             * BUSCAR EL ÚLTIMO VALOR DISPONIBLE hasta el corte.
+             * BUSCAR EL ÚLTIMO VALOR REGISTRADO dentro de los
+             * meses del trimestre actual (sin extenderse a meses
+             * de trimestres anteriores).
              * Si capturaEnPorcentaje=true, convertir % → absoluto.
              * ===================================================== */
             $ultimoValor = null;
 
-            for ($mes = 1; $mes <= $mesCorteTrimestre; $mes++) {
+            foreach ($mesesDelTrimestre as $mes) {
                 $nombreMes = self::MESES_NOMBRE[$mes] ?? null;
                 if (!$nombreMes) {
                     continue;
