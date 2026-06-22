@@ -11,10 +11,12 @@
 
 			{# IZQUIERDA — BOTÓN AGREGAR #}
 			<div class="indicadores-basicos-index-toolbar__left">
-				<a href="{{ path('app_indicadores_basicos_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn">
-					<i class="bi bi-plus-circle-fill"></i>
-					<span>Crear indicador</span>
-				</a>
+				{% if es_encargado_modulo('indicadores_basicos') %}
+					<a href="{{ path('app_indicadores_basicos_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn">
+						<i class="bi bi-plus-circle-fill"></i>
+						<span>Crear indicador</span>
+					</a>
+				{% endif %}
 				{% if es_encargado_modulo('reporte_indicadores') %}
 					<a href="{{ path('app_reporte_indicadores_encargado_index') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn indicadores-basicos-index-add-btn--reports">
 						<i class="bi bi-file-earmark-bar-graph"></i>

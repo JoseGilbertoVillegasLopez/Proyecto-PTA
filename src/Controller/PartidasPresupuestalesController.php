@@ -26,6 +26,7 @@ final class PartidasPresupuestalesController extends AbstractController
     #[Route('/new', name: 'app_partidas_presupuestales_new', methods: ['GET','POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $partida = new PartidasPresupuestales();
         $form = $this->createForm(PartidasPresupuestalesType::class, $partida);
         $form->handleRequest($request);
@@ -76,6 +77,7 @@ final class PartidasPresupuestalesController extends AbstractController
     #[Route('/{id}/edit', name: 'app_partidas_presupuestales_edit', methods: ['GET','POST'])]
     public function edit(Request $request, PartidasPresupuestales $partida, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(PartidasPresupuestalesEditType::class, $partida);
         $form->handleRequest($request);
 
@@ -106,6 +108,7 @@ final class PartidasPresupuestalesController extends AbstractController
     #[Route('/{id}', name: 'app_partidas_presupuestales_delete', methods: ['POST'])]
     public function delete(Request $request, PartidasPresupuestales $partida, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid(
             'delete' . $partida->getId(),
             $request->getPayload()->getString('_token')

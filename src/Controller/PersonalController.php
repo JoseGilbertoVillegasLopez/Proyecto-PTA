@@ -78,6 +78,7 @@ final class PersonalController extends AbstractController
         PersonalRepository $personalRepository
         // Se usa para volver a cargar el listado tras guardar
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $personal = new Personal();
         // Crea una nueva instancia vacía de Personal
 
@@ -270,6 +271,7 @@ final class PersonalController extends AbstractController
         PersonalRepository $personalRepository
         // Para recargar listado después de editar
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(PersonalEditType::class, $personal);
         // Crea el formulario de edición vinculado al Personal existente
 
@@ -421,8 +423,13 @@ final class PersonalController extends AbstractController
     )]
     public function historialNombramientos(
         Request $request,
-        Personal $personal
+        Personal $personal,
+        ModuloAccesoResolver $resolver
     ): Response {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'personal'))) {
+            throw $this->createAccessDeniedException();
+        }
 
         $isTurbo = $request->headers->get('Turbo-Frame');
 
@@ -461,6 +468,7 @@ final class PersonalController extends AbstractController
         EntityManagerInterface $entityManager
         // Manejo de BD
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid(
             'delete' . $personal->getId(),
             // Token único por entidad

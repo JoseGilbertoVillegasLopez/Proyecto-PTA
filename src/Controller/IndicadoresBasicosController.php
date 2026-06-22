@@ -192,8 +192,13 @@ final class IndicadoresBasicosController extends AbstractController
     }
 
     #[Route('/new', name: 'app_indicadores_basicos_new', methods: ['GET','POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, EntityManagerInterface $em, ModuloAccesoResolver $moduloAccesoResolver): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'indicadores_basicos')) {
+            throw $this->createAccessDeniedException('No tienes permiso para crear indicadores.');
+        }
+
         $indicador = new IndicadoresBasicos();
         $form = $this->createForm(IndicadoresBasicosType::class, $indicador);
         $form->handleRequest($request);
@@ -242,8 +247,13 @@ final class IndicadoresBasicosController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_indicadores_basicos_edit', methods: ['GET','POST'])]
-    public function edit(Request $request, IndicadoresBasicos $indicador, EntityManagerInterface $em): Response
+    public function edit(Request $request, IndicadoresBasicos $indicador, EntityManagerInterface $em, ModuloAccesoResolver $moduloAccesoResolver): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'indicadores_basicos')) {
+            throw $this->createAccessDeniedException('No tienes permiso para editar indicadores.');
+        }
+
         $form = $this->createForm(IndicadoresBasicosEditType::class, $indicador);
         $form->handleRequest($request);
 
@@ -272,8 +282,13 @@ final class IndicadoresBasicosController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_indicadores_basicos_delete', methods: ['POST'])]
-    public function delete(Request $request, IndicadoresBasicos $indicador, EntityManagerInterface $em): Response
+    public function delete(Request $request, IndicadoresBasicos $indicador, EntityManagerInterface $em, ModuloAccesoResolver $moduloAccesoResolver): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'indicadores_basicos')) {
+            throw $this->createAccessDeniedException('No tienes permiso para desactivar indicadores.');
+        }
+
         if ($this->isCsrfTokenValid(
             'delete' . $indicador->getId(),
             $request->getPayload()->getString('_token')

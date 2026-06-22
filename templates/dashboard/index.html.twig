@@ -89,7 +89,7 @@ Sfjs.loadToolbar();
 						</li>
 					{% endif %}
 
-					{% if is_granted('ROLE_ADMIN') or tiene_acceso_modulo('reportes_pta') or es_encargado_modulo('reportes_pta') %}
+					{% if tiene_acceso_modulo('reportes_pta') or es_encargado_modulo('reportes_pta') %}
 						<li class="pta-dashboard-menu-item">
 							<a href="{{ path('app_admin_dashboard', { section: 'pta' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 								PTA
@@ -103,7 +103,7 @@ Sfjs.loadToolbar();
 						</li>
 					{% endif %}
 
-					{% if is_granted('ROLE_ADMIN') or es_encargado_modulo('reportes_pta') %}
+					{% if es_encargado_modulo('reportes_pta') %}
 						<li class="pta-dashboard-menu-item">
 							<a href="{{ path('app_admin_dashboard', { section: 'reporte_pta_encargado' }) }}" class="pta-dashboard-link" data-turbo-action="advance">
 								Reporte PTA

@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 // Representa la respuesta HTTP devuelta al navegador
 
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 // Permite definir rutas mediante atributos (PHP 8+)
 
 use App\Form\puesto\PuestoEditType;
@@ -33,6 +34,7 @@ use App\Form\puesto\PuestoEditType;
 
 #[Route('admin/puesto')]
 // Prefijo de ruta: todas las rutas de este controlador comienzan con /admin/puesto
+#[IsGranted('ROLE_ADMIN')]
 final class PuestoController extends AbstractController
 {
     #[Route(name: 'app_puesto_index', methods: ['GET'])]
