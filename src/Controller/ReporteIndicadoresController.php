@@ -27,6 +27,7 @@ final class ReporteIndicadoresController extends AbstractController
     public function index(
         Request $request,
         ReporteIndicadorTrimestreRepository $repository,
+        ConstructorVistaReporteIndicadoresService $constructor,
         PtaAccessResolver $ptaAccessResolver,
         ModuloAccesoResolver $moduloAccesoResolver
     ): Response
@@ -47,8 +48,22 @@ final class ReporteIndicadoresController extends AbstractController
             throw $this->createAccessDeniedException('Tu usuario no tiene personal asignado.');
         }
 
+        $anioActual = (int) (new \DateTimeImmutable('today'))->format('Y');
+        $aniosConReportes = $repository->findAniosByPersonal($personal);
+        $anios = array_values(array_unique(array_merge([$anioActual], $aniosConReportes)));
+        rsort($anios);
+
+        $anioSeleccionado = $request->query->getInt('anio', $anioActual);
+        if (!\in_array($anioSeleccionado, $anios, true)) {
+            $anioSeleccionado = $anioActual;
+        }
+
+        $datos = $constructor->build($personal, $anioSeleccionado);
+
         $templateData = [
-            'reportes_indicadores' => $repository->findByPersonalOrderByRecent($personal),
+            'datos'             => $datos,
+            'anios'             => $anios,
+            'anio_seleccionado' => $anioSeleccionado,
         ];
 
         if ($request->headers->has('Turbo-Frame')) {
@@ -56,9 +71,9 @@ final class ReporteIndicadoresController extends AbstractController
         }
 
         return $this->render('dashboard/index.html.twig', [
-            'section' => 'reporte_indicadores',
-            'content_url' => $this->generateUrl('app_reporte_indicadores_index'),
-            'ptaAccess' => $ptaAccessResolver->resolve($user),
+            'section'     => 'reporte_indicadores',
+            'content_url' => $this->generateUrl('app_reporte_indicadores_index', ['anio' => $anioSeleccionado]),
+            'ptaAccess'   => $ptaAccessResolver->resolve($user),
         ]);
     }
 
