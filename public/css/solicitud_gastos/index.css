@@ -122,6 +122,12 @@
     margin-bottom: 22px;
 }
 
+/* Variante inline: dentro del toolbar, sin margen inferior */
+.sg-filtros-wrap--inline {
+    margin-bottom: 0;
+    padding: 10px 16px;
+}
+
 /* Grupo individual: label arriba, input abajo */
 .sg-filtro-group {
     display: flex;
