@@ -95,7 +95,8 @@ final class ReporteIndicadoresController extends AbstractController
         }
 
         $templateData = [
-            'reportes' => $repository->findAllOrderByRecent(),
+            'reportes'   => $repository->findAllOrderByRecent(),
+            'es_acceso'  => $moduloAccesoResolver->tieneAcceso($user, 'reporte_indicadores'),
         ];
 
         if ($request->headers->has('Turbo-Frame')) {
@@ -103,9 +104,9 @@ final class ReporteIndicadoresController extends AbstractController
         }
 
         return $this->render('dashboard/index.html.twig', [
-            'section' => 'reporte_indicadores_encargado',
+            'section'     => 'reporte_indicadores_encargado',
             'content_url' => $this->generateUrl('app_reporte_indicadores_encargado_index'),
-            'ptaAccess' => $ptaAccessResolver->resolve($user),
+            'ptaAccess'   => $ptaAccessResolver->resolve($user),
         ]);
     }
 

@@ -136,9 +136,15 @@
 }
 
 .reporte-indicadores-index__action-btn--show {
+    width: auto;
+    height: 34px;
+    padding: 0 14px;
+    gap: 6px;
     color: #0dcaf0;
-    background: rgba(13, 202, 240, 0.16);
+    background: rgba(13, 202, 240, 0.13);
     border: 1px solid rgba(13, 202, 240, 0.34);
+    font-size: 0.82rem;
+    font-weight: 800;
 }
 
 .reporte-indicadores-index__action-btn--edit {
@@ -150,6 +156,29 @@
 .reporte-indicadores-index__action-btn:hover {
     color: #ffffff;
     transform: translateY(-1px);
+}
+
+.reporte-indicadores-index__add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 16px;
+    height: 38px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #ddf8ff;
+    background: rgba(13, 202, 240, 0.13);
+    border: 1px solid rgba(13, 202, 240, 0.34);
+    transition: all 0.22s ease;
+    white-space: nowrap;
+}
+
+.reporte-indicadores-index__add-btn:hover {
+    color: #ffffff;
+    background: rgba(13, 202, 240, 0.22);
+    transform: translateY(-2px);
 }
 
 .reporte-indicadores-captura__header-actions {
@@ -943,12 +972,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
     border-radius: 12px;
     font-size: 1.1rem;
     text-decoration: none;
     background: rgba(13, 202, 240, 0.18);
     color: #0dcaf0;
     border: 1px solid rgba(13, 202, 240, 0.45);
+    cursor: pointer;
     transition: all 0.25s ease;
 }
 
@@ -975,6 +1006,7 @@
 
 .reporte-indicadores-index__back-btn:hover,
 .reporte-indicadores-new__back-btn:hover,
+.reporte-indicadores-show__back-btn:hover,
 .reporte-indicadores-index__new-btn:hover,
 .reporte-indicadores-new__save-btn:hover {
     color: #ffffff;
@@ -982,7 +1014,8 @@
 }
 
 .reporte-indicadores-index__back-btn:hover,
-.reporte-indicadores-new__back-btn:hover {
+.reporte-indicadores-new__back-btn:hover,
+.reporte-indicadores-show__back-btn:hover {
     background: rgba(13, 202, 240, 0.35);
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
 }

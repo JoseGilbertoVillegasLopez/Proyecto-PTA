@@ -1,12 +1,21 @@
 <turbo-frame id="content">
 	<section class="reporte-indicadores-index" data-page="reporte-indicadores-encargado-index">
 		<header class="reporte-indicadores-index__header">
-			<div class="reporte-indicadores-index__header-center">
-				<h1 class="reporte-indicadores-index__title">
-					<i class="bi bi-file-earmark-bar-graph"></i>
-					Reportes de indicadores — Encargado
-				</h1>
-			</div>
+			<div></div>
+			<h1 class="reporte-indicadores-index__title">
+				<i class="bi bi-file-earmark-bar-graph"></i>
+				Reportes de indicadores — Encargado
+			</h1>
+			{% if es_acceso %}
+				<a href="{{ path('app_reporte_indicadores_index') }}"
+				   data-turbo-frame="content" data-turbo-action="advance"
+				   class="reporte-indicadores-index__add-btn">
+					<i class="bi bi-plus-circle"></i>
+					Agregar reporte
+				</a>
+			{% else %}
+				<div></div>
+			{% endif %}
 		</header>
 
 		{% for label, messages in app.flashes %}
@@ -34,7 +43,7 @@
 					{% for reporte in reportes %}
 						<tr class="reporte-indicadores-index__row">
 							<td class="reporte-indicadores-index__name">
-								{{ reporte.personal.nombre }} {{ reporte.personal.apellidoPaterno }} {{ reporte.personal.apellidoMaterno }}
+								{{ reporte.personal.nombre }} {{ reporte.personal.apPaterno }} {{ reporte.personal.apMaterno }}
 							</td>
 							<td>
 								{{ reporte.departamento.nombre }}
@@ -58,8 +67,7 @@
 									<a href="{{ path('app_reporte_indicadores_trimestre_show', { id: reporte.id }) }}"
 									   data-turbo-frame="content"
 									   data-turbo-action="advance"
-									   class="reporte-indicadores-index__action-btn"
-									   title="Ver reporte">
+									   class="reporte-indicadores-index__action-btn reporte-indicadores-index__action-btn--show">
 										<i class="bi bi-eye"></i>
 										Ver
 									</a>
