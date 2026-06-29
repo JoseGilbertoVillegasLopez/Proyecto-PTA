@@ -1,9 +1,9 @@
 <turbo-frame id="content">
 	<section class="reporte-indicadores-show" data-page="reporte-indicadores-show">
 		<header class="reporte-indicadores-show__header">
-			<a href="{{ path('app_reporte_indicadores_new', { anio: reporte.anio }) }}" data-turbo-frame="content" data-turbo-action="advance" class="reporte-indicadores-show__back-btn" title="Volver">
+			<button type="button" onclick="history.back()" class="reporte-indicadores-show__back-btn" title="Volver">
 				<i class="bi bi-arrow-left"></i>
-			</a>
+			</button>
 
 			<h1 class="reporte-indicadores-show__title">
 				<i class="bi bi-file-earmark-bar-graph"></i>
