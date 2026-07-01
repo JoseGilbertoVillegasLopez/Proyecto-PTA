@@ -34,7 +34,15 @@
                             <span class="ma-index-slug">{{ item.modulo.slug }}</span>
                             <span class="ma-index-label">{{ item.modulo.label }}</span>
                         </td>
-                        <td class="ma-index-desc">{{ item.modulo.descripcion ?? '—' }}</td>
+                        <td class="ma-index-desc">
+                            {% if item.modulo.slug == 'reportes_pta' %}
+                                Gestión de los proyectos PTA.
+                            {% elseif item.modulo.slug == 'personal' %}
+                                Gestión del personal del sistema.
+                            {% else %}
+                                {{ item.modulo.descripcion ?? '—' }}
+                            {% endif %}
+                        </td>
                         <td class="text-center">
                             {% if item.modulo.usaEncargado %}
                                 <span class="ma-badge ma-badge--enc">{{ item.encargados }}</span>
