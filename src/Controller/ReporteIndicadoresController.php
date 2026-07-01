@@ -451,7 +451,7 @@ final class ReporteIndicadoresController extends AbstractController
                 (array) ($actividadData['evidenciasEliminadas'] ?? [])
             );
 
-            if ($accion === '' || $descripcion === '' || $indicadorId <= 0) {
+            if ($accion === '' || $descripcion === '') {
                 throw new \DomainException('No se permiten actividades con campos vacios.');
             }
 
@@ -461,10 +461,14 @@ final class ReporteIndicadoresController extends AbstractController
 
             $archivos = array_values(array_filter($archivos, fn ($archivo) => $archivo instanceof UploadedFile && $archivo->isValid()));
 
-            $indicador = $indicadoresRepository->find($indicadorId);
+            $indicador = null;
 
-            if (!$indicador || !$indicador->isActivo()) {
-                throw new \DomainException('Selecciona un indicador valido para cada actividad.');
+            if ($indicadorId > 0) {
+                $indicador = $indicadoresRepository->find($indicadorId);
+
+                if (!$indicador || !$indicador->isActivo()) {
+                    throw new \DomainException('Selecciona un indicador valido para cada actividad.');
+                }
             }
 
             $actividad = $actividadesExistentesPorId[$actividadId] ?? null;

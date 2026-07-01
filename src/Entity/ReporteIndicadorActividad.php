@@ -22,7 +22,7 @@ class ReporteIndicadorActividad
     private ?ReporteIndicadorTrimestre $reporteTrimestre = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(name: 'indicador_basico_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\JoinColumn(name: 'indicador_basico_id', referencedColumnName: 'id', nullable: true)]
     private ?IndicadoresBasicos $indicadorBasico = null;
 
     #[ORM\Column(type: Types::TEXT)]

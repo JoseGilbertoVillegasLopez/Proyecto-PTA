@@ -31,41 +31,51 @@
 		<div class="reporte-indicadores-show__activities">
 			{% for actividad in actividades %}
 				<article class="reporte-indicadores-show__activity-card">
-					<div class="reporte-indicadores-show__activity-label">Accion/Actividad {{ loop.index }}</div>
-
-					<div class="reporte-indicadores-show__field">
-						<span>Actividad</span>
-						<strong>{{ actividad.accion }}</strong>
+					<div class="reporte-indicadores-show__activity-header" data-reporte-indicadores-show-toggle>
+						<span class="reporte-indicadores-show__activity-header-label">
+							<i class="bi bi-list-check"></i>
+							<span>Accion/Actividad {{ loop.index }}</span>
+						</span>
+						<i class="bi bi-chevron-down reporte-indicadores-show__activity-chevron"></i>
 					</div>
 
-					<div class="reporte-indicadores-show__field">
-						<span>Indicador que impacta</span>
-						<strong>{{ actividad.indicadorBasico.nombreIndicador }}</strong>
-					</div>
-
-					<div class="reporte-indicadores-show__field">
-						<span>Descripcion</span>
-						<p>{{ actividad.descripcion }}</p>
-					</div>
-
-					<div class="reporte-indicadores-show__evidences">
-						{% for evidencia in actividad.evidencias %}
-							<div class="reporte-indicadores-show__evidence-item">
-								{% if evidencia.mimeType starts with 'image/' %}
-									<img src="{{ evidencia.ruta }}" alt="{{ evidencia.archivoNombreOriginal }}">
-								{% else %}
-									<iframe src="{{ evidencia.ruta }}#toolbar=0&navpanes=0" title="{{ evidencia.archivoNombreOriginal }}"></iframe>
-								{% endif %}
-								<div class="reporte-indicadores-show__evidence-footer">
-									<span>{{ evidencia.archivoNombreOriginal }}</span>
-									<a href="{{ evidencia.ruta }}" download="{{ evidencia.archivoNombreOriginal }}" class="reporte-indicadores-show__download-btn" title="Descargar evidencia">
-										<i class="bi bi-download"></i>
-									</a>
-								</div>
+					<div class="reporte-indicadores-show__activity-body">
+						<div class="reporte-indicadores-show__row">
+							<div class="reporte-indicadores-show__field">
+								<span>Actividad</span>
+								<strong>{{ actividad.accion }}</strong>
 							</div>
-						{% else %}
-							<div class="reporte-indicadores-show__empty-evidence">Sin evidencias.</div>
-						{% endfor %}
+
+							<div class="reporte-indicadores-show__field">
+								<span>Indicador que impacta</span>
+								<strong>{{ actividad.indicadorBasico ? actividad.indicadorBasico.nombreIndicador : 'No aplica' }}</strong>
+							</div>
+						</div>
+
+						<div class="reporte-indicadores-show__field">
+							<span>Descripcion</span>
+							<p>{{ actividad.descripcion }}</p>
+						</div>
+
+						<div class="reporte-indicadores-show__evidences">
+							{% for evidencia in actividad.evidencias %}
+								<div class="reporte-indicadores-show__evidence-item">
+									{% if evidencia.mimeType starts with 'image/' %}
+										<img src="{{ evidencia.ruta }}" alt="{{ evidencia.archivoNombreOriginal }}">
+									{% else %}
+										<iframe src="{{ evidencia.ruta }}#toolbar=0&navpanes=0" title="{{ evidencia.archivoNombreOriginal }}"></iframe>
+									{% endif %}
+									<div class="reporte-indicadores-show__evidence-footer">
+										<span>{{ evidencia.archivoNombreOriginal }}</span>
+										<a href="{{ evidencia.ruta }}" download="{{ evidencia.archivoNombreOriginal }}" class="reporte-indicadores-show__download-btn" title="Descargar evidencia">
+											<i class="bi bi-download"></i>
+										</a>
+									</div>
+								</div>
+							{% else %}
+								<div class="reporte-indicadores-show__empty-evidence">Sin evidencias.</div>
+							{% endfor %}
+						</div>
 					</div>
 				</article>
 			{% else %}

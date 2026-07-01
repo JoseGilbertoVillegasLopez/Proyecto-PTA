@@ -43,6 +43,18 @@
         });
     }
 
+    function collapseCard(card) {
+        card.classList.add("reporte-indicadores-captura__activity-card--collapsed");
+    }
+
+    function expandCard(card) {
+        card.classList.remove("reporte-indicadores-captura__activity-card--collapsed");
+    }
+
+    function toggleCard(card) {
+        card.classList.toggle("reporte-indicadores-captura__activity-card--collapsed");
+    }
+
     function clearCardError(card) {
         card.classList.remove("reporte-indicadores-captura__activity-card--invalid");
         card.querySelector(".reporte-indicadores-captura__card-error")?.remove();
@@ -50,6 +62,7 @@
 
     function showCardError(card) {
         clearCardError(card);
+        expandCard(card);
         card.classList.add("reporte-indicadores-captura__activity-card--invalid");
 
         const error = document.createElement("div");
@@ -172,6 +185,8 @@
             return;
         }
 
+        cards.forEach(collapseCard);
+
         const index = cards.length;
         const html = template.innerHTML
             .replaceAll("__INDEX__", String(index))
@@ -228,6 +243,15 @@
         if (addActivityButton && page.contains(addActivityButton)) {
             event.preventDefault();
             addActivityCard(page);
+            return;
+        }
+
+        const toggleHeader = event.target.closest("[data-reporte-indicadores-captura-toggle]");
+        if (toggleHeader && page.contains(toggleHeader)) {
+            const card = toggleHeader.closest("[data-reporte-indicadores-captura-card]");
+            if (card) {
+                toggleCard(card);
+            }
         }
     });
 
