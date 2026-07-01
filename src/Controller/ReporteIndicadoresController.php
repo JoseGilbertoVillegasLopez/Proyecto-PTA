@@ -134,7 +134,7 @@ final class ReporteIndicadoresController extends AbstractController
         }
 
         $fechaPrueba = null;
-        $fechaPruebaTexto = trim((string) $request->query->get('fecha_prueba', '2026-10-01'));
+        $fechaPruebaTexto = trim((string) $request->query->get('fecha_prueba', ''));
 
         if ($this->getParameter('kernel.debug') && $fechaPruebaTexto !== '') {
             try {
