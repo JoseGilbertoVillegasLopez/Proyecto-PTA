@@ -7,6 +7,7 @@ use App\Repository\ModuloSistemaRepository;
 use App\Repository\PuestoRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -158,5 +159,45 @@ final class ModuloAccesoController extends AbstractController
         $this->addFlash('success', 'Accesos del módulo "' . $modulo->getLabel() . '" actualizados.');
 
         return $this->redirectToRoute('app_admin_modulo_acceso_index');
+    }
+
+    #[Route('/{id}/campo', name: 'app_admin_modulo_acceso_actualizar_campo', methods: ['POST'])]
+    public function actualizarCampo(
+        int $id,
+        Request $request,
+        ModuloSistemaRepository $moduloRepo,
+        EntityManagerInterface $em,
+    ): JsonResponse {
+        $modulo = $moduloRepo->find($id);
+        if (!$modulo) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!$this->isCsrfTokenValid('modulo_acceso_campo_' . $id, $request->request->getString('_token'))) {
+            return $this->json(['ok' => false, 'error' => 'Token CSRF inválido.'], 400);
+        }
+
+        $campo = $request->request->getString('campo');
+        $valor = trim($request->request->getString('valor'));
+
+        if (!in_array($campo, ['label', 'descripcion'], true)) {
+            return $this->json(['ok' => false, 'error' => 'Campo inválido.'], 400);
+        }
+
+        if ($campo === 'label') {
+            if ($valor === '') {
+                return $this->json(['ok' => false, 'error' => 'El nombre no puede estar vacío.'], 422);
+            }
+            $modulo->setLabel($valor);
+        } else {
+            $modulo->setDescripcion($valor !== '' ? $valor : null);
+        }
+
+        $em->flush();
+
+        return $this->json([
+            'ok'    => true,
+            'valor' => $campo === 'label' ? $modulo->getLabel() : ($modulo->getDescripcion() ?? ''),
+        ]);
     }
 }

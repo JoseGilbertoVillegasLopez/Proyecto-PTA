@@ -1,7 +1,10 @@
 <turbo-frame id="content">
 <div class="ma-edit-card" data-ma-view="edit"
      data-usa-encargado="{{ modulo.usaEncargado ? '1' : '0' }}"
-     data-usa-acceso="{{ modulo.usaAcceso ? '1' : '0' }}">
+     data-usa-acceso="{{ modulo.usaAcceso ? '1' : '0' }}"
+     data-ma-modulo-id="{{ modulo.id }}"
+     data-ma-campo-token="{{ csrf_token('modulo_acceso_campo_' ~ modulo.id) }}"
+     data-ma-campo-url="{{ path('app_admin_modulo_acceso_actualizar_campo', { id: modulo.id }) }}">
 
     <div class="ma-edit-header">
         <a href="{{ path('app_admin_modulo_acceso_index') }}"
@@ -9,15 +12,25 @@
            data-turbo-action="advance"
            class="ma-edit-back">
             <i class="bi bi-arrow-left-circle-fill"></i>
-            Volver al listado
+            <span>Volver al listado</span>
         </a>
-        <h4 class="ma-edit-title">
-            <i class="bi bi-shield-lock-fill"></i>
-            {{ modulo.label }}
-        </h4>
-        {% if modulo.descripcion %}
-            <p class="ma-edit-subtitle">{{ modulo.descripcion }}</p>
-        {% endif %}
+
+        <div class="ma-edit-title-row" data-ma-field="label">
+            <i class="bi bi-shield-lock-fill ma-edit-title-icon"></i>
+            <h4 class="ma-edit-title" data-ma-field-display>{{ modulo.label }}</h4>
+            <input type="text" class="ma-edit-title-input" data-ma-field-input value="{{ modulo.label }}" hidden>
+            <button type="button" class="ma-edit-field-btn" data-ma-field-toggle title="Editar nombre">
+                <i class="bi bi-pencil-fill"></i>
+            </button>
+        </div>
+
+        <div class="ma-edit-desc-row" data-ma-field="descripcion">
+            <p class="ma-edit-subtitle" data-ma-field-display>{{ modulo.descripcion ?: 'Sin descripción' }}</p>
+            <textarea class="ma-edit-subtitle-input" data-ma-field-input hidden>{{ modulo.descripcion }}</textarea>
+            <button type="button" class="ma-edit-field-btn" data-ma-field-toggle title="Editar descripción">
+                <i class="bi bi-pencil-fill"></i>
+            </button>
+        </div>
     </div>
 
     <form id="ma-edit-form"
