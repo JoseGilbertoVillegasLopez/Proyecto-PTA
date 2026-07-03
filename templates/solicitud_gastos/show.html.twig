@@ -196,6 +196,61 @@
 				</div>
 			</div>
 
+			{# ===================================================== #}
+			{# DOCUMENTOS DE VERIFICACIÓN #}
+			{# ===================================================== #}
+
+			<div class="sg-new__section-divider">
+				<span class="sg-new__section-label">
+					<i class="bi bi-check2-square"></i>
+					Documentos de verificación
+				</span>
+			</div>
+
+			<div class="sg-doc-badges">
+				{% for label in solicitud.documentosVerificacionLabels %}
+					<span class="sg-badge sg-badge--doc"><i class="bi bi-check-lg"></i> {{ label }}</span>
+				{% else %}
+					<span class="sg-show__display">—</span>
+				{% endfor %}
+			</div>
+
+			{# ===================================================== #}
+			{# EVIDENCIAS DE GASTO #}
+			{# ===================================================== #}
+
+			<div class="sg-new__section-divider">
+				<span class="sg-new__section-label">
+					<i class="bi bi-paperclip"></i>
+					Evidencias de gasto
+				</span>
+			</div>
+
+			<div class="sg-evidencias__grid">
+				{% for evidencia in solicitud.evidencias %}
+					<div class="sg-evidencias__item">
+						<a class="sg-evidencias__media"
+						   href="{{ evidencia.ruta }}"
+						   download="{{ evidencia.archivoNombreOriginal }}"
+						   title="Descargar {{ evidencia.archivoNombreOriginal }}">
+							{% if evidencia.esImagen %}
+								<img src="{{ evidencia.ruta }}" alt="{{ evidencia.archivoNombreOriginal }}">
+							{% else %}
+								<iframe src="{{ evidencia.ruta }}#toolbar=0&navpanes=0" title="{{ evidencia.archivoNombreOriginal }}"></iframe>
+							{% endif %}
+						</a>
+						<div class="sg-evidencias__footer">
+							<span>{{ evidencia.archivoNombreOriginal }}</span>
+							<a href="{{ evidencia.ruta }}" download="{{ evidencia.archivoNombreOriginal }}" class="sg-evidencias__download-btn" title="Descargar evidencia">
+								<i class="bi bi-download"></i>
+							</a>
+						</div>
+					</div>
+				{% else %}
+					<div class="sg-evidencias__empty">Sin evidencias adjuntas.</div>
+				{% endfor %}
+			</div>
+
 		</div>
 
 		{# ===================================================== #}

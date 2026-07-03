@@ -11,6 +11,20 @@ use App\Entity\SolicitudGastosBanco;
 #[ORM\Entity(repositoryClass: SolicitudGastosRepository::class)]
 class SolicitudGastos
 {
+    /**
+     * Catálogo fijo de documentos de verificación seleccionables.
+     * Clave => etiqueta mostrada al usuario.
+     */
+    public const DOCUMENTOS_VERIFICACION = [
+        'factura' => 'FACTURA(S)',
+        'constancia_situacion_fiscal_clabe' => 'CONSTANCIA DE SITUACIÓN FISCAL & CLABE INTERBANCARIA (CARÁTULA EDO DE CTA DATOS DEL TITULAR)',
+        'formato_pago' => 'FORMATO PARA PAGO No.',
+        'recibo' => 'RECIBO(S)',
+        'reporte_nomina' => 'REPORTE DE NÓMINA No.',
+        'cotizacion' => 'COTIZACIÓN',
+        'oficio_comision' => 'OFICIO DE COMISIÓN',
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -68,9 +82,28 @@ class SolicitudGastos
     )]
     private Collection $partidas;
 
+    /**
+     * Claves del catálogo DOCUMENTOS_VERIFICACION seleccionadas por el solicitante.
+     */
+    #[ORM\Column]
+    private array $documentosVerificacion = [];
+
+    /**
+     * @var Collection<int, SolicitudGastosEvidencia>
+     */
+    #[ORM\OneToMany(
+        targetEntity: SolicitudGastosEvidencia::class,
+        mappedBy: 'solicitud',
+        orphanRemoval: true,
+        cascade: ['persist', 'remove']
+    )]
+    #[ORM\OrderBy(['orden' => 'ASC'])]
+    private Collection $evidencias;
+
     public function __construct()
     {
         $this->partidas = new ArrayCollection();
+        $this->evidencias = new ArrayCollection();
         $this->fechaSolicitud = new \DateTime();
     }
 
@@ -248,6 +281,60 @@ class SolicitudGastos
     public function setBanco(?SolicitudGastosBanco $banco): static
     {
         $this->banco = $banco;
+
+        return $this;
+    }
+
+    public function getDocumentosVerificacion(): array
+    {
+        return $this->documentosVerificacion;
+    }
+
+    public function setDocumentosVerificacion(array $documentosVerificacion): static
+    {
+        $this->documentosVerificacion = $documentosVerificacion;
+
+        return $this;
+    }
+
+    /**
+     * Etiquetas legibles de los documentos de verificación seleccionados.
+     *
+     * @return string[]
+     */
+    public function getDocumentosVerificacionLabels(): array
+    {
+        return array_values(array_intersect_key(
+            self::DOCUMENTOS_VERIFICACION,
+            array_flip($this->documentosVerificacion)
+        ));
+    }
+
+    /**
+     * @return Collection<int, SolicitudGastosEvidencia>
+     */
+    public function getEvidencias(): Collection
+    {
+        return $this->evidencias;
+    }
+
+    public function addEvidencia(SolicitudGastosEvidencia $evidencia): static
+    {
+        if (!$this->evidencias->contains($evidencia)) {
+            $this->evidencias->add($evidencia);
+            $evidencia->setSolicitud($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvidencia(SolicitudGastosEvidencia $evidencia): static
+    {
+        if ($this->evidencias->removeElement($evidencia)) {
+            if ($evidencia->getSolicitud() === $this) {
+                $evidencia->setSolicitud(null);
+            }
+        }
 
         return $this;
     }

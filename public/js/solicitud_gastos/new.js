@@ -325,6 +325,136 @@ function bootSgNew(context) {
     }
 
     btnAdd.addEventListener('click', agregarFila);
+
+    // ── EVIDENCIAS DE GASTO (adjuntar imagen/PDF, min 1 - max 7) ─
+    var MIN_EVIDENCIAS = 1;
+    var MAX_EVIDENCIAS = 7;
+
+    var preview = root.querySelector('[data-sg-evidencias-preview]');
+    var addEvidenciaBtn = root.querySelector('[data-sg-evidencias-add]');
+    var form = root.querySelector('[data-sg-evidencias-form]');
+
+    function getEvidenceCount() {
+        return preview ? preview.querySelectorAll('.sg-evidencias__preview-item').length : 0;
+    }
+
+    function clearEvidenceError() {
+        preview?.parentElement?.querySelector('.sg-evidencias__error')?.remove();
+    }
+
+    function showEvidenceError(message) {
+        clearEvidenceError();
+        if (!preview) return;
+        var error = document.createElement('div');
+        error.className = 'sg-evidencias__error';
+        error.textContent = message;
+        preview.insertAdjacentElement('afterend', error);
+    }
+
+    function buildEvidenceTile(file, input) {
+        var item = document.createElement('div');
+        item.className = 'sg-evidencias__preview-item';
+
+        var url = URL.createObjectURL(file);
+
+        if (file.type.startsWith('image/')) {
+            var img = document.createElement('img');
+            img.src = url;
+            img.alt = file.name;
+            item.appendChild(img);
+        } else {
+            var iframe = document.createElement('iframe');
+            iframe.src = url + '#toolbar=0&navpanes=0';
+            iframe.title = file.name;
+            item.appendChild(iframe);
+        }
+
+        var removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'sg-evidencias__preview-remove';
+        removeButton.title = 'Quitar evidencia';
+        removeButton.innerHTML = '<i class="bi bi-x-lg"></i>';
+        removeButton.addEventListener('click', function () {
+            input.remove();
+            item.remove();
+            clearEvidenceError();
+            if (addEvidenciaBtn) addEvidenciaBtn.hidden = getEvidenceCount() >= MAX_EVIDENCIAS;
+        });
+
+        var name = document.createElement('span');
+        name.textContent = file.name;
+
+        item.appendChild(removeButton);
+        item.appendChild(name);
+
+        return item;
+    }
+
+    function openEvidencePicker() {
+        var inputName = preview?.dataset.sgEvidenciasInputName;
+        if (!preview || !inputName) return;
+
+        if (getEvidenceCount() >= MAX_EVIDENCIAS) {
+            showEvidenceError('Máximo ' + MAX_EVIDENCIAS + ' archivos de evidencia.');
+            return;
+        }
+
+        var picker = document.createElement('input');
+        picker.type = 'file';
+        picker.name = inputName;
+        picker.accept = 'image/*,application/pdf';
+        picker.className = 'sg-evidencias__file-hidden';
+
+        picker.addEventListener('change', function () {
+            var file = picker.files && picker.files[0];
+
+            if (!file) {
+                picker.remove();
+                return;
+            }
+
+            if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+                picker.remove();
+                showEvidenceError('Solo se permiten imágenes o PDF.');
+                return;
+            }
+
+            var tile = buildEvidenceTile(file, picker);
+            preview.insertBefore(tile, addEvidenciaBtn);
+            preview.appendChild(picker);
+            clearEvidenceError();
+
+            if (addEvidenciaBtn) addEvidenciaBtn.hidden = getEvidenceCount() >= MAX_EVIDENCIAS;
+        });
+
+        preview.appendChild(picker);
+        picker.click();
+    }
+
+    if (addEvidenciaBtn) {
+        addEvidenciaBtn.addEventListener('click', openEvidencePicker);
+    }
+
+    if (form) {
+        form.addEventListener('submit', function (event) {
+            var evidenceCount = getEvidenceCount();
+            var documentosMarcados = root.querySelectorAll('input[name="solicitud[documentos_verificacion][]"]:checked').length;
+
+            if (evidenceCount < MIN_EVIDENCIAS || evidenceCount > MAX_EVIDENCIAS) {
+                event.preventDefault();
+                showEvidenceError('Debes adjuntar entre ' + MIN_EVIDENCIAS + ' y ' + MAX_EVIDENCIAS + ' archivos de evidencia.');
+                preview?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            if (documentosMarcados === 0) {
+                event.preventDefault();
+                var group = root.querySelector('.sg-checkbox-group');
+                group?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                alert('Selecciona al menos un documento de verificación.');
+            }
+        });
+    }
 }
 
 // ── INICIALIZACIÓN (mismo patrón que pta/new.js) ──────────────

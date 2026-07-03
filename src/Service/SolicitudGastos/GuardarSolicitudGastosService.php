@@ -4,6 +4,7 @@ namespace App\Service\SolicitudGastos;
 
 use App\Entity\Personal;
 use App\Entity\SolicitudGastos;
+use App\Entity\SolicitudGastosEvidencia;
 use App\Entity\SolicitudGastosPartida;
 use App\Repository\PartidasPresupuestalesRepository;
 use App\Repository\ProcesoClaveRepository;
@@ -11,9 +12,14 @@ use App\Repository\ProcesoEstrategicoRepository;
 use App\Repository\SolicitudGastosBancoRepository;
 use App\Repository\TipoSolicitudRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class GuardarSolicitudGastosService
 {
+    private const MIN_EVIDENCIAS = 1;
+    private const MAX_EVIDENCIAS = 7;
+
     public function __construct(
         private readonly TipoSolicitudRepository $tipoSolicitudRepository,
         private readonly ProcesoEstrategicoRepository $procesoEstrategicoRepository,
@@ -21,9 +27,14 @@ class GuardarSolicitudGastosService
         private readonly PartidasPresupuestalesRepository $partidasRepository,
         private readonly SolicitudGastosBancoRepository $bancoRepository,
         private readonly EntityManagerInterface $em,
+        #[Autowire(param: 'kernel.project_dir')]
+        private readonly string $projectDir,
     ) {}
 
-    public function guardar(array $data, Personal $solicitante): SolicitudGastos
+    /**
+     * @param UploadedFile[] $archivosEvidencia
+     */
+    public function guardar(array $data, Personal $solicitante, array $archivosEvidencia = []): SolicitudGastos
     {
         $solicitud = new SolicitudGastos();
         $solicitud->setSolicitante($solicitante);
@@ -96,10 +107,80 @@ class GuardarSolicitudGastosService
 
         $solicitud->setCantidadTotal($total);
 
+        $documentos = $data['documentos_verificacion'] ?? [];
+        $documentos = is_array($documentos)
+            ? array_values(array_intersect($documentos, array_keys(SolicitudGastos::DOCUMENTOS_VERIFICACION)))
+            : [];
+
+        if (empty($documentos)) {
+            throw new \InvalidArgumentException('Selecciona al menos un documento de verificación.');
+        }
+
+        $solicitud->setDocumentosVerificacion($documentos);
+
         $this->em->persist($solicitud);
         $this->em->flush();
 
+        $this->guardarEvidencias($solicitud, $archivosEvidencia);
+        $this->em->flush();
+
         return $solicitud;
+    }
+
+    /**
+     * @param UploadedFile[] $archivos
+     */
+    private function guardarEvidencias(SolicitudGastos $solicitud, array $archivos): void
+    {
+        $archivos = array_values(array_filter(
+            $archivos,
+            static fn ($archivo) => $archivo instanceof UploadedFile && $archivo->isValid()
+        ));
+
+        if (count($archivos) < self::MIN_EVIDENCIAS || count($archivos) > self::MAX_EVIDENCIAS) {
+            throw new \InvalidArgumentException(sprintf(
+                'Debes adjuntar entre %d y %d archivos de evidencia.',
+                self::MIN_EVIDENCIAS,
+                self::MAX_EVIDENCIAS
+            ));
+        }
+
+        $uploadsDir = $this->projectDir . '/public/uploads/solicitud_gastos/' . $solicitud->getId();
+
+        if (!is_dir($uploadsDir)) {
+            mkdir($uploadsDir, 0775, true);
+        }
+
+        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $orden = 1;
+
+        foreach ($archivos as $archivo) {
+            $mimeType = $finfo->file($archivo->getPathname()) ?: $archivo->getMimeType();
+
+            if (!str_starts_with($mimeType ?? '', 'image/') && $mimeType !== 'application/pdf') {
+                throw new \InvalidArgumentException('Solo se permiten imágenes o PDF como evidencia.');
+            }
+
+            $extension = strtolower($archivo->getClientOriginalExtension() ?: $archivo->guessExtension() ?: 'bin');
+            $nombreGuardado = bin2hex(random_bytes(16)) . '.' . $extension;
+
+            $archivo->move($uploadsDir, $nombreGuardado);
+
+            $evidencia = (new SolicitudGastosEvidencia())
+                ->setArchivoNombreOriginal($archivo->getClientOriginalName())
+                ->setArchivoNombreGuardado($nombreGuardado)
+                ->setRuta('/uploads/solicitud_gastos/' . $solicitud->getId() . '/' . $nombreGuardado)
+                ->setMimeType($mimeType)
+                ->setExtension($extension)
+                ->setTamano(filesize($uploadsDir . '/' . $nombreGuardado) ?: 0)
+                ->setOrden($orden)
+                ->setCreadoFecha(new \DateTimeImmutable('today'));
+
+            $solicitud->addEvidencia($evidencia);
+            $this->em->persist($evidencia);
+
+            $orden++;
+        }
     }
 
     private function normalizarDecimal(mixed $value): ?string

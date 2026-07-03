@@ -126,7 +126,15 @@ final class SolicitudGastosController extends AbstractController
             }
 
             $data = $request->request->all('solicitud');
-            $guardarService->guardar($data, $personal);
+            $archivosEvidencia = $request->files->all('solicitud')['evidencias'] ?? [];
+
+            try {
+                $guardarService->guardar($data, $personal, $archivosEvidencia);
+            } catch (\InvalidArgumentException $e) {
+                $this->addFlash('error', $e->getMessage());
+
+                return $this->redirectToRoute('app_solicitud_gastos_new');
+            }
 
             $this->addFlash('success', 'Solicitud creada correctamente.');
 
@@ -137,11 +145,12 @@ final class SolicitudGastosController extends AbstractController
         $partidasPresup   = $partidasRepo->findAll();
 
         $catalogos = [
-            'tipos_solicitud'         => $tipoRepo->findAllOrdenados(),
-            'procesos_estrategicos'   => $peRepo->findAllOrderByNombre(),
-            'procesos_clave'          => $procesosClave,
-            'partidas_presupuestales' => $partidasPresup,
-            'bancos'                  => $bancoRepo->findActivos(),
+            'tipos_solicitud'          => $tipoRepo->findAllOrdenados(),
+            'procesos_estrategicos'    => $peRepo->findAllOrderByNombre(),
+            'procesos_clave'           => $procesosClave,
+            'partidas_presupuestales'  => $partidasPresup,
+            'bancos'                   => $bancoRepo->findActivos(),
+            'documentos_verificacion'  => SolicitudGastos::DOCUMENTOS_VERIFICACION,
         ];
 
         $procesoClaveData = array_map(static fn($pc) => [

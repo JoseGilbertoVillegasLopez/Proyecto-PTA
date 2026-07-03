@@ -5,6 +5,7 @@ CLAUDE.md
 
 # Uploads generados por usuarios
 /public/uploads/pta/
+/public/uploads/solicitud_gastos/
 
 ###> symfony/framework-bundle ###
 /.env.local

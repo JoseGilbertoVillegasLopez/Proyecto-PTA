@@ -75,6 +75,111 @@
 .sg-show__detalle-table thead th:nth-child(8)  { width: 24%; }
 .sg-show__detalle-table thead th:nth-child(9)  { width: 8%;  }
 
+/* ── Documentos de verificación seleccionados ──
+   Ancho contenido + centrado: con pocos documentos no se estiran
+   a lo ancho de la tarjeta, y con varios se acomodan en filas
+   centradas en vez de quedar pegados a la izquierda. */
+.sg-doc-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    max-width: 780px;
+    margin: 0 auto;
+}
+
+.sg-badge--doc {
+    background: rgba(13, 202, 240, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(13, 202, 240, 0.3);
+    font-weight: 600;
+    font-size: 0.78rem;
+}
+
+.sg-badge--doc .bi {
+    color: #0dcaf0;
+}
+
+/* ── Grid de evidencias adjuntas ── */
+.sg-evidencias__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+}
+
+.sg-evidencias__item {
+    width: 180px;
+    height: 180px;
+    flex: 0 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(13, 202, 240, 0.24);
+}
+
+.sg-evidencias__media {
+    display: block;
+    cursor: pointer;
+}
+
+.sg-evidencias__item img,
+.sg-evidencias__item iframe {
+    display: block;
+    width: 100%;
+    height: 142px;
+    border: 0;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.sg-evidencias__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px;
+}
+
+.sg-evidencias__footer span {
+    min-width: 0;
+    color: #d4ebf4;
+    font-size: 0.76rem;
+    font-weight: 800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sg-evidencias__download-btn {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    color: #defff4;
+    background: rgba(29, 209, 161, 0.16);
+    border: 1px solid rgba(29, 209, 161, 0.32);
+    text-decoration: none;
+    flex: 0 0 auto;
+}
+
+.sg-evidencias__download-btn:hover {
+    color: #ffffff;
+}
+
+.sg-evidencias__empty {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    color: #9fb3c8;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(13, 202, 240, 0.1);
+    font-weight: 800;
+    text-align: center;
+}
+
 /* ── Botón revisar (al fondo igual que submit-btn) ── */
 .sg-show__revisar-btn {
     display: inline-flex;

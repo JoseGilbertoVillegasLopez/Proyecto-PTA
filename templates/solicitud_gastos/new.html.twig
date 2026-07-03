@@ -22,7 +22,9 @@
 
 	<form method="POST"
 		  action="{{ path('app_solicitud_gastos_new') }}"
-		  data-turbo-action="advance">
+		  enctype="multipart/form-data"
+		  data-turbo-action="advance"
+		  data-sg-evidencias-form>
 
 		<input type="hidden" name="_token" value="{{ csrf_token('nueva_solicitud_gastos') }}">
 
@@ -225,6 +227,65 @@
 							<span class="sg-new__total-label">Total</span>
 							<span class="sg-new__total-valor" id="sg-total-valor">$ 0.00</span>
 						</div>
+					</div>
+				</div>
+
+				{# ===================================================== #}
+				{# SEPARADOR: DOCUMENTOS DE VERIFICACIÓN #}
+				{# ===================================================== #}
+
+				<div class="sg-new__section-divider">
+					<span class="sg-new__section-label">
+						<i class="bi bi-check2-square"></i>
+						Documentos de verificación
+					</span>
+				</div>
+
+				<div class="sg-new__field sg-new__field--full">
+					<label class="sg-new__label">Selecciona los documentos que respaldan el gasto *</label>
+					<div class="sg-doc-grid">
+						{% set sgDocIcons = {
+							'factura': 'bi-receipt',
+							'constancia_situacion_fiscal_clabe': 'bi-bank2',
+							'formato_pago': 'bi-cash-coin',
+							'recibo': 'bi-receipt-cutoff',
+							'reporte_nomina': 'bi-person-badge',
+							'cotizacion': 'bi-file-earmark-text',
+							'oficio_comision': 'bi-briefcase',
+						} %}
+						{% for key, label in catalogos.documentos_verificacion %}
+							<label class="sg-doc-check">
+								<input type="checkbox"
+									   class="sg-doc-check__input"
+									   name="solicitud[documentos_verificacion][]"
+									   value="{{ key }}">
+								<span class="sg-doc-check__box"><i class="bi bi-check-lg"></i></span>
+								<i class="bi {{ sgDocIcons[key]|default('bi-file-earmark-text') }} sg-doc-check__icon"></i>
+								<span class="sg-doc-check__label">{{ label }}</span>
+							</label>
+						{% endfor %}
+					</div>
+				</div>
+
+				{# ===================================================== #}
+				{# SEPARADOR: EVIDENCIAS DE GASTO #}
+				{# ===================================================== #}
+
+				<div class="sg-new__section-divider">
+					<span class="sg-new__section-label">
+						<i class="bi bi-paperclip"></i>
+						Evidencias de gasto
+					</span>
+				</div>
+
+				<div class="sg-new__field sg-new__field--full">
+					<label class="sg-new__label">Adjunta facturas, cotizaciones u otro comprobante (imagen o PDF) *</label>
+					<p class="sg-evidencias__hint">Sube entre 1 y 7 archivos (imágenes o PDF).</p>
+
+					<div class="sg-evidencias__preview" data-sg-evidencias-preview data-sg-evidencias-input-name="solicitud[evidencias][]">
+						<button type="button" class="sg-evidencias__add" data-sg-evidencias-add title="Agregar evidencia">
+							<i class="bi bi-plus-lg"></i>
+						</button>
 					</div>
 				</div>
 
