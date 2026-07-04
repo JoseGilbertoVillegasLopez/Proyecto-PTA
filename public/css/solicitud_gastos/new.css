@@ -142,6 +142,27 @@
     gap: 20px;
 }
 
+/* Fila: Tipo de solicitud (más chico) + Documento que presenta + Descripción (más grandes) */
+.sg-new__grid-tipo {
+    grid-template-columns: 0.8fr 1.6fr 1.6fr;
+}
+
+/* Fila: Fecha + Banco (reducidos, ver notas de reducción) + Transferencia/Cta-Clave (llenan el resto de la fila).
+   Se usan fr en vez de % para que los 3 gaps de 20px se resten del ancho disponible antes de repartir
+   proporciones; con % los gaps se suman aparte y la última columna se salía del borde derecho. */
+.sg-new__grid-4 {
+    display: grid;
+    grid-template-columns: 15fr 17.5fr 33.75fr 33.75fr;
+    gap: 20px;
+}
+
+/* Mismo alto para los 4 controles de esta fila (input date, select, y las 2 textareas) */
+.sg-new__grid-4 .sg-new__input,
+.sg-new__grid-4 .sg-new__select,
+.sg-new__grid-4 .sg-new__textarea-fixed {
+    height: 46px;
+}
+
 @media (max-width: 800px) {
     .sg-new__grid-3 { grid-template-columns: 1fr 1fr; }
 }
@@ -253,7 +274,7 @@
 }
 
 /* =========================================================
-   FILA DE TEXTAREAS (transferencia, cta, concepto)
+   FILA DE TEXTAREAS (usada por show.html.twig: documento/descripción)
    ========================================================= */
 
 .sg-concepto-row {
@@ -304,103 +325,106 @@
 }
 
 /* =========================================================
-   DOCUMENTOS DE VERIFICACIÓN (checklist)
+   AUTORIZACIÓN — BUSCADOR DE PERSONAL (Jefe de Área, Autoriza)
    ========================================================= */
 
-.sg-doc-grid {
+/* Responsable / Jefe de Área / Autoriza: mismo ancho para los 3 */
+.sg-new__grid-autoriza {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* Nombre arriba, puesto debajo */
+.sg-autoriza-display {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.sg-doc-check {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 13px 16px;
-    border-radius: 14px;
-    background: var(--sg-bg-input);
-    border: 1px solid var(--sg-border-soft);
-    cursor: pointer;
-    transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
-    flex: 0 1 calc(25% - 9px);
-    min-width: 220px;
+.sg-autoriza-nombre {
+    font-weight: 700;
+    color: #e6f1ff;
 }
 
-@media (max-width: 980px) {
-    .sg-doc-check { flex-basis: calc(50% - 6px); }
-}
-
-@media (max-width: 560px) {
-    .sg-doc-check { flex-basis: 100%; min-width: 0; }
-}
-
-.sg-doc-check:hover {
-    border-color: var(--sg-border);
-    transform: translateY(-1px);
-}
-
-.sg-doc-check__input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.sg-doc-check__box {
-    flex: 0 0 auto;
-    width: 22px;
-    height: 22px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 7px;
-    border: 1.5px solid var(--sg-border);
-    background: rgba(0, 0, 0, 0.25);
-    color: transparent;
-    font-size: 0.8rem;
-    transition: all 0.2s ease;
-}
-
-.sg-doc-check__icon {
-    flex: 0 0 auto;
-    font-size: 1.05rem;
-    color: var(--sg-muted);
-    transition: color 0.2s ease;
-}
-
-.sg-doc-check__label {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #cfe3f2;
+.sg-autoriza-puesto,
+.sg-autoriza-puesto-caption {
+    font-size: 0.78rem;
     line-height: 1.3;
-    transition: color 0.2s ease;
+    color: var(--sg-muted);
 }
 
-.sg-doc-check:has(.sg-doc-check__input:checked) {
-    background: rgba(13, 202, 240, 0.1);
-    border-color: var(--sg-primary);
+/* Reserva el alto de la 2a línea (puesto) aunque esté vacía, para que el
+   recuadro mida lo mismo lleno o vacío y los 3 campos queden alineados */
+.sg-autoriza-puesto-caption {
+    display: block;
+    min-height: 1.3em;
 }
 
-.sg-doc-check:has(.sg-doc-check__input:checked) .sg-doc-check__box {
-    background: var(--sg-primary);
-    border-color: var(--sg-primary);
-    color: #06222c;
+/* El label del 3er campo empieza vacío (se llena con el puesto al elegir a
+   la persona); reserva el mismo alto que los otros 2 labels para no
+   desalinear la fila mientras está vacío */
+.sg-new__grid-autoriza .sg-new__label {
+    display: block;
+    min-height: 1.2em;
+    line-height: 1.2;
 }
 
-.sg-doc-check:has(.sg-doc-check__input:checked) .sg-doc-check__icon {
-    color: var(--sg-primary);
+/* Recuadro que envuelve el input de búsqueda (Jefe de Área / Autoriza),
+   mismo look que el recuadro de solo lectura del Responsable */
+.sg-autoriza-box .sg-autoriza-search {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    color: #e6f1ff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-align: center;
 }
 
-.sg-doc-check:has(.sg-doc-check__input:checked) .sg-doc-check__label {
+.sg-autoriza-box .sg-autoriza-search::placeholder {
+    color: #3d5166;
+    font-weight: 400;
+}
+
+.sg-autoriza-search-wrap {
+    position: relative;
+}
+
+.sg-autoriza-results {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    max-height: 220px;
+    overflow-y: auto;
+    background: var(--sg-bg-card);
+    border: 1px solid var(--sg-border);
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.sg-autoriza-results:empty {
+    display: none;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+.sg-autoriza-results .search-item {
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: #e6f1ff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sg-autoriza-results .search-item:hover {
     color: #fff;
-}
-
-.sg-doc-check:has(.sg-doc-check__input:focus-visible) {
-    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.25);
+    background: rgba(13, 202, 240, 0.16);
 }
 
 /* =========================================================
@@ -427,8 +451,8 @@
 
 .sg-evidencias__preview-item {
     position: relative;
-    width: 180px;
-    height: 180px;
+    width: 162px;
+    height: 162px;
     flex: 0 0 auto;
     border-radius: 12px;
     overflow: hidden;
@@ -440,7 +464,7 @@
 .sg-evidencias__preview-item iframe {
     display: block;
     width: 100%;
-    height: 142px;
+    height: 128px;
     border: 0;
     object-fit: cover;
     pointer-events: none;
@@ -476,8 +500,8 @@
 }
 
 .sg-evidencias__add {
-    width: 180px;
-    height: 180px;
+    width: 162px;
+    height: 162px;
     flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
@@ -816,6 +840,13 @@
 .sg-new__add-partida-btn:hover {
     background: rgba(13, 202, 240, 0.2);
     color: #fff;
+}
+
+.sg-new__add-partida-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: rgba(13, 202, 240, 0.08);
+    color: var(--sg-primary);
 }
 
 /* =========================================================

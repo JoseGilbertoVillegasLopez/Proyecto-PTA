@@ -55,8 +55,8 @@
 
 			<div class="sg-new__body">
 
-				{# Fila 1: tipo + fecha + banco #}
-				<div class="sg-new__grid-3">
+				{# Fila 1: tipo + documento que presenta + descripción del documento #}
+				<div class="sg-new__grid-3 sg-new__grid-tipo">
 					<div class="sg-new__field">
 						<label for="tipo_solicitud" class="sg-new__label">Tipo de solicitud *</label>
 						<select class="sg-new__select"
@@ -69,6 +69,30 @@
 							{% endfor %}
 						</select>
 					</div>
+					<div class="sg-new__field">
+						<label for="documento_verificacion" class="sg-new__label">Documento que presenta *</label>
+						<select class="sg-new__select"
+								id="documento_verificacion"
+								name="solicitud[documento_verificacion]"
+								required>
+							<option value="">-- Seleccionar --</option>
+							{% for key, label in catalogos.documentos_verificacion %}
+								<option value="{{ key }}">{{ label }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="sg-new__field">
+						<label for="documento_verificacion_descripcion" class="sg-new__label">Descripción del documento</label>
+						<input type="text"
+							   class="sg-new__input"
+							   id="documento_verificacion_descripcion"
+							   name="solicitud[documento_verificacion_descripcion]"
+							   placeholder="Descripción libre (opcional)">
+					</div>
+				</div>
+
+				{# Fila 1b: fecha + banco + transferencia + cta/clave #}
+				<div class="sg-new__grid-4">
 					<div class="sg-new__field">
 						<label for="fecha_necesita" class="sg-new__label">Fecha en que se requiere *</label>
 						<div class="sg-date-wrapper">
@@ -90,10 +114,6 @@
 							{% endfor %}
 						</select>
 					</div>
-				</div>
-
-				{# Fila 2: transferencia + cta + concepto (flex wrap, textareas) #}
-				<div class="sg-concepto-row">
 					<div class="sg-new__field">
 						<label for="transferencia" class="sg-new__label">Transferencia en beneficio de</label>
 						<textarea class="sg-new__textarea-fixed"
@@ -108,14 +128,16 @@
 								  name="solicitud[cta_clave_beneficiario]"
 								  placeholder="Número de cuenta o clave (opcional)"></textarea>
 					</div>
-					<div class="sg-new__field">
-						<label for="por_concepto" class="sg-new__label">Por concepto de *</label>
-						<textarea class="sg-new__textarea-fixed"
-								  id="por_concepto"
-								  name="solicitud[por_concepto_de]"
-								  placeholder="Describe brevemente el motivo"
-								  required></textarea>
-					</div>
+				</div>
+
+				{# Fila 2: por concepto de (ancho completo) #}
+				<div class="sg-new__field sg-new__field--full">
+					<label for="por_concepto" class="sg-new__label">Por concepto de *</label>
+					<textarea class="sg-new__textarea-fixed"
+							  id="por_concepto"
+							  name="solicitud[por_concepto_de]"
+							  placeholder="Describe brevemente el motivo"
+							  required></textarea>
 				</div>
 
 				{# ===================================================== #}
@@ -231,50 +253,60 @@
 				</div>
 
 				{# ===================================================== #}
-				{# SEPARADOR: DOCUMENTOS DE VERIFICACIÓN #}
+				{# SEPARADOR: AUTORIZACIÓN DE LA SOLICITUD #}
 				{# ===================================================== #}
 
 				<div class="sg-new__section-divider">
 					<span class="sg-new__section-label">
-						<i class="bi bi-check2-square"></i>
-						Documentos de verificación
+						<i class="bi bi-people-fill"></i>
+						Autorización de la solicitud
 					</span>
 				</div>
 
-				<div class="sg-new__field sg-new__field--full">
-					<label class="sg-new__label">Selecciona los documentos que respaldan el gasto *</label>
-					<div class="sg-doc-grid">
-						{% set sgDocIcons = {
-							'factura': 'bi-receipt',
-							'constancia_situacion_fiscal_clabe': 'bi-bank2',
-							'formato_pago': 'bi-cash-coin',
-							'recibo': 'bi-receipt-cutoff',
-							'reporte_nomina': 'bi-person-badge',
-							'cotizacion': 'bi-file-earmark-text',
-							'oficio_comision': 'bi-briefcase',
-						} %}
-						{% for key, label in catalogos.documentos_verificacion %}
-							<label class="sg-doc-check">
-								<input type="checkbox"
-									   class="sg-doc-check__input"
-									   name="solicitud[documentos_verificacion][]"
-									   value="{{ key }}">
-								<span class="sg-doc-check__box"><i class="bi bi-check-lg"></i></span>
-								<i class="bi {{ sgDocIcons[key]|default('bi-file-earmark-text') }} sg-doc-check__icon"></i>
-								<span class="sg-doc-check__label">{{ label }}</span>
-							</label>
-						{% endfor %}
+				<div class="sg-new__grid-3 sg-new__grid-autoriza">
+					<div class="sg-new__field">
+						<label class="sg-new__label">Solicitante</label>
+						<div class="sg-show__display sg-autoriza-display">
+							<span class="sg-autoriza-nombre">{{ personal }}</span>
+							<span class="sg-autoriza-puesto">{{ personal.puesto ? personal.puesto.nombre : '—' }}</span>
+						</div>
+					</div>
+					<div class="sg-new__field sg-autoriza-search-wrap">
+						<label for="jefe_area_search" class="sg-new__label">Jefe(a) del área solicitante *</label>
+						<div class="sg-show__display sg-autoriza-display sg-autoriza-box">
+							<input type="text"
+								   class="sg-autoriza-search"
+								   id="jefe_area_search"
+								   placeholder="Buscar por nombre o puesto..."
+								   autocomplete="off">
+							<div class="sg-autoriza-puesto-caption"></div>
+						</div>
+						<input type="hidden" name="solicitud[jefe_area_id]" class="sg-autoriza-hidden">
+						<div class="sg-autoriza-results"></div>
+					</div>
+					<div class="sg-new__field sg-autoriza-search-wrap">
+						<label for="autoriza_search" class="sg-new__label sg-autoriza-dynamic-label" id="autoriza_label"></label>
+						<div class="sg-show__display sg-autoriza-display sg-autoriza-box">
+							<input type="text"
+								   class="sg-autoriza-search"
+								   id="autoriza_search"
+								   placeholder="Buscar por nombre o puesto..."
+								   autocomplete="off">
+							<div class="sg-autoriza-puesto-caption"></div>
+						</div>
+						<input type="hidden" name="solicitud[autoriza_id]" class="sg-autoriza-hidden">
+						<div class="sg-autoriza-results"></div>
 					</div>
 				</div>
 
 				{# ===================================================== #}
-				{# SEPARADOR: EVIDENCIAS DE GASTO #}
+				{# SEPARADOR: DOCUMENTOS A PRESENTAR PARA LA SOLICITUD #}
 				{# ===================================================== #}
 
 				<div class="sg-new__section-divider">
 					<span class="sg-new__section-label">
 						<i class="bi bi-paperclip"></i>
-						Evidencias de gasto
+						Documentos a presentar para la solicitud
 					</span>
 				</div>
 

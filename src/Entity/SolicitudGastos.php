@@ -83,10 +83,21 @@ class SolicitudGastos
     private Collection $partidas;
 
     /**
-     * Claves del catálogo DOCUMENTOS_VERIFICACION seleccionadas por el solicitante.
+     * Clave del catálogo DOCUMENTOS_VERIFICACION seleccionada por el solicitante.
      */
-    #[ORM\Column]
-    private array $documentosVerificacion = [];
+    #[ORM\Column(length: 60, nullable: true)]
+    private ?string $documentoVerificacion = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $documentoVerificacionDescripcion = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Personal $jefeArea = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Personal $autoriza = null;
 
     /**
      * @var Collection<int, SolicitudGastosEvidencia>
@@ -285,29 +296,60 @@ class SolicitudGastos
         return $this;
     }
 
-    public function getDocumentosVerificacion(): array
+    public function getDocumentoVerificacion(): ?string
     {
-        return $this->documentosVerificacion;
+        return $this->documentoVerificacion;
     }
 
-    public function setDocumentosVerificacion(array $documentosVerificacion): static
+    public function setDocumentoVerificacion(?string $documentoVerificacion): static
     {
-        $this->documentosVerificacion = $documentosVerificacion;
+        $this->documentoVerificacion = $documentoVerificacion;
+
+        return $this;
+    }
+
+    public function getDocumentoVerificacionDescripcion(): ?string
+    {
+        return $this->documentoVerificacionDescripcion;
+    }
+
+    public function setDocumentoVerificacionDescripcion(?string $documentoVerificacionDescripcion): static
+    {
+        $this->documentoVerificacionDescripcion = $documentoVerificacionDescripcion;
 
         return $this;
     }
 
     /**
-     * Etiquetas legibles de los documentos de verificación seleccionados.
-     *
-     * @return string[]
+     * Etiqueta legible del documento de verificación seleccionado.
      */
-    public function getDocumentosVerificacionLabels(): array
+    public function getDocumentoVerificacionLabel(): ?string
     {
-        return array_values(array_intersect_key(
-            self::DOCUMENTOS_VERIFICACION,
-            array_flip($this->documentosVerificacion)
-        ));
+        return self::DOCUMENTOS_VERIFICACION[$this->documentoVerificacion] ?? null;
+    }
+
+    public function getJefeArea(): ?Personal
+    {
+        return $this->jefeArea;
+    }
+
+    public function setJefeArea(?Personal $jefeArea): static
+    {
+        $this->jefeArea = $jefeArea;
+
+        return $this;
+    }
+
+    public function getAutoriza(): ?Personal
+    {
+        return $this->autoriza;
+    }
+
+    public function setAutoriza(?Personal $autoriza): static
+    {
+        $this->autoriza = $autoriza;
+
+        return $this;
     }
 
     /**

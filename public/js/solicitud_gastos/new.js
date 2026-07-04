@@ -273,8 +273,16 @@ function bootSgNew(context) {
         });
     }
 
-    // ── AGREGAR FILA ──────────────────────────────────────────
+    // ── AGREGAR FILA (máximo 5 partidas por solicitud) ──────────
+    var MAX_PARTIDAS = 5;
+
+    function actualizarBtnAddPartida() {
+        btnAdd.disabled = tbody.querySelectorAll('tr').length >= MAX_PARTIDAS;
+    }
+
     function agregarFila() {
+        if (tbody.querySelectorAll('tr').length >= MAX_PARTIDAS) return;
+
         var rowCount = tbody.querySelectorAll('tr').length + 1;
 
         var tr = document.createElement('tr');
@@ -314,10 +322,12 @@ function bootSgNew(context) {
             renombrar();
             actualizarRowspan();
             recalcularTotal();
+            actualizarBtnAddPartida();
         });
 
         tbody.appendChild(tr);
         actualizarRowspan();
+        actualizarBtnAddPartida();
 
         // Enfocar el nuevo combobox automáticamente
         var newInput = tr.querySelector('.sg-combobox__input');
@@ -325,6 +335,7 @@ function bootSgNew(context) {
     }
 
     btnAdd.addEventListener('click', agregarFila);
+    actualizarBtnAddPartida();
 
     // ── EVIDENCIAS DE GASTO (adjuntar imagen/PDF, min 1 - max 7) ─
     var MIN_EVIDENCIAS = 1;
@@ -438,23 +449,72 @@ function bootSgNew(context) {
     if (form) {
         form.addEventListener('submit', function (event) {
             var evidenceCount = getEvidenceCount();
-            var documentosMarcados = root.querySelectorAll('input[name="solicitud[documentos_verificacion][]"]:checked').length;
 
             if (evidenceCount < MIN_EVIDENCIAS || evidenceCount > MAX_EVIDENCIAS) {
                 event.preventDefault();
                 showEvidenceError('Debes adjuntar entre ' + MIN_EVIDENCIAS + ' y ' + MAX_EVIDENCIAS + ' archivos de evidencia.');
                 preview?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                return;
-            }
-
-            if (documentosMarcados === 0) {
-                event.preventDefault();
-                var group = root.querySelector('.sg-checkbox-group');
-                group?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                alert('Selecciona al menos un documento de verificación.');
             }
         });
     }
+
+    // ── BUSCADOR DE AUTORIZADORES (Jefe de Área, Autoriza) ───────
+    function initAutorizadorSearch(wrap) {
+        var input = wrap.querySelector('.sg-autoriza-search');
+        var hidden = wrap.querySelector('.sg-autoriza-hidden');
+        var results = wrap.querySelector('.sg-autoriza-results');
+        var caption = wrap.querySelector('.sg-autoriza-puesto-caption');
+        var dynamicLabel = wrap.querySelector('.sg-autoriza-dynamic-label');
+        if (!input || !hidden || !results) return;
+
+        var controller = null;
+
+        input.addEventListener('input', function () {
+            var q = input.value.trim();
+            hidden.value = '';
+            results.innerHTML = '';
+            if (caption) caption.textContent = '';
+            if (dynamicLabel) dynamicLabel.textContent = '';
+
+            if (q.length < 2) return;
+
+            if (controller) controller.abort();
+            controller = new AbortController();
+
+            fetch('/solicitud-gastos/api/autorizadores/buscar?q=' + encodeURIComponent(q), {
+                signal: controller.signal
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    results.innerHTML = '';
+
+                    data.forEach(function (p) {
+                        var div = document.createElement('div');
+                        div.className = 'search-item';
+                        div.textContent = p.puesto ? (p.nombre + ' — ' + p.puesto) : p.nombre;
+
+                        div.addEventListener('click', function () {
+                            input.value = p.nombre;
+                            hidden.value = p.id;
+                            if (caption) caption.textContent = p.puesto || '';
+                            if (dynamicLabel) dynamicLabel.textContent = p.puesto || '';
+                            results.innerHTML = '';
+                        });
+
+                        results.appendChild(div);
+                    });
+                })
+                .catch(function () {});
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!results.contains(e.target) && e.target !== input) {
+                results.innerHTML = '';
+            }
+        });
+    }
+
+    root.querySelectorAll('.sg-autoriza-search-wrap').forEach(initAutorizadorSearch);
 }
 
 // ── INICIALIZACIÓN (mismo patrón que pta/new.js) ──────────────

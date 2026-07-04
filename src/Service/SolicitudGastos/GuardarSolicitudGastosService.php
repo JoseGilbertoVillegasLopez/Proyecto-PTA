@@ -7,6 +7,7 @@ use App\Entity\SolicitudGastos;
 use App\Entity\SolicitudGastosEvidencia;
 use App\Entity\SolicitudGastosPartida;
 use App\Repository\PartidasPresupuestalesRepository;
+use App\Repository\PersonalRepository;
 use App\Repository\ProcesoClaveRepository;
 use App\Repository\ProcesoEstrategicoRepository;
 use App\Repository\SolicitudGastosBancoRepository;
@@ -19,6 +20,7 @@ class GuardarSolicitudGastosService
 {
     private const MIN_EVIDENCIAS = 1;
     private const MAX_EVIDENCIAS = 7;
+    private const MAX_PARTIDAS = 5;
 
     public function __construct(
         private readonly TipoSolicitudRepository $tipoSolicitudRepository,
@@ -26,6 +28,7 @@ class GuardarSolicitudGastosService
         private readonly ProcesoClaveRepository $procesoClaveRepository,
         private readonly PartidasPresupuestalesRepository $partidasRepository,
         private readonly SolicitudGastosBancoRepository $bancoRepository,
+        private readonly PersonalRepository $personalRepository,
         private readonly EntityManagerInterface $em,
         #[Autowire(param: 'kernel.project_dir')]
         private readonly string $projectDir,
@@ -105,18 +108,34 @@ class GuardarSolicitudGastosService
             $total = number_format((float) $total + (float) $monto, 2, '.', '');
         }
 
-        $solicitud->setCantidadTotal($total);
-
-        $documentos = $data['documentos_verificacion'] ?? [];
-        $documentos = is_array($documentos)
-            ? array_values(array_intersect($documentos, array_keys(SolicitudGastos::DOCUMENTOS_VERIFICACION)))
-            : [];
-
-        if (empty($documentos)) {
-            throw new \InvalidArgumentException('Selecciona al menos un documento de verificación.');
+        if ($solicitud->getPartidas()->count() > self::MAX_PARTIDAS) {
+            throw new \InvalidArgumentException(sprintf('No se pueden registrar más de %d partidas por solicitud.', self::MAX_PARTIDAS));
         }
 
-        $solicitud->setDocumentosVerificacion($documentos);
+        $solicitud->setCantidadTotal($total);
+
+        $documentoKey = trim((string) ($data['documento_verificacion'] ?? ''));
+        if ($documentoKey === '' || !array_key_exists($documentoKey, SolicitudGastos::DOCUMENTOS_VERIFICACION)) {
+            throw new \InvalidArgumentException('Selecciona el documento que presenta.');
+        }
+        $solicitud->setDocumentoVerificacion($documentoKey);
+
+        $descripcionDocumento = trim((string) ($data['documento_verificacion_descripcion'] ?? ''));
+        $solicitud->setDocumentoVerificacionDescripcion($descripcionDocumento !== '' ? $descripcionDocumento : null);
+
+        $jefeAreaId = (int) ($data['jefe_area_id'] ?? 0);
+        $jefeArea = $jefeAreaId ? $this->personalRepository->find($jefeAreaId) : null;
+        if (!$jefeArea) {
+            throw new \InvalidArgumentException('Selecciona al jefe de área que autoriza la solicitud.');
+        }
+        $solicitud->setJefeArea($jefeArea);
+
+        $autorizaId = (int) ($data['autoriza_id'] ?? 0);
+        $autoriza = $autorizaId ? $this->personalRepository->find($autorizaId) : null;
+        if (!$autoriza) {
+            throw new \InvalidArgumentException('Selecciona quién más autoriza la solicitud.');
+        }
+        $solicitud->setAutoriza($autoriza);
 
         $this->em->persist($solicitud);
         $this->em->flush();

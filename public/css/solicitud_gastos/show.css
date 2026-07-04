@@ -64,6 +64,20 @@
     overflow: hidden;
 }
 
+/* Fila Tipo de solicitud / Documento que presenta / Descripción:
+   mismo alto para los 3 aunque la etiqueta del documento sea larga y se envuelva en 2 líneas */
+.sg-new__grid-tipo .sg-show__display {
+    min-height: 64px;
+    align-items: center;
+}
+
+/* Fila Fecha / Banco / Transferencia / Cta-Clave: mismo alto para los 4,
+   sin importar si el campo es de una línea o de tipo textarea */
+.sg-new__grid-4 .sg-show__display {
+    height: 70px;
+    align-items: center;
+}
+
 /* ── Tabla show: sin inputs, sin columna de acción ── */
 .sg-show__detalle-table thead th:nth-child(1)  { width: 10%; }
 .sg-show__detalle-table thead th:nth-child(2)  { width: 13%; }
@@ -74,31 +88,6 @@
 .sg-show__detalle-table thead th:nth-child(7)  { width: 9%;  }
 .sg-show__detalle-table thead th:nth-child(8)  { width: 24%; }
 .sg-show__detalle-table thead th:nth-child(9)  { width: 8%;  }
-
-/* ── Documentos de verificación seleccionados ──
-   Ancho contenido + centrado: con pocos documentos no se estiran
-   a lo ancho de la tarjeta, y con varios se acomodan en filas
-   centradas en vez de quedar pegados a la izquierda. */
-.sg-doc-badges {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    max-width: 780px;
-    margin: 0 auto;
-}
-
-.sg-badge--doc {
-    background: rgba(13, 202, 240, 0.1);
-    color: #ffffff;
-    border: 1px solid rgba(13, 202, 240, 0.3);
-    font-weight: 600;
-    font-size: 0.78rem;
-}
-
-.sg-badge--doc .bi {
-    color: #0dcaf0;
-}
 
 /* ── Grid de evidencias adjuntas ── */
 .sg-evidencias__grid {

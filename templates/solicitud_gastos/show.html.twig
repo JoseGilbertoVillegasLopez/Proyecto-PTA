@@ -62,12 +62,24 @@
 
 		<div class="sg-new__body">
 
-			{# Fila 1: tipo + fecha necesita + banco #}
-			<div class="sg-new__grid-3">
+			{# Fila 1: tipo + documento que presenta + descripción del documento #}
+			<div class="sg-new__grid-3 sg-new__grid-tipo">
 				<div class="sg-new__field">
 					<span class="sg-new__label">Tipo de solicitud</span>
 					<div class="sg-show__display">{{ solicitud.tipoSolicitud.nombre }}</div>
 				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Documento que presenta</span>
+					<div class="sg-show__display">{{ solicitud.documentoVerificacionLabel ?: '—' }}</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Descripción del documento</span>
+					<div class="sg-show__display">{{ solicitud.documentoVerificacionDescripcion ?: '—' }}</div>
+				</div>
+			</div>
+
+			{# Fila 1b: fecha + banco + transferencia + cta/clave #}
+			<div class="sg-new__grid-4">
 				<div class="sg-new__field">
 					<span class="sg-new__label">Fecha en que se requiere</span>
 					<div class="sg-show__display">{{ solicitud.fechaNecesita|date('d/m/Y') }}</div>
@@ -76,10 +88,6 @@
 					<span class="sg-new__label">Banco del beneficiario</span>
 					<div class="sg-show__display">{{ solicitud.banco ? solicitud.banco.nombre : '—' }}</div>
 				</div>
-			</div>
-
-			{# Fila 2: transferencia + cta + concepto (textareas display) #}
-			<div class="sg-concepto-row">
 				<div class="sg-new__field">
 					<span class="sg-new__label">Transferencia en beneficio de</span>
 					<div class="sg-show__display sg-show__display--textarea">
@@ -92,11 +100,13 @@
 						{{ solicitud.ctaClaveBeneficiario ?: '—' }}
 					</div>
 				</div>
-				<div class="sg-new__field">
-					<span class="sg-new__label">Por concepto de</span>
-					<div class="sg-show__display sg-show__display--textarea">
-						{{ solicitud.porConceptoDe }}
-					</div>
+			</div>
+
+			{# Fila 2: por concepto de (ancho completo) #}
+			<div class="sg-new__field sg-new__field--full">
+				<span class="sg-new__label">Por concepto de</span>
+				<div class="sg-show__display sg-show__display--textarea">
+					{{ solicitud.porConceptoDe }}
 				</div>
 			</div>
 
@@ -197,22 +207,38 @@
 			</div>
 
 			{# ===================================================== #}
-			{# DOCUMENTOS DE VERIFICACIÓN #}
+			{# AUTORIZACIÓN DE LA SOLICITUD #}
 			{# ===================================================== #}
 
 			<div class="sg-new__section-divider">
 				<span class="sg-new__section-label">
-					<i class="bi bi-check2-square"></i>
-					Documentos de verificación
+					<i class="bi bi-people-fill"></i>
+					Autorización de la solicitud
 				</span>
 			</div>
 
-			<div class="sg-doc-badges">
-				{% for label in solicitud.documentosVerificacionLabels %}
-					<span class="sg-badge sg-badge--doc"><i class="bi bi-check-lg"></i> {{ label }}</span>
-				{% else %}
-					<span class="sg-show__display">—</span>
-				{% endfor %}
+			<div class="sg-new__grid-3 sg-new__grid-autoriza">
+				<div class="sg-new__field">
+					<span class="sg-new__label">Solicitante</span>
+					<div class="sg-show__display sg-autoriza-display">
+						<span class="sg-autoriza-nombre">{{ solicitud.solicitante }}</span>
+						<span class="sg-autoriza-puesto">{{ solicitud.solicitante.puesto ? solicitud.solicitante.puesto.nombre : '—' }}</span>
+					</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Jefe(a) del área solicitante</span>
+					<div class="sg-show__display sg-autoriza-display">
+						<span class="sg-autoriza-nombre">{{ solicitud.jefeArea ?: '—' }}</span>
+						<span class="sg-autoriza-puesto">{{ solicitud.jefeArea and solicitud.jefeArea.puesto ? solicitud.jefeArea.puesto.nombre : '—' }}</span>
+					</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">{{ solicitud.autoriza and solicitud.autoriza.puesto ? solicitud.autoriza.puesto.nombre : '' }}</span>
+					<div class="sg-show__display sg-autoriza-display">
+						<span class="sg-autoriza-nombre">{{ solicitud.autoriza ?: '—' }}</span>
+						<span class="sg-autoriza-puesto">{{ solicitud.autoriza and solicitud.autoriza.puesto ? solicitud.autoriza.puesto.nombre : '—' }}</span>
+					</div>
+				</div>
 			</div>
 
 			{# ===================================================== #}
@@ -222,7 +248,7 @@
 			<div class="sg-new__section-divider">
 				<span class="sg-new__section-label">
 					<i class="bi bi-paperclip"></i>
-					Evidencias de gasto
+					Documentos a presentar para la solicitud
 				</span>
 			</div>
 
