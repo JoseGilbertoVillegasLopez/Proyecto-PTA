@@ -3,7 +3,8 @@
 <div class="sg-new"
 	 data-sg-view="sg-new"
 	 data-partidas='{{ partidas_json|json_encode|raw }}'
-	 data-procesos-clave='{{ procesos_clave_json|json_encode|raw }}'>
+	 data-procesos-clave='{{ procesos_clave_json|json_encode|raw }}'
+	 data-procesos-estrategicos='{{ procesos_estrategicos_json|json_encode|raw }}'>
 
 	{# ===================================================== #}
 	{# VOLVER + TÍTULO #}
@@ -176,14 +177,16 @@
 								<tr>
 									{# Celdas que abarcan todas las filas de partidas — rowspan gestionado por JS #}
 									<td id="sg-td-pe" rowspan="1" class="sg-span-cell">
-										<select class="sg-new__select"
-												id="proceso_estrategico"
-												name="solicitud[proceso_estrategico]">
-											<option value="">— Seleccionar —</option>
-											{% for pe in catalogos.procesos_estrategicos %}
-												<option value="{{ pe.id }}">{{ pe.nombre }}</option>
-											{% endfor %}
-										</select>
+										<div class="sg-combobox sg-pe-combobox">
+											<input type="text"
+												   class="sg-new__input sg-combobox__input"
+												   placeholder="Buscar proceso..."
+												   autocomplete="off">
+											<input type="hidden"
+												   id="proceso_estrategico"
+												   name="solicitud[proceso_estrategico]">
+											<ul class="sg-combobox__list" hidden></ul>
+										</div>
 									</td>
 									<td id="sg-td-pc" rowspan="1" class="sg-span-cell">
 										{# Combobox para proceso clave #}

@@ -141,17 +141,23 @@ final class SolicitudGastosController extends AbstractController
             return $this->redirectToRoute('app_solicitud_gastos_index');
         }
 
+        $procesosEstrategicos = $peRepo->findAllOrderByNombre();
         $procesosClave    = $pcRepo->findAll();
         $partidasPresup   = $partidasRepo->findAll();
 
         $catalogos = [
             'tipos_solicitud'          => $tipoRepo->findAllOrdenados(),
-            'procesos_estrategicos'    => $peRepo->findAllOrderByNombre(),
+            'procesos_estrategicos'    => $procesosEstrategicos,
             'procesos_clave'           => $procesosClave,
             'partidas_presupuestales'  => $partidasPresup,
             'bancos'                   => $bancoRepo->findActivos(),
             'documentos_verificacion'  => SolicitudGastos::DOCUMENTOS_VERIFICACION,
         ];
+
+        $procesoEstrategicoData = array_map(static fn($pe) => [
+            'id'     => $pe->getId(),
+            'nombre' => $pe->getNombre() ?? '',
+        ], $procesosEstrategicos);
 
         $procesoClaveData = array_map(static fn($pc) => [
             'id'     => $pc->getId(),
@@ -173,6 +179,7 @@ final class SolicitudGastosController extends AbstractController
         $templateVars = [
             'personal'           => $personal,
             'catalogos'          => $catalogos,
+            'procesos_estrategicos_json' => $procesoEstrategicoData,
             'procesos_clave_json' => $procesoClaveData,
             'partidas_json'       => $partidasData,
         ];

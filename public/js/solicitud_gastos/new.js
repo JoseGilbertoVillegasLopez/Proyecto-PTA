@@ -34,10 +34,11 @@ function bootSgNew(context) {
     }
 
     // ── DATOS JSON ────────────────────────────────────────────
-    var partidas = [], procesosClave = [];
+    var partidas = [], procesosClave = [], procesosEstrategicos = [];
     try {
-        partidas      = JSON.parse(root.dataset.partidas      || '[]');
-        procesosClave = JSON.parse(root.dataset.procesosClave || '[]');
+        partidas             = JSON.parse(root.dataset.partidas             || '[]');
+        procesosClave        = JSON.parse(root.dataset.procesosClave        || '[]');
+        procesosEstrategicos = JSON.parse(root.dataset.procesosEstrategicos || '[]');
     } catch (e) {
         console.error('[sg-new] Error al parsear JSON:', e);
     }
@@ -198,6 +199,23 @@ function bootSgNew(context) {
         document.addEventListener('scroll', onScroll, true);
     }
 
+    // ── COMBOBOX: PROCESO ESTRATÉGICO ────────────────────────
+    var peComboboxEl = root.querySelector('.sg-pe-combobox');
+    if (peComboboxEl) {
+        initCombobox(peComboboxEl, {
+            datos: procesosEstrategicos,
+            buscar: function (pe, texto) {
+                return normalizar(pe.nombre).includes(texto);
+            },
+            renderItem: function (pe) {
+                return '<div class="sg-combobox__item-desc">' + escHtml(pe.nombre) + '</div>';
+            },
+            onSelect: function (pe, inputEl) {
+                inputEl.value = pe.nombre;
+            },
+        });
+    }
+
     // ── COMBOBOX: PROCESO CLAVE ──────────────────────────────
     var peiEl  = root.querySelector('#sg-pei');
     var paigEl = root.querySelector('#sg-paig');
@@ -244,7 +262,7 @@ function bootSgNew(context) {
     }
 
     // Cablear primer combobox de partida (ya renderizado en Twig)
-    var firstPartidaCombobox = tbody.querySelector('.sg-combobox:not(.sg-pc-combobox)');
+    var firstPartidaCombobox = tbody.querySelector('.sg-td-desc .sg-combobox');
     if (firstPartidaCombobox) initPartidaCombobox(firstPartidaCombobox);
 
     // ── TOTAL ─────────────────────────────────────────────────
