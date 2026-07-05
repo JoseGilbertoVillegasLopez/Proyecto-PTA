@@ -1,9 +1,13 @@
 <turbo-frame id="content">
 
+{# Sección de comentarios de revisión: desactivada hasta que finanzas confirme
+   el flujo; el código se conserva para reactivarla más adelante. #}
+{% set sg_mostrar_comentarios = false %}
+
 <div class="sg-show">
 
 	{# ===================================================== #}
-	{# TOPBAR: volver + título + badge de estado #}
+	{# TOPBAR: volver + título + badge de estado + avance #}
 	{# ===================================================== #}
 
 	<div class="sg-new__topbar">
@@ -27,13 +31,30 @@
 
 		<div class="sg-show__topbar-right">
 			<h1 class="sg-new__titulo">Solicitud #{{ solicitud.id }}</h1>
+			{% set sg_estado_iconos = {
+				'pendiente': 'bi-clock-fill',
+				'en_revision': 'bi-eye-fill',
+				'aceptada': 'bi-check-circle-fill',
+				'rechazada': 'bi-x-circle-fill',
+				'resuelto': 'bi-patch-check-fill'
+			} %}
+			{% set sg_estado_labels = {
+				'pendiente': 'Pendiente',
+				'en_revision': 'En revisión',
+				'aceptada': 'Aceptada',
+				'rechazada': 'Rechazada',
+				'resuelto': 'Resuelto'
+			} %}
 			<span class="sg-badge sg-badge--{{ solicitud.estado }}">
-				{% if solicitud.estado == 'pendiente' %}
-					<i class="bi bi-clock-fill"></i> Pendiente
-				{% else %}
-					<i class="bi bi-check-circle-fill"></i> Revisada
-				{% endif %}
+				<i class="bi {{ sg_estado_iconos[solicitud.estado] }}"></i> {{ sg_estado_labels[solicitud.estado] }}
 			</span>
+			<button type="button"
+					class="sg-avance-btn"
+					data-bs-toggle="modal"
+					data-bs-target="#sgProgresoModal"
+					title="Ver avance de revisión">
+				<i class="bi bi-list-check"></i> Avance {{ solicitud.contarRevisionesResueltas }}/3
+			</button>
 		</div>
 
 	</div>
@@ -105,9 +126,7 @@
 			{# Fila 2: por concepto de (ancho completo) #}
 			<div class="sg-new__field sg-new__field--full">
 				<span class="sg-new__label">Por concepto de</span>
-				<div class="sg-show__display sg-show__display--textarea">
-					{{ solicitud.porConceptoDe }}
-				</div>
+				<div class="sg-show__display sg-show__display--parrafo">{{ solicitud.porConceptoDe }}</div>
 			</div>
 
 			{# Separador #}
@@ -277,26 +296,127 @@
 				{% endfor %}
 			</div>
 
+			{# ===================================================== #}
+			{# COMPROBANTE DE PAGO #}
+			{# ===================================================== #}
+
+			{% if solicitud.estado in ['aceptada', 'resuelto'] %}
+				<div class="sg-new__section-divider">
+					<span class="sg-new__section-label">
+						<i class="bi bi-cash-coin"></i>
+						Comprobante de pago/transferencia
+					</span>
+				</div>
+
+				{% if solicitud.comprobante %}
+					<div class="sg-evidencias__grid">
+						<div class="sg-evidencias__item">
+							<a class="sg-evidencias__media"
+							   href="{{ solicitud.comprobante.ruta }}"
+							   download="{{ solicitud.comprobante.archivoNombreOriginal }}"
+							   title="Descargar {{ solicitud.comprobante.archivoNombreOriginal }}">
+								{% if solicitud.comprobante.esImagen %}
+									<img src="{{ solicitud.comprobante.ruta }}" alt="{{ solicitud.comprobante.archivoNombreOriginal }}">
+								{% else %}
+									<iframe src="{{ solicitud.comprobante.ruta }}#toolbar=0&navpanes=0" title="{{ solicitud.comprobante.archivoNombreOriginal }}"></iframe>
+								{% endif %}
+							</a>
+							<div class="sg-evidencias__footer">
+								<span>{{ solicitud.comprobante.archivoNombreOriginal }}</span>
+								<a href="{{ solicitud.comprobante.ruta }}" download="{{ solicitud.comprobante.archivoNombreOriginal }}" class="sg-evidencias__download-btn" title="Descargar comprobante">
+									<i class="bi bi-download"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				{% elseif puedeSubirComprobante %}
+					<form method="POST"
+						  enctype="multipart/form-data"
+						  action="{{ path('app_solicitud_gastos_comprobante', { id: solicitud.id }) }}"
+						  class="sg-comprobante__form">
+						<input type="hidden" name="_token" value="{{ csrf_token('comprobante_' ~ solicitud.id) }}">
+						<input type="file" name="comprobante" accept="image/*,application/pdf" required class="sg-comprobante__input">
+						<button type="submit" class="sg-show__revisar-btn">
+							<i class="bi bi-upload"></i>
+							Subir comprobante
+						</button>
+					</form>
+				{% else %}
+					<div class="sg-evidencias__empty">Aún no se ha subido el comprobante.</div>
+				{% endif %}
+			{% endif %}
+
 		</div>
 
 		{# ===================================================== #}
-		{# ACCIÓN DEL ENCARGADO #}
+		{# ACCIÓN DEL ENCARGADO — votar #}
 		{# ===================================================== #}
 
-		{% if esEncargado and solicitud.estado == 'pendiente' %}
-			<div class="sg-new__submit-wrapper">
-				<form method="POST"
-					  action="{{ path('app_solicitud_gastos_revisar', { id: solicitud.id }) }}">
-					<input type="hidden" name="_token"
-						   value="{{ csrf_token('revisar_' ~ solicitud.id) }}">
-					<button type="submit" class="sg-show__revisar-btn">
-						<i class="bi bi-check-circle-fill"></i>
-						Marcar como Revisada
-					</button>
+		{% if puedeVotarActual %}
+			<div class="sg-new__submit-wrapper sg-voto__wrapper">
+				<form method="POST" action="{{ path('app_solicitud_gastos_votar', { id: solicitud.id }) }}" class="sg-voto__form">
+					<input type="hidden" name="_token" value="{{ csrf_token('votar_' ~ solicitud.id) }}">
+					{% if sg_mostrar_comentarios %}
+						<textarea name="comentario" class="sg-voto__comentario" placeholder="Comentario (opcional, sobre todo si vas a rechazar)"></textarea>
+					{% endif %}
+					<div class="sg-voto__botones">
+						<button type="submit" name="aceptar" value="1" class="sg-show__revisar-btn sg-voto__btn--aceptar">
+							<i class="bi bi-check-circle-fill"></i> Aceptar solicitud
+						</button>
+						<button type="submit" name="aceptar" value="0" class="sg-show__revisar-btn sg-voto__btn--rechazar"
+								onclick="return confirm('Rechazar esta solicitud es definitivo. ¿Continuar?');">
+							<i class="bi bi-x-circle-fill"></i> Rechazar solicitud
+						</button>
+					</div>
 				</form>
 			</div>
 		{% endif %}
 
+	</div>
+
+	{# ===================================================== #}
+	{# MODAL: PROGRESO DE REVISIÓN #}
+	{# ===================================================== #}
+
+	<div class="modal fade" id="sgProgresoModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content sg-progreso-modal">
+				<div class="modal-header">
+					<h5 class="modal-title">
+						<i class="bi bi-list-check"></i>
+						Progreso de revisión
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body">
+					{% set sg_cargo_labels = { 'revisor': 'Revisor', 'supervisor': 'Supervisor', 'autoriza': 'Autoriza' } %}
+					<div class="sg-progreso__grid">
+						{% for cargo, label in sg_cargo_labels %}
+							{% set revision = solicitud.getRevisionPorCargo(cargo) %}
+							<div class="sg-progreso__card sg-progreso__card--{{ revision ? revision.estado : 'pendiente' }}">
+								<span class="sg-progreso__cargo">{{ label }}</span>
+								<span class="sg-progreso__estado">
+									{% if revision and revision.estado == 'aceptada' %}
+										<i class="bi bi-check-circle-fill"></i> Aceptó
+									{% elseif revision and revision.estado == 'rechazada' %}
+										<i class="bi bi-x-circle-fill"></i> Rechazó
+									{% elseif revision and revision.estado == 'revisando' %}
+										<i class="bi bi-eye-fill"></i> Revisando
+									{% else %}
+										<i class="bi bi-clock-fill"></i> Pendiente
+									{% endif %}
+								</span>
+								<span class="sg-progreso__quien">{{ revision and revision.personal ? revision.personal : '—' }}</span>
+								<span class="sg-progreso__puesto">{{ revision and revision.personal and revision.personal.puesto ? revision.personal.puesto.nombre : '—' }}</span>
+								{% if sg_mostrar_comentarios and revision and revision.comentario %}
+									<span class="sg-progreso__comentario">"{{ revision.comentario }}"</span>
+								{% endif %}
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 </div>

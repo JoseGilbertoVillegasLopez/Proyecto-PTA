@@ -56,4 +56,22 @@ class ModuloAccesoRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Busca el ModuloAcceso de un puesto para un módulo y tipo, para leer atributos
+     * adicionales (ej. cargo) más allá de la simple existencia.
+     */
+    public function findOneForModuloSlugAndPuesto(string $slug, int $puestoId, string $tipo): ?ModuloAcceso
+    {
+        return $this->createQueryBuilder('ma')
+            ->join('ma.modulo', 'm')
+            ->where('m.slug = :slug')
+            ->andWhere('ma.puesto = :puesto')
+            ->andWhere('ma.tipo = :tipo')
+            ->setParameter('slug', $slug)
+            ->setParameter('puesto', $puestoId)
+            ->setParameter('tipo', $tipo)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

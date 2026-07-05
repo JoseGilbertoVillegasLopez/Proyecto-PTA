@@ -25,6 +25,15 @@ class SolicitudGastos
         'oficio_comision' => 'OFICIO DE COMISIÓN',
     ];
 
+    /**
+     * pendiente = creada, nadie la ha abierto.
+     * en_revision = al menos un revisor la abrió; se mantiene hasta que los 3 voten o alguno rechace.
+     * aceptada = los 3 revisores aceptaron.
+     * rechazada = algún revisor rechazó (regla interina, ver RevisionSolicitudGastosService).
+     * resuelto = aceptada y ya se subió el comprobante de pago/transferencia.
+     */
+    public const ESTADOS = ['pendiente', 'en_revision', 'aceptada', 'rechazada', 'resuelto'];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -111,10 +120,25 @@ class SolicitudGastos
     #[ORM\OrderBy(['orden' => 'ASC'])]
     private Collection $evidencias;
 
+    /**
+     * @var Collection<int, SolicitudGastosRevision>
+     */
+    #[ORM\OneToMany(
+        targetEntity: SolicitudGastosRevision::class,
+        mappedBy: 'solicitud',
+        orphanRemoval: true,
+        cascade: ['persist', 'remove']
+    )]
+    private Collection $revisiones;
+
+    #[ORM\OneToOne(mappedBy: 'solicitud', targetEntity: SolicitudGastosComprobante::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private ?SolicitudGastosComprobante $comprobante = null;
+
     public function __construct()
     {
         $this->partidas = new ArrayCollection();
         $this->evidencias = new ArrayCollection();
+        $this->revisiones = new ArrayCollection();
         $this->fechaSolicitud = new \DateTime();
     }
 
@@ -377,6 +401,62 @@ class SolicitudGastos
                 $evidencia->setSolicitud(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SolicitudGastosRevision>
+     */
+    public function getRevisiones(): Collection
+    {
+        return $this->revisiones;
+    }
+
+    public function addRevision(SolicitudGastosRevision $revision): static
+    {
+        if (!$this->revisiones->contains($revision)) {
+            $this->revisiones->add($revision);
+            $revision->setSolicitud($this);
+        }
+
+        return $this;
+    }
+
+    public function getRevisionPorCargo(string $cargo): ?SolicitudGastosRevision
+    {
+        foreach ($this->revisiones as $revision) {
+            if ($revision->getCargo() === $cargo) {
+                return $revision;
+            }
+        }
+
+        return null;
+    }
+
+    public function contarRevisionesResueltas(): int
+    {
+        $resueltas = 0;
+        foreach ($this->revisiones as $revision) {
+            if (in_array($revision->getEstado(), ['aceptada', 'rechazada'], true)) {
+                $resueltas++;
+            }
+        }
+
+        return $resueltas;
+    }
+
+    public function getComprobante(): ?SolicitudGastosComprobante
+    {
+        return $this->comprobante;
+    }
+
+    public function setComprobante(?SolicitudGastosComprobante $comprobante): static
+    {
+        if ($comprobante !== null) {
+            $comprobante->setSolicitud($this);
+        }
+        $this->comprobante = $comprobante;
 
         return $this;
     }

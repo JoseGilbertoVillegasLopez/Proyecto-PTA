@@ -57,8 +57,11 @@
 			<label class="sg-filtro-group__label">Estado</label>
 			<select name="estado" id="sg-fil-estado" class="sg-index__filtro-select">
 				<option value="">Todos</option>
-				<option value="pendiente" {{ estado_sel == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
-				<option value="revisada"  {{ estado_sel == 'revisada'  ? 'selected' : '' }}>Revisada</option>
+				<option value="pendiente"   {{ estado_sel == 'pendiente'   ? 'selected' : '' }}>Pendiente</option>
+				<option value="en_revision" {{ estado_sel == 'en_revision' ? 'selected' : '' }}>En revisión</option>
+				<option value="aceptada"    {{ estado_sel == 'aceptada'    ? 'selected' : '' }}>Aceptada</option>
+				<option value="rechazada"   {{ estado_sel == 'rechazada'   ? 'selected' : '' }}>Rechazada</option>
+				<option value="resuelto"    {{ estado_sel == 'resuelto'    ? 'selected' : '' }}>Resuelto</option>
 			</select>
 		</div>
 
@@ -107,6 +110,7 @@
 					<th>Para cuándo</th>
 					<th>Total</th>
 					<th>Estado</th>
+					<th>Avance</th>
 					<th></th>
 				</tr>
 			</thead>

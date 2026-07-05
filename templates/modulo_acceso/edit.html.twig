@@ -2,6 +2,8 @@
 <div class="ma-edit-card" data-ma-view="edit"
      data-usa-encargado="{{ modulo.usaEncargado ? '1' : '0' }}"
      data-usa-acceso="{{ modulo.usaAcceso ? '1' : '0' }}"
+     data-usa-cargo-encargado="{{ modulo.usaCargoEncargado ? '1' : '0' }}"
+     data-ma-cargos-catalogo="{{ cargos_catalogo|default({})|json_encode }}"
      data-ma-modulo-id="{{ modulo.id }}"
      data-ma-campo-token="{{ csrf_token('modulo_acceso_campo_' ~ modulo.id) }}"
      data-ma-campo-url="{{ path('app_admin_modulo_acceso_actualizar_campo', { id: modulo.id }) }}">
@@ -55,6 +57,14 @@
                     {% for puesto in encargados %}
                         <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
                             <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
+                            {% if modulo.usaCargoEncargado %}
+                                <select class="ma-puesto-card-cargo" title="Cargo en la revisión">
+                                    <option value="">Sin cargo</option>
+                                    {% for valor, label in cargos_catalogo %}
+                                        <option value="{{ valor }}" {{ encargados_cargos[puesto.id] == valor ? 'selected' : '' }}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
                             <div class="ma-puesto-card-actions">
                                 <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--remove"
                                         title="Quitar de Encargados">

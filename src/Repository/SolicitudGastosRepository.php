@@ -58,7 +58,7 @@ class SolicitudGastosRepository extends ServiceEntityRepository
                ->setParameter('puesto', $puestoId);
         }
 
-        if ($estado && in_array($estado, ['pendiente', 'revisada'], true)) {
+        if ($estado && in_array($estado, SolicitudGastos::ESTADOS, true)) {
             $qb->andWhere('s.estado = :estado')
                ->setParameter('estado', $estado);
         }

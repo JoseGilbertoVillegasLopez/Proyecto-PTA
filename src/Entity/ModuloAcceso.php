@@ -10,6 +10,16 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\UniqueConstraint(name: 'uniq_modulo_puesto_tipo', columns: ['modulo_id', 'puesto_id', 'tipo'])]
 class ModuloAcceso
 {
+    /**
+     * Catálogo fijo de cargos seleccionables cuando el módulo usa cargo por encargado.
+     * Clave => etiqueta mostrada al usuario.
+     */
+    public const CARGOS = [
+        'revisor' => 'Revisor',
+        'supervisor' => 'Supervisor',
+        'autoriza' => 'Autoriza',
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -27,6 +37,10 @@ class ModuloAcceso
     #[ORM\Column(length: 20)]
     private string $tipo;
 
+    /** Solo aplica cuando tipo='encargado' y el módulo usa cargo: 'revisor' | 'supervisor' | 'autoriza' */
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $cargo = null;
+
     public function getId(): ?int { return $this->id; }
 
     public function getModulo(): ModuloSistema { return $this->modulo; }
@@ -37,4 +51,7 @@ class ModuloAcceso
 
     public function getTipo(): string { return $this->tipo; }
     public function setTipo(string $tipo): static { $this->tipo = $tipo; return $this; }
+
+    public function getCargo(): ?string { return $this->cargo; }
+    public function setCargo(?string $cargo): static { $this->cargo = $cargo; return $this; }
 }

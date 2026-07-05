@@ -2,10 +2,12 @@
 
 namespace App\Service\SolicitudGastos;
 
+use App\Entity\ModuloAcceso;
 use App\Entity\Personal;
 use App\Entity\SolicitudGastos;
 use App\Entity\SolicitudGastosEvidencia;
 use App\Entity\SolicitudGastosPartida;
+use App\Entity\SolicitudGastosRevision;
 use App\Repository\PartidasPresupuestalesRepository;
 use App\Repository\PersonalRepository;
 use App\Repository\ProcesoClaveRepository;
@@ -140,10 +142,21 @@ class GuardarSolicitudGastosService
         $this->em->persist($solicitud);
         $this->em->flush();
 
+        $this->crearRevisiones($solicitud);
         $this->guardarEvidencias($solicitud, $archivosEvidencia);
         $this->em->flush();
 
         return $solicitud;
+    }
+
+    private function crearRevisiones(SolicitudGastos $solicitud): void
+    {
+        foreach (array_keys(ModuloAcceso::CARGOS) as $cargo) {
+            $revision = new SolicitudGastosRevision();
+            $revision->setCargo($cargo);
+            $solicitud->addRevision($revision);
+            $this->em->persist($revision);
+        }
     }
 
     /**

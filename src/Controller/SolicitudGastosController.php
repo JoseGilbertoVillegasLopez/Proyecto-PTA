@@ -14,7 +14,8 @@ use App\Repository\SolicitudGastosRepository;
 use App\Repository\TipoSolicitudRepository;
 use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use App\Service\SolicitudGastos\GuardarSolicitudGastosService;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\SolicitudGastos\RevisionSolicitudGastosService;
+use App\Service\SolicitudGastos\SubirComprobanteSolicitudGastosService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,6 +26,8 @@ final class SolicitudGastosController extends AbstractController
 {
     public function __construct(
         private ModuloAccesoResolver $moduloAccesoResolver,
+        private RevisionSolicitudGastosService $revisionService,
+        private SubirComprobanteSolicitudGastosService $comprobanteService,
     ) {}
 
     private function tieneAcceso(): bool
@@ -214,12 +217,26 @@ final class SolicitudGastosController extends AbstractController
             throw $this->createAccessDeniedException('No tienes permiso para ver esta solicitud.');
         }
 
+        $cargoActual = $esEncargado
+            ? $this->moduloAccesoResolver->getCargoEncargado($user, 'solicitud_gastos')
+            : null;
+
+        if ($cargoActual !== null && $personal !== null) {
+            $this->revisionService->marcarEnRevision($solicitud, $personal, $cargoActual);
+        }
+
+        $puedeVotarActual = $cargoActual !== null && $this->revisionService->puedeVotar($solicitud, $cargoActual);
+        $puedeSubirComprobante = $esEncargado && $solicitud->getEstado() === 'aceptada';
+
         $isTurbo = $request->headers->get('Turbo-Frame');
 
         if ($isTurbo) {
             return $this->render('solicitud_gastos/show.html.twig', [
-                'solicitud'   => $solicitud,
-                'esEncargado' => $esEncargado,
+                'solicitud'              => $solicitud,
+                'esEncargado'            => $esEncargado,
+                'cargoActual'            => $cargoActual,
+                'puedeVotarActual'       => $puedeVotarActual,
+                'puedeSubirComprobante'  => $puedeSubirComprobante,
             ]);
         }
 
@@ -287,26 +304,73 @@ final class SolicitudGastosController extends AbstractController
     }
 
     /* =====================================================
-       MARCAR REVISADA
+       VOTAR (aceptar / rechazar)
        ===================================================== */
-    #[Route('/{id}/revisar', name: 'app_solicitud_gastos_revisar', methods: ['POST'])]
-    public function revisar(
+    #[Route('/{id}/votar', name: 'app_solicitud_gastos_votar', methods: ['POST'])]
+    public function votar(
         Request $request,
         SolicitudGastos $solicitud,
-        EntityManagerInterface $em,
+    ): Response {
+        $user = $this->getUser();
+
+        if (!$user instanceof User || !$this->esEncargado()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $personal = $user->getPersonal();
+        $cargo = $this->moduloAccesoResolver->getCargoEncargado($user, 'solicitud_gastos');
+
+        if (!$personal || !$cargo) {
+            throw $this->createAccessDeniedException('No tienes un cargo de revisión asignado en este módulo.');
+        }
+
+        if (!$this->isCsrfTokenValid('votar_' . $solicitud->getId(), $request->request->getString('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF inválido.');
+        }
+
+        $aceptar = $request->request->getBoolean('aceptar');
+        $comentario = trim($request->request->getString('comentario')) ?: null;
+
+        try {
+            $this->revisionService->votar($solicitud, $personal, $cargo, $aceptar, $comentario);
+            $this->addFlash('success', $aceptar ? 'Aceptaste la solicitud.' : 'Rechazaste la solicitud.');
+        } catch (\InvalidArgumentException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_solicitud_gastos_show', ['id' => $solicitud->getId()]);
+    }
+
+    /* =====================================================
+       SUBIR COMPROBANTE DE PAGO
+       ===================================================== */
+    #[Route('/{id}/comprobante', name: 'app_solicitud_gastos_comprobante', methods: ['POST'])]
+    public function comprobante(
+        Request $request,
+        SolicitudGastos $solicitud,
     ): Response {
         if (!$this->esEncargado()) {
             throw $this->createAccessDeniedException();
         }
 
-        if (!$this->isCsrfTokenValid('revisar_' . $solicitud->getId(), $request->request->getString('_token'))) {
+        if (!$this->isCsrfTokenValid('comprobante_' . $solicitud->getId(), $request->request->getString('_token'))) {
             throw $this->createAccessDeniedException('Token CSRF inválido.');
         }
 
-        $solicitud->setEstado('revisada');
-        $em->flush();
+        $archivo = $request->files->get('comprobante');
 
-        $this->addFlash('success', 'Solicitud marcada como revisada.');
+        if (!$archivo) {
+            $this->addFlash('error', 'Selecciona un archivo de comprobante.');
+
+            return $this->redirectToRoute('app_solicitud_gastos_show', ['id' => $solicitud->getId()]);
+        }
+
+        try {
+            $this->comprobanteService->subir($solicitud, $archivo);
+            $this->addFlash('success', 'Comprobante subido. Solicitud resuelta.');
+        } catch (\InvalidArgumentException $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
 
         return $this->redirectToRoute('app_solicitud_gastos_show', ['id' => $solicitud->getId()]);
     }

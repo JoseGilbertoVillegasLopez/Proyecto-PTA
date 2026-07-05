@@ -10,6 +10,8 @@
         // ── Configuración del módulo ──────────────────────────────────────────
         const usaEncargado = root.dataset.usaEncargado === '1';
         const usaAcceso    = root.dataset.usaAcceso    === '1';
+        const usaCargoEncargado = root.dataset.usaCargoEncargado === '1';
+        const cargosCatalogo = usaCargoEncargado ? JSON.parse(root.dataset.maCargosCatalogo || '{}') : {};
 
         // ── Estado independiente por columna ─────────────────────────────────
         const encSet = new Set();
@@ -64,6 +66,17 @@
             div.dataset.id     = id;
             div.dataset.nombre = nombre;
 
+            div.innerHTML = `<span class="ma-puesto-card-nombre">${nombre}</span>`;
+
+            if (colName === 'encargados' && usaCargoEncargado) {
+                const select = document.createElement('select');
+                select.className = 'ma-puesto-card-cargo';
+                select.title = 'Cargo en la revisión';
+                select.innerHTML = '<option value="">Sin cargo</option>' +
+                    Object.entries(cargosCatalogo).map(([valor, label]) => `<option value="${valor}">${label}</option>`).join('');
+                div.appendChild(select);
+            }
+
             const btn = document.createElement('button');
             btn.type      = 'button';
             btn.className = 'ma-puesto-card-btn ma-puesto-card-btn--remove';
@@ -71,7 +84,6 @@
             btn.innerHTML = '<i class="bi bi-x-lg"></i>';
             btn.addEventListener('click', () => removeFromCol(id, nombre, colName));
 
-            div.innerHTML = `<span class="ma-puesto-card-nombre">${nombre}</span>`;
             const actions = document.createElement('div');
             actions.className = 'ma-puesto-card-actions';
             actions.appendChild(btn);
@@ -169,6 +181,18 @@
                     inp.name  = 'encargados[]';
                     inp.value = id;
                     encInputs.appendChild(inp);
+
+                    if (usaCargoEncargado) {
+                        const card = listEl('encargados').querySelector(`.ma-puesto-card[data-id="${id}"]`);
+                        const select = card ? card.querySelector('.ma-puesto-card-cargo') : null;
+                        if (select && select.value) {
+                            const cargoInp = document.createElement('input');
+                            cargoInp.type  = 'hidden';
+                            cargoInp.name  = `cargos[${id}]`;
+                            cargoInp.value = select.value;
+                            encInputs.appendChild(cargoInp);
+                        }
+                    }
                 });
 
                 accSet.forEach(id => {

@@ -68,10 +68,12 @@ final class ModuloAccesoController extends AbstractController
 
         $encargadosIds  = [];
         $conAccesoIds   = [];
+        $encargadosCargos = [];
 
         foreach ($modulo->getAccesos() as $acceso) {
             if ($acceso->getTipo() === 'encargado') {
                 $encargadosIds[] = $acceso->getPuesto()->getId();
+                $encargadosCargos[$acceso->getPuesto()->getId()] = $acceso->getCargo();
             } else {
                 $conAccesoIds[] = $acceso->getPuesto()->getId();
             }
@@ -87,12 +89,14 @@ final class ModuloAccesoController extends AbstractController
         }
 
         $vars = [
-            'modulo'          => $modulo,
-            'encargados'      => $encargados,
-            'con_acceso'      => $conAcceso,
-            'todos_puestos'   => $todosLosPuestos,
-            'encargados_ids'  => $encargadosIds,
-            'con_acceso_ids'  => $conAccesoIds,
+            'modulo'             => $modulo,
+            'encargados'         => $encargados,
+            'con_acceso'         => $conAcceso,
+            'todos_puestos'      => $todosLosPuestos,
+            'encargados_ids'     => $encargadosIds,
+            'con_acceso_ids'     => $conAccesoIds,
+            'encargados_cargos'  => $encargadosCargos,
+            'cargos_catalogo'    => ModuloAcceso::CARGOS,
         ];
 
         if ($request->headers->get('Turbo-Frame')) {
@@ -122,6 +126,37 @@ final class ModuloAccesoController extends AbstractController
             throw $this->createAccessDeniedException('Token CSRF inválido.');
         }
 
+        $encargadosIds = array_filter(array_map('intval', $request->request->all('encargados') ?: []));
+        $cargosPorPuesto = [];
+
+        if ($modulo->isUsaCargoEncargado()) {
+            $cargosRaw = $request->request->all('cargos');
+
+            foreach ($encargadosIds as $puestoId) {
+                $cargo = $cargosRaw[$puestoId] ?? null;
+                if ($cargo) {
+                    $cargosPorPuesto[$puestoId] = $cargo;
+                }
+            }
+
+            if (count($encargadosIds) !== 3) {
+                $this->addFlash('error', 'Este módulo requiere exactamente 3 encargados (revisor, supervisor y autoriza).');
+
+                return $this->redirectToRoute('app_admin_modulo_acceso_edit', ['id' => $id]);
+            }
+
+            $cargosAsignados = array_values($cargosPorPuesto);
+            sort($cargosAsignados);
+            $cargosEsperados = array_keys(ModuloAcceso::CARGOS);
+            sort($cargosEsperados);
+
+            if (count($cargosPorPuesto) !== 3 || $cargosAsignados !== $cargosEsperados) {
+                $this->addFlash('error', 'Cada encargado debe tener un cargo distinto: revisor, supervisor y autoriza.');
+
+                return $this->redirectToRoute('app_admin_modulo_acceso_edit', ['id' => $id]);
+            }
+        }
+
         // Eliminar todas las asignaciones actuales
         foreach ($modulo->getAccesos() as $acceso) {
             $em->remove($acceso);
@@ -129,7 +164,6 @@ final class ModuloAccesoController extends AbstractController
         $em->flush();
 
         // Reinsertar encargados
-        $encargadosIds = array_filter(array_map('intval', $request->request->all('encargados') ?: []));
         foreach ($encargadosIds as $puestoId) {
             $puesto = $puestoRepo->find($puestoId);
             if (!$puesto) continue;
@@ -138,6 +172,7 @@ final class ModuloAccesoController extends AbstractController
             $acceso->setModulo($modulo);
             $acceso->setPuesto($puesto);
             $acceso->setTipo('encargado');
+            $acceso->setCargo($cargosPorPuesto[$puestoId] ?? null);
             $em->persist($acceso);
         }
 

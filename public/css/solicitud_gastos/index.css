@@ -7,6 +7,7 @@
     --sg-success:      #1dd1a1;
     --sg-warning:      #feca57;
     --sg-danger:       #ff6b6b;
+    --sg-resuelto:     #b39dff;
     --sg-muted:        #9fb3c8;
     --sg-border:       rgba(13, 202, 240, 0.25);
     --sg-border-soft:  rgba(13, 202, 240, 0.15);
@@ -364,6 +365,13 @@
     text-align: center;
 }
 
+.sg-index__col-avance {
+    text-align: center;
+    color: var(--sg-muted);
+    font-weight: 700;
+    font-size: 0.84rem;
+}
+
 .sg-index__col-acciones {
     text-align: center;
     width: 60px;
@@ -390,10 +398,28 @@
     border: 1px solid rgba(254, 202, 87, 0.4);
 }
 
-.sg-badge--revisada {
+.sg-badge--en_revision {
+    background: rgba(13, 202, 240, 0.15);
+    color: var(--sg-primary);
+    border: 1px solid rgba(13, 202, 240, 0.4);
+}
+
+.sg-badge--aceptada {
     background: rgba(29, 209, 161, 0.15);
     color: var(--sg-success);
     border: 1px solid rgba(29, 209, 161, 0.4);
+}
+
+.sg-badge--rechazada {
+    background: rgba(255, 107, 107, 0.15);
+    color: var(--sg-danger);
+    border: 1px solid rgba(255, 107, 107, 0.4);
+}
+
+.sg-badge--resuelto {
+    background: rgba(179, 157, 255, 0.15);
+    color: var(--sg-resuelto);
+    border: 1px solid rgba(179, 157, 255, 0.4);
 }
 
 /* =========================================================

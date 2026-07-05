@@ -39,6 +39,22 @@ class ModuloAccesoResolver
         return $this->repo->findPuestosForModulo($slug, $tipo);
     }
 
+    /**
+     * Cargo del encargado ('revisor'|'supervisor'|'autoriza') para módulos que lo usan.
+     * Devuelve null si el usuario no es encargado del módulo o el módulo no usa cargos.
+     */
+    public function getCargoEncargado(User $user, string $slug): ?string
+    {
+        $puestoId = $this->getPuestoId($user);
+        if ($puestoId === null) {
+            return null;
+        }
+
+        $acceso = $this->repo->findOneForModuloSlugAndPuesto($slug, $puestoId, 'encargado');
+
+        return $acceso?->getCargo();
+    }
+
     private function getPuestoId(User $user): ?int
     {
         $personal = $user->getPersonal();

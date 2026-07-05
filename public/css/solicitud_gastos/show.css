@@ -35,10 +35,28 @@
     border: 1px solid rgba(254, 202, 87, 0.4);
 }
 
-.sg-badge--revisada {
+.sg-badge--en_revision {
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.4);
+}
+
+.sg-badge--aceptada {
     background: rgba(29, 209, 161, 0.15);
     color: #1dd1a1;
     border: 1px solid rgba(29, 209, 161, 0.4);
+}
+
+.sg-badge--rechazada {
+    background: rgba(255, 107, 107, 0.15);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.4);
+}
+
+.sg-badge--resuelto {
+    background: rgba(157, 129, 255, 0.15);
+    color: #b39dff;
+    border: 1px solid rgba(157, 129, 255, 0.4);
 }
 
 /* ── Campos de solo lectura: apariencia de input ── */
@@ -62,6 +80,16 @@
     word-break: break-word;
     white-space: pre-wrap;
     overflow: hidden;
+}
+
+/* Párrafo libre (Por concepto de): sin flex ni altura fija, texto normal */
+.sg-show__display--parrafo {
+    display: block;
+    height: auto;
+    text-align: left;
+    word-break: break-word;
+    white-space: pre-wrap;
+    line-height: 1.5;
 }
 
 /* Fila Tipo de solicitud / Documento que presenta / Descripción:
@@ -191,4 +219,179 @@
     color: #fff;
     transform: translateY(-2px);
     box-shadow: 0 8px 28px rgba(29, 209, 161, 0.2);
+}
+
+/* ── Botón "Avance" (abre el modal de progreso) ── */
+.sg-avance-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: rgba(13, 202, 240, 0.1);
+    border: 1px solid rgba(13, 202, 240, 0.35);
+    color: #0dcaf0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sg-avance-btn:hover {
+    background: rgba(13, 202, 240, 0.22);
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.2);
+    color: #0dcaf0;
+}
+
+/* ── Modal: progreso de revisión ── */
+.sg-progreso-modal {
+    color: #e6f1ff;
+    border-radius: 16px;
+    border: 1px solid rgba(13, 202, 240, 0.3);
+    background: linear-gradient(145deg, #0d171f, #070c12);
+}
+
+.sg-progreso-modal .modal-header,
+.sg-progreso-modal .modal-footer {
+    border-color: rgba(13, 202, 240, 0.16);
+}
+
+.sg-progreso-modal .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #9feaff;
+    font-weight: 900;
+}
+
+/* ── Progreso de revisión (tarjetas dentro del modal) ── */
+.sg-progreso__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+
+.sg-progreso__card {
+    flex: 1 1 220px;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+.sg-progreso__card--pendiente  { border-color: rgba(254, 202, 87, 0.35); }
+.sg-progreso__card--revisando  { border-color: rgba(13, 202, 240, 0.4); }
+.sg-progreso__card--aceptada   { border-color: rgba(29, 209, 161, 0.45); }
+.sg-progreso__card--rechazada  { border-color: rgba(255, 107, 107, 0.45); }
+
+.sg-progreso__cargo {
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9fb3c8;
+    text-align: center;
+}
+
+.sg-progreso__estado {
+    font-size: 0.92rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+}
+
+.sg-progreso__card--pendiente  .sg-progreso__estado { color: #feca57; }
+.sg-progreso__card--revisando  .sg-progreso__estado { color: #0dcaf0; }
+.sg-progreso__card--aceptada   .sg-progreso__estado { color: #1dd1a1; }
+.sg-progreso__card--rechazada  .sg-progreso__estado { color: #ff6b6b; }
+
+.sg-progreso__quien {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #d4ebf4;
+}
+
+.sg-progreso__puesto {
+    font-size: 0.76rem;
+    color: #9fb3c8;
+}
+
+.sg-progreso__comentario {
+    font-size: 0.78rem;
+    color: #9fb3c8;
+    font-style: italic;
+}
+
+/* ── Formulario de voto (aceptar / rechazar) ── */
+.sg-voto__wrapper {
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sg-voto__form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+}
+
+.sg-voto__comentario {
+    width: 100%;
+    max-width: 520px;
+    min-height: 60px;
+    background-color: #0d151d;
+    color: #fff;
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    resize: vertical;
+}
+
+.sg-voto__botones {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.sg-voto__btn--rechazar {
+    background: rgba(255, 107, 107, 0.15);
+    border-color: rgba(255, 107, 107, 0.5);
+    color: #ff6b6b;
+}
+
+.sg-voto__btn--rechazar:hover {
+    background: rgba(255, 107, 107, 0.3);
+    color: #fff;
+    box-shadow: 0 8px 28px rgba(255, 107, 107, 0.2);
+}
+
+/* ── Formulario de comprobante ── */
+.sg-comprobante__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+
+.sg-comprobante__input {
+    background-color: #0d151d;
+    color: #fff;
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-size: 0.86rem;
 }
