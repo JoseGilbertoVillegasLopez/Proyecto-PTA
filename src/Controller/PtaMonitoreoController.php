@@ -25,7 +25,7 @@ class PtaMonitoreoController extends AbstractController
         $usuario = $this->getUser();
 
         if (!$usuario instanceof User || !$moduloAccesoResolver->tieneAcceso($usuario, 'monitoreo')) {
-            throw $this->createAccessDeniedException('No tienes acceso al módulo de monitoreo.');
+            return $this->redirectToRoute('app_admin_dashboard');
         }
 
         $anioActual = (int) date('Y');
