@@ -55,6 +55,12 @@
 					title="Ver avance de revisión">
 				<i class="bi bi-list-check"></i> Avance {{ solicitud.contarRevisionesResueltas }}/3
 			</button>
+			<a href="{{ path('app_solicitud_gastos_export_pdf', { id: solicitud.id }) }}"
+			   class="sg-avance-btn"
+			   target="_blank"
+			   title="Exportar solicitud a PDF">
+				<i class="bi bi-file-earmark-pdf-fill"></i> Exportar PDF
+			</a>
 		</div>
 
 	</div>
@@ -270,6 +276,13 @@
 					Documentos a presentar para la solicitud
 				</span>
 			</div>
+
+			{% if solicitud.requiereDocumentacionPendiente %}
+				<div class="sg-doc-pendiente">
+					<i class="bi bi-exclamation-triangle-fill"></i>
+					<span>Documentación pendiente: {{ solicitud.documentacionPendienteTexto }}</span>
+				</div>
+			{% endif %}
 
 			<div class="sg-evidencias__grid">
 				{% for evidencia in solicitud.evidencias %}

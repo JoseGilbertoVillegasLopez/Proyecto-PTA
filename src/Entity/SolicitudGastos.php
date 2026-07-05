@@ -34,6 +34,14 @@ class SolicitudGastos
      */
     public const ESTADOS = ['pendiente', 'en_revision', 'aceptada', 'rechazada', 'resuelto'];
 
+    /**
+     * Único tipo de solicitud (por nombre, ver TipoSolicitud) que exige
+     * documentación pendiente. Campo derivado: no se captura, se calcula.
+     */
+    private const TIPO_SOLICITUD_REQUIERE_DOCUMENTACION_PENDIENTE = 'Gastos por comprobar';
+
+    private const DOCUMENTACION_PENDIENTE_TEXTO = '*CFDI Y VALIDACION DE CFDI';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -350,6 +358,19 @@ class SolicitudGastos
     public function getDocumentoVerificacionLabel(): ?string
     {
         return self::DOCUMENTOS_VERIFICACION[$this->documentoVerificacion] ?? null;
+    }
+
+    /**
+     * Solo el tipo "Gastos por comprobar" exige documentación pendiente.
+     */
+    public function requiereDocumentacionPendiente(): bool
+    {
+        return $this->tipoSolicitud?->getNombre() === self::TIPO_SOLICITUD_REQUIERE_DOCUMENTACION_PENDIENTE;
+    }
+
+    public function getDocumentacionPendienteTexto(): ?string
+    {
+        return $this->requiereDocumentacionPendiente() ? self::DOCUMENTACION_PENDIENTE_TEXTO : null;
     }
 
     public function getJefeArea(): ?Personal

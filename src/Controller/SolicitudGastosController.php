@@ -15,6 +15,7 @@ use App\Repository\TipoSolicitudRepository;
 use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use App\Service\SolicitudGastos\GuardarSolicitudGastosService;
 use App\Service\SolicitudGastos\RevisionSolicitudGastosService;
+use App\Service\SolicitudGastos\SolicitudGastosPdfExportService;
 use App\Service\SolicitudGastos\SubirComprobanteSolicitudGastosService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -244,6 +245,30 @@ final class SolicitudGastosController extends AbstractController
             'section'     => 'solicitud_gastos',
             'content_url' => $this->generateUrl('app_solicitud_gastos_show', ['id' => $solicitud->getId()]),
         ]);
+    }
+
+    /* =====================================================
+       EXPORTAR PDF
+       ===================================================== */
+    #[Route('/{id}/export/pdf', name: 'app_solicitud_gastos_export_pdf', methods: ['GET'])]
+    public function exportarPdf(
+        SolicitudGastos $solicitud,
+        SolicitudGastosPdfExportService $pdfExportService,
+    ): Response {
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $personal = $user->getPersonal();
+        $esEncargado = $this->esEncargado();
+
+        if (!$esEncargado && $solicitud->getSolicitante() !== $personal) {
+            throw $this->createAccessDeniedException('No tienes permiso para exportar esta solicitud.');
+        }
+
+        return $pdfExportService->exportar($solicitud);
     }
 
     /* =====================================================

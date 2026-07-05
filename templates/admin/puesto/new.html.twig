@@ -35,6 +35,12 @@
 			</div>
 
 			<div class="puesto-new-page-group">
+				{{ form_label(form.serie, null, {'label_attr': {'class': 'puesto-new-page-label'}}) }}
+				{{ form_widget(form.serie, {'attr': {'class': 'puesto-new-page-input'}}) }}
+				{{ form_errors(form.serie) }}
+			</div>
+
+			<div class="puesto-new-page-group">
 				{{ form_label(form.supervisorDirecto, null, {'label_attr': {'class': 'puesto-new-page-label'}}) }}
 				{{ form_widget(form.supervisorDirecto, {'attr': {'class': 'puesto-new-page-select'}}) }}
 				{{ form_errors(form.supervisorDirecto) }}

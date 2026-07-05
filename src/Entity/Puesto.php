@@ -38,6 +38,25 @@ class Puesto
     #[ORM\Column(type: 'boolean')]
     private bool $activo = true;
 
+    /**
+     * Abreviación usada como Serie en documentos oficiales (ej. solicitud de
+     * recursos): "Jefe del Departamento de Recursos Materiales" -> "RM".
+     */
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $serie = null;
+
+    public function getSerie(): ?string
+    {
+        return $this->serie;
+    }
+
+    public function setSerie(?string $serie): static
+    {
+        $this->serie = $serie;
+
+        return $this;
+    }
+
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subordinados')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?self $supervisorDirecto = null;

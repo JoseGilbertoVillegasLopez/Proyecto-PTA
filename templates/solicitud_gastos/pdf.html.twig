@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    /*
+        Paleta y proporciones tomadas directamente de
+        "SOLICITUD DE RECURSOS 2026 (DRF).xlsm" (hoja SOLICITUD DE GASTOS):
+        - Maroon #800000: barra de título institucional + caja Vo.Bo. Planeación
+        - Navy  #10253F: todas las etiquetas de campo + encabezado de tabla + folio
+        - Anchos de columna: proporcionales al ancho real de columnas B:K del Excel
+        (la tabla de partidas usa una variante con Proceso Estratégico/Clave más
+        angostos y META PDI/PTA más ancho; encabezado y firmas usan las proporciones
+        originales para que el espaciado de los 6 firmantes quede igual al Excel)
+    */
+    body {
+        font-family: notosans, sans-serif;
+        font-size: 6.5pt;
+        color: #000000;
+    }
+
+    table.sgpdf {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        margin-top: -1pt;
+    }
+
+    table.sgpdf td {
+        border: 0.75pt solid #000000;
+        padding: 2.5pt 4pt;
+        vertical-align: middle;
+        word-wrap: break-word;
+    }
+
+    /* Grid de 10 columnas (B..K del Excel) — encabezado y firmas */
+    .col-b { width: 12.89%; }
+    .col-c { width: 14.22%; }
+    .col-d { width: 8.67%; }
+    .col-e { width: 9.70%; }
+    .col-f { width: 9.70%; }
+    .col-g { width: 8.52%; }
+    .col-h { width: 7.78%; }
+    .col-i { width: 3.85%; }
+    .col-j { width: 13.78%; }
+    .col-k { width: 10.89%; }
+
+    /* Variante para la tabla de partidas: menos ancho a Proceso Estratégico/Clave, más a META PDI/PTA */
+    .col-b2 { width: 10.89%; }
+    .col-c2 { width: 12.22%; }
+    .col-f2 { width: 13.70%; }
+
+    .bg-maroon {
+        background: #800000;
+        color: #ffffff;
+    }
+
+    .bg-navy {
+        background: #10253F;
+        color: #ffffff;
+    }
+
+    .titulo-inst {
+        font-weight: bold;
+        font-size: 9pt;
+        text-align: center;
+        padding: 4pt;
+    }
+
+    .label {
+        font-weight: bold;
+        font-size: 6pt;
+    }
+
+    .caption {
+        font-weight: bold;
+        font-size: 6pt;
+        text-align: center;
+    }
+
+    .valor {
+        font-size: 6.5pt;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .valor--italic {
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    .valor--grande {
+        font-weight: bold;
+        font-size: 8pt;
+        text-align: center;
+    }
+
+    .center { text-align: center; }
+    .right  { text-align: right; }
+
+    .caption-chica {
+        font-size: 5pt;
+        font-weight: bold;
+        text-align: center;
+        color: #444444;
+    }
+
+    .parrafo {
+        min-height: 46pt;
+        font-weight: bold;
+        font-size: 6.5pt;
+        vertical-align: top;
+        text-align: center;
+    }
+
+    /* Caja Serie / Folio: etiqueta arriba, línea separadora, valor abajo */
+    .sf-box {
+        padding: 0;
+    }
+
+    .sf-label {
+        display: block;
+        font-size: 5pt;
+        font-weight: bold;
+        color: #444444;
+        text-align: center;
+        padding: 1.5pt 2pt;
+        border-bottom: 0.75pt solid #000000;
+    }
+
+    .sf-valor {
+        display: block;
+        font-size: 6.5pt;
+        font-weight: bold;
+        text-align: center;
+        padding: 2pt;
+    }
+
+    .firma-hint {
+        color: #808080;
+        font-size: 5pt;
+        text-align: center;
+    }
+
+    .firma-box {
+        text-align: center;
+        padding: 3pt 3pt 2pt 3pt;
+        height: 44pt;
+        vertical-align: top;
+    }
+
+    .firma-box--sin-borde {
+        border: none;
+    }
+
+    .firma-rol {
+        display: block;
+        font-weight: bold;
+        font-size: 5.5pt;
+    }
+
+    .firma-nombre {
+        font-weight: bold;
+        font-size: 6pt;
+        display: block;
+        border-top: 0.75pt solid #000000;
+        padding-top: 2pt;
+        margin-top: 16pt;
+    }
+
+    .firma-puesto {
+        font-size: 5.5pt;
+        display: block;
+    }
+</style>
+</head>
+<body>
+
+<table class="sgpdf" style="margin-top:0;">
+    <colgroup>
+        <col class="col-b"><col class="col-c"><col class="col-d"><col class="col-e"><col class="col-f">
+        <col class="col-g"><col class="col-h"><col class="col-i"><col class="col-j"><col class="col-k">
+    </colgroup>
+
+    <tr>
+        <td colspan="10" class="bg-maroon titulo-inst">INSTITUTO TECNOLÓGICO SUPERIOR DE COSAMALOAPAN</td>
+    </tr>
+
+    <tr>
+        <td colspan="5" class="valor--italic center">{{ fechaTexto }}</td>
+        <td colspan="3" class="bg-navy label center">FTE DE FINANCIAMIENTO:</td>
+        <td colspan="2" class="valor--italic center">FEDERAL / ESTATAL</td>
+    </tr>
+
+    <tr>
+        <td colspan="10" class="label center" style="background:none; color:#000;">ÁREA ADMINISTRATIVA</td>
+    </tr>
+
+    <tr>
+        <td colspan="2" class="bg-navy label">SOLICITUD DE RECURSOS:</td>
+        <td colspan="8" class="valor--grande">{{ solicitud.solicitante.departamento ? solicitud.solicitante.departamento.nombre : '—' }}</td>
+    </tr>
+
+    <tr>
+        <td colspan="2" class="bg-navy label">TIPO DE SOLICITUD:</td>
+        <td colspan="6" class="valor--grande">{{ solicitud.tipoSolicitud ? solicitud.tipoSolicitud.nombre|upper : '—' }}</td>
+        <td class="sf-box">
+            <span class="sf-label">SERIE</span>
+            <span class="sf-valor">{% if solicitud.solicitante.puesto and solicitud.solicitante.puesto.serie %}{{ solicitud.solicitante.puesto.serie }}{% else %}&nbsp;{% endif %}</span>
+        </td>
+        <td class="sf-box">
+            <span class="sf-label">FOLIO</span>
+            <span class="sf-valor">&nbsp;</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="2" class="bg-navy label">TRANSFERENCIA EN BENEFICIO DE:</td>
+        <td colspan="8" class="valor--grande">{{ solicitud.transferenciaEnBeneficioDe ?: '—' }}</td>
+    </tr>
+
+    <tr>
+        <td colspan="2" class="bg-navy label">BANCO DEL(LA) BENEFICIARIO(A):</td>
+        <td colspan="3" class="valor center">{{ solicitud.banco ? solicitud.banco.nombre : '—' }}</td>
+        <td colspan="3" class="bg-navy label center">CTA CLABE DEL(LA) BENEFICIARIO(A):</td>
+        <td colspan="2" class="valor center">{{ solicitud.ctaClaveBeneficiario ?: '—' }}</td>
+    </tr>
+
+    <tr>
+        <td colspan="2" class="bg-navy label">POR LA CANTIDAD DE:</td>
+        <td colspan="2" class="valor--grande center" style="font-size:9pt;">$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}</td>
+        <td colspan="6" class="center">
+            <span class="valor">( {{ montoEnLetra }} )</span><br>
+            <span class="caption-chica">IMPORTE EN LETRA</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="10" class="bg-navy label">POR CONCEPTO DE:</td>
+    </tr>
+
+    <tr>
+        <td colspan="10" class="parrafo">{{ solicitud.porConceptoDe }}</td>
+    </tr>
+
+    <tr>
+        <td colspan="2" class="bg-navy label">DOCUMENTACIÓN QUE PRESENTA:</td>
+        <td colspan="2" class="valor">{{ solicitud.documentoVerificacionLabel ?: '—' }}</td>
+        <td colspan="3" class="valor">{{ solicitud.documentoVerificacionDescripcion ?: '—' }}</td>
+        <td colspan="2" class="bg-navy label center">DOCUMENTACIÓN PENDIENTE:</td>
+        <td colspan="1" class="valor center" style="font-size:5.5pt;">{{ solicitud.documentacionPendienteTexto ?: 'N/A' }}</td>
+    </tr>
+</table>
+
+<table class="sgpdf">
+    <colgroup>
+        <col class="col-b2"><col class="col-c2"><col class="col-d"><col class="col-e"><col class="col-f2">
+        <col class="col-g"><col class="col-h"><col class="col-i"><col class="col-j"><col class="col-k">
+    </colgroup>
+
+    <tr>
+        <th colspan="1" class="bg-navy caption">PROCESO ESTRATÉGICO</th>
+        <th colspan="1" class="bg-navy caption">PROCESO CLAVE</th>
+        <th colspan="1" class="bg-navy caption">PEI</th>
+        <th colspan="1" class="bg-navy caption">PAIG</th>
+        <th colspan="1" class="bg-navy caption">META PDI/PTA</th>
+        <th colspan="1" class="bg-navy caption">CAPÍTULO</th>
+        <th colspan="1" class="bg-navy caption">PARTIDA</th>
+        <th colspan="2" class="bg-navy caption">DESCRIPCIÓN</th>
+        <th colspan="1" class="bg-navy caption">CANTIDAD</th>
+    </tr>
+
+    {% set rowCount = solicitud.partidas|length %}
+    {% for item in solicitud.partidas %}
+        <tr>
+            {% if loop.first %}
+                <td class="valor center" rowspan="{{ rowCount }}">{{ solicitud.procesoEstrategico ? solicitud.procesoEstrategico.nombre : '—' }}</td>
+                <td class="valor center" rowspan="{{ rowCount }}">{{ solicitud.procesoClave ? solicitud.procesoClave.nombre : '—' }}</td>
+                <td class="valor center" rowspan="{{ rowCount }}">{{ solicitud.procesoClave ? solicitud.procesoClave.pei : '—' }}</td>
+                <td class="valor center" rowspan="{{ rowCount }}">{{ solicitud.procesoClave ? solicitud.procesoClave.paig : '—' }}</td>
+                <td class="valor center" rowspan="{{ rowCount }}">{{ solicitud.procesoClave ? solicitud.procesoClave.metaPdiPta : '—' }}</td>
+            {% endif %}
+            <td class="valor center">{{ item.partida.capitulo }}</td>
+            <td class="valor center">{{ item.partida.partida }}</td>
+            <td colspan="2" class="valor">{{ item.partida.descripcion }}</td>
+            <td class="valor right">$ {{ item.monto|number_format(2, '.', ',') }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="10" class="center">Sin partidas registradas.</td>
+        </tr>
+    {% endfor %}
+
+    <tr>
+        <td colspan="4" class="bg-maroon valor center" style="font-size:5.5pt;">
+            Vo. Bo. JEFE (A) DEL DEPARTAMENTO DE PLANEACIÓN Y PROGRAMACIÓN
+        </td>
+        <td colspan="3" class="firma-hint">*FIRMA</td>
+        <td colspan="2" class="valor center" style="font-size:8pt;">TOTAL</td>
+        <td colspan="1" class="valor right" style="font-size:8pt;">$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}</td>
+    </tr>
+</table>
+
+<table class="sgpdf">
+    <colgroup>
+        <col class="col-b"><col class="col-c"><col class="col-d"><col class="col-e"><col class="col-f">
+        <col class="col-g"><col class="col-h"><col class="col-i"><col class="col-j"><col class="col-k">
+    </colgroup>
+
+    <tr>
+        <td colspan="2" class="firma-box">
+            <span class="firma-rol">SOLICITANTE</span>
+            <span class="firma-nombre">{{ solicitud.solicitante }}</span>
+            <span class="firma-puesto">{{ solicitud.solicitante.puesto ? solicitud.solicitante.puesto.nombre|upper : '—' }}</span>
+        </td>
+        <td class="firma-box--sin-borde"></td>
+        <td colspan="3" class="firma-box">
+            <span class="firma-rol">JEFE(A) DEL ÁREA SOLICITANTE</span>
+            <span class="firma-nombre">{{ solicitud.jefeArea ?: '—' }}</span>
+            <span class="firma-puesto">{{ solicitud.jefeArea and solicitud.jefeArea.puesto ? solicitud.jefeArea.puesto.nombre|upper : '—' }}</span>
+        </td>
+        <td class="firma-box--sin-borde"></td>
+        <td colspan="3" class="firma-box">
+            <span class="firma-rol">{{ solicitud.autoriza and solicitud.autoriza.puesto ? solicitud.autoriza.puesto.nombre|upper : '—' }}</span>
+            <span class="firma-nombre">{{ solicitud.autoriza ?: '—' }}</span>
+        </td>
+    </tr>
+
+    {% set revisor = solicitud.getRevisionPorCargo('revisor') %}
+    {% set supervisor = solicitud.getRevisionPorCargo('supervisor') %}
+    {% set autorizo = solicitud.getRevisionPorCargo('autoriza') %}
+    <tr>
+        <td colspan="2" class="firma-box">
+            <span class="firma-rol">REVISÓ</span>
+            <span class="firma-nombre">{{ revisor and revisor.personal ? revisor.personal : '—' }}</span>
+            <span class="firma-puesto">{% if revisor and revisor.personal and revisor.personal.puesto %}{{ revisor.personal.puesto.nombre|upper }}{% endif %}</span>
+        </td>
+        <td class="firma-box--sin-borde"></td>
+        <td colspan="3" class="firma-box">
+            <span class="firma-rol">SUPERVISÓ</span>
+            <span class="firma-nombre">{{ supervisor and supervisor.personal ? supervisor.personal : '—' }}</span>
+            <span class="firma-puesto">{% if supervisor and supervisor.personal and supervisor.personal.puesto %}{{ supervisor.personal.puesto.nombre|upper }}{% endif %}</span>
+        </td>
+        <td class="firma-box--sin-borde"></td>
+        <td colspan="3" class="firma-box">
+            <span class="firma-rol">AUTORIZÓ</span>
+            <span class="firma-nombre">{{ autorizo and autorizo.personal ? autorizo.personal : '—' }}</span>
+            <span class="firma-puesto">{% if autorizo and autorizo.personal and autorizo.personal.puesto %}{{ autorizo.personal.puesto.nombre|upper }}{% endif %}</span>
+        </td>
+    </tr>
+
+    <tr>
+        <td colspan="7" class="firma-box--sin-borde"></td>
+        <td colspan="3" class="bg-navy label center">
+            FOLIO: &nbsp;
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
