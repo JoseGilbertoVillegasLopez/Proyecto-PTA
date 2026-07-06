@@ -8,8 +8,11 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class RevisionSolicitudGastosService
 {
+    private const ESTADOS_RESUELTOS = ['aceptada', 'rechazada'];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
+        private readonly SolicitudGastosResolucionMailer $resolucionMailer,
     ) {}
 
     /**
@@ -58,9 +61,20 @@ class RevisionSolicitudGastosService
         $revision->setComentario($comentario);
         $revision->setFechaResolucion(new \DateTime());
 
+        $estabaResuelta = in_array($solicitud->getEstado(), self::ESTADOS_RESUELTOS, true);
+
         $this->recalcularEstadoGlobal($solicitud);
 
         $this->em->flush();
+
+        if (!$estabaResuelta && in_array($solicitud->getEstado(), self::ESTADOS_RESUELTOS, true)) {
+            try {
+                $this->resolucionMailer->notificarResolucion($solicitud);
+            } catch (\Throwable) {
+                // El voto ya quedó persistido; un fallo al preparar/despachar el correo
+                // (PDF, plantilla, etc.) no debe revertir la acción del encargado.
+            }
+        }
     }
 
     /**

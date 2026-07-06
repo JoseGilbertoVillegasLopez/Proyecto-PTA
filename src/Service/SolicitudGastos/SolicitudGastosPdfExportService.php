@@ -29,6 +29,39 @@ class SolicitudGastosPdfExportService
     public function exportar(SolicitudGastos $solicitud): BinaryFileResponse
     {
         $projectDir = $this->parameterBag->get('kernel.project_dir');
+        $mpdf = $this->construirMpdf($solicitud);
+
+        $nombreArchivo = sprintf('solicitud_gastos_%s_%s.pdf', $solicitud->getId(), uniqid());
+        $rutaTemporal = $projectDir . '/var/tmp/' . $nombreArchivo;
+
+        if (!is_dir(dirname($rutaTemporal))) {
+            mkdir(dirname($rutaTemporal), 0777, true);
+        }
+
+        $mpdf->Output($rutaTemporal, Destination::FILE);
+
+        $response = new BinaryFileResponse($rutaTemporal);
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            basename($rutaTemporal)
+        );
+        $response->deleteFileAfterSend(true);
+
+        return $response;
+    }
+
+    /**
+     * Mismo PDF que exportar(), pero como binario en memoria (para adjuntar en un correo)
+     * en vez de una descarga vía archivo temporal.
+     */
+    public function generarBinario(SolicitudGastos $solicitud): string
+    {
+        return $this->construirMpdf($solicitud)->Output('', Destination::STRING_RETURN);
+    }
+
+    private function construirMpdf(SolicitudGastos $solicitud): Mpdf
+    {
+        $projectDir = $this->parameterBag->get('kernel.project_dir');
 
         $html = $this->twig->render('solicitud_gastos/pdf.html.twig', [
             'solicitud' => $solicitud,
@@ -56,23 +89,7 @@ class SolicitudGastosPdfExportService
 
         $mpdf->WriteHTML($html);
 
-        $nombreArchivo = sprintf('solicitud_gastos_%s_%s.pdf', $solicitud->getId(), uniqid());
-        $rutaTemporal = $projectDir . '/var/tmp/' . $nombreArchivo;
-
-        if (!is_dir(dirname($rutaTemporal))) {
-            mkdir(dirname($rutaTemporal), 0777, true);
-        }
-
-        $mpdf->Output($rutaTemporal, Destination::FILE);
-
-        $response = new BinaryFileResponse($rutaTemporal);
-        $response->setContentDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            basename($rutaTemporal)
-        );
-        $response->deleteFileAfterSend(true);
-
-        return $response;
+        return $mpdf;
     }
 
     private function formatearFechaEspanol(\DateTimeInterface $fecha): string
