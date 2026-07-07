@@ -1,0 +1,161 @@
+<turbo-frame id="content">
+<div class="ma-edit-card" data-ma-view="edit"
+     data-usa-encargado="{{ modulo.usaEncargado ? '1' : '0' }}"
+     data-usa-acceso="{{ modulo.usaAcceso ? '1' : '0' }}"
+     data-usa-cargo-encargado="{{ modulo.usaCargoEncargado ? '1' : '0' }}"
+     data-ma-cargos-catalogo="{{ cargos_catalogo|default({})|json_encode }}"
+     data-ma-modulo-id="{{ modulo.id }}"
+     data-ma-campo-token="{{ csrf_token('modulo_acceso_campo_' ~ modulo.id) }}"
+     data-ma-campo-url="{{ path('app_admin_modulo_acceso_actualizar_campo', { id: modulo.id }) }}">
+
+    <div class="ma-edit-header">
+        <a href="{{ path('app_admin_modulo_acceso_index') }}"
+           data-turbo-frame="content"
+           data-turbo-action="advance"
+           class="ma-edit-back">
+            <i class="bi bi-arrow-left-circle-fill"></i>
+            <span>Volver al listado</span>
+        </a>
+
+        <div class="ma-edit-title-row" data-ma-field="label">
+            <i class="bi bi-shield-lock-fill ma-edit-title-icon"></i>
+            <h4 class="ma-edit-title" data-ma-field-display>{{ modulo.label }}</h4>
+            <input type="text" class="ma-edit-title-input" data-ma-field-input value="{{ modulo.label }}" hidden>
+            <button type="button" class="ma-edit-field-btn" data-ma-field-toggle title="Editar nombre">
+                <i class="bi bi-pencil-fill"></i>
+            </button>
+        </div>
+
+        <div class="ma-edit-desc-row" data-ma-field="descripcion">
+            <p class="ma-edit-subtitle" data-ma-field-display>{{ modulo.descripcion ?: 'Sin descripción' }}</p>
+            <textarea class="ma-edit-subtitle-input" data-ma-field-input hidden>{{ modulo.descripcion }}</textarea>
+            <button type="button" class="ma-edit-field-btn" data-ma-field-toggle title="Editar descripción">
+                <i class="bi bi-pencil-fill"></i>
+            </button>
+        </div>
+    </div>
+
+    <form id="ma-edit-form"
+          method="POST"
+          action="{{ path('app_admin_modulo_acceso_save', { id: modulo.id }) }}">
+
+        <input type="hidden" name="_token" value="{{ csrf_token('modulo_acceso_' ~ modulo.id) }}">
+        <div id="ma-inputs-encargados"></div>
+        <div id="ma-inputs-con-acceso"></div>
+
+        <div class="ma-edit-columns {{ (not modulo.usaEncargado or not modulo.usaAcceso) ? 'ma-edit-columns--2col' }}">
+
+            {# ─── ENCARGADOS (solo si el módulo usa encargados) ─── #}
+            {% if modulo.usaEncargado %}
+            <div class="ma-edit-col ma-edit-col--enc">
+                <div class="ma-edit-col-header">
+                    <i class="bi bi-person-fill-gear"></i>
+                    <span>Encargados</span>
+                    <span class="ma-col-count" id="count-encargados">{{ encargados|length }}</span>
+                </div>
+                <div class="ma-edit-col-body" id="list-encargados">
+                    {% for puesto in encargados %}
+                        <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
+                            <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
+                            {% if modulo.usaCargoEncargado %}
+                                <select class="ma-puesto-card-cargo" title="Cargo en la revisión">
+                                    <option value="">Sin cargo</option>
+                                    {% for valor, label in cargos_catalogo %}
+                                        <option value="{{ valor }}" {{ encargados_cargos[puesto.id] == valor ? 'selected' : '' }}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                            <div class="ma-puesto-card-actions">
+                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--remove"
+                                        title="Quitar de Encargados">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            {# Contenedor vacío para que el JS no falle al buscar #list-encargados #}
+            <div id="list-encargados" style="display:none"></div>
+            {% endif %}
+
+            {# ─── CON ACCESO (solo si el módulo usa acceso) ─── #}
+            {% if modulo.usaAcceso %}
+            <div class="ma-edit-col ma-edit-col--acc">
+                <div class="ma-edit-col-header">
+                    <i class="bi bi-person-check-fill"></i>
+                    <span>Con acceso</span>
+                    <button type="button" class="ma-todos-btn" id="ma-todos-btn" title="Agregar todos">
+                        <i class="bi bi-people-fill"></i> Todos
+                    </button>
+                    <span class="ma-col-count" id="count-con-acceso">{{ con_acceso|length }}</span>
+                </div>
+                <div class="ma-edit-col-body" id="list-con-acceso">
+                    {% for puesto in con_acceso %}
+                        <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
+                            <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
+                            <div class="ma-puesto-card-actions">
+                                <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--remove"
+                                        title="Quitar de Con acceso">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            {# Contenedor vacío para que el JS no falle al buscar #list-con-acceso #}
+            <div id="list-con-acceso" style="display:none"></div>
+            {% endif %}
+
+            {# ─── TODOS LOS PUESTOS ─── #}
+            <div class="ma-edit-col ma-edit-col--sin">
+                <div class="ma-edit-col-header">
+                    <i class="bi bi-people"></i>
+                    <span>Puestos</span>
+                    <span class="ma-col-count" id="count-puestos">{{ todos_puestos|length }}</span>
+                </div>
+                <div class="ma-edit-col-body" id="list-puestos">
+                    {% for puesto in todos_puestos %}
+                        <div class="ma-puesto-card" data-id="{{ puesto.id }}" data-nombre="{{ puesto.nombre }}">
+                            <span class="ma-puesto-card-nombre">{{ puesto.nombre }}</span>
+                            <div class="ma-puesto-card-actions">
+                                {% if modulo.usaEncargado and puesto.id not in encargados_ids %}
+                                    <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--enc"
+                                            title="Agregar como Encargado">
+                                        <i class="bi bi-person-fill-gear"></i>
+                                    </button>
+                                {% endif %}
+                                {% if modulo.usaAcceso and puesto.id not in con_acceso_ids %}
+                                    <button type="button" class="ma-puesto-card-btn ma-puesto-card-btn--acc"
+                                            title="Agregar con acceso">
+                                        <i class="bi bi-person-check-fill"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>{# /.ma-edit-columns #}
+
+        <div class="ma-edit-footer">
+            <a href="{{ path('app_admin_modulo_acceso_index') }}"
+               data-turbo-frame="content"
+               data-turbo-action="advance"
+               class="ma-edit-cancel-btn">
+                Cancelar
+            </a>
+            <button type="submit" class="ma-edit-save-btn">
+                <i class="bi bi-floppy-fill"></i>
+                Guardar cambios
+            </button>
+        </div>
+
+    </form>
+
+</div>
+</turbo-frame>

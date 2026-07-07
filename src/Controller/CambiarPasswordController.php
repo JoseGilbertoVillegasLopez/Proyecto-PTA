@@ -44,13 +44,7 @@ class CambiarPasswordController extends AbstractController
 
                 $em->flush();
 
-                // ADMIN → dashboard
-                if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
-                    return $this->redirectToRoute('app_admin_dashboard');
-                }
-
-                // TODOS LOS DEMÁS → PTA
-                return $this->redirectToRoute('app_encabezado_index');
+                return $this->redirectToRoute('app_admin_dashboard');
 
             }
         }

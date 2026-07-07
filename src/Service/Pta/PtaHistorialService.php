@@ -89,12 +89,13 @@ class PtaHistorialService
 
             $historial[$indicador->getIndice()] = [
                 'info' => [
-                    'indicador'    => $indicador->getIndicador(),
-                    'formula'      => $indicador->getFormula(),
-                    'valor_base'   => (float) $indicador->getValorBase(),
-                    'meta'         => (float) $indicador->getValor(),
-                    'tendencia'    => $indicador->getTendencia(),
-                    'es_porcentaje' => $indicador->isEsPorcentaje(),
+                    'indicador'          => $indicador->getIndicador(),
+                    'formula'            => $indicador->getFormula(),
+                    'valor_base'         => (float) $indicador->getValorBase(),
+                    'meta'               => (float) $indicador->getValor(),
+                    'tendencia'          => $indicador->getTendencia(),
+                    'es_porcentaje'      => $indicador->isEsPorcentaje(),
+                    'captura_porcentaje' => $indicador->isCapturaEnPorcentaje(),
                 ],
                 'acciones'  => [],
                 'indicador' => $mesesIndicador,

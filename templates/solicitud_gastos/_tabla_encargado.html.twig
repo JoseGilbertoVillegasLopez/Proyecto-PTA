@@ -1,0 +1,47 @@
+{% set sg_estado_iconos = {
+	'pendiente': 'bi-clock-fill',
+	'en_revision': 'bi-eye-fill',
+	'aceptada': 'bi-check-circle-fill',
+	'rechazada': 'bi-x-circle-fill',
+	'resuelto': 'bi-patch-check-fill'
+} %}
+{% set sg_estado_labels = {
+	'pendiente': 'Pendiente',
+	'en_revision': 'En revisión',
+	'aceptada': 'Aceptada',
+	'rechazada': 'Rechazada',
+	'resuelto': 'Resuelto'
+} %}
+{% for solicitud in solicitudes %}
+	<tr>
+		<td class="sg-index__col-id">{{ solicitud.id }}</td>
+		<td class="sg-index__col-solicitante">{{ solicitud.solicitante }}</td>
+		<td class="sg-index__col-depto">{{ solicitud.solicitante.departamento.nombre }}</td>
+		<td class="sg-index__col-tipo">{{ solicitud.tipoSolicitud.nombre }}</td>
+		<td class="sg-index__col-concepto">{{ solicitud.porConceptoDe }}</td>
+		<td class="sg-index__col-fecha">{{ solicitud.fechaNecesita|date('d/m/Y') }}</td>
+		<td class="sg-index__col-total">$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}</td>
+		<td class="sg-index__col-estado">
+			<span class="sg-badge sg-badge--{{ solicitud.estado }}">
+				<i class="bi {{ sg_estado_iconos[solicitud.estado] }}"></i> {{ sg_estado_labels[solicitud.estado] }}
+			</span>
+		</td>
+		<td class="sg-index__col-avance">{{ solicitud.contarRevisionesResueltas }}/3</td>
+		<td class="sg-index__col-acciones">
+			<a href="{{ path('app_solicitud_gastos_show', { id: solicitud.id }) }}"
+			   class="sg-index__action-btn sg-index__action-btn--ver"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance"
+			   title="Ver solicitud">
+				<i class="bi bi-eye"></i>
+			</a>
+		</td>
+	</tr>
+{% else %}
+	<tr>
+		<td colspan="10" class="sg-index__empty">
+			<i class="bi bi-inbox"></i>
+			<span>No hay solicitudes con los filtros actuales.</span>
+		</td>
+	</tr>
+{% endfor %}

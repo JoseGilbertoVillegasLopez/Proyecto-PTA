@@ -21,8 +21,7 @@ class Departamento
     #[ORM\Column(type: 'boolean')]
     private bool $activo = true;
 
-    #[ORM\ManyToMany(targetEntity: IndicadoresBasicos::class)]
-    #[ORM\JoinTable(name: 'departamento_indicadores_basicos')]
+    #[ORM\ManyToMany(targetEntity: IndicadoresBasicos::class, mappedBy: 'departamentos')]
     private Collection $indicadoresBasicos;
 
     public function __construct()

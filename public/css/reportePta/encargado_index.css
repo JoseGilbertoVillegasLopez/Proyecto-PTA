@@ -1,0 +1,194 @@
+/* =====================================================
+   Reporte PTA — Vista encargado
+   ===================================================== */
+
+.rpta-enc {
+	padding: 1.5rem 1.8rem;
+	color: #e2e8f0;
+}
+
+/* HEADER */
+.rpta-enc__header {
+	margin-bottom: 1.5rem;
+}
+
+.rpta-enc__titulo {
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: #f1f5f9;
+	display: flex;
+	align-items: center;
+	gap: .6rem;
+	margin: 0;
+}
+
+.rpta-enc__titulo i {
+	color: #60a5fa;
+}
+
+/* FILTROS */
+.rpta-enc__filtros {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: .75rem 1rem;
+	background: #252d38;
+	border: 1px solid #334155;
+	border-radius: 10px;
+	padding: 1rem 1.2rem;
+	margin-bottom: 1.2rem;
+}
+
+.rpta-enc__filtro-group {
+	display: flex;
+	flex-direction: column;
+	gap: .3rem;
+	min-width: 160px;
+}
+
+.rpta-enc__filtro-label {
+	font-size: .72rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	color: #94a3b8;
+}
+
+.rpta-enc__filtro-select {
+	background: #1e242b;
+	color: #e2e8f0;
+	border: 1px solid #475569;
+	border-radius: 6px;
+	padding: .4rem .7rem;
+	font-size: .88rem;
+	cursor: pointer;
+	transition: border-color .15s;
+}
+
+.rpta-enc__filtro-select:focus {
+	outline: none;
+	border-color: #60a5fa;
+}
+
+.rpta-enc__filtro-clear {
+	align-self: flex-end;
+	background: transparent;
+	border: 1px solid #475569;
+	border-radius: 6px;
+	color: #94a3b8;
+	padding: .42rem .7rem;
+	cursor: pointer;
+	transition: color .15s, border-color .15s;
+}
+
+.rpta-enc__filtro-clear:hover {
+	color: #f87171;
+	border-color: #f87171;
+}
+
+/* CONTADOR */
+.rpta-enc__contador {
+	font-size: .82rem;
+	color: #64748b;
+	margin-bottom: .75rem;
+}
+
+/* TABLA */
+.rpta-enc__table-wrapper {
+	overflow-x: auto;
+	border-radius: 10px;
+	border: 1px solid #334155;
+}
+
+.rpta-enc__table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: .88rem;
+}
+
+.rpta-enc__table thead tr {
+	background: #252d38;
+	border-bottom: 2px solid #334155;
+}
+
+.rpta-enc__table th {
+	padding: .7rem 1rem;
+	font-size: .72rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .05em;
+	color: #94a3b8;
+	white-space: nowrap;
+}
+
+.rpta-enc__table td {
+	padding: .7rem 1rem;
+	border-bottom: 1px solid #1e2730;
+	vertical-align: middle;
+}
+
+.rpta-enc__row:last-child td {
+	border-bottom: none;
+}
+
+.rpta-enc__row:hover td {
+	background: #1e2730;
+}
+
+.rpta-enc__cell--responsable {
+	font-weight: 600;
+	color: #f1f5f9;
+	white-space: nowrap;
+}
+
+.rpta-enc__cell--pta {
+	max-width: 220px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* BADGE TRIMESTRE */
+.rpta-enc__badge {
+	display: inline-block;
+	padding: .2rem .55rem;
+	border-radius: 20px;
+	font-size: .75rem;
+	font-weight: 700;
+	letter-spacing: .03em;
+}
+
+.rpta-enc__badge--t1 { background: #1e3a5f; color: #60a5fa; }
+.rpta-enc__badge--t2 { background: #14432a; color: #4ade80; }
+.rpta-enc__badge--t3 { background: #4a1942; color: #e879f9; }
+.rpta-enc__badge--t4 { background: #431407; color: #fb923c; }
+
+/* BOTÓN VER */
+.rpta-enc__ver-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: .35rem;
+	padding: .3rem .75rem;
+	border-radius: 6px;
+	background: #1e3a5f;
+	color: #60a5fa;
+	font-size: .82rem;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background .15s, color .15s;
+}
+
+.rpta-enc__ver-btn:hover {
+	background: #2563eb;
+	color: #fff;
+}
+
+/* VACÍO */
+.rpta-enc__empty {
+	text-align: center;
+	padding: 2.5rem 1rem;
+	color: #475569;
+	font-style: italic;
+}
+
+.text-center { text-align: center; }

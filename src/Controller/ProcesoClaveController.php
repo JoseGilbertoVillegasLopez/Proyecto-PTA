@@ -30,6 +30,7 @@ final class ProcesoClaveController extends AbstractController
         ProcesoClaveRepository $repository
     ): Response {
 
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $proceso = new ProcesoClave();
 
         $form = $this->createForm(ProcesoClaveType::class, $proceso);
@@ -89,6 +90,7 @@ final class ProcesoClaveController extends AbstractController
         ProcesoClaveRepository $repository
     ): Response {
 
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(ProcesoClaveEditType::class, $proceso);
 
         $form->handleRequest($request);
@@ -124,6 +126,7 @@ final class ProcesoClaveController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response {
 
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid(
             'delete' . $proceso->getId(),
             $request->getPayload()->getString('_token')

@@ -25,7 +25,7 @@
 				<form method="get" action="{{ path('app_encabezado_index') }}" data-turbo-frame="content" class="pta-filter-form">
 
 					<label class="form-label mb-0">AÑO DE EJEUCÍON</label>
-					<select name="anio">
+					<select name="anio" onchange="this.form.requestSubmit()">
 						{% for anio in aniosFiltro %}
 							<option value="{{ anio }}" {{ anio == anioSeleccionado ? 'selected' }}>
 								{{ anio }}
@@ -33,7 +33,7 @@
 						{% endfor %}
 					</select>
 					{% if access.filters.departamento and departamentosFiltro is not empty %}
-						<select name="departamento">
+						<select name="departamento" onchange="ptaFiltroExclusivoSubmit(this,'puesto')">
 							<option value="">Departamento</option>
 							{% for id, nombre in departamentosFiltro %}
 								<option value="{{ id }}" {{ filtrosActivos.departamento == id ? 'selected' }}>
@@ -44,7 +44,7 @@
 					{% endif %}
 
 					{% if access.filters.puesto and puestosFiltro is not empty %}
-						<select name="puesto">
+						<select name="puesto" onchange="ptaFiltroExclusivoSubmit(this,'departamento')">
 							<option value="">Puesto</option>
 							{% for id, nombre in puestosFiltro %}
 								<option value="{{ id }}" {{ filtrosActivos.puesto == id ? 'selected' }}>
@@ -54,11 +54,16 @@
 						</select>
 					{% endif %}
 
-					<button type="submit" class="btn btn-primary">
-						<i class="bi bi-funnel"></i>
-					</button>
 				</form>
 			</div>
+			<script>
+			function ptaFiltroExclusivoSubmit(sel, clearName) {
+				const form = sel.form;
+				const otro = form.querySelector('[name="' + clearName + '"]');
+				if (otro) otro.value = '';
+				form.requestSubmit();
+			}
+			</script>
 		</div>
 
 

@@ -42,17 +42,30 @@ class PtaExcelExportService
         }
 
         /* =================================================
-         * LOGO (ÚNICO AGREGADO)
+         * LOGO
          * ================================================= */
         $logoPath = __DIR__ . '/../../../public/assets/img/logo.png';
 
         if (file_exists($logoPath)) {
+            $imgSize = @getimagesize($logoPath);
+            $imgW    = $imgSize ? $imgSize[0] : 100;
+            $imgH    = $imgSize ? $imgSize[1] : 100;
+
+            // A1:B3: fila 1 ≈ 72px + filas 2-3 ≈ 20px c/u = 112px; 90% = 101px
+            $targetH = 101;
+            $targetW = $imgH > 0 ? (int) round($targetH * $imgW / $imgH) : $targetH;
+
+            // Centrar en A+B: anchoAE * 2 cols * 8 px/char ≈ 184 px
+            $cellWidthPx = (int) round($anchoAE * 2 * 8);
+            $offsetX     = max(0, (int) round(($cellWidthPx - $targetW) / 2));
+
             $logo = new Drawing();
             $logo->setPath($logoPath);
             $logo->setCoordinates('A1');
-            $logo->setHeight(80);
-            $logo->setOffsetX(10);
-            $logo->setOffsetY(5);
+            $logo->setHeight($targetH);
+            $logo->setWidth($targetW);
+            $logo->setOffsetX($offsetX);
+            $logo->setOffsetY(4);
             $logo->setWorksheet($sheet);
         }
 

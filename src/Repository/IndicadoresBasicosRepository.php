@@ -44,6 +44,8 @@ class IndicadoresBasicosRepository extends ServiceEntityRepository
     public function findAllOrderByNombre(): array
     {
         return $this->createQueryBuilder('i')
+            ->leftJoin('i.departamentos', 'd')
+            ->addSelect('d')
             ->orderBy('i.nombreIndicador', 'ASC')
             ->getQuery()
             ->getResult();

@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Service\Pta\PtaAccessResolver;
+use App\Entity\User;
+use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,42 +13,95 @@ class AdminDashboardController extends AbstractController
     #[Route('/dashboard/{section}', name: 'app_admin_dashboard', defaults: ['section' => 'personal'])]
     public function index(
         string $section,
-        PtaAccessResolver $ptaAccessResolver
+        ModuloAccesoResolver $moduloAccesoResolver,
     ): Response {
         $user = $this->getUser();
 
-        // Resolver acceso PTA
-        $ptaAccess = $ptaAccessResolver->resolve($user);
+        // Sección segura de fallback: siempre accesible para cualquier usuario autenticado
+        $fallback = 'indicadores_basicos';
 
-        /* =====================================================
-         * REGLAS DE SECCIONES
-         * ===================================================== */
-
-        // 1. Secciones SOLO ADMIN
+        // 1. Secciones solo admin
         if (
             !$this->isGranted('ROLE_ADMIN') &&
-            in_array($section, ['personal', 'departamentos', 'puestos'], true)
+            in_array($section, ['departamentos', 'puestos'], true)
         ) {
-            $section = 'pta';
+            $section = $fallback;
         }
 
-        // 2. Monitoreo PTA → SOLO GLOBAL o JERARQUICO
+        // 1b. Personal — admin o con acceso asignado
+        if (
+            $section === 'personal' &&
+            !$this->isGranted('ROLE_ADMIN') &&
+            (!$user instanceof User || !$moduloAccesoResolver->tieneAcceso($user, 'personal'))
+        ) {
+            $section = $fallback;
+        }
+
+        // 2. PTA e Historial PTA — acceso o encargado del módulo reportes_pta
+        if (
+            in_array($section, ['pta', 'historial_pta'], true) &&
+            !$this->isGranted('ROLE_ADMIN') &&
+            (!$user instanceof User || (!$moduloAccesoResolver->tieneAcceso($user, 'reportes_pta') && !$moduloAccesoResolver->esEncargado($user, 'reportes_pta')))
+        ) {
+            $section = $fallback;
+        }
+
+        // 2b. Vista encargado de reportes PTA
+        if (
+            $section === 'reporte_pta_encargado' &&
+            !$this->isGranted('ROLE_ADMIN') &&
+            (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'reportes_pta'))
+        ) {
+            $section = $fallback;
+        }
+
+        // 3. Monitoreo — acceso controlado por la UI de módulos
         if (
             $section === 'monitoreo' &&
-            !in_array($ptaAccess['scope'], ['GLOBAL', 'JERARQUICO'], true)
+            !$this->isGranted('ROLE_ADMIN') &&
+            (!$user instanceof User || !$moduloAccesoResolver->tieneAcceso($user, 'monitoreo'))
         ) {
-            // fallback seguro
-            $section = 'pta';
+            $section = $fallback;
         }
 
-        // 3. Fallback por rol
-        if ($section === null) {
-            $section = $this->isGranted('ROLE_ADMIN') ? 'personal' : 'pta';
+        // 4. Solicitud de gastos (usuario)
+        if (
+            $section === 'solicitud_gastos' &&
+            !$this->isGranted('ROLE_ADMIN') &&
+            (!$user instanceof User || !$moduloAccesoResolver->tieneAcceso($user, 'solicitud_gastos'))
+        ) {
+            $section = $fallback;
+        }
+
+        // 4b. Solicitud de gastos (encargado)
+        if (
+            $section === 'solicitud_gastos_encargado' &&
+            !$this->isGranted('ROLE_ADMIN') &&
+            (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'solicitud_gastos'))
+        ) {
+            $section = $fallback;
+        }
+
+        // 5. Reporte indicadores (usuario)
+        if (
+            $section === 'reporte_indicadores' &&
+            !$this->isGranted('ROLE_ADMIN') &&
+            (!$user instanceof User || !$moduloAccesoResolver->tieneAcceso($user, 'reporte_indicadores'))
+        ) {
+            $section = $fallback;
+        }
+
+        // 5b. Reporte indicadores (encargado)
+        if (
+            $section === 'reporte_indicadores_encargado' &&
+            !$this->isGranted('ROLE_ADMIN') &&
+            (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'reporte_indicadores'))
+        ) {
+            $section = $fallback;
         }
 
         return $this->render('dashboard/index.html.twig', [
-            'section'   => $section,
-            'ptaAccess' => $ptaAccess,
+            'section' => $section,
         ]);
     }
 }

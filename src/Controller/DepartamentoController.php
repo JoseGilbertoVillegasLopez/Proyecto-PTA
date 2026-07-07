@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
 // Representa la respuesta HTTP que devuelve el controlador
 
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 // Permite definir rutas mediante atributos (PHP 8+)
 
 use App\Form\departamento\DepartamentoEditType;
@@ -33,6 +34,7 @@ use App\Form\departamento\DepartamentoEditType;
 
 #[Route('admin/departamento')]
 // Prefijo de ruta: todas las rutas de este controlador comienzan con /admin/departamento
+#[IsGranted('ROLE_ADMIN')]
 final class DepartamentoController extends AbstractController
 {
     #[Route(name: 'app_departamento_index', methods: ['GET'])]

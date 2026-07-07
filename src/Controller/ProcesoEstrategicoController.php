@@ -30,6 +30,7 @@ final class ProcesoEstrategicoController extends AbstractController
         ProcesoEstrategicoRepository $repository
     ): Response {
 
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $proceso = new ProcesoEstrategico();
 
         $form = $this->createForm(ProcesoEstrategicoType::class, $proceso);
@@ -89,6 +90,7 @@ final class ProcesoEstrategicoController extends AbstractController
         ProcesoEstrategicoRepository $repository
     ): Response {
 
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $form = $this->createForm(ProcesoEstrategicoEditType::class, $proceso);
 
         $form->handleRequest($request);
@@ -124,6 +126,7 @@ final class ProcesoEstrategicoController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response {
 
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         if ($this->isCsrfTokenValid(
             'delete' . $proceso->getId(),
             $request->getPayload()->getString('_token')

@@ -24,15 +24,18 @@
    ========================================================= */
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-card--entregado {
-    border-color: rgba(29, 209, 161, 0.28);
+    border-color: rgba(29, 209, 161, 0.22);
+    background: linear-gradient(160deg, rgba(29, 209, 161, 0.05) 0%, #0d1520 40%);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-card--borrador {
-    border-color: rgba(254, 202, 87, 0.28);
+    border-color: rgba(240, 180, 41, 0.22);
+    background: linear-gradient(160deg, rgba(240, 180, 41, 0.05) 0%, #0d1520 40%);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-card--sin_entregar {
-    border-color: rgba(255, 107, 107, 0.3);
+    border-color: rgba(180, 120, 0, 0.22);
+    background: linear-gradient(160deg, rgba(180, 120, 0, 0.05) 0%, #0d1520 40%);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-accent--entregado {
@@ -44,7 +47,7 @@
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-accent--sin_entregar {
-    background: rgba(255, 107, 107, 0.92);
+    background: rgba(180, 120, 0, 0.7);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-accent--pendiente {
@@ -52,56 +55,47 @@
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-status--sin_entregar {
-    background: rgba(255, 107, 107, 0.14);
-    color: #ffe4e4;
-    border-color: rgba(255, 107, 107, 0.32);
+    background: rgba(180, 120, 0, 0.14);
+    color: #fde68a;
+    border-color: rgba(180, 120, 0, 0.3);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-message--entregado {
-    background: rgba(29, 209, 161, 0.1);
-    color: #defff4;
-    border-color: rgba(29, 209, 161, 0.18);
+    color: #1dd1a1;
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-message--borrador {
-    background: rgba(254, 202, 87, 0.1);
-    color: #fff4d8;
-    border-color: rgba(254, 202, 87, 0.18);
+    color: #f0b429;
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-message--sin_entregar {
-    background: rgba(255, 107, 107, 0.1);
-    color: #ffe4e4;
-    border-color: rgba(255, 107, 107, 0.18);
+    color: #fde68a;
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-action--create {
-    border-color: rgba(255, 107, 107, 0.42);
-    background: rgba(255, 107, 107, 0.14);
-    color: #ffe4e4;
+    border-color: rgba(13, 202, 240, 0.35);
+    background: rgba(13, 202, 240, 0.1);
+    color: #ddf8ff;
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-card--retraso {
-    border-color: rgba(255, 71, 87, 0.42);
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 71, 87, 0.2),
-        0 24px 48px rgba(255, 71, 87, 0.1);
+    border-color: rgba(160, 30, 30, 0.28);
+    background: linear-gradient(160deg, rgba(160, 30, 30, 0.06) 0%, #0d1520 40%);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-accent--retraso {
-    background: rgba(255, 71, 87, 0.95);
+    background: rgba(185, 28, 28, 0.6);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-status--retraso {
-    background: rgba(255, 71, 87, 0.18);
-    color: #ffe4e4;
-    border-color: rgba(255, 71, 87, 0.38);
+    background: rgba(160, 30, 30, 0.15);
+    color: #fca5a5;
+    border-color: rgba(160, 30, 30, 0.3);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-message--retraso {
-    background: rgba(255, 71, 87, 0.12);
-    color: #ffe4e4;
-    border-color: rgba(255, 71, 87, 0.24);
+    color: #fca5a5;
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-card--submitting {
@@ -142,9 +136,15 @@
 }
 
 .reporte-indicadores-index__action-btn--show {
+    width: auto;
+    height: 34px;
+    padding: 0 14px;
+    gap: 6px;
     color: #0dcaf0;
-    background: rgba(13, 202, 240, 0.16);
+    background: rgba(13, 202, 240, 0.13);
     border: 1px solid rgba(13, 202, 240, 0.34);
+    font-size: 0.82rem;
+    font-weight: 800;
 }
 
 .reporte-indicadores-index__action-btn--edit {
@@ -156,6 +156,29 @@
 .reporte-indicadores-index__action-btn:hover {
     color: #ffffff;
     transform: translateY(-1px);
+}
+
+.reporte-indicadores-index__add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 16px;
+    height: 38px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #ddf8ff;
+    background: rgba(13, 202, 240, 0.13);
+    border: 1px solid rgba(13, 202, 240, 0.34);
+    transition: all 0.22s ease;
+    white-space: nowrap;
+}
+
+.reporte-indicadores-index__add-btn:hover {
+    color: #ffffff;
+    background: rgba(13, 202, 240, 0.22);
+    transform: translateY(-2px);
 }
 
 .reporte-indicadores-captura__header-actions {
@@ -237,13 +260,14 @@
 
 .reporte-indicadores-show__activities {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    grid-template-columns: 1fr;
+    gap: 20px;
     margin-top: 20px;
 }
 
 .reporte-indicadores-show__activity-card {
-    padding: 18px;
+    padding: 0;
+    overflow: hidden;
     border-radius: 18px;
     background:
         radial-gradient(circle at top, rgba(13, 202, 240, 0.1), transparent 48%),
@@ -254,23 +278,66 @@
         0 16px 34px rgba(0, 0, 0, 0.52);
 }
 
-.reporte-indicadores-show__activity-label {
-    width: fit-content;
-    min-width: 170px;
-    margin: 0 auto 12px;
-    padding: 4px 14px;
-    border-radius: 8px;
+.reporte-indicadores-show__activity-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 20px;
+    background: rgba(13, 202, 240, 0.08);
+    border-bottom: 1px solid rgba(13, 202, 240, 0.16);
     color: #ffffff;
-    background: rgba(13, 202, 240, 0.12);
-    border: 1px solid rgba(13, 202, 240, 0.32);
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 900;
-    text-align: center;
     text-transform: uppercase;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+}
+
+.reporte-indicadores-show__activity-header:hover {
+    background: rgba(13, 202, 240, 0.14);
+}
+
+.reporte-indicadores-show__activity-header-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reporte-indicadores-show__activity-header i {
+    color: #0dcaf0;
+    font-size: 0.95rem;
+}
+
+.reporte-indicadores-show__activity-chevron {
+    transition: transform 0.2s ease;
+}
+
+.reporte-indicadores-show__activity-card--collapsed .reporte-indicadores-show__activity-chevron {
+    transform: rotate(-90deg);
+}
+
+.reporte-indicadores-show__activity-card--collapsed .reporte-indicadores-show__activity-body {
+    display: none;
+}
+
+.reporte-indicadores-show__activity-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+}
+
+.reporte-indicadores-show__row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 20px;
 }
 
 .reporte-indicadores-show__field {
-    margin-bottom: 12px;
+    margin-bottom: 0;
     padding: 12px;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.025);
@@ -289,19 +356,23 @@
 .reporte-indicadores-show__field strong,
 .reporte-indicadores-show__field p {
     margin: 0;
-    color: #e6f1ff;
+    color: #ffffff;
+    font-size: 1.05rem;
     font-weight: 700;
     line-height: 1.45;
 }
 
 .reporte-indicadores-show__evidences {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
 }
 
 .reporte-indicadores-show__evidence-item {
-    min-height: 180px;
+    width: 180px;
+    height: 180px;
+    flex: 0 0 auto;
     border-radius: 12px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.035);
@@ -312,7 +383,7 @@
 .reporte-indicadores-show__evidence-item iframe {
     display: block;
     width: 100%;
-    height: 140px;
+    height: 142px;
     border: 0;
     object-fit: cover;
 }
@@ -354,7 +425,7 @@
 }
 
 .reporte-indicadores-show__empty-evidence {
-    grid-column: 1 / -1;
+    width: 100%;
     padding: 14px;
     border-radius: 12px;
     color: #9fb3c8;
@@ -362,12 +433,6 @@
     border: 1px solid rgba(13, 202, 240, 0.1);
     font-weight: 800;
     text-align: center;
-}
-
-@media (max-width: 992px) {
-    .reporte-indicadores-show__activities {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media (max-width: 768px) {
@@ -506,12 +571,13 @@
 
 .reporte-indicadores-captura__grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
     gap: 20px;
 }
 
 .reporte-indicadores-captura__activity-card {
-    padding: 18px;
+    padding: 0;
+    overflow: hidden;
     border-radius: 18px;
     background:
         radial-gradient(circle at top, rgba(13, 202, 240, 0.1), transparent 48%),
@@ -522,6 +588,64 @@
         0 16px 34px rgba(0, 0, 0, 0.52);
 }
 
+.reporte-indicadores-captura__activity-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 12px 20px;
+    background: rgba(13, 202, 240, 0.08);
+    border-bottom: 1px solid rgba(13, 202, 240, 0.16);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+}
+
+.reporte-indicadores-captura__activity-header:hover {
+    background: rgba(13, 202, 240, 0.14);
+}
+
+.reporte-indicadores-captura__activity-header-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reporte-indicadores-captura__activity-header i {
+    color: #0dcaf0;
+    font-size: 0.95rem;
+}
+
+.reporte-indicadores-captura__activity-chevron {
+    transition: transform 0.2s ease;
+}
+
+.reporte-indicadores-captura__activity-card--collapsed .reporte-indicadores-captura__activity-chevron {
+    transform: rotate(-90deg);
+}
+
+.reporte-indicadores-captura__activity-card--collapsed .reporte-indicadores-captura__activity-body {
+    display: none;
+}
+
+.reporte-indicadores-captura__activity-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+}
+
+.reporte-indicadores-captura__row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 20px;
+}
+
 .reporte-indicadores-captura__activity-card--invalid {
     border-color: rgba(255, 107, 107, 0.58);
     box-shadow:
@@ -530,7 +654,7 @@
 }
 
 .reporte-indicadores-captura__card-error {
-    margin-top: 12px;
+    margin: 0 20px 20px;
     padding: 10px 12px;
     border-radius: 10px;
     color: #ffe4e4;
@@ -541,23 +665,8 @@
     line-height: 1.4;
 }
 
-.reporte-indicadores-captura__activity-label {
-    width: fit-content;
-    min-width: 170px;
-    margin: 0 auto 12px;
-    padding: 4px 14px;
-    border-radius: 8px;
-    color: #ffffff;
-    background: rgba(13, 202, 240, 0.12);
-    border: 1px solid rgba(13, 202, 240, 0.32);
-    font-size: 0.78rem;
-    font-weight: 900;
-    text-align: center;
-    text-transform: uppercase;
-}
-
 .reporte-indicadores-captura__field {
-    margin-bottom: 12px;
+    margin-bottom: 0;
 }
 
 .reporte-indicadores-captura__field label {
@@ -578,8 +687,8 @@
     border: 1px solid rgba(13, 202, 240, 0.16);
     border-radius: 11px;
     background: rgba(7, 13, 20, 0.82);
-    color: #e6f1ff;
-    font-size: 0.92rem;
+    color: #ffffff;
+    font-size: 1.05rem;
     outline: none;
 }
 
@@ -594,8 +703,9 @@
 }
 
 .reporte-indicadores-captura__textarea {
-    resize: vertical;
-    min-height: 84px;
+    resize: none;
+    height: 120px;
+    line-height: 1.4;
 }
 
 .reporte-indicadores-captura__input:focus,
@@ -614,8 +724,8 @@
 }
 
 .reporte-indicadores-captura__preview {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 150px));
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 14px;
     margin-top: 12px;
@@ -626,8 +736,9 @@
 }
 
 .reporte-indicadores-captura__preview-item {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
+    flex: 0 0 auto;
     border-radius: 12px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.035);
@@ -639,7 +750,7 @@
 .reporte-indicadores-captura__preview-item iframe {
     display: block;
     width: 100%;
-    height: 118px;
+    height: 142px;
     border: 0;
     object-fit: cover;
     pointer-events: none;
@@ -657,8 +768,9 @@
 }
 
 .reporte-indicadores-captura__preview-add {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
+    flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -666,7 +778,7 @@
     border: 2px dashed rgba(13, 202, 240, 0.58);
     background: rgba(13, 202, 240, 0.055);
     color: #0dcaf0;
-    font-size: 2rem;
+    font-size: 2.4rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -706,7 +818,7 @@
 }
 
 .reporte-indicadores-captura__file-error {
-    grid-column: 1 / -1;
+    width: 100%;
     padding: 10px 12px;
     border-radius: 10px;
     color: #ffe4e4;
@@ -721,16 +833,14 @@
     padding-top: 26px;
 }
 
-@media (max-width: 992px) {
-    .reporte-indicadores-captura__grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 @media (max-width: 768px) {
     .reporte-indicadores-captura {
         padding: 16px;
         border-radius: 18px;
+    }
+
+    .reporte-indicadores-captura__row {
+        grid-template-columns: 1fr;
     }
 
     .reporte-indicadores-captura__header {
@@ -747,9 +857,6 @@
         text-align: left;
     }
 
-    .reporte-indicadores-captura__preview {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* =========================================================
@@ -870,9 +977,9 @@
 }
 
 .reporte-indicadores-new__trimestre-action--create {
-    border-color: rgba(255, 107, 107, 0.42);
-    background: rgba(255, 107, 107, 0.14);
-    color: #ffe4e4;
+    border-color: rgba(13, 202, 240, 0.35);
+    background: rgba(13, 202, 240, 0.1);
+    color: #ddf8ff;
 }
 
 .reporte-indicadores-new__trimestre-card--submitting {
@@ -949,12 +1056,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
     border-radius: 12px;
     font-size: 1.1rem;
     text-decoration: none;
     background: rgba(13, 202, 240, 0.18);
     color: #0dcaf0;
     border: 1px solid rgba(13, 202, 240, 0.45);
+    cursor: pointer;
     transition: all 0.25s ease;
 }
 
@@ -981,6 +1090,7 @@
 
 .reporte-indicadores-index__back-btn:hover,
 .reporte-indicadores-new__back-btn:hover,
+.reporte-indicadores-show__back-btn:hover,
 .reporte-indicadores-index__new-btn:hover,
 .reporte-indicadores-new__save-btn:hover {
     color: #ffffff;
@@ -988,7 +1098,8 @@
 }
 
 .reporte-indicadores-index__back-btn:hover,
-.reporte-indicadores-new__back-btn:hover {
+.reporte-indicadores-new__back-btn:hover,
+.reporte-indicadores-show__back-btn:hover {
     background: rgba(13, 202, 240, 0.35);
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
 }
@@ -1134,27 +1245,31 @@
     font-style: italic;
 }
 
+/* --- Sección fechas de entrega --- */
+
 .reporte-indicadores-new__calendar {
-    margin-bottom: 22px;
-    padding: 18px;
-    border-radius: 18px;
-    background: radial-gradient(circle at top left, rgba(13, 202, 240, 0.1), rgba(5, 13, 19, 0.96) 58%);
-    border: 1px solid rgba(13, 202, 240, 0.18);
-    box-shadow: inset 0 0 0 1px rgba(13, 202, 240, 0.05);
+    margin-bottom: 28px;
+    padding: 0 0 20px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: none;
 }
 
 .reporte-indicadores-new__section-title {
     margin: 0 0 14px;
-    color: #ffffff;
-    font-size: 1.15rem;
-    font-weight: 900;
-    text-align: center;
+    color: #7a91a6;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
 }
 
 .reporte-indicadores-new__calendar-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 0;
 }
 
 .reporte-indicadores-new__calendar-item {
@@ -1162,224 +1277,300 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 14px 16px;
-    border-radius: 14px;
-    background: linear-gradient(180deg, rgba(13, 25, 34, 0.95), rgba(8, 16, 22, 0.98));
-    border: 1px solid rgba(13, 202, 240, 0.12);
+    padding: 9px 4px;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.reporte-indicadores-new__calendar-item:nth-child(odd) {
+    padding-right: 20px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.reporte-indicadores-new__calendar-item:nth-child(even) {
+    padding-left: 20px;
+}
+
+.reporte-indicadores-new__calendar-item:last-child,
+.reporte-indicadores-new__calendar-item:nth-last-child(2):nth-child(odd) {
+    border-bottom: none;
 }
 
 .reporte-indicadores-new__calendar-period {
-    color: #ffffff;
-    font-weight: 900;
+    color: #e6f1ff;
+    font-weight: 700;
+    font-size: 0.9rem;
 }
 
 .reporte-indicadores-new__calendar-date {
-    color: #d4edf5;
-    font-size: 0.94rem;
-    font-weight: 700;
+    color: #7a91a6;
+    font-size: 0.85rem;
+    font-weight: 600;
     text-align: right;
 }
+
+/* --- Grid de trimestres --- */
 
 .reporte-indicadores-new__trimestres-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    gap: 16px;
 }
+
+/* --- Card de trimestre --- */
 
 .reporte-indicadores-new__trimestre-card {
     position: relative;
     overflow: hidden;
-    padding: 20px;
-    border-radius: 20px;
-    background: radial-gradient(circle at top, rgba(13, 202, 240, 0.1), rgba(4, 10, 15, 0.99) 64%);
-    border: 1px solid rgba(13, 202, 240, 0.2);
-    box-shadow:
-        inset 0 0 0 1px rgba(13, 202, 240, 0.05),
-        0 18px 38px rgba(0, 0, 0, 0.58);
+    padding: 20px 20px 20px 26px;
+    border-radius: 16px;
+    background: linear-gradient(160deg, rgba(20, 30, 42, 0.98) 0%, #0d1520 55%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
+.reporte-indicadores-new__trimestre-card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.13);
+    transform: translateY(-2px);
+}
+
+/* Acento — borde izquierdo vertical con glow */
 .reporte-indicadores-new__trimestre-accent {
     position: absolute;
-    top: 0;
-    left: 20px;
-    right: 20px;
-    height: 4px;
-    border-radius: 0 0 999px 999px;
+    top: 14px;
+    bottom: 14px;
+    left: 0;
+    width: 3px;
+    height: auto;
+    right: auto;
+    border-radius: 0 999px 999px 0;
 }
 
 .reporte-indicadores-new__trimestre-accent--entregado {
-    background: rgba(29, 209, 161, 0.9);
+    background: rgba(29, 209, 161, 0.8);
+    box-shadow: 0 0 10px rgba(29, 209, 161, 0.35);
 }
 
-.reporte-indicadores-new__trimestre-accent--borrador,
+.reporte-indicadores-new__trimestre-accent--borrador {
+    background: rgba(240, 180, 41, 0.8);
+    box-shadow: 0 0 10px rgba(240, 180, 41, 0.3);
+}
+
 .reporte-indicadores-new__trimestre-accent--sin_entregar {
-    background: rgba(254, 202, 87, 0.9);
+    background: rgba(180, 120, 0, 0.75);
+    box-shadow: 0 0 10px rgba(180, 120, 0, 0.3);
 }
 
 .reporte-indicadores-new__trimestre-accent--pendiente {
-    background: rgba(13, 202, 240, 0.9);
+    background: rgba(13, 202, 240, 0.75);
+    box-shadow: 0 0 10px rgba(13, 202, 240, 0.3);
 }
+
+.reporte-indicadores-new__trimestre-accent--retraso {
+    background: rgba(185, 28, 28, 0.7);
+    box-shadow: 0 0 10px rgba(185, 28, 28, 0.3);
+}
+
+/* --- Header de card --- */
 
 .reporte-indicadores-new__trimestre-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 16px;
-    padding-top: 4px;
+    margin-bottom: 14px;
 }
 
 .reporte-indicadores-new__trimestre-number {
-    color: #9fb3c8;
-    font-size: 0.82rem;
-    font-weight: 900;
+    color: #7a91a6;
+    font-size: 0.68rem;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.6px;
 }
 
 .reporte-indicadores-new__trimestre-title {
-    margin: 4px 0 0;
+    margin: 3px 0 0;
     color: #ffffff;
-    font-size: 1.28rem;
-    font-weight: 900;
+    font-size: 1.15rem;
+    font-weight: 800;
 }
 
+/* Badge de estado — rectangular, pequeño */
 .reporte-indicadores-new__trimestre-status {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 112px;
-    padding: 8px 12px;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 900;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
     white-space: nowrap;
+    min-width: auto;
+    border: 1px solid transparent;
 }
 
 .reporte-indicadores-new__trimestre-status--entregado,
 .reporte-indicadores-index__status--entregado {
-    background: rgba(29, 209, 161, 0.14);
-    color: #defff4;
-    border-color: rgba(29, 209, 161, 0.3);
+    background: rgba(29, 209, 161, 0.12);
+    color: #1dd1a1;
+    border-color: rgba(29, 209, 161, 0.25);
 }
 
 .reporte-indicadores-new__trimestre-status--borrador,
-.reporte-indicadores-new__trimestre-status--sin_entregar,
 .reporte-indicadores-index__status--borrador {
-    background: rgba(254, 202, 87, 0.14);
-    color: #fff4d8;
-    border-color: rgba(254, 202, 87, 0.3);
+    background: rgba(240, 180, 41, 0.12);
+    color: #f0b429;
+    border-color: rgba(240, 180, 41, 0.25);
+}
+
+.reporte-indicadores-new__trimestre-status--sin_entregar {
+    background: rgba(180, 120, 0, 0.14);
+    color: #fde68a;
+    border-color: rgba(180, 120, 0, 0.3);
 }
 
 .reporte-indicadores-new__trimestre-status--pendiente {
-    background: rgba(13, 202, 240, 0.12);
-    color: #ddf8ff;
-    border-color: rgba(13, 202, 240, 0.26);
+    background: rgba(13, 202, 240, 0.1);
+    color: #0dcaf0;
+    border-color: rgba(13, 202, 240, 0.22);
 }
+
+/* --- Body de card --- */
 
 .reporte-indicadores-new__trimestre-body {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 0;
 }
 
+/* Filas info: sin caja, solo separador */
 .reporte-indicadores-new__trimestre-info {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 12px;
-    border-radius: 13px;
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(13, 202, 240, 0.08);
+    padding: 9px 0;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.reporte-indicadores-new__trimestre-info:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .reporte-indicadores-new__trimestre-info span {
-    color: #ffffff;
-    font-weight: 900;
+    color: #7a91a6;
+    font-weight: 600;
+    font-size: 0.82rem;
 }
 
 .reporte-indicadores-new__trimestre-info strong {
-    color: #d4ebf4;
+    color: #e6f1ff;
     font-weight: 700;
     text-align: right;
+    font-size: 0.88rem;
 }
 
+/* Mensaje de estado — sin caja, solo texto con color */
 .reporte-indicadores-new__trimestre-message {
-    padding: 13px;
-    border-radius: 13px;
-    color: #dbeafe;
-    font-weight: 700;
+    padding: 10px 0 2px;
+    border-radius: 0;
+    font-size: 0.8rem;
+    font-weight: 600;
     line-height: 1.45;
-    background: rgba(13, 202, 240, 0.08);
-    border: 1px solid rgba(13, 202, 240, 0.12);
+    background: transparent;
+    border: none;
+    color: #7a91a6;
 }
+
+/* --- Botones de acción --- */
 
 .reporte-indicadores-new__trimestre-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 16px;
+    gap: 8px;
+    justify-content: stretch;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .reporte-indicadores-new__trimestre-actions form {
     display: flex;
-    flex: 1 1 140px;
+    flex: 1 1 120px;
     margin: 0;
 }
 
 .reporte-indicadores-new__trimestre-action {
-    flex: 1 1 140px;
+    flex: 1 1 120px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    min-height: 42px;
-    padding: 0 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(29, 209, 161, 0.42);
-    background: rgba(29, 209, 161, 0.14);
-    color: #defff4;
-    font-weight: 900;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
     font: inherit;
+    border: 1px solid rgba(29, 209, 161, 0.3);
+    background: transparent;
+    color: #1dd1a1;
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .reporte-indicadores-new__trimestre-action--open {
-    border-color: rgba(13, 202, 240, 0.34);
-    background: rgba(13, 202, 240, 0.12);
-    color: #ddf8ff;
+    border-color: rgba(13, 202, 240, 0.3);
+    color: #0dcaf0;
 }
 
 .reporte-indicadores-new__trimestre-action--edit {
-    border-color: rgba(254, 202, 87, 0.38);
-    background: rgba(254, 202, 87, 0.14);
-    color: #ffe6a3;
+    border-color: rgba(240, 180, 41, 0.3);
+    color: #f0b429;
 }
 
 .reporte-indicadores-new__trimestre-action--deliver {
-    border-color: rgba(29, 209, 161, 0.42);
-    background: rgba(29, 209, 161, 0.14);
-    color: #defff4;
+    border-color: rgba(29, 209, 161, 0.3);
+    color: #1dd1a1;
 }
 
-.reporte-indicadores-new__trimestre-action:hover {
-    color: #ffffff;
+.reporte-indicadores-new__trimestre-action--open:hover {
+    background: rgba(13, 202, 240, 0.1);
     transform: translateY(-1px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.32);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+}
+
+.reporte-indicadores-new__trimestre-action--edit:hover {
+    background: rgba(240, 180, 41, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+}
+
+.reporte-indicadores-new__trimestre-action--deliver:hover,
+.reporte-indicadores-new__trimestre-action:hover {
+    background: rgba(29, 209, 161, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
 }
 
 .reporte-indicadores-new__trimestre-action-empty {
-    color: #9fb3c8;
-    font-weight: 700;
+    color: #7a91a6;
+    font-size: 0.82rem;
+    font-weight: 600;
     text-align: center;
-}
-
-.reporte-indicadores-show {
-    max-width: 900px;
-    margin: 0 auto;
+    padding: 8px 0;
 }
 
 .reporte-indicadores-show__summary {
@@ -1447,7 +1638,8 @@
 
     .reporte-indicadores-new__calendar-list,
     .reporte-indicadores-new__trimestres-grid,
-    .reporte-indicadores-show__summary {
+    .reporte-indicadores-show__summary,
+    .reporte-indicadores-show__row {
         grid-template-columns: 1fr;
     }
 
@@ -1470,15 +1662,18 @@
    ========================================================= */
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-card--entregado {
-    border-color: rgba(29, 209, 161, 0.28);
+    border-color: rgba(29, 209, 161, 0.22);
+    background: linear-gradient(160deg, rgba(29, 209, 161, 0.05) 0%, #0d1520 40%);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-card--borrador {
-    border-color: rgba(254, 202, 87, 0.28);
+    border-color: rgba(240, 180, 41, 0.22);
+    background: linear-gradient(160deg, rgba(240, 180, 41, 0.05) 0%, #0d1520 40%);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-card--sin_entregar {
-    border-color: rgba(255, 107, 107, 0.3);
+    border-color: rgba(180, 120, 0, 0.22);
+    background: linear-gradient(160deg, rgba(180, 120, 0, 0.05) 0%, #0d1520 40%);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-accent--entregado {
@@ -1490,37 +1685,31 @@
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-accent--sin_entregar {
-    background: rgba(255, 107, 107, 0.92);
+    background: rgba(180, 120, 0, 0.7);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-status--sin_entregar {
-    background: rgba(255, 107, 107, 0.14);
-    color: #ffe4e4;
-    border-color: rgba(255, 107, 107, 0.32);
+    background: rgba(180, 120, 0, 0.14);
+    color: #fde68a;
+    border-color: rgba(180, 120, 0, 0.3);
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-message--entregado {
-    background: rgba(29, 209, 161, 0.1);
-    color: #defff4;
-    border-color: rgba(29, 209, 161, 0.18);
+    color: #1dd1a1;
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-message--borrador {
-    background: rgba(254, 202, 87, 0.1);
-    color: #fff4d8;
-    border-color: rgba(254, 202, 87, 0.18);
+    color: #f0b429;
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-message--sin_entregar {
-    background: rgba(255, 107, 107, 0.1);
-    color: #ffe4e4;
-    border-color: rgba(255, 107, 107, 0.18);
+    color: #fde68a;
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-action--create {
-    border-color: rgba(255, 107, 107, 0.42);
-    background: rgba(255, 107, 107, 0.14);
-    color: #ffe4e4;
+    border-color: rgba(13, 202, 240, 0.35);
+    background: rgba(13, 202, 240, 0.1);
+    color: #ddf8ff;
 }
 
 .reporte-indicadores-new .reporte-indicadores-new__trimestre-card--submitting {
@@ -1532,4 +1721,443 @@
     background: rgba(159, 179, 200, 0.14);
     border-color: rgba(159, 179, 200, 0.28);
     color: #d5e2ee;
+}
+
+/* ============================================================
+   RI-NEW — REDISEÑO COMMAND CENTER
+   Namespace: .ri-new
+   Template: templates/reporte_indicadores/new.html.twig
+   ============================================================ */
+
+.ri-new {
+    padding: 28px 32px 64px;
+    --ok:   #1dd1a1;
+    --warn: #f0b429;
+    --pend: #0dcaf0;
+    --muted: #5d7a94;
+    --card: #0d1a27;
+    --border: rgba(255,255,255,0.07);
+}
+
+/* HEADER — tres columnas: back | título centrado | spacer */
+.ri-new__header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.ri-new__header-spacer { width: 130px; }
+
+/* Botón Volver — pill llamativo */
+.ri-new__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 20px 10px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(13,202,240,0.35);
+    background: rgba(13,202,240,0.08);
+    color: #0dcaf0;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.18s, border-color 0.18s, transform 0.15s, box-shadow 0.18s;
+}
+.ri-new__back i { font-size: 1.25rem; line-height: 1; }
+.ri-new__back:hover {
+    background: rgba(13,202,240,0.16);
+    border-color: rgba(13,202,240,0.65);
+    box-shadow: 0 0 14px rgba(13,202,240,0.22);
+    transform: translateX(-2px);
+    color: #0dcaf0;
+}
+
+/* Título centrado */
+.ri-new__title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #e2eaf4;
+    margin: 0;
+    line-height: 1.25;
+    text-align: center;
+}
+
+/* VENTANAS DE ENTREGA — banda visual */
+.ri-new__dates-inner {
+    background: linear-gradient(135deg, rgba(13,202,240,0.06) 0%, rgba(13,202,240,0.02) 100%);
+    border: 1px solid rgba(13,202,240,0.18);
+    border-radius: 16px;
+    padding: 24px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.ri-new__dates-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #0dcaf0;
+}
+.ri-new__dates-heading i { font-size: 1.1rem; opacity: 0.8; }
+
+.ri-new__dates-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+.ri-new__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+}
+
+.ri-new__pill-period {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #c5d4e3;
+}
+
+.ri-new__pill-sep {
+    color: rgba(255,255,255,0.25);
+    font-size: 0.78rem;
+}
+
+.ri-new__pill-date {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0dcaf0;
+}
+
+/* GRID DE CARDS */
+.ri-new__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+@media (max-width: 760px) {
+    .ri-new__grid { grid-template-columns: 1fr; }
+}
+
+/* CARD */
+.ri-new__card {
+    position: relative;
+    overflow: hidden;
+    padding: 28px 30px 26px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    background: var(--card);
+    box-shadow: 0 6px 28px rgba(0,0,0,0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ri-new__card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 34px rgba(0,0,0,0.62);
+}
+
+.ri-new__card--entregado    { border-left-color: rgba(29,209,161,0.7);  background: linear-gradient(140deg, rgba(29,209,161,0.06) 0%, #0d1a27 45%); }
+.ri-new__card--borrador     { border-left-color: rgba(240,180,41,0.7);  background: linear-gradient(140deg, rgba(240,180,41,0.06) 0%, #0d1a27 45%); }
+.ri-new__card--sin_entregar { border-left-color: rgba(212,160,23,0.7); background: linear-gradient(140deg, rgba(212,160,23,0.06) 0%, #0d1a27 45%); }
+.ri-new__card--pendiente    { border-left-color: rgba(13,202,240,0.5);  background: linear-gradient(140deg, rgba(13,202,240,0.04) 0%, #0d1a27 45%); }
+.ri-new__card--retraso      { border-left-color: rgba(224,82,82,0.7);   background: linear-gradient(140deg, rgba(224,82,82,0.06) 0%, #0d1a27 45%); }
+
+/* WATERMARK */
+.ri-new__watermark {
+    position: absolute;
+    right: -6px; bottom: -12px;
+    font-size: 5.5rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.025);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -4px;
+}
+
+/* CARD HEAD */
+.ri-new__card-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.ri-new__card-q {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    margin: 0 0 4px;
+}
+
+.ri-new__card-name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #e2eaf4;
+    margin: 0;
+    line-height: 1.25;
+}
+
+/* BADGE */
+.ri-new__badge {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 5px 14px;
+    border-radius: 7px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ri-new__badge--entregado    { background: rgba(29,209,161,0.13);  color: #1dd1a1; }
+.ri-new__badge--borrador     { background: rgba(240,180,41,0.13);  color: #f0b429; }
+.ri-new__badge--sin_entregar { background: rgba(212,160,23,0.13); color: #fde68a; }
+.ri-new__badge--pendiente    { background: rgba(13,202,240,0.12);  color: #0dcaf0; }
+.ri-new__badge--retraso      { background: rgba(224,82,82,0.13);   color: #e05252; }
+
+/* INFO ROWS */
+.ri-new__info-rows {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 16px;
+}
+
+.ri-new__info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.ri-new__info-row span {
+    font-size: 0.88rem;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.ri-new__info-row strong {
+    font-size: 0.95rem;
+    color: #c5d4e3;
+    font-weight: 700;
+}
+
+.ri-new__info-row--entregado strong {
+    color: #1dd1a1;
+}
+
+/* MENSAJE */
+.ri-new__msg {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin: 0 0 18px;
+    line-height: 1.45;
+}
+
+.ri-new__msg--entregado    { color: rgba(29,209,161,0.8); }
+.ri-new__msg--borrador     { color: rgba(240,180,41,0.8); }
+.ri-new__msg--sin_entregar { color: rgba(253,230,138,0.8); }
+.ri-new__msg--pendiente    { color: rgba(13,202,240,0.7); }
+.ri-new__msg--retraso      { color: rgba(224,82,82,0.8); }
+
+/* ACCIONES — centradas */
+.ri-new__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.ri-new__actions form { display: contents; }
+
+.ri-new__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 22px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: transparent;
+    transition: filter 0.15s, transform 0.1s;
+}
+.ri-new__btn:hover { filter: brightness(1.18); transform: translateY(-1px); }
+
+.ri-new__btn--view    { border-color: rgba(13,202,240,0.3);  color: #0dcaf0; background: rgba(13,202,240,0.07); }
+.ri-new__btn--edit    { border-color: rgba(240,180,41,0.3);  color: #f0b429; background: rgba(240,180,41,0.07); }
+.ri-new__btn--deliver { border-color: rgba(29,209,161,0.3);  color: #1dd1a1; background: rgba(29,209,161,0.07); }
+.ri-new__btn--create  { border-color: rgba(13,202,240,0.3);  color: #0dcaf0; background: rgba(13,202,240,0.08); }
+
+.ri-new__no-action {
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-style: italic;
+}
+
+/* FILTRO DE AÑO — selector estilizado en la esquina superior derecha del índice */
+
+/* Override del grid del header solo para la página de índice */
+[data-page="reporte-indicadores-index"] .ri-new__header {
+    grid-template-columns: 110px 1fr auto;
+}
+
+.ri-new__year-form {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.ri-new__year-control {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px 9px 12px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(13, 202, 240, 0.1) 0%, rgba(13, 202, 240, 0.04) 100%);
+    border: 1px solid rgba(13, 202, 240, 0.3);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.06),
+        0 4px 14px rgba(0, 0, 0, 0.3);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.ri-new__year-control:hover {
+    border-color: rgba(13, 202, 240, 0.55);
+    box-shadow:
+        inset 0 0 0 1px rgba(13, 202, 240, 0.1),
+        0 0 18px rgba(13, 202, 240, 0.14),
+        0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.ri-new__year-control:focus-within {
+    border-color: rgba(13, 202, 240, 0.7);
+    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.15), 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.ri-new__year-icon {
+    color: #0dcaf0;
+    font-size: 1rem;
+    opacity: 0.8;
+    flex-shrink: 0;
+    pointer-events: none;
+}
+
+.ri-new__year-select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5' viewBox='0 0 9 5'%3E%3Cpath d='M0 0l4.5 5L9 0z' fill='%230dcaf0' opacity='.55'/%3E%3C/svg%3E") no-repeat right 2px center;
+    border: none;
+    color: #e2eaf4;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    outline: none;
+    padding-right: 18px;
+    min-width: 52px;
+    letter-spacing: 0.3px;
+}
+
+.ri-new__year-select option {
+    background: #0d1a27;
+    color: #e6f1ff;
+    font-weight: 700;
+}
+
+/* EN_PROCESO — alias de borrador (usado en reportes PTA) */
+.ri-new__card--en_proceso   { border-left-color: rgba(240,180,41,0.7);  background: linear-gradient(140deg, rgba(240,180,41,0.06) 0%, #0d1a27 45%); }
+.ri-new__badge--en_proceso  { background: rgba(240,180,41,0.13); color: #f0b429; }
+.ri-new__msg--en_proceso    { color: rgba(240,180,41,0.8); }
+
+/* INFO GENERAL DEL PTA */
+.ri-new__pta-info {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.ri-new__pta-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 14px 20px;
+    flex-shrink: 0;
+}
+
+.ri-new__pta-field--grow { flex: 1; }
+
+.ri-new__pta-field span {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--muted);
+}
+
+.ri-new__pta-field strong {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #e2eaf4;
+    line-height: 1.35;
+}
+
+.ri-new__pta-divider {
+    width: 1px;
+    background: var(--border);
+    flex-shrink: 0;
+    margin: 10px 0;
+}
+
+@media (max-width: 640px) {
+    .ri-new__pta-info { flex-direction: column; }
+    .ri-new__pta-divider { width: auto; height: 1px; margin: 0 12px; }
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+    .ri-new { padding: 18px 16px 48px; }
+
+    .ri-new__header {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+    }
+    .ri-new__header-spacer { display: none; }
+    .ri-new__title {
+        grid-column: 1 / -1;
+        font-size: 1.25rem;
+        text-align: left;
+    }
+
+    .ri-new__dates-inner { padding: 18px 18px; }
+
+    .ri-new__card { padding: 22px 20px 20px; }
 }

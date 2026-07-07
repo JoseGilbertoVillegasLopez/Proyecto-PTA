@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+    /*
+        Paleta y proporciones tomadas directamente de
+        "SOLICITUD DE RECURSOS 2026 (DRF).xlsm" (hoja SOLICITUD DE GASTOS):
+        - Maroon #800000: barra de título institucional + caja Vo.Bo. Planeación
+        - Navy  #10253F: todas las etiquetas de campo + encabezado de tabla + folio
+        - Anchos de columna: proporcionales al ancho real de columnas B:K del Excel
+        (la tabla de partidas usa una variante con Proceso Estratégico/Clave más
+        angostos y META PDI/PTA más ancho; encabezado y firmas usan las proporciones
+        originales para que el espaciado de los 6 firmantes quede igual al Excel)
+
+        Alturas de fila y huecos: la hoja de origen imprime a escala 54% en carta
+        (fit-to-page 1x1); el factor real para que TODO el contenido (91 filas)
+        quepa en una sola hoja carta con nuestros márgenes (6pt, casi idénticos a
+        los 0.08" del Excel) es ~0.525. Todo `height`/hueco de esta plantilla es
+        "alto Excel real (pt) x 0.525", igual criterio con el que ya se habían
+        elegido las fuentes en la versión anterior (11-18pt Excel -> 6-9.5pt aquí).
+        Las filas vacías del Excel que separan secciones (que antes se omitían y
+        dejaban todo pegado) ahora existen como filas `.gap-row` con esa altura.
+    */
+    body {
+        font-family: notosans, sans-serif;
+        font-size: 6.5pt;
+        color: #000000;
+    }
+
+    table.sgpdf {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        margin-top: -1pt;
+    }
+
+    table.sgpdf td, table.sgpdf th {
+        border: 0.75pt solid #000000;
+        padding: 2.5pt 4pt;
+        vertical-align: middle;
+        word-wrap: break-word;
+    }
+
+    /* Variante SIN borde por defecto (zona de firmas): en mpdf, border-collapse
+       resuelve cada línea de columna para toda la tabla, no fila por fila como en
+       un navegador — cancelar el borde con "border:none" en celdas puntuales no es
+       confiable ahí. Es más robusto que esta tabla nunca tenga borde por defecto,
+       y agregarlo explícito solo donde sí debe verse (línea de firma, línea
+       divisora, caja de sello, caja de folio). */
+    table.sgpdf-plain {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        margin-top: -1pt;
+    }
+
+    table.sgpdf-plain td {
+        border: none;
+        padding: 2.5pt 4pt;
+        vertical-align: middle;
+        word-wrap: break-word;
+    }
+
+    /* Marco lateral que delimita TODA la solicitud de los márgenes de la hoja: en
+       table1/table2 sale gratis del borde de las columnas B/K de cada celda, pero
+       table.sgpdf-plain no tiene borde por defecto — sin este contenedor, el marco
+       se cortaba justo en la zona de firmas/sello/folio. Un <div> con borde es
+       simple y no pasa por el motor de border-collapse de las celdas. */
+    .marco-lateral {
+        border-left: 0.75pt solid #000000;
+        border-right: 0.75pt solid #000000;
+        border-bottom: 0.75pt solid #000000;
+        margin-top: -1pt;
+    }
+
+    /* Línea que separa el párrafo legal del renglón de Folio, al pie */
+    .folio-divisor-linea {
+        border: none;
+        border-top: 0.75pt solid #000000;
+        margin: 0;
+    }
+
+    /* Filas vacías que solo aportan el espaciado que trae el Excel entre secciones */
+    .gap-row td {
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    /* Separadores de sección más marcados (equivalente al borde "medium" del Excel) */
+    .brd-seccion {
+        border-bottom-width: 1.5pt !important;
+    }
+
+    /* Línea punteada del Excel bajo el importe numérico y el folio */
+    .brd-punteado {
+        border-bottom-style: dashed !important;
+    }
+
+    /* Grid de 10 columnas (B..K del Excel) — encabezado y firmas */
+    .col-b { width: 12.89%; }
+    .col-c { width: 14.22%; }
+    .col-d { width: 8.67%; }
+    .col-e { width: 9.70%; }
+    .col-f { width: 9.70%; }
+    .col-g { width: 8.52%; }
+    .col-h { width: 7.78%; }
+    .col-i { width: 3.85%; }
+    .col-j { width: 13.78%; }
+    .col-k { width: 10.89%; }
+
+    /* Variante para la tabla de partidas: menos ancho a Proceso Estratégico/Clave, más a META PDI/PTA */
+    .col-b2 { width: 10.89%; }
+    .col-c2 { width: 12.22%; }
+    .col-f2 { width: 13.70%; }
+
+    .bg-maroon {
+        background: #800000;
+        color: #ffffff;
+    }
+
+    .bg-navy {
+        background: #10253F;
+        color: #ffffff;
+    }
+
+    .titulo-inst {
+        font-weight: bold;
+        font-size: 9pt;
+        text-align: center;
+        padding: 4pt;
+    }
+
+    .label {
+        font-weight: bold;
+        font-size: 6pt;
+    }
+
+    .caption {
+        font-weight: bold;
+        font-size: 6pt;
+        text-align: center;
+    }
+
+    .valor {
+        font-size: 6.5pt;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .valor--italic {
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    .valor--grande {
+        font-weight: bold;
+        font-size: 8pt;
+        text-align: center;
+    }
+
+    .center { text-align: center; }
+    .right  { text-align: right; }
+
+    .caption-chica {
+        font-size: 5pt;
+        font-weight: bold;
+        text-align: center;
+        color: #444444;
+    }
+
+    .parrafo {
+        height: 54pt;
+        font-weight: bold;
+        font-size: 6.5pt;
+        vertical-align: top;
+        text-align: center;
+    }
+
+    /* Etiquetas SERIE/FOLIO: van en el hueco en blanco que ya existe arriba de
+       la fila de TIPO DE SOLICITUD, no dentro de esa fila — así el valor de
+       abajo se queda como una celda de valor normal, sin afectar su alto. */
+    .sf-label-top {
+        font-size: 4.5pt;
+        font-weight: bold;
+        color: #444444;
+        text-align: center;
+        vertical-align: bottom;
+    }
+
+    .firma-hint {
+        color: #808080;
+        font-size: 5pt;
+        text-align: center;
+    }
+
+    /*
+        Zona de firmas — notas de mpdf verificadas con pruebas aisladas antes de
+        implementar (ver sesión 2026-07-05): dentro de una tabla table-layout:fixed
+        + colgroup, mpdf NO respeta de forma confiable un borde agregado por
+        override (ni por clase ni inline, con o sin !important) en una celda cuyo
+        valor por defecto es "none" — y una tabla anidada dentro de una celda
+        tampoco respeta "height" ni bordes en sus propias filas. Las únicas dos
+        técnicas que sí funcionan de forma confiable, comprobadas una por una:
+        1) <hr> para cualquier línea (no pasa por el sistema de bordes de celda)
+        2) altura en una fila REAL de la tabla externa (no anidada)
+        3) borde SIN override: una tabla anidada de una sola celda cuyo borde es
+           el único valor declarado (nunca se cancela ni se agrega encima de otro)
+        Por eso las firmas usan filas reales (rol / hueco en blanco / línea+nombre
+        / puesto) con rowspan en las columnas separadoras, en vez de un div o una
+        tabla anidada con varias filas.
+    */
+    .firma-rol {
+        font-weight: bold;
+        font-size: 5.5pt;
+        text-align: center;
+        vertical-align: bottom;
+    }
+
+    /* Línea de firma: <hr> en mpdf SIEMPRE ocupa el 100% de la celda que lo
+       contiene (ignora "width", tanto en CSS como en el atributo HTML) — probado
+       de forma aislada. La única forma de lograr un ancho fijo real, igual en las
+       6 firmas sin importar que cada columna tenga un ancho distinto, es una
+       tabla anidada de una sola celda con "width" en pt (no %) y solo el borde
+       superior — mismo criterio que .caja-inner, pero con ancho fijo en vez de 100%. */
+    .firma-linea-tabla {
+        width: 165pt;
+        margin: 0 auto 2pt auto;
+        border-collapse: collapse;
+    }
+
+    /* Firmas de los costados (Solicitante/Revisó a la izquierda, 3ra persona/Autorizó
+       a la derecha): un lado de la línea queda pegado al margen del formato en vez
+       de centrada. Se usa "float" y no "margin-left:0 + margin-right:auto": ese
+       combo con mpdf se rompe (la línea desaparece) en la SEGUNDA vez que se repite
+       el mismo patrón en la misma tabla — comprobado con pruebas aisladas. "float"
+       no tiene ese problema. */
+    .firma-linea-tabla--izq {
+        float: left;
+        margin: 0;
+    }
+
+    .firma-linea-tabla--der {
+        float: right;
+        margin: 0;
+    }
+
+    .firma-linea-tabla td {
+        border: none;
+        border-top: 0.75pt solid #000000;
+        padding: 0;
+        height: 1pt;
+        line-height: 1pt;
+        font-size: 1pt;
+    }
+
+    .firma-nombre {
+        font-weight: bold;
+        font-size: 6pt;
+        text-align: center;
+    }
+
+    .firma-puesto {
+        font-size: 5.5pt;
+        text-align: center;
+    }
+
+    /* Caja de sello: tabla anidada de una sola celda cuyo ÚNICO estilo declarado
+       es el borde (nunca se cancela ni se agrega encima de otro valor) — es la
+       técnica que sí renderiza en mpdf. Mismo ancho (150pt) y alineación
+       (izq/centro/der) que las líneas de firma, para quedar alineadas con ellas. */
+    .caja-inner {
+        width: 165pt;
+        height: 100%;
+        margin: 0 auto;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    .caja-inner--izq {
+        float: left;
+        margin: 0;
+    }
+
+    .caja-inner--der {
+        float: right;
+        margin: 0;
+    }
+
+    .caja-inner td {
+        border: 0.75pt solid #000000;
+        text-align: center;
+        vertical-align: middle;
+        word-wrap: break-word;
+    }
+
+    /* La altura debe ir en el <td> interno, no en la <table>: es la única forma
+       que mpdf respeta de forma confiable (probado con las demás alturas de esta
+       plantilla) — declararla en la tabla no se propagaba. */
+    .sello-box td {
+        height: 95pt;
+    }
+
+    .sello-caption {
+        font-size: 4.5pt;
+        font-style: italic;
+        font-weight: bold;
+        color: #999999;
+    }
+
+    /* Párrafo legal de responsabilidad, al pie, antes del folio */
+    .disclaimer {
+        height: 41pt;
+        font-size: 5.2pt;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+        padding: 4pt 8pt;
+    }
+</style>
+</head>
+<body>
+
+<!-- Marco lateral envuelve TODO el documento (no solo la zona de firmas) para
+     que el borde izquierdo/derecho sea una sola línea continua de arriba a
+     abajo, en vez de dos mecanismos distintos (borde de celda en encabezado/
+     partidas, div en firmas) que podían no calzar exactamente. -->
+<div class="marco-lateral">
+<table class="sgpdf" style="margin-top:0;">
+    <colgroup>
+        <col class="col-b"><col class="col-c"><col class="col-d"><col class="col-e"><col class="col-f">
+        <col class="col-g"><col class="col-h"><col class="col-i"><col class="col-j"><col class="col-k">
+    </colgroup>
+
+    <tr>
+        <td colspan="10" class="bg-maroon titulo-inst">INSTITUTO TECNOLÓGICO SUPERIOR DE COSAMALOAPAN</td>
+    </tr>
+
+    <tr class="gap-row"><td colspan="10" style="height:7pt;"></td></tr>
+
+    <tr style="height:11pt;">
+        <td colspan="5" class="valor--italic center">{{ fechaTexto }}</td>
+        <td colspan="3" class="bg-navy label center">FTE DE FINANCIAMIENTO:</td>
+        <td colspan="2" class="valor--italic center">FEDERAL / ESTATAL</td>
+    </tr>
+
+    <tr style="height:9pt;">
+        <td colspan="10" class="label center" style="background:none; color:#000;">ÁREA ADMINISTRATIVA</td>
+    </tr>
+
+    <tr style="height:11pt;">
+        <td colspan="2" class="bg-navy label brd-seccion">SOLICITUD DE RECURSOS:</td>
+        <td colspan="8" class="valor--grande brd-seccion">{{ solicitud.solicitante.departamento ? solicitud.solicitante.departamento.nombre : '—' }}</td>
+    </tr>
+
+    <tr class="gap-row"><td colspan="8" style="height:7pt;"></td><td class="sf-label-top">SERIE</td><td class="sf-label-top">FOLIO</td></tr>
+
+    <tr style="height:11pt;">
+        <td colspan="2" class="bg-navy label">TIPO DE SOLICITUD:</td>
+        <td colspan="6" class="valor--grande">{{ solicitud.tipoSolicitud ? solicitud.tipoSolicitud.nombre|upper : '—' }}</td>
+        <td class="valor center">{% if solicitud.solicitante.puesto and solicitud.solicitante.puesto.serie %}{{ solicitud.solicitante.puesto.serie }}{% else %}&nbsp;{% endif %}</td>
+        <td class="valor center">&nbsp;</td>
+    </tr>
+
+    <tr class="gap-row"><td colspan="10" style="height:11pt;"></td></tr>
+
+    <tr style="height:13pt;">
+        <td colspan="2" class="bg-navy label">TRANSFERENCIA EN BENEFICIO DE:</td>
+        <td colspan="8" class="valor--grande">{{ solicitud.transferenciaEnBeneficioDe ?: '—' }}</td>
+    </tr>
+
+    <tr class="gap-row"><td colspan="10" style="height:10pt;"></td></tr>
+
+    <tr style="height:12pt;">
+        <td colspan="2" class="bg-navy label">BANCO DEL(LA) BENEFICIARIO(A):</td>
+        <td colspan="3" class="valor center">{{ solicitud.banco ? solicitud.banco.nombre : '—' }}</td>
+        <td colspan="3" class="bg-navy label center">CTA CLABE DEL(LA) BENEFICIARIO(A):</td>
+        <td colspan="2" class="valor center">{{ solicitud.ctaClaveBeneficiario ?: '—' }}</td>
+    </tr>
+
+    <tr class="gap-row"><td colspan="10" style="height:7pt;"></td></tr>
+
+    <tr style="height:20pt;">
+        <td colspan="2" class="bg-navy label brd-punteado">POR LA CANTIDAD DE:</td>
+        <td colspan="2" class="valor--grande center brd-punteado" style="font-size:9pt;">$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}</td>
+        <td colspan="6" class="center">
+            <span class="valor">( {{ montoEnLetra }} )</span><br>
+            <span class="caption-chica">IMPORTE EN LETRA</span>
+        </td>
+    </tr>
+
+    <tr style="height:11pt;">
+        <td colspan="10" class="bg-navy label brd-seccion">POR CONCEPTO DE:</td>
+    </tr>
+
+    <tr>
+        <td colspan="10" class="parrafo">{{ solicitud.porConceptoDe }}</td>
+    </tr>
+
+    <tr class="gap-row"><td colspan="10" style="height:5pt;"></td></tr>
+
+    <tr style="height:21pt;">
+        <td colspan="2" class="bg-navy label">DOCUMENTACIÓN QUE PRESENTA:</td>
+        <td colspan="2" class="valor">{{ solicitud.documentoVerificacionLabel ?: '—' }}</td>
+        <td colspan="3" class="valor">{{ solicitud.documentoVerificacionDescripcion ?: '—' }}</td>
+        <td colspan="2" class="bg-navy label center">DOCUMENTACIÓN PENDIENTE:</td>
+        <td colspan="1" class="valor center" style="font-size:5.5pt;">{{ solicitud.documentacionPendienteTexto ?: 'N/A' }}</td>
+    </tr>
+</table>
+
+<table class="sgpdf">
+    <colgroup>
+        <col class="col-b"><col class="col-c"><col class="col-d"><col class="col-e"><col class="col-f">
+        <col class="col-g"><col class="col-h"><col class="col-i"><col class="col-j"><col class="col-k">
+    </colgroup>
+    <tr class="gap-row"><td colspan="10" style="height:7pt;"></td></tr>
+</table>
+
+<table class="sgpdf">
+    <colgroup>
+        <col class="col-b2"><col class="col-c2"><col class="col-d"><col class="col-e"><col class="col-f2">
+        <col class="col-g"><col class="col-h"><col class="col-i"><col class="col-j"><col class="col-k">
+    </colgroup>
+
+    <tr style="height:17pt;">
+        <th colspan="1" class="bg-navy caption">PROCESO ESTRATÉGICO</th>
+        <th colspan="1" class="bg-navy caption">PROCESO CLAVE</th>
+        <th colspan="1" class="bg-navy caption">PEI</th>
+        <th colspan="1" class="bg-navy caption">PAIG</th>
+        <th colspan="1" class="bg-navy caption">META PDI/PTA</th>
+        <th colspan="1" class="bg-navy caption">CAPÍTULO</th>
+        <th colspan="1" class="bg-navy caption">PARTIDA</th>
+        <th colspan="2" class="bg-navy caption">DESCRIPCIÓN</th>
+        <th colspan="1" class="bg-navy caption">CANTIDAD</th>
+    </tr>
+
+    {% set rowCount = solicitud.partidas|length %}
+    {% for item in solicitud.partidas %}
+        <tr style="height:23pt;">
+            {% if loop.first %}
+                <td class="valor center" rowspan="{{ rowCount }}">{{ solicitud.procesoEstrategico ? solicitud.procesoEstrategico.nombre : '—' }}</td>
+                <td class="valor center" rowspan="{{ rowCount }}">{{ solicitud.procesoClave ? solicitud.procesoClave.nombre : '—' }}</td>
+                <td class="valor center" rowspan="{{ rowCount }}">{{ solicitud.procesoClave ? solicitud.procesoClave.pei : '—' }}</td>
+                <td class="valor center" rowspan="{{ rowCount }}">{{ solicitud.procesoClave ? solicitud.procesoClave.paig : '—' }}</td>
+                <td class="valor center" rowspan="{{ rowCount }}">{{ solicitud.procesoClave ? solicitud.procesoClave.metaPdiPta : '—' }}</td>
+            {% endif %}
+            <td class="valor center">{{ item.partida.capitulo }}</td>
+            <td class="valor center">{{ item.partida.partida }}</td>
+            <td colspan="2" class="valor">{{ item.partida.descripcion }}</td>
+            <td class="valor right">$ {{ item.monto|number_format(2, '.', ',') }}</td>
+        </tr>
+    {% else %}
+        <tr style="height:23pt;">
+            <td colspan="10" class="center">Sin partidas registradas.</td>
+        </tr>
+    {% endfor %}
+
+    <tr style="height:23pt;">
+        <td colspan="4" class="bg-maroon valor center" style="font-size:5.5pt;">
+            Vo. Bo. JEFE (A) DEL DEPARTAMENTO DE PLANEACIÓN Y PROGRAMACIÓN
+        </td>
+        <td colspan="3" class="firma-hint">*FIRMA</td>
+        <td colspan="2" class="valor center" style="font-size:8pt;">TOTAL</td>
+        <td colspan="1" class="valor right" style="font-size:8pt;">$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}</td>
+    </tr>
+</table>
+
+<table class="sgpdf-plain">
+    <colgroup>
+        <col class="col-b"><col class="col-c"><col class="col-d"><col class="col-e"><col class="col-f">
+        <col class="col-g"><col class="col-h"><col class="col-i"><col class="col-j"><col class="col-k">
+    </colgroup>
+
+    <tr class="gap-row"><td colspan="10" style="height:13pt;"></td></tr>
+
+    <tr>
+        <td colspan="2" class="firma-rol">SOLICITANTE</td>
+        <td rowspan="4"></td>
+        <td colspan="3" class="firma-rol">JEFE(A) DEL ÁREA SOLICITANTE</td>
+        <td rowspan="4"></td>
+        <td colspan="3" class="firma-rol">{{ solicitud.autoriza and solicitud.autoriza.puesto ? solicitud.autoriza.puesto.nombre|upper : '—' }}</td>
+    </tr>
+    <tr>
+        <td colspan="2" style="height:44pt;"></td>
+        <td colspan="3" style="height:44pt;"></td>
+        <td colspan="3" style="height:44pt;"></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="firma-nombre"><table class="firma-linea-tabla firma-linea-tabla--izq"><tr><td>&nbsp;</td></tr></table>{{ solicitud.solicitante }}</td>
+        <td colspan="3" class="firma-nombre"><table class="firma-linea-tabla"><tr><td>&nbsp;</td></tr></table>{{ solicitud.jefeArea ?: '—' }}</td>
+        <td colspan="3" class="firma-nombre"><table class="firma-linea-tabla firma-linea-tabla--der"><tr><td>&nbsp;</td></tr></table>{{ solicitud.autoriza ?: '—' }}</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="firma-puesto">{{ solicitud.solicitante.puesto ? solicitud.solicitante.puesto.nombre|upper : '—' }}</td>
+        <td colspan="3" class="firma-puesto">{{ solicitud.jefeArea and solicitud.jefeArea.puesto ? solicitud.jefeArea.puesto.nombre|upper : '—' }}</td>
+        <td colspan="3" class="firma-puesto">{{ solicitud.autoriza and solicitud.autoriza.puesto ? solicitud.autoriza.puesto.nombre|upper : '—' }}</td>
+    </tr>
+
+    <tr class="gap-row"><td colspan="10" style="height:15pt;"></td></tr>
+
+    {% set revisor = solicitud.getRevisionPorCargo('revisor') %}
+    {% set supervisor = solicitud.getRevisionPorCargo('supervisor') %}
+    {% set autorizo = solicitud.getRevisionPorCargo('autoriza') %}
+    <tr>
+        <td colspan="2" class="firma-rol">REVISÓ</td>
+        <td rowspan="4"></td>
+        <td colspan="3" class="firma-rol">SUPERVISÓ</td>
+        <td rowspan="4"></td>
+        <td colspan="3" class="firma-rol">AUTORIZÓ</td>
+    </tr>
+    <tr>
+        <td colspan="2" style="height:35pt;"></td>
+        <td colspan="3" style="height:35pt;"></td>
+        <td colspan="3" style="height:35pt;"></td>
+    </tr>
+    <tr>
+        <td colspan="2" class="firma-nombre"><table class="firma-linea-tabla firma-linea-tabla--izq"><tr><td>&nbsp;</td></tr></table>{{ revisor and revisor.personal ? revisor.personal : '—' }}</td>
+        <td colspan="3" class="firma-nombre"><table class="firma-linea-tabla"><tr><td>&nbsp;</td></tr></table>{{ supervisor and supervisor.personal ? supervisor.personal : '—' }}</td>
+        <td colspan="3" class="firma-nombre"><table class="firma-linea-tabla firma-linea-tabla--der"><tr><td>&nbsp;</td></tr></table>{{ autorizo and autorizo.personal ? autorizo.personal : '—' }}</td>
+    </tr>
+    <tr>
+        <td colspan="2" class="firma-puesto">{% if revisor and revisor.personal and revisor.personal.puesto %}{{ revisor.personal.puesto.nombre|upper }}{% endif %}</td>
+        <td colspan="3" class="firma-puesto">{% if supervisor and supervisor.personal and supervisor.personal.puesto %}{{ supervisor.personal.puesto.nombre|upper }}{% endif %}</td>
+        <td colspan="3" class="firma-puesto">{% if autorizo and autorizo.personal and autorizo.personal.puesto %}{{ autorizo.personal.puesto.nombre|upper }}{% endif %}</td>
+    </tr>
+
+    <!--
+        El sello sigue en la MISMA tabla que las firmas (no en una tabla aparte):
+        en mpdf, dos tablas separadas con idéntico colgroup en % no calculan
+        exactamente el mismo ancho de columna en pt — verificado con pruebas
+        aisladas — así que quedaban desalineadas horizontalmente. La caja de
+        sello usa su propia tabla anidada de una sola celda con borde explícito
+        (.caja-inner), que no depende del borde por defecto de la tabla que la
+        contiene, así que puede vivir aquí sin repetir el problema de bordes que
+        originalmente motivó separarla.
+    -->
+    <tr>
+        <td colspan="2" style="height:95pt; vertical-align:top;">
+            <table class="caja-inner caja-inner--izq sello-box"><tr><td><span class="sello-caption">*SELLO DEL DEPARTAMENTO DE RECURSOS FINANCIEROS</span></td></tr></table>
+        </td>
+        <td></td>
+        <td colspan="3" style="height:95pt; vertical-align:top;">
+            <table class="caja-inner sello-box"><tr><td><span class="sello-caption">*SELLO DE LA SUBDIRECCIÓN DE SERVICIOS ADMINISTRATIVOS</span></td></tr></table>
+        </td>
+        <td></td>
+        <td colspan="3" style="height:95pt; vertical-align:top;">
+            <table class="caja-inner caja-inner--der sello-box"><tr><td><span class="sello-caption">*SELLO DE DIRECCIÓN GENERAL</span></td></tr></table>
+        </td>
+    </tr>
+
+    <tr class="gap-row"><td colspan="10" style="height:5pt;"></td></tr>
+
+    <tr class="gap-row"><td colspan="10"><hr class="folio-divisor-linea"></td></tr>
+
+    <tr>
+        <td colspan="10" class="disclaimer">
+            ** EL "SOLICITANTE" AL IGUAL QUE EL "JEFE DE ÁREA" DECLARAN BAJO PROTESTA DE DECIR VERDAD QUE LA PRESENTE SOLICITUD CONTIENE DATOS VERÍDICOS, CUANTIFICABLES Y VERIFICABLES; POR LO QUE SERÁN LOS ÚNICOS RESPONSABLES EN VERIFICAR, PROPORCIONAR Y ALMACENAR, TODA LA INFORMACIÓN COMPROBATORIA DE MANERA FÍSICA Y DIGITAL, QUE DÉ CERTEZA DE LA CORRECTA APLICACIÓN DE LOS RECURSOS FINANCIEROS DE ESTE INSTITUTO. **
+        </td>
+    </tr>
+
+    <tr class="gap-row"><td colspan="10"><hr class="folio-divisor-linea"></td></tr>
+
+    <tr style="height:11pt;">
+        <td colspan="7"></td>
+        <td colspan="3" class="bg-navy" style="height:11pt; vertical-align:middle; color:#ffffff; font-weight:bold; font-size:6pt;">
+            FOLIO: {{ solicitud.solicitante.puesto and solicitud.solicitante.puesto.serie ? solicitud.solicitante.puesto.serie : '' }}
+        </td>
+    </tr>
+</table>
+</div>
+
+</body>
+</html>

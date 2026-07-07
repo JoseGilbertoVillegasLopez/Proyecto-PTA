@@ -13,6 +13,7 @@ use App\Repository\SemaforoIndicadoresMediaRepository;
 use App\Repository\SemaforoIndicadoresRepository;
 use App\Service\Indicadores\CicloIndicadoresService;
 use App\Service\Indicadores\SemaforoIndicadoresColorService;
+use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,6 @@ final class IndicadoresBasicosController extends AbstractController
     {
         return $this->render('indicadores_basicos/index.html.twig', [
             'indicadores_basicos' => $repository->findAllOrderByNombre(),
-            'can_view_plantilla_indicadores' => $this->canViewPlantillaIndicadores(),
         ]);
     }
 
@@ -38,11 +38,14 @@ final class IndicadoresBasicosController extends AbstractController
         SemaforoIndicadoresRepository $semaforoRepository,
         SemaforoIndicadoresMediaRepository $mediaRepository,
         CicloIndicadoresService $cicloService,
-        SemaforoIndicadoresColorService $colorService
+        SemaforoIndicadoresColorService $colorService,
+        ModuloAccesoResolver $moduloAccesoResolver
     ): Response
     {
-        if (!$this->canViewPlantillaIndicadores()) {
-            throw $this->createAccessDeniedException('No tienes permiso para ver la plantilla de indicadores.');
+        $user = $this->getUser();
+
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException('Debes iniciar sesion para ver el semáforo de indicadores.');
         }
 
         $isTurbo = $request->headers->get('Turbo-Frame');
@@ -58,7 +61,7 @@ final class IndicadoresBasicosController extends AbstractController
                 $request->query->get('ciclo_3'),
             ],
             recentChanges: $request->getSession()->get('plantilla_indicadores_recent_changes', []),
-            canEditPlantilla: $this->canEditPlantillaIndicadores()
+            canEditPlantilla: $moduloAccesoResolver->esEncargado($user, 'plantilla_indicadores')
         );
 
         if ($isTurbo) {
@@ -79,10 +82,13 @@ final class IndicadoresBasicosController extends AbstractController
         SemaforoIndicadoresMediaRepository $mediaRepository,
         CicloIndicadoresService $cicloService,
         SemaforoIndicadoresColorService $colorService,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ModuloAccesoResolver $moduloAccesoResolver
     ): Response {
-        if (!$this->canEditPlantillaIndicadores()) {
-            throw $this->createAccessDeniedException('Solo el departamento de Estadistica y Evaluacion puede editar esta plantilla.');
+        $user = $this->getUser();
+
+        if (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'plantilla_indicadores')) {
+            throw $this->createAccessDeniedException('No tienes permiso para editar el semáforo de indicadores.');
         }
 
         $grupos = $repository->findActivosGroupedByGrupo();
@@ -186,8 +192,13 @@ final class IndicadoresBasicosController extends AbstractController
     }
 
     #[Route('/new', name: 'app_indicadores_basicos_new', methods: ['GET','POST'])]
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, EntityManagerInterface $em, ModuloAccesoResolver $moduloAccesoResolver): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'indicadores_basicos')) {
+            throw $this->createAccessDeniedException('No tienes permiso para crear indicadores.');
+        }
+
         $indicador = new IndicadoresBasicos();
         $form = $this->createForm(IndicadoresBasicosType::class, $indicador);
         $form->handleRequest($request);
@@ -236,8 +247,13 @@ final class IndicadoresBasicosController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_indicadores_basicos_edit', methods: ['GET','POST'])]
-    public function edit(Request $request, IndicadoresBasicos $indicador, EntityManagerInterface $em): Response
+    public function edit(Request $request, IndicadoresBasicos $indicador, EntityManagerInterface $em, ModuloAccesoResolver $moduloAccesoResolver): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'indicadores_basicos')) {
+            throw $this->createAccessDeniedException('No tienes permiso para editar indicadores.');
+        }
+
         $form = $this->createForm(IndicadoresBasicosEditType::class, $indicador);
         $form->handleRequest($request);
 
@@ -266,8 +282,13 @@ final class IndicadoresBasicosController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_indicadores_basicos_delete', methods: ['POST'])]
-    public function delete(Request $request, IndicadoresBasicos $indicador, EntityManagerInterface $em): Response
+    public function delete(Request $request, IndicadoresBasicos $indicador, EntityManagerInterface $em, ModuloAccesoResolver $moduloAccesoResolver): Response
     {
+        $user = $this->getUser();
+        if (!$user instanceof User || !$moduloAccesoResolver->esEncargado($user, 'indicadores_basicos')) {
+            throw $this->createAccessDeniedException('No tienes permiso para desactivar indicadores.');
+        }
+
         if ($this->isCsrfTokenValid(
             'delete' . $indicador->getId(),
             $request->getPayload()->getString('_token')
@@ -381,65 +402,4 @@ final class IndicadoresBasicosController extends AbstractController
         $recentChanges[$indicadorId][$group][$field] = true;
     }
 
-    private function canEditPlantillaIndicadores(): bool
-    {
-        $user = $this->getUser();
-
-        if (!$user instanceof User) {
-            return false;
-        }
-
-        if ($this->isGranted('ROLE_ADMIN')) {
-            return true;
-        }
-
-        $departamento = $user->getPersonal()?->getDepartamento()?->getNombre();
-
-        return $this->normalizeAccessName($departamento ?? '') === 'ESTADISTICA Y EVALUACION';
-    }
-
-    private function canViewPlantillaIndicadores(): bool
-    {
-        $user = $this->getUser();
-
-        if (!$user instanceof User) {
-            return false;
-        }
-
-        if ($this->canEditPlantillaIndicadores() || $this->isGranted('ROLE_DIRECCION_GENERAL')) {
-            return true;
-        }
-
-        $puesto = $this->normalizeAccessName($user->getPersonal()?->getPuesto()?->getNombre() ?? '');
-
-        return in_array($puesto, [
-            'SUBDIRECCION DE PLANEACION',
-            'DIRECCION DE PLANEACION Y VINCULACION',
-        ], true);
-    }
-
-    private function normalizeAccessName(string $value): string
-    {
-        $value = trim($value);
-        $value = strtr($value, [
-            'Á' => 'A',
-            'É' => 'E',
-            'Í' => 'I',
-            'Ó' => 'O',
-            'Ú' => 'U',
-            'Ü' => 'U',
-            'Ñ' => 'N',
-            'á' => 'A',
-            'é' => 'E',
-            'í' => 'I',
-            'ó' => 'O',
-            'ú' => 'U',
-            'ü' => 'U',
-            'ñ' => 'N',
-        ]);
-        $value = strtoupper($value);
-        $value = preg_replace('/[^A-Z0-9]+/', ' ', $value) ?? $value;
-
-        return trim(preg_replace('/\s+/', ' ', $value) ?? $value);
-    }
 }

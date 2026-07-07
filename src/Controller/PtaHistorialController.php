@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Encabezado;
+use App\Entity\User;
 use App\Repository\EncabezadoRepository;
+use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use App\Service\Pta\PtaAccessResolver;
 use App\Service\Pta\PtaHistorialService;
 use App\Service\Pta\PtaGraficaService;
@@ -21,8 +23,15 @@ class PtaHistorialController extends AbstractController
     public function index(
         Request $request,
         EncabezadoRepository $encabezadoRepository,
-        PtaAccessResolver $ptaAccessResolver
+        PtaAccessResolver $ptaAccessResolver,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        $tieneAcceso = $user instanceof User && $resolver->tieneAcceso($user, 'reportes_pta');
+        $esEncargado = $user instanceof User && $resolver->esEncargado($user, 'reportes_pta');
+        if (!$this->isGranted('ROLE_ADMIN') && !$tieneAcceso && !$esEncargado) {
+            throw $this->createAccessDeniedException();
+        }
 
         /* =============================================
          * 1. AÑO (DEFAULT = ACTUAL)
@@ -88,8 +97,16 @@ class PtaHistorialController extends AbstractController
         Request $request,
         Encabezado $encabezado,
         PtaHistorialService $ptaHistorialService,
-        PtaGraficaService $ptaGraficaService
+        PtaGraficaService $ptaGraficaService,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        $tieneAcceso = $user instanceof User && $resolver->tieneAcceso($user, 'reportes_pta');
+        $esEncargado = $user instanceof User && $resolver->esEncargado($user, 'reportes_pta');
+        if (!$this->isGranted('ROLE_ADMIN') && !$tieneAcceso && !$esEncargado) {
+            throw $this->createAccessDeniedException();
+        }
+
 
         $from = $request->query->get('from', 'show');
 

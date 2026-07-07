@@ -1,0 +1,1126 @@
+/* =========================================================
+   SOLICITUD GASTOS — NEW
+   ========================================================= */
+
+:root {
+    --sg-primary:      #0dcaf0;
+    --sg-success:      #1dd1a1;
+    --sg-warning:      #feca57;
+    --sg-danger:       #ff6b6b;
+    --sg-muted:        #9fb3c8;
+    --sg-border:       rgba(13, 202, 240, 0.25);
+    --sg-border-soft:  rgba(13, 202, 240, 0.12);
+    --sg-bg-card:      #121b23;
+    --sg-bg-input:     #0d151d;
+}
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+
+.sg-new {
+    padding: 8px 0;
+}
+
+.sg-new__topbar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.sg-new__volver {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    border: 1px solid rgba(230, 241, 255, 0.22);
+    border-radius: 10px;
+    color: #e6f1ff;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.04);
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.sg-new__volver:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(230, 241, 255, 0.45);
+    transform: translateX(-2px);
+}
+
+.sg-new__volver .bi {
+    font-size: 1.1rem;
+}
+
+.sg-new__titulo {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #e6f1ff;
+    margin: 0;
+}
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+
+.sg-new__form-container {
+    background: linear-gradient(160deg, #0f1923 0%, #0a1118 100%);
+    border: 1px solid var(--sg-border-soft);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+}
+
+/* =========================================================
+   STRIP READONLY
+   ========================================================= */
+
+.sg-new__readonly-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0;
+    background: rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid var(--sg-border-soft);
+}
+
+.sg-new__readonly-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 16px 22px;
+    border-right: 1px solid var(--sg-border-soft);
+}
+
+.sg-new__readonly-item:last-child {
+    border-right: none;
+}
+
+.sg-new__readonly-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--sg-muted);
+}
+
+.sg-new__readonly-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+}
+
+/* =========================================================
+   CUERPO DEL FORMULARIO
+   ========================================================= */
+
+.sg-new__body {
+    padding: 28px 28px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* =========================================================
+   GRIDS
+   ========================================================= */
+
+.sg-new__grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.sg-new__grid-3 {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+}
+
+/* Fila: Tipo de solicitud (más chico) + Documento que presenta + Descripción (más grandes) */
+.sg-new__grid-tipo {
+    grid-template-columns: 0.8fr 1.6fr 1.6fr;
+}
+
+/* Fila: Fecha + Banco (reducidos, ver notas de reducción) + Transferencia/Cta-Clave (llenan el resto de la fila).
+   Se usan fr en vez de % para que los 3 gaps de 20px se resten del ancho disponible antes de repartir
+   proporciones; con % los gaps se suman aparte y la última columna se salía del borde derecho. */
+.sg-new__grid-4 {
+    display: grid;
+    grid-template-columns: 15fr 17.5fr 33.75fr 33.75fr;
+    gap: 20px;
+}
+
+/* Mismo alto para los 4 controles de esta fila (input date, select, y las 2 textareas) */
+.sg-new__grid-4 .sg-new__input,
+.sg-new__grid-4 .sg-new__select,
+.sg-new__grid-4 .sg-new__textarea-fixed {
+    height: 46px;
+}
+
+@media (max-width: 800px) {
+    .sg-new__grid-3 { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+    .sg-new__grid-2,
+    .sg-new__grid-3 { grid-template-columns: 1fr; }
+}
+
+/* =========================================================
+   CAMPOS
+   ========================================================= */
+
+.sg-new__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sg-new__label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--sg-muted);
+}
+
+/* =========================================================
+   INPUTS Y SELECTS — OSCUROS
+   ========================================================= */
+
+.sg-new__input,
+.sg-new__select {
+    width: 100%;
+    background-color: var(--sg-bg-input) !important;
+    color: #fff !important;
+    border: 1px solid var(--sg-border-soft) !important;
+    border-radius: 12px !important;
+    padding: 10px 14px !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    outline: none;
+
+    --bs-body-bg: var(--sg-bg-input);
+    --bs-body-color: #e6f1ff;
+    --bs-border-color: var(--sg-border-soft);
+}
+
+.sg-new__input::placeholder {
+    color: #3d5166;
+    font-weight: 400;
+}
+
+.sg-new__input:focus,
+.sg-new__select:focus {
+    border-color: var(--sg-primary) !important;
+    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.15) !important;
+    background-color: #0b1520 !important;
+}
+
+/* Select: flecha oscura personalizada */
+.sg-new__select {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--sg-primary) 50%),
+        linear-gradient(135deg, var(--sg-primary) 50%, transparent 50%) !important;
+    background-position:
+        calc(100% - 18px) calc(50% - 3px),
+        calc(100% - 12px) calc(50% - 3px) !important;
+    background-size: 6px 6px !important;
+    background-repeat: no-repeat !important;
+    padding-right: 40px !important;
+    cursor: pointer;
+}
+
+.sg-new__select option {
+    background-color: #0d151d;
+    color: #e6f1ff;
+}
+
+/* =========================================================
+   DATE INPUT — icono de calendario más visible
+   ========================================================= */
+
+.sg-date-wrapper {
+    position: relative;
+}
+
+.sg-date-input {
+    color-scheme: dark;
+}
+
+.sg-date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(1.4) sepia(1) hue-rotate(180deg) saturate(3);
+    opacity: 0.85;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    padding: 1px;
+    border-radius: 4px;
+    transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+.sg-date-input::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+/* =========================================================
+   FILA DE TEXTAREAS (usada por show.html.twig: documento/descripción)
+   ========================================================= */
+
+.sg-concepto-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.sg-concepto-row .sg-new__field {
+    flex: 1;
+    min-width: 200px;
+}
+
+.sg-new__textarea-fixed {
+    width: 100%;
+    background-color: var(--sg-bg-input);
+    color: #fff;
+    border: 1px solid var(--sg-border-soft);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: inherit;
+    resize: none;
+    height: 70px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    outline: none;
+    line-height: 1.5;
+}
+
+.sg-new__textarea-fixed::placeholder {
+    color: #3d5166;
+    font-weight: 400;
+}
+
+.sg-new__textarea-fixed:focus {
+    border-color: var(--sg-primary);
+    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.15);
+    background-color: #0b1520;
+}
+
+/* =========================================================
+   CAMPO ANCHO COMPLETO (documentos de verificación, evidencias)
+   ========================================================= */
+
+.sg-new__field--full {
+    width: 100%;
+}
+
+/* =========================================================
+   AUTORIZACIÓN — BUSCADOR DE PERSONAL (Jefe de Área, Autoriza)
+   ========================================================= */
+
+/* Responsable / Jefe de Área / Autoriza: mismo ancho para los 3 */
+.sg-new__grid-autoriza {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* Nombre arriba, puesto debajo */
+.sg-autoriza-display {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sg-autoriza-nombre {
+    font-weight: 700;
+    color: #e6f1ff;
+}
+
+.sg-autoriza-puesto,
+.sg-autoriza-puesto-caption {
+    font-size: 0.78rem;
+    line-height: 1.3;
+    color: var(--sg-muted);
+}
+
+/* Reserva el alto de la 2a línea (puesto) aunque esté vacía, para que el
+   recuadro mida lo mismo lleno o vacío y los 3 campos queden alineados */
+.sg-autoriza-puesto-caption {
+    display: block;
+    min-height: 1.3em;
+}
+
+/* El label del 3er campo empieza vacío (se llena con el puesto al elegir a
+   la persona); reserva el mismo alto que los otros 2 labels para no
+   desalinear la fila mientras está vacío */
+.sg-new__grid-autoriza .sg-new__label {
+    display: block;
+    min-height: 1.2em;
+    line-height: 1.2;
+}
+
+/* Recuadro que envuelve el input de búsqueda (Jefe de Área / Autoriza),
+   mismo look que el recuadro de solo lectura del Responsable */
+.sg-autoriza-box .sg-autoriza-search {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    color: #e6f1ff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.sg-autoriza-box .sg-autoriza-search::placeholder {
+    color: #3d5166;
+    font-weight: 400;
+}
+
+.sg-autoriza-search-wrap {
+    position: relative;
+}
+
+.sg-autoriza-results {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    max-height: 220px;
+    overflow-y: auto;
+    background: var(--sg-bg-card);
+    border: 1px solid var(--sg-border);
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.sg-autoriza-results:empty {
+    display: none;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+.sg-autoriza-results .search-item {
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: #e6f1ff;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sg-autoriza-results .search-item:hover {
+    color: #fff;
+    background: rgba(13, 202, 240, 0.16);
+}
+
+/* =========================================================
+   EVIDENCIAS DE GASTO
+   ========================================================= */
+
+.sg-evidencias__hint {
+    margin: 0 0 4px;
+    font-size: 0.78rem;
+    color: var(--sg-muted);
+}
+
+.sg-evidencias__preview {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 4px;
+    padding: 14px;
+    border-radius: 14px;
+    background: rgba(13, 202, 240, 0.045);
+    border: 1px solid var(--sg-border-soft);
+}
+
+.sg-evidencias__preview-item {
+    position: relative;
+    width: 162px;
+    height: 162px;
+    flex: 0 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid var(--sg-border);
+}
+
+.sg-evidencias__preview-item img,
+.sg-evidencias__preview-item iframe {
+    display: block;
+    width: 100%;
+    height: 128px;
+    border: 0;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.sg-evidencias__preview-item span {
+    display: block;
+    padding: 7px 8px;
+    color: #d4ebf4;
+    font-size: 0.76rem;
+    font-weight: 800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sg-evidencias__preview-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 7px;
+    background: #ff2f2f;
+    color: #ffffff;
+    font-size: 0.8rem;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.sg-evidencias__add {
+    width: 162px;
+    height: 162px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    border: 2px dashed rgba(13, 202, 240, 0.58);
+    background: rgba(13, 202, 240, 0.055);
+    color: var(--sg-primary);
+    font-size: 2.4rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sg-evidencias__add:hover {
+    background: rgba(13, 202, 240, 0.13);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.sg-evidencias__file-hidden {
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sg-evidencias__error {
+    margin-top: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--sg-danger);
+}
+
+/* =========================================================
+   SEPARADOR DE SECCIÓN
+   ========================================================= */
+
+.sg-new__section-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0;
+}
+
+.sg-new__section-divider::before,
+.sg-new__section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--sg-border-soft);
+}
+
+.sg-new__section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--sg-primary);
+    background: rgba(13, 202, 240, 0.08);
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    white-space: nowrap;
+}
+
+/* =========================================================
+   TABLA DETALLE DEL GASTO
+   ========================================================= */
+
+.sg-detalle-wrapper {
+    margin-top: 4px;
+}
+
+.sg-detalle-scroll {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--sg-border-soft);
+}
+
+.sg-detalle-table {
+    width: 100%;
+    min-width: 860px;
+    border-collapse: collapse;
+    background: #090f15;
+    table-layout: fixed;
+}
+
+/* ── Anchos de columna (nth-child sobre <th>)
+   1 PE · 2 PC · 3 PEI · 4 PAIG · 5 META · 6 CAP · 7 PART · 8 DESC · 9 CANT · 10 ACTION
+   PE  -30 % → DESC +30 %
+   CANT -30 % → PEI +15 %  META +15 %
+   ─────────────────────────────────────────────── */
+.sg-detalle-table thead th:nth-child(1)  { width: 13%; }   /* PE    */
+.sg-detalle-table thead th:nth-child(2)  { width: 12%; }   /* PC    */
+.sg-detalle-table thead th:nth-child(3)  { width: 10%; }   /* PEI   */
+.sg-detalle-table thead th:nth-child(4)  { width: 8%;  }   /* PAIG  */
+.sg-detalle-table thead th:nth-child(5)  { width: 10%; }   /* META  */
+.sg-detalle-table thead th:nth-child(6)  { width: 8%;  }   /* CAP   */
+.sg-detalle-table thead th:nth-child(7)  { width: 9%;  }   /* PART  */
+.sg-detalle-table thead th:nth-child(8)  { width: 18%; }   /* DESC  */
+.sg-detalle-table thead th:nth-child(9)  { width: 8%;  }   /* CANT  */
+.sg-detalle-table thead th:nth-child(10) { width: 4%;  }   /* ACTION */
+
+.sg-detalle-table thead th {
+    background: rgba(13, 202, 240, 0.08);
+    color: var(--sg-primary);
+    font-size: 0.63rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 10px;
+    border-bottom: 1px solid var(--sg-border);
+    border-right: 1px solid var(--sg-border-soft);
+    white-space: nowrap;
+    text-align: left;
+}
+
+.sg-detalle-table thead th:last-child {
+    border-right: none;
+    width: 40px;
+}
+
+.sg-detalle-table tbody td {
+    border-bottom: 1px solid var(--sg-border-soft);
+    border-right: 1px solid var(--sg-border-soft);
+    padding: 8px 10px;
+    vertical-align: middle;
+    color: #fff;
+    font-size: 0.85rem;
+    overflow: hidden;
+    max-width: 0; /* junto con table-layout:fixed fuerza que el ancho del <th> prevalezca */
+}
+
+.sg-detalle-table tbody td:last-child {
+    border-right: none;
+}
+
+.sg-detalle-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Celdas que abarcan múltiples filas (proceso, PEI, PAIG, META) */
+.sg-span-cell {
+    background: rgba(13, 202, 240, 0.03);
+    min-width: 120px;
+}
+
+/* Valor auto-rellenado (PEI, PAIG, META, capítulo, partida) */
+.sg-autofield {
+    display: block;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.8rem;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.sg-autofield-cell {
+    min-width: 80px;
+    text-align: center;
+}
+
+/* Con table-layout:fixed los anchos los controlan los <th>.
+   Solo se preservan los estilos no relacionados con dimensiones. */
+.sg-detalle-table .sg-td-cantidad  { text-align: right; }
+.sg-detalle-table .sg-td-action    { text-align: center; }
+
+/* Combobox de proceso clave dentro de la tabla */
+.sg-pc-combobox .sg-combobox__input {
+    font-size: 0.8rem !important;
+    padding: 6px 8px !important;
+    border-radius: 8px !important;
+    border-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+/* Selects dentro de la tabla — más compactos */
+.sg-detalle-table .sg-new__select {
+    min-width: 0 !important;
+    width: 100% !important;
+    font-size: 0.8rem !important;
+    padding: 6px 28px 6px 8px !important;
+    border-radius: 8px !important;
+    border-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+.sg-detalle-table .sg-new__select:focus {
+    border-color: var(--sg-primary) !important;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.15) !important;
+}
+
+/* Input de monto dentro de la tabla */
+.sg-detalle-table .sg-inp-monto {
+    width: 100% !important;
+    font-size: 0.85rem !important;
+    padding: 6px 8px !important;
+    border-radius: 8px !important;
+    text-align: right;
+    color: #fff !important;
+    font-weight: 700 !important;
+    border-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+.sg-detalle-table .sg-inp-monto:focus {
+    border-color: var(--sg-success) !important;
+    box-shadow: 0 0 0 2px rgba(29, 209, 161, 0.15) !important;
+}
+
+/* Botón eliminar fila */
+.sg-partida-remove {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 107, 107, 0.06);
+    border: 1px solid rgba(255, 107, 107, 0.22);
+    color: var(--sg-danger);
+    border-radius: 7px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.sg-partida-remove:hover {
+    background: rgba(255, 107, 107, 0.2);
+    color: #fff;
+}
+
+/* =========================================================
+   COMBOBOX DE BÚSQUEDA (descripción de partida)
+   ========================================================= */
+
+.sg-combobox {
+    position: relative;
+    width: 100%;
+}
+
+.sg-combobox__input {
+    width: 100% !important;
+    font-size: 0.8rem !important;
+    padding: 6px 8px !important;
+    border-radius: 8px !important;
+}
+
+.sg-combobox__list {
+    /* posicionado con position:fixed via JS para escapar del overflow de la tabla */
+    position: fixed;
+    z-index: 9999;
+    background: #0c1520;
+    border: 1px solid var(--sg-border);
+    border-radius: 10px;
+    max-height: 240px;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.7);
+    scrollbar-width: thin;
+    scrollbar-color: var(--sg-border) transparent;
+}
+
+.sg-combobox__list:not([hidden]) {
+    display: block;
+}
+
+.sg-combobox__item {
+    padding: 7px 12px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+    border-bottom: 1px solid rgba(13, 202, 240, 0.05);
+}
+
+.sg-combobox__item:last-child {
+    border-bottom: none;
+}
+
+.sg-combobox__item:hover,
+.sg-combobox__item--active {
+    background: rgba(13, 202, 240, 0.1);
+}
+
+.sg-combobox__item-desc {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #e6f1ff;
+    line-height: 1.3;
+}
+
+.sg-combobox__item-sub {
+    font-size: 0.68rem;
+    color: var(--sg-muted);
+    margin-top: 1px;
+}
+
+.sg-combobox__empty {
+    padding: 10px 12px;
+    font-size: 0.78rem;
+    color: var(--sg-muted);
+    text-align: center;
+}
+
+/* =========================================================
+   PIE DE LA TABLA (agregar + total)
+   ========================================================= */
+
+.sg-detalle-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+    gap: 32px;
+}
+
+.sg-new__add-partida-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    background: rgba(13, 202, 240, 0.08);
+    border: 1px solid rgba(13, 202, 240, 0.25);
+    color: var(--sg-primary);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sg-new__add-partida-btn:hover {
+    background: rgba(13, 202, 240, 0.2);
+    color: #fff;
+}
+
+.sg-new__add-partida-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: rgba(13, 202, 240, 0.08);
+    color: var(--sg-primary);
+}
+
+/* =========================================================
+   TOTAL
+   ========================================================= */
+
+.sg-new__total-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.sg-new__total-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--sg-muted);
+}
+
+.sg-new__total-valor {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--sg-success);
+    font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+   SUBMIT
+   ========================================================= */
+
+.sg-new__submit-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 20px 28px 28px;
+    border-top: 1px solid var(--sg-border-soft);
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.sg-new__submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 48px;
+    border-radius: 16px;
+    background: rgba(29, 209, 161, 0.15);
+    border: 1px solid rgba(29, 209, 161, 0.5);
+    color: var(--sg-success);
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    letter-spacing: 0.3px;
+}
+
+.sg-new__submit-btn:hover {
+    background: rgba(29, 209, 161, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(29, 209, 161, 0.2);
+}
+
+/* =========================================================
+   FLATPICKR — TEMA OSCURO SG
+   El calendario se renderiza en <body> por Flatpickr,
+   así que los estilos son globales dentro de este archivo.
+   ========================================================= */
+
+.flatpickr-calendar {
+    background: #0c1520 !important;
+    border: 1px solid rgba(13, 202, 240, 0.28) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8) !important;
+    font-family: inherit !important;
+    width: 340px !important;
+    padding: 4px 4px 8px !important;
+}
+
+/* Flecha de la burbuja (si aparece) */
+.flatpickr-calendar.arrowTop::before,
+.flatpickr-calendar.arrowTop::after,
+.flatpickr-calendar.arrowBottom::before,
+.flatpickr-calendar.arrowBottom::after {
+    border-top-color: #0c1520 !important;
+    border-bottom-color: #0c1520 !important;
+}
+
+/* ── Barra de navegación (mes y año) ── */
+.flatpickr-months {
+    padding: 10px 6px 4px !important;
+    align-items: center;
+}
+
+.flatpickr-months .flatpickr-month {
+    background: transparent !important;
+    height: 36px !important;
+}
+
+.flatpickr-current-month {
+    color: #0dcaf0 !important;
+    font-size: 1rem !important;
+    font-weight: 800 !important;
+    padding-top: 4px !important;
+}
+
+.flatpickr-current-month .cur-month {
+    color: #0dcaf0 !important;
+    font-weight: 800 !important;
+}
+
+.flatpickr-current-month .cur-year {
+    color: #0dcaf0 !important;
+    font-weight: 700 !important;
+    background: transparent !important;
+}
+
+.flatpickr-current-month .numInputWrapper {
+    width: 68px !important;
+}
+
+.flatpickr-current-month input.cur-year {
+    color: #0dcaf0 !important;
+}
+
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+    color: #0dcaf0 !important;
+    fill: #0dcaf0 !important;
+    padding: 8px 10px !important;
+    border-radius: 8px !important;
+    top: 10px !important;
+    transition: background 0.15s ease !important;
+}
+
+.flatpickr-months .flatpickr-prev-month:hover,
+.flatpickr-months .flatpickr-next-month:hover {
+    background: rgba(13, 202, 240, 0.15) !important;
+    color: #fff !important;
+}
+
+.flatpickr-months .flatpickr-prev-month svg,
+.flatpickr-months .flatpickr-next-month svg {
+    fill: currentColor !important;
+}
+
+/* ── Cabecera de días de la semana ── */
+.flatpickr-weekdays {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(13, 202, 240, 0.1) !important;
+    margin-bottom: 2px !important;
+    padding: 4px 0 !important;
+}
+
+span.flatpickr-weekday {
+    background: transparent !important;
+    color: #9fb3c8 !important;
+    font-size: 0.72rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.4px !important;
+}
+
+/* ── Contenedor de días ── */
+.flatpickr-innerContainer {
+    padding: 4px 4px 0 !important;
+}
+
+.dayContainer {
+    gap: 2px !important;
+    padding: 4px 2px !important;
+    min-width: unset !important;
+    max-width: unset !important;
+    width: 100% !important;
+}
+
+/* ── Días individuales ── */
+.flatpickr-day {
+    color: #e6f1ff !important;
+    border: none !important;
+    border-radius: 9px !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+    max-width: 44px !important;
+    height: 38px !important;
+    line-height: 38px !important;
+    transition: background 0.12s ease, color 0.12s ease !important;
+}
+
+.flatpickr-day:hover,
+.flatpickr-day:focus {
+    background: rgba(13, 202, 240, 0.15) !important;
+    border: none !important;
+    color: #0dcaf0 !important;
+}
+
+.flatpickr-day.today {
+    background: rgba(13, 202, 240, 0.08) !important;
+    border: 1px solid rgba(13, 202, 240, 0.4) !important;
+    color: #0dcaf0 !important;
+    font-weight: 700 !important;
+}
+
+.flatpickr-day.today:hover {
+    background: rgba(13, 202, 240, 0.2) !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.selected:hover {
+    background: #0dcaf0 !important;
+    border-color: #0dcaf0 !important;
+    color: #0c1520 !important;
+    font-weight: 800 !important;
+}
+
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+    color: #2e4a63 !important;
+}
+
+.flatpickr-day.flatpickr-disabled {
+    color: #1e3349 !important;
+    cursor: not-allowed !important;
+}
+
+/* ── Input visual ── */
+.sg-date-input.flatpickr-input {
+    cursor: pointer !important;
+}
+
+/* ── Dropdown de meses (select nativo dentro de Flatpickr) ── */
+.flatpickr-monthDropdown-months {
+    background-color: #0c1520 !important;
+    color: #0dcaf0 !important;
+    border: 1px solid rgba(13, 202, 240, 0.3) !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    padding: 2px 6px !important;
+    cursor: pointer !important;
+    outline: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+}
+
+.flatpickr-monthDropdown-months:focus {
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.2) !important;
+}
+
+.flatpickr-monthDropdown-months option,
+.flatpickr-monthDropdown-months optgroup {
+    background-color: #0c1520 !important;
+    color: #e6f1ff !important;
+}
+
+/* Input numérico del año */
+.numInputWrapper input.cur-year {
+    background: transparent !important;
+    color: #0dcaf0 !important;
+    border: none !important;
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    outline: none !important;
+}
+
+.numInputWrapper span {
+    border-color: rgba(13, 202, 240, 0.2) !important;
+}
+
+.numInputWrapper span::after {
+    border-top-color: #0dcaf0 !important;
+    border-bottom-color: #0dcaf0 !important;
+}
+
+/* ── Botones "Hoy" / "Limpiar" (si se activan) ── */
+.flatpickr-months .flatpickr-month svg {
+    fill: #0dcaf0 !important;
+}

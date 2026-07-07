@@ -35,6 +35,7 @@
 					<tr>
 						<th>Nombre</th>
 						<th>Estado</th>
+						<th>Indicadores</th>
 						<th>Acciones</th>
 					</tr>
 				</thead>
@@ -49,6 +50,13 @@
 							<td class="text-center">
 								<span class="departamento-index-page-badge {{ departamento.activo ? 'departamento-index-page-badge--active' : 'departamento-index-page-badge--inactive' }}">
 									{{ departamento.activo ? 'Activo' : 'Inactivo' }}
+								</span>
+							</td>
+
+							<td class="text-center">
+								<span class="departamento-index-page-indicator-count">
+									<i class="bi bi-bar-chart-line-fill"></i>
+									{{ departamento.indicadoresBasicos|length }}
 								</span>
 							</td>
 
@@ -74,7 +82,7 @@
 						</tr>
 					{% else %}
 						<tr>
-							<td colspan="3" class="departamento-index-page-empty">
+							<td colspan="4" class="departamento-index-page-empty">
 								No se encontraron registros.
 							</td>
 						</tr>

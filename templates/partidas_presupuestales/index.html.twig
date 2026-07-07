@@ -11,10 +11,12 @@
 
 			{# IZQUIERDA — BOTÓN AGREGAR #}
 			<div class="partidas-presupuestales-index-toolbar__left">
-				<a href="{{ path('app_partidas_presupuestales_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="partidas-presupuestales-index-add-btn">
-					<i class="bi bi-plus-circle-fill"></i>
-					<span>Crear nueva partida</span>
-				</a>
+				{% if is_granted('ROLE_ADMIN') %}
+					<a href="{{ path('app_partidas_presupuestales_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="partidas-presupuestales-index-add-btn">
+						<i class="bi bi-plus-circle-fill"></i>
+						<span>Crear nueva partida</span>
+					</a>
+				{% endif %}
 			</div>
 
 			{# DERECHA — BUSCADOR #}

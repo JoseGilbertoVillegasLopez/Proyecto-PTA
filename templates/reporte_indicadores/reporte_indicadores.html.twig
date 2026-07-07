@@ -39,60 +39,69 @@
 						{% if actividad %}
 							<input type="hidden" name="actividades[{{ index }}][id]" value="{{ actividad.id }}">
 						{% endif %}
-						<div class="reporte-indicadores-captura__activity-label">
-							Accion/Actividad {{ loop.index }}
+						<div class="reporte-indicadores-captura__activity-header" data-reporte-indicadores-captura-toggle>
+							<span class="reporte-indicadores-captura__activity-header-label">
+								<i class="bi bi-list-check"></i>
+								<span>Accion/Actividad {{ loop.index }}</span>
+							</span>
+							<i class="bi bi-chevron-down reporte-indicadores-captura__activity-chevron"></i>
 						</div>
 
-						<div class="reporte-indicadores-captura__field">
-							<label for="reporte-indicadores-captura-accion-{{ index }}">Actividad</label>
-							<input id="reporte-indicadores-captura-accion-{{ index }}" name="actividades[{{ index }}][accion]" type="text" class="reporte-indicadores-captura__input" value="{{ actividad ? actividad.accion : '' }}" required>
-						</div>
+						<div class="reporte-indicadores-captura__activity-body">
+							<div class="reporte-indicadores-captura__row">
+								<div class="reporte-indicadores-captura__field">
+									<label for="reporte-indicadores-captura-accion-{{ index }}">Actividad</label>
+									<input id="reporte-indicadores-captura-accion-{{ index }}" name="actividades[{{ index }}][accion]" type="text" class="reporte-indicadores-captura__input" value="{{ actividad ? actividad.accion : '' }}" required>
+								</div>
 
-						<div class="reporte-indicadores-captura__field">
-							<label for="reporte-indicadores-captura-indicador-{{ index }}">Indicador que impacta</label>
-							<select id="reporte-indicadores-captura-indicador-{{ index }}" name="actividades[{{ index }}][indicadorBasico]" class="reporte-indicadores-captura__select" required>
-								<option value="">Selecciona un indicador</option>
-								{% for indicador in indicadores_basicos %}
-									<option value="{{ indicador.id }}" {{ actividad and actividad.indicadorBasico and actividad.indicadorBasico.id == indicador.id ? 'selected' : '' }}>
-										{{ indicador.nombreIndicador }}
-									</option>
-								{% endfor %}
-							</select>
-						</div>
+								<div class="reporte-indicadores-captura__field">
+									<label for="reporte-indicadores-captura-indicador-{{ index }}">Indicador que impacta</label>
+									<select id="reporte-indicadores-captura-indicador-{{ index }}" name="actividades[{{ index }}][indicadorBasico]" class="reporte-indicadores-captura__select" required>
+										<option value="">Selecciona un indicador</option>
+										<option value="0" {{ actividad and not actividad.indicadorBasico ? 'selected' : '' }}>No aplica</option>
+										{% for indicador in indicadores_basicos %}
+											<option value="{{ indicador.id }}" {{ actividad and actividad.indicadorBasico and actividad.indicadorBasico.id == indicador.id ? 'selected' : '' }}>
+												{{ indicador.nombreIndicador }}
+											</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
 
-						<div class="reporte-indicadores-captura__field">
-							<label for="reporte-indicadores-captura-descripcion-{{ index }}">Descripcion</label>
-							<textarea id="reporte-indicadores-captura-descripcion-{{ index }}" name="actividades[{{ index }}][descripcion]" class="reporte-indicadores-captura__textarea" rows="3" required>{{ actividad ? actividad.descripcion : '' }}</textarea>
-						</div>
+							<div class="reporte-indicadores-captura__field">
+								<label for="reporte-indicadores-captura-descripcion-{{ index }}">Descripcion</label>
+								<textarea id="reporte-indicadores-captura-descripcion-{{ index }}" name="actividades[{{ index }}][descripcion]" class="reporte-indicadores-captura__textarea" rows="4" required>{{ actividad ? actividad.descripcion : '' }}</textarea>
+							</div>
 
-						<div class="reporte-indicadores-captura__field">
-							<label for="reporte-indicadores-captura-evidencias-{{ index }}">Evidencias</label>
-							<div class="reporte-indicadores-captura__hint">Minimo 1 y maximo 5 archivos. Solo imagenes o PDF.</div>
-							<div class="reporte-indicadores-captura__preview" data-reporte-indicadores-captura-preview data-reporte-indicadores-captura-input-name="actividades[{{ index }}][evidencias][]">
-								{% if actividad %}
-									{% for evidencia in actividad.evidencias %}
-										<div class="reporte-indicadores-captura__preview-item reporte-indicadores-captura__preview-item--existing">
-											{% if evidencia.mimeType starts with 'image/' %}
-												<img src="{{ evidencia.ruta }}" alt="{{ evidencia.archivoNombreOriginal }}">
-											{% else %}
-												<iframe src="{{ evidencia.ruta }}#toolbar=0&navpanes=0" title="{{ evidencia.archivoNombreOriginal }}"></iframe>
-											{% endif %}
-											<button
-												type="button"
-												class="reporte-indicadores-captura__preview-remove"
-												title="Eliminar evidencia"
-												data-reporte-indicadores-captura-remove-existing
-												data-evidencia-id="{{ evidencia.id }}"
-												data-input-name="actividades[{{ index }}][evidenciasEliminadas][]">
-												<i class="bi bi-x-lg"></i>
-											</button>
-											<span>{{ evidencia.archivoNombreOriginal }}</span>
-										</div>
-									{% endfor %}
-								{% endif %}
-								<button type="button" class="reporte-indicadores-captura__preview-add" data-reporte-indicadores-captura-add-file title="Agregar evidencia">
-									<i class="bi bi-plus-lg"></i>
-								</button>
+							<div class="reporte-indicadores-captura__field">
+								<label for="reporte-indicadores-captura-evidencias-{{ index }}">Evidencias</label>
+								<div class="reporte-indicadores-captura__hint">Minimo 1 y maximo 5 archivos. Solo imagenes o PDF.</div>
+								<div class="reporte-indicadores-captura__preview" data-reporte-indicadores-captura-preview data-reporte-indicadores-captura-input-name="actividades[{{ index }}][evidencias][]">
+									{% if actividad %}
+										{% for evidencia in actividad.evidencias %}
+											<div class="reporte-indicadores-captura__preview-item reporte-indicadores-captura__preview-item--existing">
+												{% if evidencia.mimeType starts with 'image/' %}
+													<img src="{{ evidencia.ruta }}" alt="{{ evidencia.archivoNombreOriginal }}">
+												{% else %}
+													<iframe src="{{ evidencia.ruta }}#toolbar=0&navpanes=0" title="{{ evidencia.archivoNombreOriginal }}"></iframe>
+												{% endif %}
+												<button
+													type="button"
+													class="reporte-indicadores-captura__preview-remove"
+													title="Eliminar evidencia"
+													data-reporte-indicadores-captura-remove-existing
+													data-evidencia-id="{{ evidencia.id }}"
+													data-input-name="actividades[{{ index }}][evidenciasEliminadas][]">
+													<i class="bi bi-x-lg"></i>
+												</button>
+												<span>{{ evidencia.archivoNombreOriginal }}</span>
+											</div>
+										{% endfor %}
+									{% endif %}
+									<button type="button" class="reporte-indicadores-captura__preview-add" data-reporte-indicadores-captura-add-file title="Agregar evidencia">
+										<i class="bi bi-plus-lg"></i>
+									</button>
+								</div>
 							</div>
 						</div>
 					</article>
@@ -109,35 +118,46 @@
 
 		<template data-reporte-indicadores-captura-template>
 			<article class="reporte-indicadores-captura__activity-card" data-reporte-indicadores-captura-card>
-				<div class="reporte-indicadores-captura__activity-label">Accion/Actividad __NUMBER__</div>
-
-				<div class="reporte-indicadores-captura__field">
-					<label for="reporte-indicadores-captura-accion-__INDEX__">Actividad</label>
-					<input id="reporte-indicadores-captura-accion-__INDEX__" name="actividades[__INDEX__][accion]" type="text" class="reporte-indicadores-captura__input" required>
+				<div class="reporte-indicadores-captura__activity-header" data-reporte-indicadores-captura-toggle>
+					<span class="reporte-indicadores-captura__activity-header-label">
+						<i class="bi bi-list-check"></i>
+						<span>Accion/Actividad __NUMBER__</span>
+					</span>
+					<i class="bi bi-chevron-down reporte-indicadores-captura__activity-chevron"></i>
 				</div>
 
-				<div class="reporte-indicadores-captura__field">
-					<label for="reporte-indicadores-captura-indicador-__INDEX__">Indicador que impacta</label>
-					<select id="reporte-indicadores-captura-indicador-__INDEX__" name="actividades[__INDEX__][indicadorBasico]" class="reporte-indicadores-captura__select" required>
-						<option value="">Selecciona un indicador</option>
-						{% for indicador in indicadores_basicos %}
-							<option value="{{ indicador.id }}">{{ indicador.nombreIndicador }}</option>
-						{% endfor %}
-					</select>
-				</div>
+				<div class="reporte-indicadores-captura__activity-body">
+					<div class="reporte-indicadores-captura__row">
+						<div class="reporte-indicadores-captura__field">
+							<label for="reporte-indicadores-captura-accion-__INDEX__">Actividad</label>
+							<input id="reporte-indicadores-captura-accion-__INDEX__" name="actividades[__INDEX__][accion]" type="text" class="reporte-indicadores-captura__input" required>
+						</div>
 
-				<div class="reporte-indicadores-captura__field">
-					<label for="reporte-indicadores-captura-descripcion-__INDEX__">Descripcion</label>
-					<textarea id="reporte-indicadores-captura-descripcion-__INDEX__" name="actividades[__INDEX__][descripcion]" class="reporte-indicadores-captura__textarea" rows="3" required></textarea>
-				</div>
+						<div class="reporte-indicadores-captura__field">
+							<label for="reporte-indicadores-captura-indicador-__INDEX__">Indicador que impacta</label>
+							<select id="reporte-indicadores-captura-indicador-__INDEX__" name="actividades[__INDEX__][indicadorBasico]" class="reporte-indicadores-captura__select" required>
+								<option value="">Selecciona un indicador</option>
+								<option value="0">No aplica</option>
+								{% for indicador in indicadores_basicos %}
+									<option value="{{ indicador.id }}">{{ indicador.nombreIndicador }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
 
-				<div class="reporte-indicadores-captura__field">
-					<label for="reporte-indicadores-captura-evidencias-__INDEX__">Evidencias</label>
-					<div class="reporte-indicadores-captura__hint">Minimo 1 y maximo 5 archivos. Solo imagenes o PDF.</div>
-					<div class="reporte-indicadores-captura__preview" data-reporte-indicadores-captura-preview data-reporte-indicadores-captura-input-name="actividades[__INDEX__][evidencias][]">
-						<button type="button" class="reporte-indicadores-captura__preview-add" data-reporte-indicadores-captura-add-file title="Agregar evidencia">
-							<i class="bi bi-plus-lg"></i>
-						</button>
+					<div class="reporte-indicadores-captura__field">
+						<label for="reporte-indicadores-captura-descripcion-__INDEX__">Descripcion</label>
+						<textarea id="reporte-indicadores-captura-descripcion-__INDEX__" name="actividades[__INDEX__][descripcion]" class="reporte-indicadores-captura__textarea" rows="4" required></textarea>
+					</div>
+
+					<div class="reporte-indicadores-captura__field">
+						<label for="reporte-indicadores-captura-evidencias-__INDEX__">Evidencias</label>
+						<div class="reporte-indicadores-captura__hint">Minimo 1 y maximo 5 archivos. Solo imagenes o PDF.</div>
+						<div class="reporte-indicadores-captura__preview" data-reporte-indicadores-captura-preview data-reporte-indicadores-captura-input-name="actividades[__INDEX__][evidencias][]">
+							<button type="button" class="reporte-indicadores-captura__preview-add" data-reporte-indicadores-captura-add-file title="Agregar evidencia">
+								<i class="bi bi-plus-lg"></i>
+							</button>
+						</div>
 					</div>
 				</div>
 			</article>

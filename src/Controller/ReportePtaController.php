@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Encabezado;
+use App\Entity\User;
+use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use App\Service\Pta\ConstructorVistaReportePtaService;
 use App\Service\Pta\ConstructorVistaReportePtaShowService;
 use App\Service\Pta\GuardarReportePtaService;
@@ -28,7 +30,13 @@ class ReportePtaController extends AbstractController
         Encabezado $encabezado,
         ConstructorVistaReportePtaIndexService $constructorIndex,
         PtaAccessResolver $ptaAccessResolver,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'reportes_pta'))) {
+            throw $this->createAccessDeniedException();
+        }
+
         $isTurbo = $request->headers->has('Turbo-Frame');
 
         $datos = $constructorIndex->build($encabezado);
@@ -59,7 +67,12 @@ class ReportePtaController extends AbstractController
         ConstructorVistaReportePtaService $constructorService,
         GuardarReportePtaService $guardarService,
         CsrfTokenManagerInterface $csrfTokenManager,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'reportes_pta'))) {
+            throw $this->createAccessDeniedException();
+        }
 
         // ===============================
         // 1) Validar trimestre
@@ -143,7 +156,12 @@ class ReportePtaController extends AbstractController
         ConstructorVistaReportePtaEditService $constructorEdit,
         GuardarReportePtaService $guardarService,
         CsrfTokenManagerInterface $csrfTokenManager,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'reportes_pta'))) {
+            throw $this->createAccessDeniedException();
+        }
 
         // ===============================
         // 1) Validar trimestre
@@ -227,7 +245,14 @@ class ReportePtaController extends AbstractController
         ConstructorVistaReportePtaShowService $constructorShow,
         ReportePtaTrimestreRepository $trimestreRepo,
         CsrfTokenManagerInterface $csrfTokenManager,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        $tieneAcceso  = $user instanceof User && $resolver->tieneAcceso($user, 'reportes_pta');
+        $esEncargado  = $user instanceof User && $resolver->esEncargado($user, 'reportes_pta');
+        if (!$this->isGranted('ROLE_ADMIN') && !$tieneAcceso && !$esEncargado) {
+            throw $this->createAccessDeniedException();
+        }
 
         // ===============================
         // 1) Validar trimestre
@@ -287,7 +312,14 @@ public function exportWord(
     Encabezado $encabezado,
     int $trimestre,
     ReportePtaWordExportService $wordExportService,
+    ModuloAccesoResolver $resolver,
 ): Response {
+    $user = $this->getUser();
+    $tieneAcceso = $user instanceof User && $resolver->tieneAcceso($user, 'reportes_pta');
+    $esEncargado = $user instanceof User && $resolver->esEncargado($user, 'reportes_pta');
+    if (!$this->isGranted('ROLE_ADMIN') && !$tieneAcceso && !$esEncargado) {
+        throw $this->createAccessDeniedException();
+    }
 
     // ===============================
     // 1) Validar trimestre
@@ -308,7 +340,14 @@ public function exportPdf(
     Encabezado $encabezado,
     int $trimestre,
     ReportePtaPdfExportService $pdfExportService,
+    ModuloAccesoResolver $resolver,
 ): Response {
+    $user = $this->getUser();
+    $tieneAcceso = $user instanceof User && $resolver->tieneAcceso($user, 'reportes_pta');
+    $esEncargado = $user instanceof User && $resolver->esEncargado($user, 'reportes_pta');
+    if (!$this->isGranted('ROLE_ADMIN') && !$tieneAcceso && !$esEncargado) {
+        throw $this->createAccessDeniedException();
+    }
 
     // ===============================
     // 1) Validar trimestre
@@ -331,7 +370,12 @@ public function exportPdf(
         int $trimestre,
         ReportePtaTrimestreRepository $trimestreRepo,
         EntityManagerInterface $em,
+        ModuloAccesoResolver $resolver,
     ): Response {
+        $user = $this->getUser();
+        if (!$this->isGranted('ROLE_ADMIN') && (!$user instanceof User || !$resolver->tieneAcceso($user, 'reportes_pta'))) {
+            throw $this->createAccessDeniedException();
+        }
 
         // ===============================
         // 1) Validar trimestre

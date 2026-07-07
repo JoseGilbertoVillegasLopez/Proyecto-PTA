@@ -1,28 +1,22 @@
 <turbo-frame id="content">
 	<section class="departamento-edit-page-card">
 
-		<header
-			class="departamento-edit-page-header">
-
-			<!-- VOLVER -->
-			<a href="{{ path('app_departamento_index') }}" data-turbo-frame="content" data-turbo-action="replace" class="departamento-edit-page-back-btn" title="Volver">
+		<header class="departamento-edit-page-header">
+			<a href="{{ path('app_departamento_index') }}"
+			   data-turbo-frame="content"
+			   data-turbo-action="replace"
+			   class="departamento-edit-page-back-btn"
+			   title="Volver">
 				<i class="bi bi-arrow-left"></i>
 			</a>
-
-			<!-- TÍTULO + SUBTÍTULO -->
 			<div class="departamento-edit-page-header-center">
 				<h1 class="departamento-edit-page-title">
+					<i class="bi bi-pencil-square"></i>
 					Editar departamento
 				</h1>
-
-				<p class="departamento-edit-page-subtitle">
-					Edita solo los campos necesarios
-				</p>
+				<p class="departamento-edit-page-subtitle">{{ departamento.nombre }}</p>
 			</div>
-
-			<!-- ESPACIADOR -->
 			<div class="departamento-edit-page-header-spacer" aria-hidden="true"></div>
-
 		</header>
 
 		{{ form_start(form, {
@@ -33,37 +27,44 @@
             }
         }) }}
 
-		<div class="departamento-edit-page-group">
-			{{ form_label(form.nombre, null, {'label_attr': {'class': 'departamento-edit-page-label'}}) }}
-			{{ form_widget(form.nombre, {'attr': {'class': 'departamento-edit-page-input'}}) }}
-			{{ form_errors(form.nombre) }}
-		</div>
-
-		<div class="departamento-edit-page-group">
-			{{ form_label(form.indicadoresBasicos, null, {'label_attr': {'class': 'departamento-edit-page-label'}}) }}
-
-			<div class="departamento-new-edit-page-indicadores-tags-selector-field-shell">
-				{{ form_widget(form.indicadoresBasicos, {
-                    'attr': {
-                        'class': 'departamento-indicadores-multiple-select',
-                        'data-departamento-new-edit-page-indicadores-tags-selector-source': 'true'
-                    }
-                }) }}
+		<div class="departamento-edit-page-section-card">
+			<div class="departamento-edit-page-section-header">
+				<i class="bi bi-building"></i>
+				<span>Información básica</span>
 			</div>
-
-			{{ form_help(form.indicadoresBasicos) }}
-			{{ form_errors(form.indicadoresBasicos) }}
+			<div class="departamento-edit-page-section-body">
+				<div class="departamento-edit-page-group">
+					{{ form_label(form.nombre, 'Nombre del departamento', {'label_attr': {'class': 'departamento-edit-page-label'}}) }}
+					<div class="departamento-edit-page-input-wrapper">
+						<i class="bi bi-building departamento-edit-page-input-icon"></i>
+						{{ form_widget(form.nombre, {'attr': {'class': 'departamento-edit-page-input departamento-edit-page-input--with-icon', 'placeholder': 'Ingresa el nombre del departamento'}}) }}
+					</div>
+					{{ form_errors(form.nombre) }}
+				</div>
+			</div>
 		</div>
 
-		<div class="departamento-edit-page-group">
-			{{ form_label(form.activo, null, {'label_attr': {'class': 'departamento-edit-page-label'}}) }}
-			{{ form_widget(form.activo, {'attr': {'class': 'departamento-edit-page-select'}}) }}
-			{{ form_errors(form.activo) }}
+<div class="departamento-edit-page-section-card">
+			<div class="departamento-edit-page-section-header">
+				<i class="bi bi-toggle-on"></i>
+				<span>Estado del departamento</span>
+			</div>
+			<div class="departamento-edit-page-section-body">
+				<div class="departamento-edit-page-group departamento-edit-page-group--no-border">
+					{{ form_label(form.activo, 'Estado', {'label_attr': {'class': 'departamento-edit-page-label'}}) }}
+					<div class="departamento-edit-page-input-wrapper">
+						<i class="bi bi-toggle-on departamento-edit-page-input-icon"></i>
+						{{ form_widget(form.activo, {'attr': {'class': 'departamento-edit-page-select departamento-edit-page-select--with-icon'}}) }}
+					</div>
+					{{ form_errors(form.activo) }}
+				</div>
+			</div>
 		</div>
 
 		<div class="departamento-edit-page-actions">
-			<button type="submit" class="departamento-edit-page-save-btn" title="Guardar cambios">
-				<i class="bi bi-check-lg"></i>
+			<button type="submit" class="departamento-edit-page-save-btn">
+				<i class="bi bi-check-circle-fill"></i>
+				<span>Guardar cambios</span>
 			</button>
 		</div>
 

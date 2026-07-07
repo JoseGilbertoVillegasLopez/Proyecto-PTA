@@ -11,20 +11,27 @@
 
 			{# IZQUIERDA — BOTÓN AGREGAR #}
 			<div class="indicadores-basicos-index-toolbar__left">
-				<a href="{{ path('app_indicadores_basicos_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn">
-					<i class="bi bi-plus-circle-fill"></i>
-					<span>Crear indicador</span>
-				</a>
-				<a href="{{ path('app_reporte_indicadores_index') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn indicadores-basicos-index-add-btn--reports">
-					<i class="bi bi-file-earmark-bar-graph"></i>
-					<span>Reportes</span>
-				</a>
-				{% if can_view_plantilla_indicadores %}
-					<a href="{{ path('app_indicadores_basicos_plantilla_indicadores') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn indicadores-basicos-index-add-btn--template">
-						<i class="bi bi-table"></i>
-						<span>Ciclos</span>
+				{% if es_encargado_modulo('indicadores_basicos') %}
+					<a href="{{ path('app_indicadores_basicos_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn">
+						<i class="bi bi-plus-circle-fill"></i>
+						<span>Crear indicador</span>
 					</a>
 				{% endif %}
+				{% if es_encargado_modulo('reporte_indicadores') %}
+					<a href="{{ path('app_reporte_indicadores_encargado_index') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn indicadores-basicos-index-add-btn--reports">
+						<i class="bi bi-file-earmark-bar-graph"></i>
+						<span>Reportes</span>
+					</a>
+				{% elseif tiene_acceso_modulo('reporte_indicadores') %}
+					<a href="{{ path('app_reporte_indicadores_index') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn indicadores-basicos-index-add-btn--reports">
+						<i class="bi bi-file-earmark-bar-graph"></i>
+						<span>Reportes</span>
+					</a>
+				{% endif %}
+				<a href="{{ path('app_indicadores_basicos_plantilla_indicadores') }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-add-btn indicadores-basicos-index-add-btn--template">
+					<i class="bi bi-table"></i>
+					<span>Semáforo</span>
+				</a>
 			</div>
 
 			{# DERECHA — BUSCADOR #}
@@ -43,6 +50,7 @@
 						<th>Indicador</th>
 						<th>Fórmula</th>
 						<th>Observaciones</th>
+						<th>Responsable</th>
 						{% if is_granted('ROLE_ADMIN') %}
 							<th class="text-center">Estado</th>
 						{% endif %}
@@ -60,6 +68,13 @@
 							</td>
 							<td class="indicadores-basicos-observaciones">
 								{{ indicador.observaciones ?: '—' }}
+							</td>
+							<td class="indicadores-basicos-responsable">
+								{% if indicador.departamentos|length > 0 %}
+									{% for dep in indicador.departamentos %}{{ dep.nombre }}{% if not loop.last %}, {% endif %}{% endfor %}
+								{% else %}
+									—
+								{% endif %}
 							</td>
 							{% if is_granted('ROLE_ADMIN') %}
 								<td class="text-center">
@@ -84,7 +99,7 @@
 						</tr>
 					{% else %}
 						<tr>
-							<td colspan="5" class="text-center text-muted indicadores-basicos-index-empty">
+							<td colspan="{{ is_granted('ROLE_ADMIN') ? 6 : 5 }}" class="text-center text-muted indicadores-basicos-index-empty">
 								No se encontraron indicadores básicos.
 							</td>
 						</tr>

@@ -1,0 +1,238 @@
+<?php
+
+namespace App\Controller;
+
+use App\Entity\ModuloAcceso;
+use App\Repository\ModuloSistemaRepository;
+use App\Repository\PuestoRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+#[Route('/admin/modulos-acceso')]
+#[IsGranted('ROLE_ADMIN')]
+final class ModuloAccesoController extends AbstractController
+{
+    #[Route('', name: 'app_admin_modulo_acceso_index', methods: ['GET'])]
+    public function index(Request $request, ModuloSistemaRepository $moduloRepo): Response
+    {
+        $modulos = $moduloRepo->findAll();
+
+        $resumen = [];
+        foreach ($modulos as $modulo) {
+            $encargados = 0;
+            $conAcceso  = 0;
+            foreach ($modulo->getAccesos() as $acceso) {
+                if ($acceso->getTipo() === 'encargado') {
+                    $encargados++;
+                } else {
+                    $conAcceso++;
+                }
+            }
+            $resumen[] = [
+                'modulo'     => $modulo,
+                'encargados' => $encargados,
+                'con_acceso' => $conAcceso,
+            ];
+        }
+
+        if ($request->headers->get('Turbo-Frame')) {
+            return $this->render('modulo_acceso/index.html.twig', [
+                'resumen' => $resumen,
+            ]);
+        }
+
+        return $this->render('dashboard/index.html.twig', [
+            'section'     => 'modulos_acceso',
+            'content_url' => $this->generateUrl('app_admin_modulo_acceso_index'),
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_admin_modulo_acceso_edit', methods: ['GET'])]
+    public function edit(
+        int $id,
+        Request $request,
+        ModuloSistemaRepository $moduloRepo,
+        PuestoRepository $puestoRepo,
+    ): Response {
+        $modulo = $moduloRepo->find($id);
+        if (!$modulo) {
+            throw $this->createNotFoundException();
+        }
+
+        $todosLosPuestos = $puestoRepo->findBy(['activo' => true], ['nombre' => 'ASC']);
+
+        $encargadosIds  = [];
+        $conAccesoIds   = [];
+        $encargadosCargos = [];
+
+        foreach ($modulo->getAccesos() as $acceso) {
+            if ($acceso->getTipo() === 'encargado') {
+                $encargadosIds[] = $acceso->getPuesto()->getId();
+                $encargadosCargos[$acceso->getPuesto()->getId()] = $acceso->getCargo();
+            } else {
+                $conAccesoIds[] = $acceso->getPuesto()->getId();
+            }
+        }
+
+        $encargados = [];
+        $conAcceso  = [];
+
+        foreach ($todosLosPuestos as $puesto) {
+            $pid = $puesto->getId();
+            if (in_array($pid, $encargadosIds, true)) { $encargados[] = $puesto; }
+            if (in_array($pid, $conAccesoIds,  true)) { $conAcceso[]  = $puesto; }
+        }
+
+        $vars = [
+            'modulo'             => $modulo,
+            'encargados'         => $encargados,
+            'con_acceso'         => $conAcceso,
+            'todos_puestos'      => $todosLosPuestos,
+            'encargados_ids'     => $encargadosIds,
+            'con_acceso_ids'     => $conAccesoIds,
+            'encargados_cargos'  => $encargadosCargos,
+            'cargos_catalogo'    => ModuloAcceso::CARGOS,
+        ];
+
+        if ($request->headers->get('Turbo-Frame')) {
+            return $this->render('modulo_acceso/edit.html.twig', $vars);
+        }
+
+        return $this->render('dashboard/index.html.twig', [
+            'section'     => 'modulos_acceso',
+            'content_url' => $this->generateUrl('app_admin_modulo_acceso_edit', ['id' => $id]),
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_admin_modulo_acceso_save', methods: ['POST'])]
+    public function save(
+        int $id,
+        Request $request,
+        ModuloSistemaRepository $moduloRepo,
+        PuestoRepository $puestoRepo,
+        EntityManagerInterface $em,
+    ): Response {
+        $modulo = $moduloRepo->find($id);
+        if (!$modulo) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!$this->isCsrfTokenValid('modulo_acceso_' . $id, $request->request->getString('_token'))) {
+            throw $this->createAccessDeniedException('Token CSRF inválido.');
+        }
+
+        $encargadosIds = array_filter(array_map('intval', $request->request->all('encargados') ?: []));
+        $cargosPorPuesto = [];
+
+        if ($modulo->isUsaCargoEncargado()) {
+            $cargosRaw = $request->request->all('cargos');
+
+            foreach ($encargadosIds as $puestoId) {
+                $cargo = $cargosRaw[$puestoId] ?? null;
+                if ($cargo) {
+                    $cargosPorPuesto[$puestoId] = $cargo;
+                }
+            }
+
+            if (count($encargadosIds) !== 3) {
+                $this->addFlash('error', 'Este módulo requiere exactamente 3 encargados (revisor, supervisor y autoriza).');
+
+                return $this->redirectToRoute('app_admin_modulo_acceso_edit', ['id' => $id]);
+            }
+
+            $cargosAsignados = array_values($cargosPorPuesto);
+            sort($cargosAsignados);
+            $cargosEsperados = array_keys(ModuloAcceso::CARGOS);
+            sort($cargosEsperados);
+
+            if (count($cargosPorPuesto) !== 3 || $cargosAsignados !== $cargosEsperados) {
+                $this->addFlash('error', 'Cada encargado debe tener un cargo distinto: revisor, supervisor y autoriza.');
+
+                return $this->redirectToRoute('app_admin_modulo_acceso_edit', ['id' => $id]);
+            }
+        }
+
+        // Eliminar todas las asignaciones actuales
+        foreach ($modulo->getAccesos() as $acceso) {
+            $em->remove($acceso);
+        }
+        $em->flush();
+
+        // Reinsertar encargados
+        foreach ($encargadosIds as $puestoId) {
+            $puesto = $puestoRepo->find($puestoId);
+            if (!$puesto) continue;
+
+            $acceso = new ModuloAcceso();
+            $acceso->setModulo($modulo);
+            $acceso->setPuesto($puesto);
+            $acceso->setTipo('encargado');
+            $acceso->setCargo($cargosPorPuesto[$puestoId] ?? null);
+            $em->persist($acceso);
+        }
+
+        // Reinsertar con-acceso
+        $conAccesoIds = array_filter(array_map('intval', $request->request->all('con_acceso') ?: []));
+        foreach ($conAccesoIds as $puestoId) {
+            $puesto = $puestoRepo->find($puestoId);
+            if (!$puesto) continue;
+
+            $acceso = new ModuloAcceso();
+            $acceso->setModulo($modulo);
+            $acceso->setPuesto($puesto);
+            $acceso->setTipo('acceso');
+            $em->persist($acceso);
+        }
+
+        $em->flush();
+
+        $this->addFlash('success', 'Accesos del módulo "' . $modulo->getLabel() . '" actualizados.');
+
+        return $this->redirectToRoute('app_admin_modulo_acceso_index');
+    }
+
+    #[Route('/{id}/campo', name: 'app_admin_modulo_acceso_actualizar_campo', methods: ['POST'])]
+    public function actualizarCampo(
+        int $id,
+        Request $request,
+        ModuloSistemaRepository $moduloRepo,
+        EntityManagerInterface $em,
+    ): JsonResponse {
+        $modulo = $moduloRepo->find($id);
+        if (!$modulo) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!$this->isCsrfTokenValid('modulo_acceso_campo_' . $id, $request->request->getString('_token'))) {
+            return $this->json(['ok' => false, 'error' => 'Token CSRF inválido.'], 400);
+        }
+
+        $campo = $request->request->getString('campo');
+        $valor = trim($request->request->getString('valor'));
+
+        if (!in_array($campo, ['label', 'descripcion'], true)) {
+            return $this->json(['ok' => false, 'error' => 'Campo inválido.'], 400);
+        }
+
+        if ($campo === 'label') {
+            if ($valor === '') {
+                return $this->json(['ok' => false, 'error' => 'El nombre no puede estar vacío.'], 422);
+            }
+            $modulo->setLabel($valor);
+        } else {
+            $modulo->setDescripcion($valor !== '' ? $valor : null);
+        }
+
+        $em->flush();
+
+        return $this->json([
+            'ok'    => true,
+            'valor' => $campo === 'label' ? $modulo->getLabel() : ($modulo->getDescripcion() ?? ''),
+        ]);
+    }
+}

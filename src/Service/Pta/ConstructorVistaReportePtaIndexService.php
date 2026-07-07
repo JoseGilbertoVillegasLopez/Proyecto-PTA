@@ -43,10 +43,10 @@ class ConstructorVistaReportePtaIndexService
         */
 
         // ===== OPCIÓN REAL =====
-        //$hoy = new \DateTimeImmutable('today');
+        $hoy = new \DateTimeImmutable('today');
 
         // ===== OPCIÓN PRUEBAS =====
-        $hoy = new \DateTimeImmutable('2026-04-10');
+        //$hoy = new \DateTimeImmutable('2026-04-10');
 
         /*
         |--------------------------------------------------------------------------

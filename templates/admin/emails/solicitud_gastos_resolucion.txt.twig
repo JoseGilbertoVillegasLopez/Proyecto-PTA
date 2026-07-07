@@ -1,0 +1,16 @@
+{# templates/admin/emails/solicitud_gastos_resolucion.txt.twig #}
+{{ appName }}
+— Solicitud de gastos {{ aceptada ? 'aprobada' : 'rechazada' }}
+{{ fecha|date('d/m/Y H:i') }}
+
+Hola,
+{{ nombreSolicitante|default('Solicitante') }}
+
+Te informamos que tu solicitud de gastos con folio {{ folio }},
+realizada el {{ fechaSolicitud|date('d/m/Y') }}, fue
+{{ aceptada ? 'APROBADA' : 'RECHAZADA' }} el {{ fechaResolucion|date('d/m/Y') }}.
+
+Adjuntamos una copia en PDF de tu solicitud para tu referencia.
+
+Dudas:
+{{ soporteEmail }}

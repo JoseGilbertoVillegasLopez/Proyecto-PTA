@@ -1,0 +1,437 @@
+<turbo-frame id="content">
+
+{# Sección de comentarios de revisión: desactivada hasta que finanzas confirme
+   el flujo; el código se conserva para reactivarla más adelante. #}
+{% set sg_mostrar_comentarios = false %}
+
+<div class="sg-show">
+
+	{# ===================================================== #}
+	{# TOPBAR: volver + título + badge de estado + avance #}
+	{# ===================================================== #}
+
+	<div class="sg-new__topbar">
+		{% if esEncargado %}
+			<a href="{{ path('app_solicitud_gastos_encargado_index') }}"
+			   class="sg-new__volver"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance">
+				<i class="bi bi-arrow-left-circle-fill"></i>
+				<span>Volver</span>
+			</a>
+		{% else %}
+			<a href="{{ path('app_solicitud_gastos_index') }}"
+			   class="sg-new__volver"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance">
+				<i class="bi bi-arrow-left-circle-fill"></i>
+				<span>Volver</span>
+			</a>
+		{% endif %}
+
+		<div class="sg-show__topbar-right">
+			<h1 class="sg-new__titulo">Solicitud #{{ solicitud.id }}</h1>
+			{% set sg_estado_iconos = {
+				'pendiente': 'bi-clock-fill',
+				'en_revision': 'bi-eye-fill',
+				'aceptada': 'bi-check-circle-fill',
+				'rechazada': 'bi-x-circle-fill',
+				'resuelto': 'bi-patch-check-fill'
+			} %}
+			{% set sg_estado_labels = {
+				'pendiente': 'Pendiente',
+				'en_revision': 'En revisión',
+				'aceptada': 'Aceptada',
+				'rechazada': 'Rechazada',
+				'resuelto': 'Resuelto'
+			} %}
+			<span class="sg-badge sg-badge--{{ solicitud.estado }}">
+				<i class="bi {{ sg_estado_iconos[solicitud.estado] }}"></i> {{ sg_estado_labels[solicitud.estado] }}
+			</span>
+			<button type="button"
+					class="sg-avance-btn"
+					data-bs-toggle="modal"
+					data-bs-target="#sgProgresoModal"
+					title="Ver avance de revisión">
+				<i class="bi bi-list-check"></i> Avance {{ solicitud.contarRevisionesResueltas }}/3
+			</button>
+			<a href="{{ path('app_solicitud_gastos_export_pdf', { id: solicitud.id }) }}"
+			   class="sg-avance-btn"
+			   target="_blank"
+			   title="Exportar solicitud a PDF">
+				<i class="bi bi-file-earmark-pdf-fill"></i> Exportar PDF
+			</a>
+		</div>
+
+	</div>
+
+	{# ===================================================== #}
+	{# CONTENEDOR PRINCIPAL (igual que new) #}
+	{# ===================================================== #}
+
+	<div class="sg-new__form-container">
+
+		{# Strip: solicitante, depto, fecha de solicitud #}
+		<div class="sg-new__readonly-strip">
+			<div class="sg-new__readonly-item">
+				<span class="sg-new__readonly-label">Solicitante</span>
+				<span class="sg-new__readonly-value">{{ solicitud.solicitante }}</span>
+			</div>
+			<div class="sg-new__readonly-item">
+				<span class="sg-new__readonly-label">Solicitud de recursos</span>
+				<span class="sg-new__readonly-value">{{ solicitud.solicitante.departamento.nombre }}</span>
+			</div>
+			<div class="sg-new__readonly-item">
+				<span class="sg-new__readonly-label">Fecha y hora de solicitud</span>
+				<span class="sg-new__readonly-value">{{ solicitud.fechaSolicitud|date('d/m/Y H:i') }}</span>
+			</div>
+		</div>
+
+		<div class="sg-new__body">
+
+			{# Fila 1: tipo + documento que presenta + descripción del documento #}
+			<div class="sg-new__grid-3 sg-new__grid-tipo">
+				<div class="sg-new__field">
+					<span class="sg-new__label">Tipo de solicitud</span>
+					<div class="sg-show__display">{{ solicitud.tipoSolicitud.nombre }}</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Documento que presenta</span>
+					<div class="sg-show__display">{{ solicitud.documentoVerificacionLabel ?: '—' }}</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Descripción del documento</span>
+					<div class="sg-show__display">{{ solicitud.documentoVerificacionDescripcion ?: '—' }}</div>
+				</div>
+			</div>
+
+			{# Fila 1b: fecha + banco + transferencia + cta/clave #}
+			<div class="sg-new__grid-4">
+				<div class="sg-new__field">
+					<span class="sg-new__label">Fecha en que se requiere</span>
+					<div class="sg-show__display">{{ solicitud.fechaNecesita|date('d/m/Y') }}</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Banco del beneficiario</span>
+					<div class="sg-show__display">{{ solicitud.banco ? solicitud.banco.nombre : '—' }}</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Transferencia en beneficio de</span>
+					<div class="sg-show__display sg-show__display--textarea">
+						{{ solicitud.transferenciaEnBeneficioDe ?: '—' }}
+					</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Cta / Clave del beneficiario</span>
+					<div class="sg-show__display sg-show__display--textarea">
+						{{ solicitud.ctaClaveBeneficiario ?: '—' }}
+					</div>
+				</div>
+			</div>
+
+			{# Fila 2: por concepto de (ancho completo) #}
+			<div class="sg-new__field sg-new__field--full">
+				<span class="sg-new__label">Por concepto de</span>
+				<div class="sg-show__display sg-show__display--parrafo">{{ solicitud.porConceptoDe }}</div>
+			</div>
+
+			{# Separador #}
+			<div class="sg-new__section-divider">
+				<span class="sg-new__section-label">
+					<i class="bi bi-receipt"></i>
+					Detalle del gasto
+				</span>
+			</div>
+
+			{# ===================================================== #}
+			{# TABLA DETALLE DEL GASTO (estilo igual que new) #}
+			{# ===================================================== #}
+
+			<div class="sg-detalle-wrapper">
+				<div class="sg-detalle-scroll">
+					<table class="sg-detalle-table sg-show__detalle-table">
+						<thead>
+							<tr>
+								<th>Proceso Estratégico</th>
+								<th>Proceso Clave</th>
+								<th>PEI</th>
+								<th>PAIG</th>
+								<th>Meta PDI/PTA</th>
+								<th>Capítulo</th>
+								<th>Partida</th>
+								<th>Descripción</th>
+								<th>Cantidad</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% set rowCount = solicitud.partidas|length %}
+							{% for item in solicitud.partidas %}
+								<tr>
+									{% if loop.first %}
+										<td class="sg-span-cell" rowspan="{{ rowCount }}">
+											<span class="sg-autofield">
+												{{ solicitud.procesoEstrategico ? solicitud.procesoEstrategico.nombre : '—' }}
+											</span>
+										</td>
+										<td class="sg-span-cell" rowspan="{{ rowCount }}">
+											<span class="sg-autofield">
+												{{ solicitud.procesoClave ? solicitud.procesoClave.nombre : '—' }}
+											</span>
+										</td>
+										<td class="sg-span-cell sg-autofield-cell" rowspan="{{ rowCount }}">
+											<span class="sg-autofield">
+												{{ solicitud.procesoClave ? solicitud.procesoClave.pei : '—' }}
+											</span>
+										</td>
+										<td class="sg-span-cell sg-autofield-cell" rowspan="{{ rowCount }}">
+											<span class="sg-autofield">
+												{{ solicitud.procesoClave ? solicitud.procesoClave.paig : '—' }}
+											</span>
+										</td>
+										<td class="sg-span-cell sg-autofield-cell" rowspan="{{ rowCount }}">
+											<span class="sg-autofield">
+												{{ solicitud.procesoClave ? solicitud.procesoClave.metaPdiPta : '—' }}
+											</span>
+										</td>
+									{% endif %}
+									<td class="sg-td-capitulo">
+										<span class="sg-autofield">{{ item.partida.capitulo }}</span>
+									</td>
+									<td class="sg-td-partida-code">
+										<span class="sg-autofield">{{ item.partida.partida }}</span>
+									</td>
+									<td class="sg-td-desc">
+										<span style="font-size:0.82rem;">{{ item.partida.descripcion }}</span>
+									</td>
+									<td class="sg-td-cantidad" style="text-align:right;">
+										<span style="font-weight:700; font-size:0.9rem;">
+											$ {{ item.monto|number_format(2, '.', ',') }}
+										</span>
+									</td>
+								</tr>
+							{% else %}
+								<tr>
+									<td colspan="9" style="text-align:center; color:#9fb3c8; padding:24px;">
+										Sin partidas registradas.
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+				{# Total #}
+				<div class="sg-detalle-footer">
+					<div class="sg-new__total-row">
+						<span class="sg-new__total-label">Total</span>
+						<span class="sg-new__total-valor">
+							$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}
+						</span>
+					</div>
+				</div>
+			</div>
+
+			{# ===================================================== #}
+			{# AUTORIZACIÓN DE LA SOLICITUD #}
+			{# ===================================================== #}
+
+			<div class="sg-new__section-divider">
+				<span class="sg-new__section-label">
+					<i class="bi bi-people-fill"></i>
+					Autorización de la solicitud
+				</span>
+			</div>
+
+			<div class="sg-new__grid-3 sg-new__grid-autoriza">
+				<div class="sg-new__field">
+					<span class="sg-new__label">Solicitante</span>
+					<div class="sg-show__display sg-autoriza-display">
+						<span class="sg-autoriza-nombre">{{ solicitud.solicitante }}</span>
+						<span class="sg-autoriza-puesto">{{ solicitud.solicitante.puesto ? solicitud.solicitante.puesto.nombre : '—' }}</span>
+					</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">Jefe(a) del área solicitante</span>
+					<div class="sg-show__display sg-autoriza-display">
+						<span class="sg-autoriza-nombre">{{ solicitud.jefeArea ?: '—' }}</span>
+						<span class="sg-autoriza-puesto">{{ solicitud.jefeArea and solicitud.jefeArea.puesto ? solicitud.jefeArea.puesto.nombre : '—' }}</span>
+					</div>
+				</div>
+				<div class="sg-new__field">
+					<span class="sg-new__label">{{ solicitud.autoriza and solicitud.autoriza.puesto ? solicitud.autoriza.puesto.nombre : '' }}</span>
+					<div class="sg-show__display sg-autoriza-display">
+						<span class="sg-autoriza-nombre">{{ solicitud.autoriza ?: '—' }}</span>
+						<span class="sg-autoriza-puesto">{{ solicitud.autoriza and solicitud.autoriza.puesto ? solicitud.autoriza.puesto.nombre : '—' }}</span>
+					</div>
+				</div>
+			</div>
+
+			{# ===================================================== #}
+			{# EVIDENCIAS DE GASTO #}
+			{# ===================================================== #}
+
+			<div class="sg-new__section-divider">
+				<span class="sg-new__section-label">
+					<i class="bi bi-paperclip"></i>
+					Documentos a presentar para la solicitud
+				</span>
+			</div>
+
+			{% if solicitud.requiereDocumentacionPendiente %}
+				<div class="sg-doc-pendiente">
+					<i class="bi bi-exclamation-triangle-fill"></i>
+					<span>Documentación pendiente: {{ solicitud.documentacionPendienteTexto }}</span>
+				</div>
+			{% endif %}
+
+			<div class="sg-evidencias__grid">
+				{% for evidencia in solicitud.evidencias %}
+					<div class="sg-evidencias__item">
+						<a class="sg-evidencias__media"
+						   href="{{ evidencia.ruta }}"
+						   download="{{ evidencia.archivoNombreOriginal }}"
+						   title="Descargar {{ evidencia.archivoNombreOriginal }}">
+							{% if evidencia.esImagen %}
+								<img src="{{ evidencia.ruta }}" alt="{{ evidencia.archivoNombreOriginal }}">
+							{% else %}
+								<iframe src="{{ evidencia.ruta }}#toolbar=0&navpanes=0" title="{{ evidencia.archivoNombreOriginal }}"></iframe>
+							{% endif %}
+						</a>
+						<div class="sg-evidencias__footer">
+							<span>{{ evidencia.archivoNombreOriginal }}</span>
+							<a href="{{ evidencia.ruta }}" download="{{ evidencia.archivoNombreOriginal }}" class="sg-evidencias__download-btn" title="Descargar evidencia">
+								<i class="bi bi-download"></i>
+							</a>
+						</div>
+					</div>
+				{% else %}
+					<div class="sg-evidencias__empty">Sin evidencias adjuntas.</div>
+				{% endfor %}
+			</div>
+
+			{# ===================================================== #}
+			{# COMPROBANTE DE PAGO #}
+			{# ===================================================== #}
+
+			{% if solicitud.estado in ['aceptada', 'resuelto'] %}
+				<div class="sg-new__section-divider">
+					<span class="sg-new__section-label">
+						<i class="bi bi-cash-coin"></i>
+						Comprobante de pago/transferencia
+					</span>
+				</div>
+
+				{% if solicitud.comprobante %}
+					<div class="sg-evidencias__grid">
+						<div class="sg-evidencias__item">
+							<a class="sg-evidencias__media"
+							   href="{{ solicitud.comprobante.ruta }}"
+							   download="{{ solicitud.comprobante.archivoNombreOriginal }}"
+							   title="Descargar {{ solicitud.comprobante.archivoNombreOriginal }}">
+								{% if solicitud.comprobante.esImagen %}
+									<img src="{{ solicitud.comprobante.ruta }}" alt="{{ solicitud.comprobante.archivoNombreOriginal }}">
+								{% else %}
+									<iframe src="{{ solicitud.comprobante.ruta }}#toolbar=0&navpanes=0" title="{{ solicitud.comprobante.archivoNombreOriginal }}"></iframe>
+								{% endif %}
+							</a>
+							<div class="sg-evidencias__footer">
+								<span>{{ solicitud.comprobante.archivoNombreOriginal }}</span>
+								<a href="{{ solicitud.comprobante.ruta }}" download="{{ solicitud.comprobante.archivoNombreOriginal }}" class="sg-evidencias__download-btn" title="Descargar comprobante">
+									<i class="bi bi-download"></i>
+								</a>
+							</div>
+						</div>
+					</div>
+				{% elseif puedeSubirComprobante %}
+					<form method="POST"
+						  enctype="multipart/form-data"
+						  action="{{ path('app_solicitud_gastos_comprobante', { id: solicitud.id }) }}"
+						  class="sg-comprobante__form">
+						<input type="hidden" name="_token" value="{{ csrf_token('comprobante_' ~ solicitud.id) }}">
+						<input type="file" name="comprobante" accept="image/*,application/pdf" required class="sg-comprobante__input">
+						<button type="submit" class="sg-show__revisar-btn">
+							<i class="bi bi-upload"></i>
+							Subir comprobante
+						</button>
+					</form>
+				{% else %}
+					<div class="sg-evidencias__empty">Aún no se ha subido el comprobante.</div>
+				{% endif %}
+			{% endif %}
+
+		</div>
+
+		{# ===================================================== #}
+		{# ACCIÓN DEL ENCARGADO — votar #}
+		{# ===================================================== #}
+
+		{% if puedeVotarActual %}
+			<div class="sg-new__submit-wrapper sg-voto__wrapper">
+				<form method="POST" action="{{ path('app_solicitud_gastos_votar', { id: solicitud.id }) }}" class="sg-voto__form">
+					<input type="hidden" name="_token" value="{{ csrf_token('votar_' ~ solicitud.id) }}">
+					{% if sg_mostrar_comentarios %}
+						<textarea name="comentario" class="sg-voto__comentario" placeholder="Comentario (opcional, sobre todo si vas a rechazar)"></textarea>
+					{% endif %}
+					<div class="sg-voto__botones">
+						<button type="submit" name="aceptar" value="1" class="sg-show__revisar-btn sg-voto__btn--aceptar">
+							<i class="bi bi-check-circle-fill"></i> Aceptar solicitud
+						</button>
+						<button type="submit" name="aceptar" value="0" class="sg-show__revisar-btn sg-voto__btn--rechazar"
+								onclick="return confirm('Rechazar esta solicitud es definitivo. ¿Continuar?');">
+							<i class="bi bi-x-circle-fill"></i> Rechazar solicitud
+						</button>
+					</div>
+				</form>
+			</div>
+		{% endif %}
+
+	</div>
+
+	{# ===================================================== #}
+	{# MODAL: PROGRESO DE REVISIÓN #}
+	{# ===================================================== #}
+
+	<div class="modal fade" id="sgProgresoModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content sg-progreso-modal">
+				<div class="modal-header">
+					<h5 class="modal-title">
+						<i class="bi bi-list-check"></i>
+						Progreso de revisión
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body">
+					{% set sg_cargo_labels = { 'revisor': 'Revisor', 'supervisor': 'Supervisor', 'autoriza': 'Autoriza' } %}
+					<div class="sg-progreso__grid">
+						{% for cargo, label in sg_cargo_labels %}
+							{% set revision = solicitud.getRevisionPorCargo(cargo) %}
+							<div class="sg-progreso__card sg-progreso__card--{{ revision ? revision.estado : 'pendiente' }}">
+								<span class="sg-progreso__cargo">{{ label }}</span>
+								<span class="sg-progreso__estado">
+									{% if revision and revision.estado == 'aceptada' %}
+										<i class="bi bi-check-circle-fill"></i> Aceptó
+									{% elseif revision and revision.estado == 'rechazada' %}
+										<i class="bi bi-x-circle-fill"></i> Rechazó
+									{% elseif revision and revision.estado == 'revisando' %}
+										<i class="bi bi-eye-fill"></i> Revisando
+									{% else %}
+										<i class="bi bi-clock-fill"></i> Pendiente
+									{% endif %}
+								</span>
+								<span class="sg-progreso__quien">{{ revision and revision.personal ? revision.personal : '—' }}</span>
+								<span class="sg-progreso__puesto">{{ revision and revision.personal and revision.personal.puesto ? revision.personal.puesto.nombre : '—' }}</span>
+								{% if sg_mostrar_comentarios and revision and revision.comentario %}
+									<span class="sg-progreso__comentario">"{{ revision.comentario }}"</span>
+								{% endif %}
+							</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+</turbo-frame>

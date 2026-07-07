@@ -1,0 +1,416 @@
+/* =========================================================
+   SOLICITUD GASTOS — SHOW
+   Reutiliza las clases de new.css. Solo agrega lo exclusivo
+   de la vista de detalle.
+   ========================================================= */
+
+.sg-show {
+    padding: 8px 0;
+}
+
+/* Título + badge alineados a la derecha del topbar */
+.sg-show__topbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+/* ── Badges de estado ── */
+.sg-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.sg-badge--pendiente {
+    background: rgba(254, 202, 87, 0.15);
+    color: #feca57;
+    border: 1px solid rgba(254, 202, 87, 0.4);
+}
+
+.sg-badge--en_revision {
+    background: rgba(13, 202, 240, 0.15);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.4);
+}
+
+.sg-badge--aceptada {
+    background: rgba(29, 209, 161, 0.15);
+    color: #1dd1a1;
+    border: 1px solid rgba(29, 209, 161, 0.4);
+}
+
+.sg-badge--rechazada {
+    background: rgba(255, 107, 107, 0.15);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.4);
+}
+
+.sg-badge--resuelto {
+    background: rgba(157, 129, 255, 0.15);
+    color: #b39dff;
+    border: 1px solid rgba(157, 129, 255, 0.4);
+}
+
+/* ── Campos de solo lectura: apariencia de input ── */
+.sg-show__display {
+    background-color: #0d151d;
+    color: #fff;
+    border: 1px solid rgba(13, 202, 240, 0.12);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+}
+
+.sg-show__display--textarea {
+    height: 70px;
+    align-items: flex-start;
+    word-break: break-word;
+    white-space: pre-wrap;
+    overflow: hidden;
+}
+
+/* Párrafo libre (Por concepto de): sin flex ni altura fija, texto normal */
+.sg-show__display--parrafo {
+    display: block;
+    height: auto;
+    text-align: left;
+    word-break: break-word;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+/* Fila Tipo de solicitud / Documento que presenta / Descripción:
+   mismo alto para los 3 aunque la etiqueta del documento sea larga y se envuelva en 2 líneas */
+.sg-new__grid-tipo .sg-show__display {
+    min-height: 64px;
+    align-items: center;
+}
+
+/* Fila Fecha / Banco / Transferencia / Cta-Clave: mismo alto para los 4,
+   sin importar si el campo es de una línea o de tipo textarea */
+.sg-new__grid-4 .sg-show__display {
+    height: 70px;
+    align-items: center;
+}
+
+/* ── Tabla show: sin inputs, sin columna de acción ── */
+.sg-show__detalle-table thead th:nth-child(1)  { width: 10%; }
+.sg-show__detalle-table thead th:nth-child(2)  { width: 13%; }
+.sg-show__detalle-table thead th:nth-child(3)  { width: 10%; }
+.sg-show__detalle-table thead th:nth-child(4)  { width: 8%;  }
+.sg-show__detalle-table thead th:nth-child(5)  { width: 10%; }
+.sg-show__detalle-table thead th:nth-child(6)  { width: 8%;  }
+.sg-show__detalle-table thead th:nth-child(7)  { width: 9%;  }
+.sg-show__detalle-table thead th:nth-child(8)  { width: 24%; }
+.sg-show__detalle-table thead th:nth-child(9)  { width: 8%;  }
+
+/* ── Grid de evidencias adjuntas ── */
+.sg-evidencias__grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+}
+
+.sg-evidencias__item {
+    width: 180px;
+    height: 180px;
+    flex: 0 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(13, 202, 240, 0.24);
+}
+
+.sg-evidencias__media {
+    display: block;
+    cursor: pointer;
+}
+
+.sg-evidencias__item img,
+.sg-evidencias__item iframe {
+    display: block;
+    width: 100%;
+    height: 142px;
+    border: 0;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+.sg-evidencias__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px;
+}
+
+.sg-evidencias__footer span {
+    min-width: 0;
+    color: #d4ebf4;
+    font-size: 0.76rem;
+    font-weight: 800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sg-evidencias__download-btn {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    color: #defff4;
+    background: rgba(29, 209, 161, 0.16);
+    border: 1px solid rgba(29, 209, 161, 0.32);
+    text-decoration: none;
+    flex: 0 0 auto;
+}
+
+.sg-evidencias__download-btn:hover {
+    color: #ffffff;
+}
+
+.sg-evidencias__empty {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    color: #9fb3c8;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(13, 202, 240, 0.1);
+    font-weight: 800;
+    text-align: center;
+}
+
+/* ── Botón revisar (al fondo igual que submit-btn) ── */
+.sg-show__revisar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 48px;
+    border-radius: 16px;
+    background: rgba(29, 209, 161, 0.15);
+    border: 1px solid rgba(29, 209, 161, 0.5);
+    color: #1dd1a1;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    letter-spacing: 0.3px;
+}
+
+.sg-show__revisar-btn:hover {
+    background: rgba(29, 209, 161, 0.3);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(29, 209, 161, 0.2);
+}
+
+/* ── Botón "Avance" (abre el modal de progreso) ── */
+.sg-avance-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: rgba(13, 202, 240, 0.1);
+    border: 1px solid rgba(13, 202, 240, 0.35);
+    color: #0dcaf0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sg-avance-btn:hover {
+    background: rgba(13, 202, 240, 0.22);
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.2);
+    color: #0dcaf0;
+}
+
+/* ── Modal: progreso de revisión ── */
+.sg-progreso-modal {
+    color: #e6f1ff;
+    border-radius: 16px;
+    border: 1px solid rgba(13, 202, 240, 0.3);
+    background: linear-gradient(145deg, #0d171f, #070c12);
+}
+
+.sg-progreso-modal .modal-header,
+.sg-progreso-modal .modal-footer {
+    border-color: rgba(13, 202, 240, 0.16);
+}
+
+.sg-progreso-modal .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #9feaff;
+    font-weight: 900;
+}
+
+/* ── Progreso de revisión (tarjetas dentro del modal) ── */
+.sg-progreso__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+
+.sg-progreso__card {
+    flex: 1 1 220px;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+.sg-progreso__card--pendiente  { border-color: rgba(254, 202, 87, 0.35); }
+.sg-progreso__card--revisando  { border-color: rgba(13, 202, 240, 0.4); }
+.sg-progreso__card--aceptada   { border-color: rgba(29, 209, 161, 0.45); }
+.sg-progreso__card--rechazada  { border-color: rgba(255, 107, 107, 0.45); }
+
+.sg-progreso__cargo {
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9fb3c8;
+    text-align: center;
+}
+
+.sg-progreso__estado {
+    font-size: 0.92rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+}
+
+.sg-progreso__card--pendiente  .sg-progreso__estado { color: #feca57; }
+.sg-progreso__card--revisando  .sg-progreso__estado { color: #0dcaf0; }
+.sg-progreso__card--aceptada   .sg-progreso__estado { color: #1dd1a1; }
+.sg-progreso__card--rechazada  .sg-progreso__estado { color: #ff6b6b; }
+
+.sg-progreso__quien {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #d4ebf4;
+}
+
+.sg-progreso__puesto {
+    font-size: 0.76rem;
+    color: #9fb3c8;
+}
+
+.sg-progreso__comentario {
+    font-size: 0.78rem;
+    color: #9fb3c8;
+    font-style: italic;
+}
+
+/* ── Formulario de voto (aceptar / rechazar) ── */
+.sg-voto__wrapper {
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sg-voto__form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+}
+
+.sg-voto__comentario {
+    width: 100%;
+    max-width: 520px;
+    min-height: 60px;
+    background-color: #0d151d;
+    color: #fff;
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+    resize: vertical;
+}
+
+.sg-voto__botones {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.sg-voto__btn--rechazar {
+    background: rgba(255, 107, 107, 0.15);
+    border-color: rgba(255, 107, 107, 0.5);
+    color: #ff6b6b;
+}
+
+.sg-voto__btn--rechazar:hover {
+    background: rgba(255, 107, 107, 0.3);
+    color: #fff;
+    box-shadow: 0 8px 28px rgba(255, 107, 107, 0.2);
+}
+
+/* ── Formulario de comprobante ── */
+.sg-comprobante__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+
+.sg-comprobante__input {
+    background-color: #0d151d;
+    color: #fff;
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    border-radius: 12px;
+    padding: 8px 14px;
+    font-size: 0.86rem;
+}
+
+/* ── Documentación pendiente ── */
+.sg-doc-pendiente {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(254, 202, 87, 0.35);
+    background-color: rgba(254, 202, 87, 0.08);
+    color: #feca57;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+.sg-doc-pendiente i {
+    font-size: 1.1rem;
+}

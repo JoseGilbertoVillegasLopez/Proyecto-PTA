@@ -250,36 +250,31 @@
 												{{ indicador.valor }}{% if indicador.esPorcentaje %}<span class="ic-pct-badge">%</span>{% endif %}
 											</div>
 										</div>
-										{# Captura: va a la derecha de Meta, antes de Periodo #}
 										{% if indicador.esPorcentaje %}
 										<div class="ic-field">
 											<span class="ic-label">Captura</span>
-											<div class="ic-display ic-display--center">
+											<div class="ic-display ic-display--num">
 												{% if indicador.capturaEnPorcentaje %}
-													<span class="pta-badge pta-badge-pct">
-														<i class="bi bi-percent"></i> Porcentaje
-													</span>
+													<i class="bi bi-percent" style="color:var(--pta-primary);margin-right:4px;"></i> Porcentaje
 												{% else %}
-													<span class="pta-badge pta-badge-abs">
-														<i class="bi bi-123"></i> Absoluto
-													</span>
+													<i class="bi bi-123" style="color:var(--pta-primary);margin-right:4px;"></i> Absoluto
 												{% endif %}
 											</div>
 										</div>
-										{% else %}
-										<div class="ic-field"></div>{# columna vacía #}
 										{% endif %}
 										<div class="ic-field">
 											<span class="ic-label">Periodo</span>
-											<div class="ic-periodo-static"><i class="bi bi-calendar3"></i> {{ indicador.periodo }}</div>
+											<div class="ic-display ic-display--num">
+												<i class="bi bi-calendar3" style="color:var(--pta-primary);margin-right:4px;"></i> {{ indicador.periodo }}
+											</div>
 										</div>
 										<div class="ic-field">
 											<span class="ic-label">Tendencia</span>
-											<div class="ic-display ic-display--center">
+											<div class="ic-display ic-display--num">
 												{% if indicador.tendencia == 'POSITIVA' %}
-													<span class="pta-badge pta-badge-positive">Positiva</span>
+													<i class="bi bi-arrow-up" style="color:#1dd1a1;margin-right:4px;"></i> Positiva
 												{% else %}
-													<span class="pta-badge pta-badge-negative">Negativa</span>
+													<i class="bi bi-arrow-down" style="color:#ff6b6b;margin-right:4px;"></i> Negativa
 												{% endif %}
 											</div>
 										</div>

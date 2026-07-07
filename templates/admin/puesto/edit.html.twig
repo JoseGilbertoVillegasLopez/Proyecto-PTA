@@ -43,6 +43,12 @@
 			</div>
 
 			<div class="puesto-edit-page-group">
+				{{ form_label(form.serie, null, {'label_attr': {'class': 'puesto-edit-page-label'}}) }}
+				{{ form_widget(form.serie, {'attr': {'class': 'puesto-edit-page-input'}}) }}
+				{{ form_errors(form.serie) }}
+			</div>
+
+			<div class="puesto-edit-page-group">
 				{{ form_label(form.supervisorDirecto, null, {'label_attr': {'class': 'puesto-edit-page-label'}}) }}
 				{{ form_widget(form.supervisorDirecto, {'attr': {'class': 'puesto-edit-page-select'}}) }}
 				{{ form_errors(form.supervisorDirecto) }}

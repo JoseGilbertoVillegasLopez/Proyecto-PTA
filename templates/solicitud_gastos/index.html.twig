@@ -1,0 +1,203 @@
+<turbo-frame id="content">
+<link rel="stylesheet" href="{{ asset('css/solicitud_gastos/index.css') }}">
+
+<div class="sg-index">
+
+	{# ===================================================== #}
+	{# TÍTULO #}
+	{# ===================================================== #}
+
+	<div class="sg-index__header">
+		<h1 class="sg-index__titulo">
+			<i class="bi bi-file-earmark-text"></i>
+			Mis Solicitudes de Gastos
+		</h1>
+	</div>
+
+	{# ===================================================== #}
+	{# TOOLBAR #}
+	{# ===================================================== #}
+
+	<div class="sg-index__toolbar">
+
+		<div class="sg-index__toolbar-left">
+			<a href="{{ path('app_solicitud_gastos_new') }}"
+			   class="sg-index__add-btn"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance">
+				<i class="bi bi-plus-circle-fill"></i>
+				<span>Nueva Solicitud</span>
+			</a>
+		</div>
+
+		<div class="sg-index__toolbar-right">
+			<form method="GET" action="{{ path('app_solicitud_gastos_index') }}"
+			      id="sg-user-filtros"
+			      class="sg-filtros-wrap sg-filtros-wrap--inline">
+
+				<div class="sg-filtro-group sg-filtro-group--periodo">
+					<label class="sg-filtro-group__label">Período</label>
+					<div class="sg-filtro-daterange">
+						<input type="text"
+						       id="sg-fil-desde"
+						       name="desde"
+						       class="sg-index__filtro-input"
+						       placeholder="Desde"
+						       value="{{ desde ?? '' }}"
+						       autocomplete="off"
+						       readonly>
+						<span class="sg-filtro-daterange__sep">—</span>
+						<input type="text"
+						       id="sg-fil-hasta"
+						       name="hasta"
+						       class="sg-index__filtro-input"
+						       placeholder="Hasta"
+						       value="{{ hasta ?? '' }}"
+						       autocomplete="off"
+						       readonly>
+					</div>
+				</div>
+
+				<button type="button" id="sg-fil-limpiar" class="sg-filtro-clear-btn" title="Limpiar filtros">
+					<i class="bi bi-x-lg"></i>
+				</button>
+
+			</form>
+		</div>
+
+	</div>
+
+	{# ===================================================== #}
+	{# TABLA #}
+	{# ===================================================== #}
+
+	<div class="sg-index__table-wrapper">
+		<table class="sg-index__table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Tipo</th>
+					<th>Por concepto de</th>
+					<th>Para cuándo</th>
+					<th>Total</th>
+					<th>Estado</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% set sg_estado_iconos = {
+					'pendiente': 'bi-clock-fill',
+					'en_revision': 'bi-eye-fill',
+					'aceptada': 'bi-check-circle-fill',
+					'rechazada': 'bi-x-circle-fill',
+					'resuelto': 'bi-patch-check-fill'
+				} %}
+				{% set sg_estado_labels = {
+					'pendiente': 'Pendiente',
+					'en_revision': 'En revisión',
+					'aceptada': 'Aceptada',
+					'rechazada': 'Rechazada',
+					'resuelto': 'Resuelto'
+				} %}
+				{% for solicitud in solicitudes %}
+					<tr>
+						<td class="sg-index__col-id">{{ solicitud.id }}</td>
+						<td class="sg-index__col-tipo">{{ solicitud.tipoSolicitud.nombre }}</td>
+						<td class="sg-index__col-concepto">{{ solicitud.porConceptoDe }}</td>
+						<td class="sg-index__col-fecha">{{ solicitud.fechaNecesita|date('d/m/Y') }}</td>
+						<td class="sg-index__col-total">$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}</td>
+						<td class="sg-index__col-estado">
+							<span class="sg-badge sg-badge--{{ solicitud.estado }}">
+								<i class="bi {{ sg_estado_iconos[solicitud.estado] }}"></i> {{ sg_estado_labels[solicitud.estado] }}
+							</span>
+						</td>
+						<td class="sg-index__col-acciones">
+							<a href="{{ path('app_solicitud_gastos_show', { id: solicitud.id }) }}"
+							   class="sg-index__action-btn sg-index__action-btn--ver"
+							   data-turbo-frame="content"
+							   data-turbo-action="advance"
+							   title="Ver solicitud">
+								<i class="bi bi-eye"></i>
+							</a>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="7" class="sg-index__empty">
+							<i class="bi bi-inbox"></i>
+							<span>No tienes solicitudes registradas.</span>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+</div>
+
+<script>
+(function () {
+    var form       = document.getElementById('sg-user-filtros');
+    var inpDesde   = document.getElementById('sg-fil-desde');
+    var inpHasta   = document.getElementById('sg-fil-hasta');
+    var btnLimpiar = document.getElementById('sg-fil-limpiar');
+
+    if (!form) return;
+
+    var locale = {
+        firstDayOfWeek: 1,
+        weekdays: {
+            shorthand: ['Do','Lu','Ma','Mi','Ju','Vi','Sa'],
+            longhand:  ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado']
+        },
+        months: {
+            shorthand: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+            longhand:  ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+        }
+    };
+
+    var fpDesde, fpHasta;
+
+    if (inpDesde && window.flatpickr) {
+        fpDesde = flatpickr(inpDesde, {
+            dateFormat:    'Y-m-d',
+            altInput:      true,
+            altFormat:     'd/m/Y',
+            disableMobile: true,
+            locale:        locale,
+            onChange: function (sel, dateStr) {
+                if (fpHasta && dateStr) fpHasta.set('minDate', dateStr);
+                form.requestSubmit();
+            },
+            onReady: function (sel, dateStr, fp) {
+                fp.altInput.classList.add('sg-index__filtro-input');
+            }
+        });
+    }
+
+    if (inpHasta && window.flatpickr) {
+        fpHasta = flatpickr(inpHasta, {
+            dateFormat:    'Y-m-d',
+            altInput:      true,
+            altFormat:     'd/m/Y',
+            disableMobile: true,
+            locale:        locale,
+            onChange: function (sel, dateStr) {
+                if (fpDesde && dateStr) fpDesde.set('maxDate', dateStr);
+                form.requestSubmit();
+            },
+            onReady: function (sel, dateStr, fp) {
+                fp.altInput.classList.add('sg-index__filtro-input');
+            }
+        });
+    }
+
+    if (btnLimpiar) btnLimpiar.addEventListener('click', function () {
+        if (fpDesde) { fpDesde.clear(); if (fpHasta) fpHasta.set('minDate', null); }
+        if (fpHasta) { fpHasta.clear(); if (fpDesde) fpDesde.set('maxDate', null); }
+        form.requestSubmit();
+    });
+}());
+</script>
+
+</turbo-frame>

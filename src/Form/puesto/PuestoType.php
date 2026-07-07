@@ -15,6 +15,11 @@ class PuestoType extends AbstractType
         $builder
             ->add('nombre')
 
+            ->add('serie', null, [
+                'required' => false,
+                'label' => 'Serie (abreviación para documentos oficiales)',
+            ])
+
             ->add('supervisorDirecto', EntityType::class, [
                 'class' => Puesto::class,
                 'choice_label' => 'nombre',

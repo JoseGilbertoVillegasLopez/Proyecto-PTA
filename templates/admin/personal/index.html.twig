@@ -8,23 +8,25 @@
 
 		<div class="personal-index-toolbar">
 
-			{# IZQUIERDA — BOTÓN AGREGAR #}
+			{# IZQUIERDA — BOTÓN AGREGAR (solo admin) #}
 			<div class="personal-index-toolbar__left">
-				<a href="{{ path('app_personal_new') }}"
-				   data-turbo-frame="content"
-				   data-turbo-action="advance"
-				   class="personal-index-add-btn">
-					<i class="bi bi-person-plus-fill"></i>
-					<span>Crear nuevo</span>
-				</a>
+				{% if is_granted('ROLE_ADMIN') %}
+					<a href="{{ path('app_personal_new') }}"
+					   data-turbo-frame="content"
+					   data-turbo-action="advance"
+					   class="personal-index-add-btn">
+						<i class="bi bi-person-plus-fill"></i>
+						<span>Crear nuevo</span>
+					</a>
 
-				<a href="{{ path('app_nombramiento_historial_index') }}"
-				   data-turbo-frame="content"
-				   data-turbo-action="advance"
-				   class="personal-index-add-btn personal-index-add-btn--historial">
-					<i class="bi bi-clock-history"></i>
-					<span>Historial de nombramientos</span>
-				</a>
+					<a href="{{ path('app_nombramiento_historial_index') }}"
+					   data-turbo-frame="content"
+					   data-turbo-action="advance"
+					   class="personal-index-add-btn personal-index-add-btn--historial">
+						<i class="bi bi-clock-history"></i>
+						<span>Historial de nombramientos</span>
+					</a>
+				{% endif %}
 			</div>
 
 			{# DERECHA — BUSCADOR #}
@@ -72,13 +74,15 @@
 										<i class="bi bi-eye"></i>
 									</a>
 
-									<a href="{{ path('app_personal_edit', {'id': personal.id}) }}"
-									   data-turbo-frame="content"
-									   data-turbo-action="advance"
-									   class="personal-index-action-btn personal-index-action-btn--edit"
-									   title="Editar personal">
-										<i class="bi bi-pencil-square"></i>
-									</a>
+									{% if is_granted('ROLE_ADMIN') %}
+										<a href="{{ path('app_personal_edit', {'id': personal.id}) }}"
+										   data-turbo-frame="content"
+										   data-turbo-action="advance"
+										   class="personal-index-action-btn personal-index-action-btn--edit"
+										   title="Editar personal">
+											<i class="bi bi-pencil-square"></i>
+										</a>
+									{% endif %}
 								</div>
 							</td>
 						</tr>

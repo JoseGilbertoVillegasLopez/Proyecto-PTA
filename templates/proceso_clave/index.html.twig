@@ -9,10 +9,12 @@
 		<div class="proceso-clave-index-toolbar">
 
 			<div class="proceso-clave-index-toolbar__left">
-				<a href="{{ path('app_proceso_clave_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="proceso-clave-index-create-btn">
-					<i class="bi bi-plus-circle-fill"></i>
-					<span>Crear nuevo</span>
-				</a>
+				{% if is_granted('ROLE_ADMIN') %}
+					<a href="{{ path('app_proceso_clave_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="proceso-clave-index-create-btn">
+						<i class="bi bi-plus-circle-fill"></i>
+						<span>Crear nuevo</span>
+					</a>
+				{% endif %}
 			</div>
 
 			<div class="proceso-clave-index-toolbar__right">

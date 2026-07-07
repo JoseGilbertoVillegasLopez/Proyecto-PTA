@@ -1,0 +1,157 @@
+<turbo-frame id="content">
+<link rel="stylesheet" href="{{ asset('css/reportePta/encargado_index.css') }}">
+
+<div class="rpta-enc">
+
+	<header class="rpta-enc__header">
+		<h1 class="rpta-enc__titulo">
+			<i class="bi bi-file-earmark-check-fill"></i>
+			Reportes PTA entregados
+		</h1>
+	</header>
+
+	{# ===================================================== #}
+	{# FILTROS — auto-submit al cambiar cualquier select     #}
+	{# ===================================================== #}
+	<form id="rpta-enc-filtros"
+		  method="get"
+		  action="{{ path('app_reporte_pta_encargado_index') }}"
+		  class="rpta-enc__filtros"
+		  data-turbo-action="replace">
+
+		<div class="rpta-enc__filtro-group">
+			<label class="rpta-enc__filtro-label">Año</label>
+			<select name="anio" class="rpta-enc__filtro-select" data-filtro="anio">
+				<option value="">Todos</option>
+				{% for a in anios %}
+					<option value="{{ a }}" {{ filtros.anio == a ? 'selected' : '' }}>{{ a }}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="rpta-enc__filtro-group">
+			<label class="rpta-enc__filtro-label">Trimestre</label>
+			<select name="trimestre" class="rpta-enc__filtro-select" data-filtro="trimestre">
+				<option value="">Todos</option>
+				<option value="1" {{ filtros.trimestre == 1 ? 'selected' : '' }}>1er Trimestre</option>
+				<option value="2" {{ filtros.trimestre == 2 ? 'selected' : '' }}>2do Trimestre</option>
+				<option value="3" {{ filtros.trimestre == 3 ? 'selected' : '' }}>3er Trimestre</option>
+				<option value="4" {{ filtros.trimestre == 4 ? 'selected' : '' }}>4to Trimestre</option>
+			</select>
+		</div>
+
+		<div class="rpta-enc__filtro-group">
+			<label class="rpta-enc__filtro-label">Puesto</label>
+			<select name="puesto" id="rpta-enc-puesto" class="rpta-enc__filtro-select" data-filtro="puesto" data-mutex="departamento">
+				<option value="">Todos</option>
+				{% for p in puestos %}
+					<option value="{{ p.id }}" {{ filtros.puesto == p.id ? 'selected' : '' }}>{{ p.nombre }}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<div class="rpta-enc__filtro-group">
+			<label class="rpta-enc__filtro-label">Departamento</label>
+			<select name="departamento" id="rpta-enc-departamento" class="rpta-enc__filtro-select" data-filtro="departamento" data-mutex="puesto">
+				<option value="">Todos</option>
+				{% for d in departamentos %}
+					<option value="{{ d.id }}" {{ filtros.departamento == d.id ? 'selected' : '' }}>{{ d.nombre }}</option>
+				{% endfor %}
+			</select>
+		</div>
+
+		<button type="button" class="rpta-enc__filtro-clear" id="rpta-enc-clear" title="Limpiar filtros">
+			<i class="bi bi-x-lg"></i>
+		</button>
+
+	</form>
+
+	{# ===================================================== #}
+	{# CONTADOR #}
+	{# ===================================================== #}
+	<p class="rpta-enc__contador">
+		{{ reportes|length }} reporte{{ reportes|length != 1 ? 's' : '' }} encontrado{{ reportes|length != 1 ? 's' : '' }}
+	</p>
+
+	{# ===================================================== #}
+	{# TABLA #}
+	{# ===================================================== #}
+	<div class="rpta-enc__table-wrapper">
+		<table class="rpta-enc__table">
+			<thead>
+				<tr>
+					<th>Responsable</th>
+					<th>Departamento</th>
+					<th>Puesto</th>
+					<th>PTA</th>
+					<th class="text-center">Año</th>
+					<th class="text-center">Trimestre</th>
+					<th>Fecha entrega</th>
+					<th class="text-center">Acción</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for reporte in reportes %}
+					<tr class="rpta-enc__row">
+						<td class="rpta-enc__cell--responsable">
+							{{ reporte.encabezado.responsable }}
+						</td>
+						<td>{{ reporte.encabezado.responsable.departamento.nombre }}</td>
+						<td>{{ reporte.encabezado.responsable.puesto.nombre }}</td>
+						<td class="rpta-enc__cell--pta">{{ reporte.encabezado.nombre }}</td>
+						<td class="text-center">{{ reporte.anio }}</td>
+						<td class="text-center">
+							<span class="rpta-enc__badge rpta-enc__badge--t{{ reporte.trimestre }}">
+								T{{ reporte.trimestre }}
+							</span>
+						</td>
+						<td>{{ reporte.entregadoFecha ? reporte.entregadoFecha|date('d/m/Y') : '—' }}</td>
+						<td class="text-center">
+							<a href="{{ path('app_reporte_pta_show', { id: reporte.encabezado.id, trimestre: reporte.trimestre }) }}"
+							   data-turbo-frame="content"
+							   data-turbo-action="advance"
+							   class="rpta-enc__ver-btn"
+							   title="Ver reporte">
+								<i class="bi bi-eye"></i>
+								Ver
+							</a>
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="8" class="rpta-enc__empty">
+							No hay reportes entregados con los filtros seleccionados.
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+</div>
+
+<script>
+(function () {
+	const form    = document.getElementById('rpta-enc-filtros');
+	const selects = form.querySelectorAll('select[data-filtro]');
+	const clear   = document.getElementById('rpta-enc-clear');
+
+	selects.forEach(function (sel) {
+		sel.addEventListener('change', function () {
+			const mutexName = sel.dataset.mutex;
+			if (mutexName && sel.value !== '') {
+				const other = form.querySelector('select[name="' + mutexName + '"]');
+				if (other) other.value = '';
+			}
+			form.requestSubmit();
+		});
+	});
+
+	clear.addEventListener('click', function () {
+		selects.forEach(function (s) { s.value = ''; });
+		form.requestSubmit();
+	});
+}());
+</script>
+
+</turbo-frame>

@@ -204,7 +204,8 @@
         inset -1px 0 0 rgba(255, 255, 255, 0.03);
 }
 
-.departamento-index-page-table thead th:nth-child(2) {
+.departamento-index-page-table thead th:nth-child(2),
+.departamento-index-page-table thead th:nth-child(4) {
     background: linear-gradient(
         180deg,
         rgba(9, 28, 55, 1) 0%,
@@ -272,7 +273,7 @@
    ========================================================= */
 .departamento-index-page-table th:nth-child(1),
 .departamento-index-page-table td:nth-child(1) {
-    width: 56%;
+    width: 46%;
     color: #ffffff;
     font-weight: 600;
     line-height: 1.45;
@@ -282,12 +283,18 @@
 
 .departamento-index-page-table th:nth-child(2),
 .departamento-index-page-table td:nth-child(2) {
-    width: 20%;
+    width: 15%;
     text-align: center;
 }
 
 .departamento-index-page-table th:nth-child(3),
 .departamento-index-page-table td:nth-child(3) {
+    width: 15%;
+    text-align: center;
+}
+
+.departamento-index-page-table th:nth-child(4),
+.departamento-index-page-table td:nth-child(4) {
     width: 24%;
     text-align: center;
 }
@@ -297,7 +304,8 @@
 }
 
 .departamento-index-page-table thead th:nth-child(2),
-.departamento-index-page-table thead th:nth-child(3) {
+.departamento-index-page-table thead th:nth-child(3),
+.departamento-index-page-table thead th:nth-child(4) {
     text-align: center;
 }
 
@@ -1651,26 +1659,22 @@
     transform: translateY(-1px);
 }
 /* =========================================================
-   LAYOUT ORGANIZADO PARA NEW, SHOW Y EDIT
+   LAYOUT — NEW, SHOW Y EDIT
    ========================================================= */
 .departamento-new-page-card,
 .departamento-edit-page-card,
 .departamento-show-page-card {
-    max-width: 1240px;
+    max-width: 860px;
+}
+
+.departamento-new-page-card,
+.departamento-edit-page-card {
+    overflow: visible;
 }
 
 .departamento-new-page-form,
 .departamento-edit-page-form {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 18px;
-}
-
-.departamento-new-page-group:nth-of-type(2),
-.departamento-edit-page-group:nth-of-type(2),
-.departamento-new-page-actions,
-.departamento-edit-page-actions {
-    grid-column: 1 / -1;
+    display: block;
 }
 
 .departamento-show-page-table {
@@ -1737,9 +1741,230 @@
 }
 
 @media (max-width: 768px) {
-    .departamento-new-page-form,
-    .departamento-edit-page-form,
     .departamento-show-page-table tbody {
         grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   INDEX — BADGE CONTEO DE INDICADORES
+   ========================================================= */
+.departamento-index-page-indicator-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(13, 202, 240, 0.12);
+    color: #0dcaf0;
+    border: 1px solid rgba(13, 202, 240, 0.3);
+    font-weight: 700;
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.departamento-index-page-indicator-count i {
+    font-size: 0.8rem;
+    opacity: 0.85;
+}
+
+/* =========================================================
+   NEW Y EDIT — SECTION CARDS
+   ========================================================= */
+.departamento-new-page-section-card,
+.departamento-edit-page-section-card {
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.06) 0%,
+        rgba(11, 17, 23, 0.9) 60%
+    );
+    border: 1px solid rgba(13, 202, 240, 0.25);
+    border-radius: 14px;
+    overflow: visible;
+    margin-bottom: 16px;
+}
+
+.departamento-new-page-section-header,
+.departamento-edit-page-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: rgba(13, 202, 240, 0.08);
+    border-bottom: 1px solid rgba(13, 202, 240, 0.15);
+    border-radius: 14px 14px 0 0;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.departamento-new-page-section-header i,
+.departamento-edit-page-section-header i {
+    color: #0dcaf0;
+    font-size: 1rem;
+}
+
+.departamento-new-page-section-body,
+.departamento-edit-page-section-body {
+    padding: 16px;
+}
+
+/* =========================================================
+   NEW Y EDIT — BADGE CONTADOR DE INDICADORES
+   ========================================================= */
+.departamento-new-page-indicadores-count,
+.departamento-edit-page-indicadores-count {
+    margin-left: auto;
+    background: rgba(13, 202, 240, 0.15);
+    border: 1px solid rgba(13, 202, 240, 0.35);
+    color: #0dcaf0;
+    border-radius: 999px;
+    padding: 2px 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-width: 24px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* =========================================================
+   NEW Y EDIT — INPUT CON ÍCONO PREFIX
+   ========================================================= */
+.departamento-new-page-input-wrapper,
+.departamento-edit-page-input-wrapper {
+    position: relative;
+}
+
+.departamento-new-page-input-icon,
+.departamento-edit-page-input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #0dcaf0;
+    font-size: 0.95rem;
+    pointer-events: none;
+    opacity: 0.7;
+    z-index: 1;
+}
+
+.departamento-new-page-input--with-icon,
+.departamento-edit-page-input--with-icon,
+.departamento-edit-page-select--with-icon {
+    padding-left: 42px;
+}
+
+/* =========================================================
+   NEW Y EDIT — GRUPOS SIN BORDE (dentro de section-body)
+   ========================================================= */
+.departamento-new-page-group--no-border,
+.departamento-edit-page-group--no-border {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.departamento-new-page-header-center {
+    text-align: center;
+}
+
+/* =========================================================
+   NEW — BOTÓN GUARDAR FULL-WIDTH
+   ========================================================= */
+.departamento-new-page-save-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.85) 0%,
+        rgba(9, 160, 200, 0.95) 100%
+    );
+    color: #050e14;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow:
+        0 4px 20px rgba(13, 202, 240, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition:
+        box-shadow 0.25s ease,
+        transform 0.15s ease,
+        filter 0.2s ease;
+}
+
+.departamento-new-page-save-btn:hover {
+    box-shadow: 0 6px 28px rgba(13, 202, 240, 0.5);
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+.departamento-new-page-save-btn i {
+    font-size: 1.1rem;
+}
+
+.departamento-new-page-actions {
+    margin-top: 8px;
+    display: flex;
+    justify-content: stretch;
+    padding-top: 0;
+}
+
+/* =========================================================
+   EDIT — BOTÓN GUARDAR FULL-WIDTH (override)
+   ========================================================= */
+.departamento-edit-page-save-btn {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(
+        135deg,
+        rgba(13, 202, 240, 0.85) 0%,
+        rgba(9, 160, 200, 0.95) 100%
+    );
+    color: #050e14;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow:
+        0 4px 20px rgba(13, 202, 240, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    transition:
+        box-shadow 0.25s ease,
+        transform 0.15s ease,
+        filter 0.2s ease;
+}
+
+.departamento-edit-page-save-btn:hover {
+    box-shadow: 0 6px 28px rgba(13, 202, 240, 0.5);
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+.departamento-edit-page-save-btn i {
+    font-size: 1.1rem;
+}
+
+.departamento-edit-page-actions {
+    margin-top: 8px;
+    display: flex;
+    justify-content: stretch;
+    padding-top: 0;
+}
+
+@media (max-width: 992px) {
+    .departamento-index-page-table {
+        min-width: 780px;
     }
 }

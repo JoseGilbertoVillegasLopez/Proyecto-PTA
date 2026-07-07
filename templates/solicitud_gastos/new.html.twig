@@ -1,0 +1,344 @@
+<turbo-frame id="content">
+
+<div class="sg-new"
+	 data-sg-view="sg-new"
+	 data-partidas='{{ partidas_json|json_encode|raw }}'
+	 data-procesos-clave='{{ procesos_clave_json|json_encode|raw }}'
+	 data-procesos-estrategicos='{{ procesos_estrategicos_json|json_encode|raw }}'>
+
+	{# ===================================================== #}
+	{# VOLVER + TÍTULO #}
+	{# ===================================================== #}
+
+	<div class="sg-new__topbar">
+		<a href="{{ path('app_solicitud_gastos_index') }}"
+		   class="sg-new__volver"
+		   data-turbo-frame="content"
+		   data-turbo-action="advance">
+			<i class="bi bi-arrow-left-circle-fill"></i>
+			<span>Volver</span>
+		</a>
+		<h1 class="sg-new__titulo">Nueva Solicitud de Gastos</h1>
+	</div>
+
+	<form method="POST"
+		  action="{{ path('app_solicitud_gastos_new') }}"
+		  enctype="multipart/form-data"
+		  data-turbo-action="advance"
+		  data-sg-evidencias-form>
+
+		<input type="hidden" name="_token" value="{{ csrf_token('nueva_solicitud_gastos') }}">
+
+		<div class="sg-new__form-container">
+
+			{# ===================================================== #}
+			{# BLOQUE: QUIÉN SOLICITA (readonly, sin Puesto) #}
+			{# ===================================================== #}
+
+			<div class="sg-new__readonly-strip">
+				<div class="sg-new__readonly-item">
+					<span class="sg-new__readonly-label">Solicitante</span>
+					<span class="sg-new__readonly-value">{{ personal }}</span>
+				</div>
+				<div class="sg-new__readonly-item">
+					<span class="sg-new__readonly-label">Solicitud de recursos</span>
+					<span class="sg-new__readonly-value">{{ personal.departamento.nombre }}</span>
+				</div>
+				<div class="sg-new__readonly-item">
+					<span class="sg-new__readonly-label">Fecha de solicitud</span>
+					<span class="sg-new__readonly-value">{{ "now"|date("d/m/Y") }}</span>
+				</div>
+			</div>
+
+			{# ===================================================== #}
+			{# CUERPO DEL FORMULARIO #}
+			{# ===================================================== #}
+
+			<div class="sg-new__body">
+
+				{# Fila 1: tipo + documento que presenta + descripción del documento #}
+				<div class="sg-new__grid-3 sg-new__grid-tipo">
+					<div class="sg-new__field">
+						<label for="tipo_solicitud" class="sg-new__label">Tipo de solicitud *</label>
+						<select class="sg-new__select"
+								id="tipo_solicitud"
+								name="solicitud[tipo_solicitud]"
+								required>
+							<option value="">-- Seleccionar --</option>
+							{% for tipo in catalogos.tipos_solicitud %}
+								<option value="{{ tipo.id }}">{{ tipo.nombre }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="sg-new__field">
+						<label for="documento_verificacion" class="sg-new__label">Documento que presenta *</label>
+						<select class="sg-new__select"
+								id="documento_verificacion"
+								name="solicitud[documento_verificacion]"
+								required>
+							<option value="">-- Seleccionar --</option>
+							{% for key, label in catalogos.documentos_verificacion %}
+								<option value="{{ key }}">{{ label }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="sg-new__field">
+						<label for="documento_verificacion_descripcion" class="sg-new__label">Descripción del documento</label>
+						<input type="text"
+							   class="sg-new__input"
+							   id="documento_verificacion_descripcion"
+							   name="solicitud[documento_verificacion_descripcion]"
+							   placeholder="Descripción libre (opcional)">
+					</div>
+				</div>
+
+				{# Fila 1b: fecha + banco + transferencia + cta/clave #}
+				<div class="sg-new__grid-4">
+					<div class="sg-new__field">
+						<label for="fecha_necesita" class="sg-new__label">Fecha en que se requiere *</label>
+						<div class="sg-date-wrapper">
+							<input type="date"
+								   class="sg-new__input sg-date-input"
+								   id="fecha_necesita"
+								   name="solicitud[fecha_necesita]"
+								   required>
+						</div>
+					</div>
+					<div class="sg-new__field">
+						<label for="banco" class="sg-new__label">Banco del beneficiario</label>
+						<select class="sg-new__select"
+								id="banco"
+								name="solicitud[banco]">
+							<option value="">— Sin banco —</option>
+							{% for banco in catalogos.bancos %}
+								<option value="{{ banco.id }}">{{ banco.nombre }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="sg-new__field">
+						<label for="transferencia" class="sg-new__label">Transferencia en beneficio de</label>
+						<textarea class="sg-new__textarea-fixed"
+								  id="transferencia"
+								  name="solicitud[transferencia_en_beneficio_de]"
+								  placeholder="Nombre del beneficiario (opcional)"></textarea>
+					</div>
+					<div class="sg-new__field">
+						<label for="cta_clave" class="sg-new__label">Cta / Clave del beneficiario</label>
+						<textarea class="sg-new__textarea-fixed"
+								  id="cta_clave"
+								  name="solicitud[cta_clave_beneficiario]"
+								  placeholder="Número de cuenta o clave (opcional)"></textarea>
+					</div>
+				</div>
+
+				{# Fila 2: por concepto de (ancho completo) #}
+				<div class="sg-new__field sg-new__field--full">
+					<label for="por_concepto" class="sg-new__label">Por concepto de *</label>
+					<textarea class="sg-new__textarea-fixed"
+							  id="por_concepto"
+							  name="solicitud[por_concepto_de]"
+							  placeholder="Describe brevemente el motivo"
+							  required></textarea>
+				</div>
+
+				{# ===================================================== #}
+				{# SEPARADOR INTERNO #}
+				{# ===================================================== #}
+
+				<div class="sg-new__section-divider">
+					<span class="sg-new__section-label">
+						<i class="bi bi-receipt"></i>
+						Detalle del gasto
+					</span>
+				</div>
+
+				{# ===================================================== #}
+				{# TABLA: DETALLE DEL GASTO #}
+				{# ===================================================== #}
+
+				<div class="sg-detalle-wrapper">
+					<div class="sg-detalle-scroll">
+						<table class="sg-detalle-table">
+							<thead>
+								<tr>
+									<th>Proceso Estratégico</th>
+									<th>Proceso Clave</th>
+									<th>PEI</th>
+									<th>PAIG</th>
+									<th>Meta PDI/PTA</th>
+									<th>Capítulo</th>
+									<th>Partida</th>
+									<th>Descripción</th>
+									<th>Cantidad</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody id="sg-detalle-tbody">
+								<tr>
+									{# Celdas que abarcan todas las filas de partidas — rowspan gestionado por JS #}
+									<td id="sg-td-pe" rowspan="1" class="sg-span-cell">
+										<div class="sg-combobox sg-pe-combobox">
+											<input type="text"
+												   class="sg-new__input sg-combobox__input"
+												   placeholder="Buscar proceso..."
+												   autocomplete="off">
+											<input type="hidden"
+												   id="proceso_estrategico"
+												   name="solicitud[proceso_estrategico]">
+											<ul class="sg-combobox__list" hidden></ul>
+										</div>
+									</td>
+									<td id="sg-td-pc" rowspan="1" class="sg-span-cell">
+										{# Combobox para proceso clave #}
+										<div class="sg-combobox sg-pc-combobox">
+											<input type="text"
+												   class="sg-new__input sg-combobox__input"
+												   placeholder="Buscar proceso..."
+												   autocomplete="off">
+											<input type="hidden"
+												   id="proceso_clave"
+												   name="solicitud[proceso_clave]">
+											<ul class="sg-combobox__list" hidden></ul>
+										</div>
+									</td>
+									<td id="sg-td-pei" rowspan="1" class="sg-span-cell sg-autofield-cell">
+										<span class="sg-autofield" id="sg-pei">—</span>
+									</td>
+									<td id="sg-td-paig" rowspan="1" class="sg-span-cell sg-autofield-cell">
+										<span class="sg-autofield" id="sg-paig">—</span>
+									</td>
+									<td id="sg-td-meta" rowspan="1" class="sg-span-cell sg-autofield-cell">
+										<span class="sg-autofield" id="sg-meta">—</span>
+									</td>
+									{# Primera fila de partida #}
+									<td class="sg-td-capitulo">
+										<span class="sg-partida-capitulo sg-autofield">—</span>
+									</td>
+									<td class="sg-td-partida-code">
+										<span class="sg-partida-code sg-autofield">—</span>
+									</td>
+									<td class="sg-td-desc">
+										<div class="sg-combobox">
+											<input type="text"
+												   class="sg-new__input sg-combobox__input"
+												   placeholder="Buscar descripción..."
+												   autocomplete="off">
+											<input type="hidden"
+												   class="sg-sel-partida"
+												   name="solicitud[partidas][1][partida_id]">
+											<ul class="sg-combobox__list" hidden></ul>
+										</div>
+									</td>
+									<td class="sg-td-cantidad">
+										<input type="number"
+											   step="0.01"
+											   min="0.01"
+											   class="sg-new__input sg-inp-monto"
+											   name="solicitud[partidas][1][monto]"
+											   placeholder="0.00"
+											   required>
+									</td>
+									<td class="sg-td-action"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="sg-detalle-footer">
+						<button type="button" class="sg-new__add-partida-btn" id="btn-add-partida">
+							<i class="bi bi-plus-circle"></i> Agregar Partida
+						</button>
+						<div class="sg-new__total-row">
+							<span class="sg-new__total-label">Total</span>
+							<span class="sg-new__total-valor" id="sg-total-valor">$ 0.00</span>
+						</div>
+					</div>
+				</div>
+
+				{# ===================================================== #}
+				{# SEPARADOR: AUTORIZACIÓN DE LA SOLICITUD #}
+				{# ===================================================== #}
+
+				<div class="sg-new__section-divider">
+					<span class="sg-new__section-label">
+						<i class="bi bi-people-fill"></i>
+						Autorización de la solicitud
+					</span>
+				</div>
+
+				<div class="sg-new__grid-3 sg-new__grid-autoriza">
+					<div class="sg-new__field">
+						<label class="sg-new__label">Solicitante</label>
+						<div class="sg-show__display sg-autoriza-display">
+							<span class="sg-autoriza-nombre">{{ personal }}</span>
+							<span class="sg-autoriza-puesto">{{ personal.puesto ? personal.puesto.nombre : '—' }}</span>
+						</div>
+					</div>
+					<div class="sg-new__field sg-autoriza-search-wrap">
+						<label for="jefe_area_search" class="sg-new__label">Jefe(a) del área solicitante *</label>
+						<div class="sg-show__display sg-autoriza-display sg-autoriza-box">
+							<input type="text"
+								   class="sg-autoriza-search"
+								   id="jefe_area_search"
+								   placeholder="Buscar por nombre o puesto..."
+								   autocomplete="off">
+							<div class="sg-autoriza-puesto-caption"></div>
+						</div>
+						<input type="hidden" name="solicitud[jefe_area_id]" class="sg-autoriza-hidden">
+						<div class="sg-autoriza-results"></div>
+					</div>
+					<div class="sg-new__field sg-autoriza-search-wrap">
+						<label for="autoriza_search" class="sg-new__label sg-autoriza-dynamic-label" id="autoriza_label"></label>
+						<div class="sg-show__display sg-autoriza-display sg-autoriza-box">
+							<input type="text"
+								   class="sg-autoriza-search"
+								   id="autoriza_search"
+								   placeholder="Buscar por nombre o puesto..."
+								   autocomplete="off">
+							<div class="sg-autoriza-puesto-caption"></div>
+						</div>
+						<input type="hidden" name="solicitud[autoriza_id]" class="sg-autoriza-hidden">
+						<div class="sg-autoriza-results"></div>
+					</div>
+				</div>
+
+				{# ===================================================== #}
+				{# SEPARADOR: DOCUMENTOS A PRESENTAR PARA LA SOLICITUD #}
+				{# ===================================================== #}
+
+				<div class="sg-new__section-divider">
+					<span class="sg-new__section-label">
+						<i class="bi bi-paperclip"></i>
+						Documentos a presentar para la solicitud
+					</span>
+				</div>
+
+				<div class="sg-new__field sg-new__field--full">
+					<label class="sg-new__label">Adjunta facturas, cotizaciones u otro comprobante (imagen o PDF) *</label>
+					<p class="sg-evidencias__hint">Sube entre 1 y 7 archivos (imágenes o PDF).</p>
+
+					<div class="sg-evidencias__preview" data-sg-evidencias-preview data-sg-evidencias-input-name="solicitud[evidencias][]">
+						<button type="button" class="sg-evidencias__add" data-sg-evidencias-add title="Agregar evidencia">
+							<i class="bi bi-plus-lg"></i>
+						</button>
+					</div>
+				</div>
+
+			</div>
+
+			{# ===================================================== #}
+			{# SUBMIT #}
+			{# ===================================================== #}
+
+			<div class="sg-new__submit-wrapper">
+				<button type="submit" class="sg-new__submit-btn">
+					<i class="bi bi-send-fill"></i>
+					Guardar Solicitud
+				</button>
+			</div>
+
+		</div>
+	</form>
+</div>
+
+</turbo-frame>

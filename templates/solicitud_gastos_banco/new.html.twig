@@ -1,0 +1,47 @@
+<turbo-frame id="content">
+<div class="sgb-new" data-sgb-view="sgb-new">
+
+	<div class="sgb__topbar">
+		<a href="{{ path('app_sg_banco_index') }}"
+		   class="sgb__btn-volver"
+		   data-turbo-frame="content"
+		   data-turbo-action="advance">
+			<i class="bi bi-arrow-left-circle-fill"></i>
+			<span>Volver</span>
+		</a>
+		<h1 class="sgb__titulo">Agregar Banco</h1>
+	</div>
+
+	<div class="sgb__card sgb__card--form">
+		<form method="POST" action="{{ path('app_sg_banco_new') }}">
+			<input type="hidden" name="_token" value="{{ csrf_token('nuevo_banco') }}">
+
+			<div class="sgb__field">
+				<label for="nombre" class="sgb__label">Nombre del banco *</label>
+				<input type="text"
+					   id="nombre"
+					   name="nombre"
+					   class="sgb__input"
+					   placeholder="Ej. BBVA Bancomer"
+					   maxlength="100"
+					   required
+					   autofocus>
+			</div>
+
+			<div class="sgb__form-actions">
+				<button type="submit" class="sgb__btn-submit">
+					<i class="bi bi-plus-circle-fill"></i>
+					Agregar Banco
+				</button>
+				<a href="{{ path('app_sg_banco_index') }}"
+				   class="sgb__btn-cancel"
+				   data-turbo-frame="content"
+				   data-turbo-action="advance">
+					Cancelar
+				</a>
+			</div>
+		</form>
+	</div>
+
+</div>
+</turbo-frame>

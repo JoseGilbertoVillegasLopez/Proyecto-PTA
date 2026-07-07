@@ -1,0 +1,79 @@
+<turbo-frame id="content">
+<div class="ma-index-card" data-page="ma-index">
+
+    <h4 class="ma-index-title">
+        <i class="bi bi-shield-lock-fill"></i>
+        Gestión de Accesos por Módulo
+    </h4>
+    <p class="ma-index-subtitle">
+        Configura qué puestos son encargados o tienen acceso a cada módulo del sistema.
+    </p>
+
+    {% for message in app.flashes('success') %}
+        <div class="ma-flash ma-flash--success">
+            <i class="bi bi-check-circle-fill"></i> {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="ma-index-table-wrapper">
+        <table class="ma-index-table">
+            <thead>
+                <tr>
+                    <th>Módulo</th>
+                    <th>Descripción</th>
+                    <th class="text-center">Encargados</th>
+                    <th class="text-center">Con acceso</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in resumen %}
+                    <tr class="ma-index-row">
+                        <td>
+                            <span class="ma-index-slug">{{ item.modulo.slug }}</span>
+                            <span class="ma-index-label">{{ item.modulo.label }}</span>
+                        </td>
+                        <td class="ma-index-desc">{{ item.modulo.descripcion ?? '—' }}</td>
+                        <td class="text-center">
+                            {% if item.modulo.usaEncargado %}
+                                <span class="ma-badge ma-badge--enc">{{ item.encargados }}</span>
+                            {% else %}
+                                <span class="ma-badge ma-badge--muted">No aplica</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if item.modulo.usaAcceso %}
+                                <span class="ma-badge ma-badge--acc">{{ item.con_acceso }}</span>
+                            {% else %}
+                                <span class="ma-badge ma-badge--muted">Todos</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            {% if item.modulo.activo %}
+                                <span class="ma-badge ma-badge--active">Activo</span>
+                            {% else %}
+                                <span class="ma-badge ma-badge--inactive">Inactivo</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ path('app_admin_modulo_acceso_edit', { id: item.modulo.id }) }}"
+                               data-turbo-frame="content"
+                               data-turbo-action="advance"
+                               class="ma-index-action-btn"
+                               title="Gestionar accesos">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="ma-index-empty">No hay módulos registrados.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</turbo-frame>

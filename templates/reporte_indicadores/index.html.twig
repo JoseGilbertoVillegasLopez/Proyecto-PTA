@@ -1,68 +1,147 @@
 <turbo-frame id="content">
-	<section class="reporte-indicadores-index" data-page="reporte-indicadores-index">
-		<header class="reporte-indicadores-index__header">
-			<a href="{{ path('app_indicadores_basicos_index') }}" data-turbo-frame="content" data-turbo-action="advance" class="reporte-indicadores-index__back-btn" title="Volver">
-				<i class="bi bi-arrow-left"></i>
-			</a>
+<section class="ri-new" data-page="reporte-indicadores-index">
 
-			<div class="reporte-indicadores-index__header-center">
-				<h1 class="reporte-indicadores-index__title">
-					<i class="bi bi-file-earmark-bar-graph"></i>
-					Reportes de indicadores
-				</h1>
-			</div>
+    {# ── HEADER ─────────────────────────────────────────────────────── #}
+    <header class="ri-new__header">
+        <div class="ri-new__header-spacer"></div>
 
-			<a href="{{ path('app_reporte_indicadores_new') }}" data-turbo-frame="content" data-turbo-action="advance" class="reporte-indicadores-index__new-btn" title="Reportes">
-				<i class="bi bi-plus-circle"></i>
-				<span>Reportes</span>
-			</a>
-		</header>
+        <h1 class="ri-new__title">
+            <i class="bi bi-file-earmark-bar-graph"></i>
+            Reportes de indicadores básicos
+        </h1>
 
-		{% for label, messages in app.flashes %}
-			{% for message in messages %}
-				<div class="reporte-indicadores-index__flash reporte-indicadores-index__flash--{{ label }}">
-					<span>{{ message }}</span>
-				</div>
-			{% endfor %}
-		{% endfor %}
+        <form method="GET"
+              action="{{ path('app_reporte_indicadores_index') }}"
+              data-turbo-frame="content"
+              class="ri-new__year-form">
+            <div class="ri-new__year-control">
+                <i class="bi bi-calendar2-range ri-new__year-icon"></i>
+                <select name="anio"
+                        class="ri-new__year-select"
+                        onchange="this.form.requestSubmit()">
+                    {% for anio in anios %}
+                        <option value="{{ anio }}" {{ anio == anio_seleccionado ? 'selected' : '' }}>
+                            {{ anio }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </header>
 
-		<div class="reporte-indicadores-index__table-wrapper">
-			<table class="reporte-indicadores-index__table">
-				<thead>
-					<tr>
-						<th>Reporte</th>
-						<th>Fecha de creacion</th>
-						<th>Fecha de entrega</th>
-						<th>Estado</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for reporte in reportes_indicadores %}
-						<tr class="reporte-indicadores-index__row">
-							<td class="reporte-indicadores-index__name">
-								Reporte de indicadores {{ reporte.anio }} - Trimestre {{ reporte.trimestre }}
-							</td>
-							<td>
-								{{ reporte.creadoFecha ? reporte.creadoFecha|date('d/m/Y') : 'Pendiente' }}
-							</td>
-							<td>
-								{{ reporte.entregadoFecha ? reporte.entregadoFecha|date('d/m/Y') : 'Sin entregar' }}
-							</td>
-							<td>
-								<span class="reporte-indicadores-index__status reporte-indicadores-index__status--{{ reporte.estado }}">
-									{{ reporte.estado|capitalize }}
-								</span>
-							</td>
-						</tr>
-					{% else %}
-						<tr>
-							<td colspan="4" class="reporte-indicadores-index__empty">
-								Aun no has creado reportes de indicadores.
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
-	</section>
+    {# ── FLASHES ─────────────────────────────────────────────────────── #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="reporte-indicadores-index__flash reporte-indicadores-index__flash--{{ label }}">
+                <span>{{ message }}</span>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {# ── VENTANAS DE ENTREGA ────────────────────────────────────────── #}
+    <div class="ri-new__dates mb-5">
+        <div class="ri-new__dates-inner">
+            <div class="ri-new__dates-heading">
+                <i class="bi bi-calendar3"></i>
+                <span>Ventanas de entrega {{ datos.anio_actual }}</span>
+            </div>
+            <div class="ri-new__dates-pills">
+                {% for item in datos.fechas_reporte %}
+                    <div class="ri-new__pill">
+                        <span class="ri-new__pill-period">{{ item.periodo }}</span>
+                        <span class="ri-new__pill-sep">·</span>
+                        <span class="ri-new__pill-date">{{ item.fecha }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# ── GRID DE TRIMESTRES ─────────────────────────────────────────── #}
+    <div class="ri-new__grid">
+        {% for trimestre in datos.trimestres %}
+            <article class="ri-new__card ri-new__card--{{ trimestre.estado_key }}"
+                     data-trimestre="{{ trimestre.numero }}">
+
+                <span class="ri-new__watermark">T{{ trimestre.numero }}</span>
+
+                <div class="ri-new__card-head">
+                    <div>
+                        <p class="ri-new__card-q">Trimestre {{ trimestre.numero }}</p>
+                        <p class="ri-new__card-name">{{ trimestre.nombre }}</p>
+                    </div>
+                    <span class="ri-new__badge ri-new__badge--{{ trimestre.estado_key }}">
+                        {{ trimestre.estado_label }}
+                    </span>
+                </div>
+
+                <div class="ri-new__info-rows">
+                    <div class="ri-new__info-row">
+                        <span>Periodo</span>
+                        <strong>{{ trimestre.periodo_label }}</strong>
+                    </div>
+                    <div class="ri-new__info-row">
+                        <span>Ventana</span>
+                        <strong>{{ trimestre.ventana_texto }}</strong>
+                    </div>
+                    {% if trimestre.creado_fecha %}
+                        <div class="ri-new__info-row">
+                            <span>Creado</span>
+                            <strong>{{ trimestre.creado_fecha|date('d/m/Y') }}</strong>
+                        </div>
+                    {% endif %}
+                    {% if trimestre.entregado_fecha %}
+                        <div class="ri-new__info-row ri-new__info-row--entregado">
+                            <span>Entregado</span>
+                            <strong>{{ trimestre.entregado_fecha|date('d/m/Y') }}</strong>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <p class="ri-new__msg ri-new__msg--{{ trimestre.estado_key }}">
+                    {{ trimestre.estado_mensaje }}
+                </p>
+
+                <div class="ri-new__actions">
+                    {% if trimestre.puede_abrir and trimestre.reporte_id %}
+                        <a href="{{ path('app_reporte_indicadores_trimestre_show', { id: trimestre.reporte_id }) }}"
+                           data-turbo-frame="content" data-turbo-action="advance"
+                           class="ri-new__btn ri-new__btn--view">
+                            <i class="bi bi-eye"></i> Ver
+                        </a>
+                        {% if trimestre.estado_key != 'entregado' %}
+                            <a href="{{ path('app_reporte_indicadores_trimestre_edit', { id: trimestre.reporte_id }) }}"
+                               data-turbo-frame="content" data-turbo-action="advance"
+                               class="ri-new__btn ri-new__btn--edit">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </a>
+                            <form method="post"
+                                  action="{{ path('app_reporte_indicadores_trimestre_entregar', { id: trimestre.reporte_id }) }}"
+                                  data-turbo-frame="content">
+                                <input type="hidden" name="_token" value="{{ csrf_token('reporte_indicadores_entregar') }}">
+                                <button type="submit" class="ri-new__btn ri-new__btn--deliver">
+                                    <i class="bi bi-send-check"></i> Entregar
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% elseif trimestre.puede_crear %}
+                        <form method="post"
+                              action="{{ path('app_reporte_indicadores_trimestre_crear', { trimestre: trimestre.numero }) }}"
+                              data-turbo-frame="content">
+                            <input type="hidden" name="_token" value="{{ csrf_token('reporte_indicadores_trimestre_crear') }}">
+                            <input type="hidden" name="anio" value="{{ datos.anio_actual }}">
+                            <button type="submit" class="ri-new__btn ri-new__btn--create">
+                                <i class="bi bi-plus-circle"></i> Crear reporte
+                            </button>
+                        </form>
+                    {% else %}
+                        <span class="ri-new__no-action">Sin acciones disponibles</span>
+                    {% endif %}
+                </div>
+
+            </article>
+        {% endfor %}
+    </div>
+
+</section>
 </turbo-frame>
