@@ -81,6 +81,33 @@
         margin: 0;
     }
 
+    /* Caja de folio (pie): tabla anidada de una fila / 3 celdas — hueco en
+       blanco (6%) + "FOLIO:" (60% del resto) + valor (40% del resto), las 3
+       suman el 100% del <td colspan="3"> que la contiene. Se evita
+       "float:right" + ancho en % (no calculaba de forma confiable el ancho
+       real de la celda contenedora en mpdf, dejaba espacio sin cubrir) a
+       favor del mismo patrón que ya usa TODO este documento para repartir
+       columnas: colgroup con anchos en % sobre una tabla a width:100%. */
+    .folio-box {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    .folio-box td {
+        height: 11pt;
+        background: #10253F;
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 6pt;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .folio-box td.folio-box-spacer {
+        background: none;
+    }
+
     /* Filas vacías que solo aportan el espaciado que trae el Excel entre secciones */
     .gap-row td {
         border: none !important;
@@ -562,8 +589,15 @@
 
     <tr style="height:11pt;">
         <td colspan="7"></td>
-        <td colspan="3" class="bg-navy" style="height:11pt; vertical-align:middle; color:#ffffff; font-weight:bold; font-size:6pt;">
-            FOLIO: {{ solicitud.solicitante.puesto and solicitud.solicitante.puesto.serie ? solicitud.solicitante.puesto.serie : '' }}
+        <td colspan="3" style="height:11pt; padding:0; vertical-align:middle;">
+            <table class="folio-box">
+                <colgroup><col style="width:6%"><col style="width:56.4%"><col style="width:37.6%"></colgroup>
+                <tr>
+                    <td class="folio-box-spacer"></td>
+                    <td>FOLIO:</td>
+                    <td>{{ solicitud.folioFormateado ?? '' }}</td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>
