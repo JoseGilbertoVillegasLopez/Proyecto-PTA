@@ -1,8 +1,8 @@
 <turbo-frame id="content">
 
-{# Sección de comentarios de revisión: desactivada hasta que finanzas confirme
-   el flujo; el código se conserva para reactivarla más adelante. #}
-{% set sg_mostrar_comentarios = false %}
+{# Sección de comentarios de revisión: visibilidad configurable desde
+   /finanzas/configuracion (SolicitudGastosConfiguracion::mostrarMotivoRechazo). #}
+{% set sg_mostrar_comentarios = mostrarMotivoRechazo %}
 
 <div class="sg-show">
 
@@ -55,12 +55,14 @@
 					title="Ver avance de revisión">
 				<i class="bi bi-list-check"></i> Avance {{ solicitud.contarRevisionesResueltas }}/3
 			</button>
-			<a href="{{ path('app_solicitud_gastos_export_pdf', { id: solicitud.id }) }}"
-			   class="sg-avance-btn"
-			   target="_blank"
-			   title="Exportar solicitud a PDF">
-				<i class="bi bi-file-earmark-pdf-fill"></i> Exportar PDF
-			</a>
+			{% if solicitud.estado in ['aceptada', 'resuelto'] %}
+				<a href="{{ path('app_solicitud_gastos_export_pdf', { id: solicitud.id }) }}"
+				   class="sg-avance-btn"
+				   target="_blank"
+				   title="Exportar solicitud a PDF">
+					<i class="bi bi-file-earmark-pdf-fill"></i> Exportar PDF
+				</a>
+			{% endif %}
 		</div>
 
 	</div>
@@ -367,17 +369,15 @@
 
 		{% if puedeVotarActual %}
 			<div class="sg-new__submit-wrapper sg-voto__wrapper">
-				<form method="POST" action="{{ path('app_solicitud_gastos_votar', { id: solicitud.id }) }}" class="sg-voto__form">
+				<form method="POST" action="{{ path('app_solicitud_gastos_votar', { id: solicitud.id }) }}" class="sg-voto__form" id="sg-voto-form">
 					<input type="hidden" name="_token" value="{{ csrf_token('votar_' ~ solicitud.id) }}">
-					{% if sg_mostrar_comentarios %}
-						<textarea name="comentario" class="sg-voto__comentario" placeholder="Comentario (opcional, sobre todo si vas a rechazar)"></textarea>
-					{% endif %}
+					<input type="hidden" name="aceptar" id="sg-voto-aceptar-input">
+					<input type="hidden" name="comentario" id="sg-voto-comentario-input">
 					<div class="sg-voto__botones">
-						<button type="submit" name="aceptar" value="1" class="sg-show__revisar-btn sg-voto__btn--aceptar">
+						<button type="button" class="sg-show__revisar-btn sg-voto__btn--aceptar" data-sg-voto="1">
 							<i class="bi bi-check-circle-fill"></i> Aceptar solicitud
 						</button>
-						<button type="submit" name="aceptar" value="0" class="sg-show__revisar-btn sg-voto__btn--rechazar"
-								onclick="return confirm('Rechazar esta solicitud es definitivo. ¿Continuar?');">
+						<button type="button" class="sg-show__revisar-btn sg-voto__btn--rechazar" data-sg-voto="0">
 							<i class="bi bi-x-circle-fill"></i> Rechazar solicitud
 						</button>
 					</div>
@@ -432,6 +432,125 @@
 		</div>
 	</div>
 
+	{# ===================================================== #}
+	{# MODAL: COMENTARIO/MOTIVO AL VOTAR #}
+	{# ===================================================== #}
+
+	<div class="modal fade" id="sgVotoComentarioModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content sg-progreso-modal sg-voto-modal">
+				<div class="modal-header">
+					<h5 class="modal-title" id="sgVotoComentarioTitulo">
+						<i class="bi bi-chat-left-text"></i>
+						<span></span>
+					</h5>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+				</div>
+				<div class="modal-body">
+					<div id="sgVotoPasoPregunta">
+						<p id="sgVotoPreguntaTexto" class="sg-voto-modal__pregunta"></p>
+						<div class="sg-voto-modal__opciones">
+							<button type="button" class="sg-show__revisar-btn" id="sgVotoNo">
+								<i class="bi bi-x-lg"></i> No
+							</button>
+							<button type="button" class="sg-show__revisar-btn sg-voto__btn--aceptar" id="sgVotoSi">
+								<i class="bi bi-check-lg"></i> Sí
+							</button>
+						</div>
+					</div>
+					<div id="sgVotoPasoTexto" style="display:none;">
+						<label for="sgVotoTextarea" class="sg-voto-modal__label" id="sgVotoTextareaLabel"></label>
+						<textarea id="sgVotoTextarea" class="sg-voto__comentario"></textarea>
+						<div class="sg-voto-modal__opciones">
+							<button type="button" class="sg-show__revisar-btn sg-voto__btn--aceptar" id="sgVotoConfirmar">
+								<i class="bi bi-check-circle-fill"></i> Confirmar
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </div>
 
+<script>
+(function () {
+	var form = document.getElementById('sg-voto-form');
+	if (!form) {
+		return;
+	}
+
+	var aceptarInput = document.getElementById('sg-voto-aceptar-input');
+	var comentarioInput = document.getElementById('sg-voto-comentario-input');
+	var modalEl = document.getElementById('sgVotoComentarioModal');
+	var modal = modalEl ? new bootstrap.Modal(modalEl) : null;
+	var pasoPregunta = document.getElementById('sgVotoPasoPregunta');
+	var pasoTexto = document.getElementById('sgVotoPasoTexto');
+	var tituloEl = document.querySelector('#sgVotoComentarioTitulo span');
+	var preguntaTexto = document.getElementById('sgVotoPreguntaTexto');
+	var textareaLabel = document.getElementById('sgVotoTextareaLabel');
+	var textarea = document.getElementById('sgVotoTextarea');
+	var valorPendiente = '';
+
+	var TEXTOS = {
+		'1': {
+			titulo: 'Aceptar solicitud',
+			pregunta: '¿Deseas dejar un comentario junto con tu aceptación?',
+			label: 'Comentario (opcional)'
+		},
+		'0': {
+			titulo: 'Rechazar solicitud',
+			pregunta: 'Rechazar esta solicitud es definitivo. ¿Deseas indicar un motivo?',
+			label: 'Motivo del rechazo'
+		}
+	};
+
+	function mostrarPasoPregunta() {
+		pasoPregunta.style.display = '';
+		pasoTexto.style.display = 'none';
+		textarea.value = '';
+	}
+
+	function enviarVoto(comentario) {
+		aceptarInput.value = valorPendiente;
+		comentarioInput.value = comentario || '';
+		form.submit();
+	}
+
+	document.querySelectorAll('[data-sg-voto]').forEach(function (btn) {
+		btn.addEventListener('click', function () {
+			valorPendiente = btn.getAttribute('data-sg-voto');
+			var textos = TEXTOS[valorPendiente];
+			tituloEl.textContent = textos.titulo;
+			preguntaTexto.textContent = textos.pregunta;
+			textareaLabel.textContent = textos.label;
+			mostrarPasoPregunta();
+			if (modal) {
+				modal.show();
+			}
+		});
+	});
+
+	document.getElementById('sgVotoNo').addEventListener('click', function () {
+		if (modal) {
+			modal.hide();
+		}
+		enviarVoto('');
+	});
+
+	document.getElementById('sgVotoSi').addEventListener('click', function () {
+		pasoPregunta.style.display = 'none';
+		pasoTexto.style.display = '';
+		textarea.focus();
+	});
+
+	document.getElementById('sgVotoConfirmar').addEventListener('click', function () {
+		if (modal) {
+			modal.hide();
+		}
+		enviarVoto(textarea.value.trim());
+	});
+})();
+</script>
 </turbo-frame>

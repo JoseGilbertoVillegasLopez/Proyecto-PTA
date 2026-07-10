@@ -378,6 +378,52 @@
     box-shadow: 0 8px 28px rgba(255, 107, 107, 0.2);
 }
 
+/* ── Modal: comentario/motivo al votar ── */
+.sg-voto-modal .sg-voto-modal__pregunta {
+    color: #d4ebf4;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 0 18px 0;
+    text-align: center;
+}
+
+.sg-voto-modal__label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #9fb3c8;
+    margin-bottom: 8px;
+}
+
+.sg-voto-modal .sg-voto__comentario {
+    max-width: none;
+    min-height: 100px;
+    margin-bottom: 18px;
+}
+
+.sg-voto-modal__opciones {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+}
+
+.sg-voto-modal .sg-show__revisar-btn {
+    padding: 10px 28px;
+    font-size: 0.9rem;
+}
+
+/* Botón "No" (sin modificador aceptar/rechazar): neutro, no verde por defecto */
+.sg-voto-modal__opciones .sg-show__revisar-btn:not(.sg-voto__btn--aceptar):not(.sg-voto__btn--rechazar) {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(230, 241, 255, 0.25);
+    color: #e6f1ff;
+}
+
+.sg-voto-modal__opciones .sg-show__revisar-btn:not(.sg-voto__btn--aceptar):not(.sg-voto__btn--rechazar):hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+}
+
 /* ── Formulario de comprobante ── */
 .sg-comprobante__form {
     display: flex;

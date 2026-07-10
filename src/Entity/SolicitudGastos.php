@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\Entity\SolicitudGastosBanco;
 
 #[ORM\Entity(repositoryClass: SolicitudGastosRepository::class)]
+#[ORM\UniqueConstraint(name: 'uniq_sg_folio_serie_periodo', columns: ['folio', 'folio_serie', 'folio_periodo'])]
 class SolicitudGastos
 {
     /**
@@ -83,6 +84,35 @@ class SolicitudGastos
 
     #[ORM\Column(length: 20, options: ['default' => 'pendiente'])]
     private string $estado = 'pendiente';
+
+    /**
+     * Folio real consecutivo (SolicitudGastosFolioService), inmutable una vez
+     * asignado. Nulo hasta que la solicitud se resuelva y la configuración
+     * determine que le corresponde folio (ver SolicitudGastosConfiguracion).
+     * Único solo en combinación con folioSerie+folioPeriodo (ver UniqueConstraint
+     * de la clase) — el número solo puede repetirse entre series distintas o
+     * entre periodos distintos tras un reinicio, nunca dentro del mismo contexto.
+     */
+    #[ORM\Column(nullable: true)]
+    private ?int $folio = null;
+
+    /**
+     * Serie usada al momento de asignar el folio (modo folioAlcance='por_serie')
+     * o cadena vacía (modo 'global'). Es una "foto", no cambia si después se
+     * edita la serie del puesto — necesaria para que el índice único no bloquee
+     * folios legítimamente repetidos entre series distintas.
+     */
+    #[ORM\Column(length: 10, options: ['default' => ''])]
+    private string $folioSerie = '';
+
+    /**
+     * Periodo vigente (ver SolicitudGastosFolioService::calcularPeriodoActual)
+     * al momento de asignar el folio, o cadena vacía si el ciclo es 'continuo'.
+     * Necesaria para que el índice único no bloquee folios legítimamente
+     * repetidos entre periodos distintos tras un reinicio.
+     */
+    #[ORM\Column(length: 20, options: ['default' => ''])]
+    private string $folioPeriodo = '';
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: true)]
@@ -285,6 +315,61 @@ class SolicitudGastos
         $this->estado = $estado;
 
         return $this;
+    }
+
+    public function getFolio(): ?int
+    {
+        return $this->folio;
+    }
+
+    public function setFolio(?int $folio): static
+    {
+        $this->folio = $folio;
+
+        return $this;
+    }
+
+    public function getFolioSerie(): string
+    {
+        return $this->folioSerie;
+    }
+
+    public function setFolioSerie(string $folioSerie): static
+    {
+        $this->folioSerie = $folioSerie;
+
+        return $this;
+    }
+
+    public function getFolioPeriodo(): string
+    {
+        return $this->folioPeriodo;
+    }
+
+    public function setFolioPeriodo(string $folioPeriodo): static
+    {
+        $this->folioPeriodo = $folioPeriodo;
+
+        return $this;
+    }
+
+    /**
+     * Folio + Serie, formateado para PDF/correo (ej. "RF-0007"). Prefiere la
+     * serie "congelada" al momento de asignar el folio (folioSerie); si está
+     * vacía (folios asignados antes de existir el modo por_serie), cae a la
+     * serie actual del puesto del solicitante. Null si todavía no se le
+     * asignó folio real.
+     */
+    public function getFolioFormateado(): ?string
+    {
+        if ($this->folio === null) {
+            return null;
+        }
+
+        $serie = $this->folioSerie !== '' ? $this->folioSerie : $this->solicitante?->getPuesto()?->getSerie();
+        $numero = str_pad((string) $this->folio, 4, '0', STR_PAD_LEFT);
+
+        return $serie ? sprintf('%s-%s', $serie, $numero) : $numero;
     }
 
     /**

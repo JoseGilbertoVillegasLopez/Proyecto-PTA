@@ -1,0 +1,97 @@
+{# templates/admin/emails/solicitud_gastos_resolucion_aceptada.html.twig #}
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<title>{{ appName }} - Solicitud de gastos aprobada</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body style="margin:0;padding:0;background:#f6f7fb;font-family:Arial, Helvetica, sans-serif;color:#111;">
+		<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f7fb;padding:24px 0;">
+			<tr>
+				<td align="center">
+					<table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
+						<tr>
+							<td style="background:#065f46;color:#fff;padding:16px 24px;font-size:18px;font-weight:bold;">
+								{{ appName }}
+								— Solicitud de gastos
+							</td>
+						</tr>
+
+						<tr>
+							<td style="padding:24px;">
+								<p style="margin:0 0 12px 0;font-size:14px;color:#6b7280;">
+									{{ fecha|date('d/m/Y H:i') }}
+								</p>
+
+								<h2 style="margin:0 0 12px 0;">
+									Hola,
+									{{ nombreSolicitante|default('Solicitante') }}
+								</h2>
+
+								{% if folio %}
+									<p style="margin:0 0 16px 0;line-height:1.5;">
+										Te informamos que tu solicitud de gastos con folio
+										<strong>{{ folio }}</strong>, realizada el
+										{{ fechaSolicitud|date('d/m/Y') }}, fue
+										<strong style="color:#065f46;">APROBADA</strong>
+										el {{ fechaResolucion|date('d/m/Y') }}.
+									</p>
+								{% else %}
+									<p style="margin:0 0 16px 0;line-height:1.5;">
+										Te informamos que tu solicitud de gastos realizada el
+										{{ fechaSolicitud|date('d/m/Y') }} fue
+										<strong style="color:#065f46;">APROBADA</strong>
+										el {{ fechaResolucion|date('d/m/Y') }}.
+									</p>
+								{% endif %}
+
+								<p style="margin:0 0 16px 0;line-height:1.5;">
+									Adjuntamos una copia en PDF de tu solicitud — imprímela para continuar con el proceso de firma.
+								</p>
+
+								{% if comentarios|length > 0 %}
+									<p style="margin:0 0 10px 0;font-weight:bold;font-size:14px;">Comentarios de la revisión:</p>
+									<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 16px 0;">
+										{% for c in comentarios %}
+											<tr>
+												<td style="padding:12px 14px;background:#f0fdf9;border-left:3px solid #065f46;border-radius:6px;">
+													<p style="margin:0 0 3px 0;font-size:11px;font-weight:bold;color:#065f46;text-transform:uppercase;letter-spacing:0.5px;">
+														{{ c.cargo }}
+													</p>
+													{% if c.nombre %}
+														<p style="margin:0 0 8px 0;font-size:12px;color:#6b7280;">
+															{{ c.nombre }}{% if c.puesto %} — {{ c.puesto }}{% endif %}
+														</p>
+													{% endif %}
+													<p style="margin:0;font-size:13px;line-height:1.5;color:#111827;">{{ c.comentario }}</p>
+												</td>
+											</tr>
+											{% if not loop.last %}
+												<tr><td style="height:8px;line-height:8px;font-size:0;">&nbsp;</td></tr>
+											{% endif %}
+										{% endfor %}
+									</table>
+								{% endif %}
+
+								<p style="margin:0 0 8px 0;color:#6b7280;">
+									Si tienes dudas sobre esta resolución, contacta a
+									<a href="mailto:{{ soporteEmail }}" style="color:#2563eb;">
+										{{ soporteEmail }}
+									</a>.
+								</p>
+							</td>
+						</tr>
+
+						<tr>
+							<td style="background:#f3f4f6;color:#6b7280;padding:12px 24px;font-size:12px;">
+								{{ appName }}
+								— Área de Sistemas
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

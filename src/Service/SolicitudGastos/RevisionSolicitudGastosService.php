@@ -4,6 +4,8 @@ namespace App\Service\SolicitudGastos;
 
 use App\Entity\Personal;
 use App\Entity\SolicitudGastos;
+use App\Entity\SolicitudGastosConfiguracion;
+use App\Repository\SolicitudGastosConfiguracionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RevisionSolicitudGastosService
@@ -13,6 +15,8 @@ class RevisionSolicitudGastosService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly SolicitudGastosResolucionMailer $resolucionMailer,
+        private readonly SolicitudGastosConfiguracionRepository $configRepo,
+        private readonly SolicitudGastosFolioService $folioService,
     ) {}
 
     /**
@@ -39,11 +43,9 @@ class RevisionSolicitudGastosService
     }
 
     /**
-     * Registra el voto del cargo indicado y recalcula el estado global de la solicitud.
-     *
-     * Regla de rechazo interina: cualquier voto de rechazo es definitivo. Queda aislada en
-     * este método para poder ajustarla cuando finanzas confirme el criterio real (unánime,
-     * mayoría, etc.).
+     * Registra el voto del cargo indicado, recalcula el estado global de la solicitud
+     * según el criterio configurado (SolicitudGastosConfiguracion::criterioAprobacion)
+     * y, si quedó resuelta, asigna folio (si aplica) y dispara la notificación.
      */
     public function votar(SolicitudGastos $solicitud, Personal $personal, string $cargo, bool $aceptar, ?string $comentario): void
     {
@@ -64,6 +66,10 @@ class RevisionSolicitudGastosService
         $estabaResuelta = in_array($solicitud->getEstado(), self::ESTADOS_RESUELTOS, true);
 
         $this->recalcularEstadoGlobal($solicitud);
+
+        if (!$estabaResuelta && in_array($solicitud->getEstado(), self::ESTADOS_RESUELTOS, true)) {
+            $this->folioService->asignarSiAplica($solicitud);
+        }
 
         $this->em->flush();
 
@@ -92,23 +98,32 @@ class RevisionSolicitudGastosService
         return $revision !== null && in_array($revision->getEstado(), ['pendiente', 'revisando'], true);
     }
 
+    /**
+     * Criterio 'unanime' (default, comportamiento original): cualquier rechazo
+     * es definitivo, se necesitan los 3 votos de aceptación. Criterio
+     * 'mayoria': con 2 de 3 votos en un sentido ya se define el resultado sin
+     * esperar el tercero.
+     */
     private function recalcularEstadoGlobal(SolicitudGastos $solicitud): void
     {
-        $huboRechazo = false;
-        $todasAceptadas = true;
+        $aceptadas = 0;
+        $rechazadas = 0;
 
         foreach ($solicitud->getRevisiones() as $revision) {
-            if ($revision->getEstado() === 'rechazada') {
-                $huboRechazo = true;
-            }
-            if ($revision->getEstado() !== 'aceptada') {
-                $todasAceptadas = false;
+            if ($revision->getEstado() === 'aceptada') {
+                $aceptadas++;
+            } elseif ($revision->getEstado() === 'rechazada') {
+                $rechazadas++;
             }
         }
 
-        if ($huboRechazo) {
+        $total = count($solicitud->getRevisiones());
+        $esMayoria = $this->configRepo->obtener()->getCriterioAprobacion() === SolicitudGastosConfiguracion::CRITERIO_MAYORIA;
+        $umbral = $esMayoria ? (int) floor($total / 2) + 1 : $total;
+
+        if ($rechazadas >= ($esMayoria ? $umbral : 1)) {
             $solicitud->setEstado('rechazada');
-        } elseif ($todasAceptadas) {
+        } elseif ($aceptadas >= $umbral) {
             $solicitud->setEstado('aceptada');
         } else {
             $solicitud->setEstado('en_revision');

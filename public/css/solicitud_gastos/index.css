@@ -51,22 +51,34 @@
     color: var(--sg-primary);
 }
 
-/* Header encargado: título centrado, botón a la derecha */
+/* Header encargado: título centrado, botones a la derecha. Grid de 3
+   columnas (no position:absolute) para que la columna de acciones SIEMPRE
+   reserve el espacio real que necesitan sus botones, sin importar cuántos
+   sean ni el ancho de pantalla — así nunca se encima con el título ni
+   entre sí. */
 .sg-index__header--enc {
-    position: relative;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
 }
 
 .sg-index__titulo--enc {
+    grid-column: 2;
     font-size: 1.85rem;
     text-align: center;
+    justify-self: center;
+}
+
+.sg-index__header--enc .sg-index__acciones {
+    grid-column: 3;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .sg-index__header--enc .sg-index__bancos-btn {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
     padding: 11px 22px;
     font-size: 0.92rem;
 }

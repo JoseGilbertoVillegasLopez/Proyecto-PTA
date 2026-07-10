@@ -102,4 +102,20 @@ class PuestoRepository extends ServiceEntityRepository
         return $puestos;
     }
 
+    /**
+     * Puestos con serie capturada (única forma de participar en el folio por
+     * serie de solicitud_gastos), ordenados por serie.
+     *
+     * @return Puesto[]
+     */
+    public function findConSerie(): array
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.serie IS NOT NULL')
+            ->andWhere("p.serie <> ''")
+            ->orderBy('p.serie', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
 }

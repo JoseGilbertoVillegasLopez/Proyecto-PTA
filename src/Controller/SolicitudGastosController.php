@@ -12,6 +12,7 @@ use App\Repository\PuestoRepository;
 use App\Repository\SolicitudGastosBancoRepository;
 use App\Repository\SolicitudGastosRepository;
 use App\Repository\TipoSolicitudRepository;
+use App\Repository\SolicitudGastosConfiguracionRepository;
 use App\Service\ModuloAcceso\ModuloAccesoResolver;
 use App\Service\SolicitudGastos\GuardarSolicitudGastosService;
 use App\Service\SolicitudGastos\RevisionSolicitudGastosService;
@@ -29,6 +30,7 @@ final class SolicitudGastosController extends AbstractController
         private ModuloAccesoResolver $moduloAccesoResolver,
         private RevisionSolicitudGastosService $revisionService,
         private SubirComprobanteSolicitudGastosService $comprobanteService,
+        private SolicitudGastosConfiguracionRepository $configRepo,
     ) {}
 
     private function tieneAcceso(): bool
@@ -238,6 +240,7 @@ final class SolicitudGastosController extends AbstractController
                 'cargoActual'            => $cargoActual,
                 'puedeVotarActual'       => $puedeVotarActual,
                 'puedeSubirComprobante'  => $puedeSubirComprobante,
+                'mostrarMotivoRechazo'   => $this->configRepo->obtener()->isMostrarMotivoRechazo(),
             ]);
         }
 
@@ -266,6 +269,10 @@ final class SolicitudGastosController extends AbstractController
 
         if (!$esEncargado && $solicitud->getSolicitante() !== $personal) {
             throw $this->createAccessDeniedException('No tienes permiso para exportar esta solicitud.');
+        }
+
+        if (!in_array($solicitud->getEstado(), ['aceptada', 'resuelto'], true)) {
+            throw $this->createAccessDeniedException('Solo se puede exportar una solicitud aceptada o resuelta.');
         }
 
         return $pdfExportService->exportar($solicitud);

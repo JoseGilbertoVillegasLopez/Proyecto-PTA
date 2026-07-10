@@ -386,7 +386,7 @@
         <td colspan="2" class="bg-navy label">TIPO DE SOLICITUD:</td>
         <td colspan="6" class="valor--grande">{{ solicitud.tipoSolicitud ? solicitud.tipoSolicitud.nombre|upper : '—' }}</td>
         <td class="valor center">{% if solicitud.solicitante.puesto and solicitud.solicitante.puesto.serie %}{{ solicitud.solicitante.puesto.serie }}{% else %}&nbsp;{% endif %}</td>
-        <td class="valor center">&nbsp;</td>
+        <td class="valor center">{% if solicitud.folio %}{{ solicitud.folio }}{% else %}&nbsp;{% endif %}</td>
     </tr>
 
     <tr class="gap-row"><td colspan="10" style="height:11pt;"></td></tr>
