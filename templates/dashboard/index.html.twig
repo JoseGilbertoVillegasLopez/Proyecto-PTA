@@ -24,7 +24,12 @@
 		{% endif %}
 	{% endif %}
 
-	<div style="display: flex; height: 100vh; background: #1e242b;">
+	<div class="pta-dashboard-shell">
+
+		<!-- TOGGLE MÓVIL -->
+		<button type="button" class="pta-dashboard-toggle" data-dashboard-toggle aria-label="Abrir menú" aria-expanded="false">
+			<i class="bi bi-list"></i>
+		</button>
 
 		<!-- ASIDE -->
 		<aside class="pta-dashboard-aside">
@@ -199,8 +204,11 @@
 
 		</aside>
 
+		<!-- OVERLAY MÓVIL -->
+		<div class="pta-dashboard-overlay" data-dashboard-overlay></div>
+
 		<!-- CONTENIDO -->
-		<main style="flex: 1; padding: 30px; overflow-y: auto;">
+		<main class="pta-dashboard-main">
 			{% set section = section is defined ? section : null %}
 
 			{% set srcMap = {

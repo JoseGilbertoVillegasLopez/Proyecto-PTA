@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<title>
 			{% block title %}Welcome!
@@ -11,7 +12,7 @@
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 
 		{% block stylesheets %}
-			<link rel="stylesheet" href="{{ asset('css/dashboard/dashboard.css') }}">
+			<link rel="stylesheet" href="{{ asset('css/dashboard/dashboard.css') }}?v=20260711-02" data-turbo-track="reload">
 			<link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
 			<link rel="stylesheet" href="{{ asset('css/pta/new.css') }}">
 			<link rel="stylesheet" href="{{ asset('css/pta/edit.css') }}">
@@ -45,6 +46,7 @@
 			<script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 			<script src="{{ asset('js/pta/new.js') }}" defer></script>
 			<script src="{{ asset('js/global/scroll.js') }}" defer></script>
+			<script src="{{ asset('js/dashboard/dashboard.js') }}?v=20260710-01" defer data-turbo-track="reload"></script>
 			<script src="{{ asset('js/departamento/departamento.js') }}" defer></script>
 
 			<script src="{{ asset('js/pta/graficas.js') }}" defer></script>
