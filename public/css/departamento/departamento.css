@@ -409,6 +409,111 @@
     }
 }
 
+@media (max-width: 576px) {
+    .departamento-index-page-title {
+        font-size: 1.35rem;
+    }
+
+    .departamento-index-page-action-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Tabla → lista de cards, sin scroll horizontal ni columnas ocultas */
+    .departamento-index-page-table-wrapper {
+        overflow-x: visible;
+    }
+
+    .departamento-index-page-table {
+        display: block;
+        width: 100%;
+        min-width: 0 !important;
+        border-spacing: 0;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    .departamento-index-page-table thead {
+        display: none;
+    }
+
+    .departamento-index-page-table tbody {
+        display: block;
+    }
+
+    .departamento-index-page-table tbody tr {
+        display: block;
+        margin-bottom: 10px;
+        padding: 4px 14px;
+        border-radius: 14px;
+    }
+
+    .departamento-index-page-table tbody tr:hover {
+        transform: none;
+    }
+
+    .departamento-index-page-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        width: auto !important;
+        padding: 7px 0;
+        font-size: 0.85rem;
+        line-height: 1.3;
+        text-align: left !important;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.08);
+    }
+
+    .departamento-index-page-table td:last-child {
+        border-bottom: none;
+    }
+
+    .departamento-index-page-table td::before {
+        content: attr(data-label);
+        flex: 0 0 92px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #9fb3c8;
+        text-align: left;
+    }
+
+    .departamento-index-page-table td.departamento-index-page-name {
+        justify-content: center;
+        text-align: center !important;
+        font-size: 0.98rem;
+        font-weight: 700;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.18);
+    }
+
+    .departamento-index-page-table td.departamento-index-page-name::before {
+        content: none;
+    }
+
+    .departamento-index-page-badge {
+        padding: 3px 12px;
+        font-size: 0.7rem;
+    }
+
+    .departamento-index-page-table td[data-label="Acciones"] {
+        justify-content: center;
+    }
+
+    .departamento-index-page-table td[data-label="Acciones"]::before {
+        content: none;
+    }
+
+    .departamento-index-page-actions {
+        justify-content: center;
+        min-width: 0;
+        margin: 0;
+    }
+}
+
 /* =========================================================
    FIX LIGHT MODE
    ========================================================= */

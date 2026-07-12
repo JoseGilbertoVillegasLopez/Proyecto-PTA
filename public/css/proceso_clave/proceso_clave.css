@@ -553,6 +553,111 @@
     }
 }
 
+@media (max-width: 576px) {
+    .proceso-clave-index-main-title {
+        font-size: 1.35rem;
+    }
+
+    .proceso-clave-index-row-action-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Tabla → lista de cards, sin scroll horizontal ni columnas ocultas */
+    .proceso-clave-index-table-wrapper {
+        overflow-x: visible;
+    }
+
+    .proceso-clave-index-table {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        border-spacing: 0;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    .proceso-clave-index-table thead {
+        display: none;
+    }
+
+    .proceso-clave-index-table tbody {
+        display: block;
+    }
+
+    .proceso-clave-index-table tbody tr {
+        display: block;
+        margin-bottom: 10px;
+        padding: 4px 14px;
+        border-radius: 14px;
+    }
+
+    .proceso-clave-index-table tbody tr:hover {
+        transform: none;
+    }
+
+    .proceso-clave-index-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        width: auto !important;
+        padding: 7px 0;
+        font-size: 0.85rem;
+        line-height: 1.3;
+        text-align: left !important;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.08);
+    }
+
+    .proceso-clave-index-table td:last-child {
+        border-bottom: none;
+    }
+
+    .proceso-clave-index-table td::before {
+        content: attr(data-label);
+        flex: 0 0 100px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #9fb3c8;
+        text-align: left;
+    }
+
+    .proceso-clave-index-table td.proceso-clave-index-row-name {
+        justify-content: center;
+        text-align: center !important;
+        font-size: 0.98rem;
+        font-weight: 700;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.18);
+    }
+
+    .proceso-clave-index-table td.proceso-clave-index-row-name::before {
+        content: none;
+    }
+
+    .proceso-clave-index-status-badge {
+        padding: 3px 12px;
+        font-size: 0.7rem;
+    }
+
+    .proceso-clave-index-table td[data-label="Acciones"] {
+        justify-content: center;
+    }
+
+    .proceso-clave-index-table td[data-label="Acciones"]::before {
+        content: none;
+    }
+
+    .proceso-clave-index-row-actions {
+        justify-content: center;
+        min-width: 0;
+        margin: 0;
+    }
+}
+
 /* =========================================================
    FIX LIGHT MODE
    ========================================================= */

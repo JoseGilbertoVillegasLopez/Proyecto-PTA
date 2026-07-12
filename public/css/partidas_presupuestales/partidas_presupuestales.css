@@ -561,6 +561,114 @@
     }
 }
 
+@media (max-width: 576px) {
+    .partidas-presupuestales-index-title {
+        font-size: 1.35rem;
+    }
+
+    .partidas-presupuestales-index-action-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Tabla → lista de cards, sin scroll horizontal ni columnas ocultas */
+    .partidas-presupuestales-index-table-wrapper {
+        overflow-x: visible;
+    }
+
+    .partidas-presupuestales-index-table {
+        display: block;
+        width: 100%;
+        min-width: 0 !important; /* el bloque @media 992px de arriba fija min-width: 1000px sobre el mismo selector */
+        border-spacing: 0;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    .partidas-presupuestales-index-table thead {
+        display: none;
+    }
+
+    .partidas-presupuestales-index-table tbody {
+        display: block;
+    }
+
+    .partidas-presupuestales-index-table tbody tr {
+        display: block;
+        margin-bottom: 14px;
+        padding: 6px 14px;
+        border-radius: 16px;
+    }
+
+    .partidas-presupuestales-index-table tbody tr:hover {
+        transform: none;
+    }
+
+    .partidas-presupuestales-index-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        width: auto !important;
+        padding: 10px 0;
+        font-size: 0.85rem;
+        line-height: 1.3;
+        text-align: left !important;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.08);
+    }
+
+    .partidas-presupuestales-index-table td:last-child {
+        border-bottom: none;
+    }
+
+    .partidas-presupuestales-index-table td::before {
+        content: attr(data-label);
+        flex: 0 0 95px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #9fb3c8;
+        text-align: left;
+    }
+
+    /* "Partida" es el dato más específico/identificador (código de 5 dígitos,
+       ej. 22101) — el "Capítulo" es la categoría amplia de 4 dígitos que se
+       repite en muchas filas, así que no sirve como título de card. */
+    .partidas-presupuestales-index-table td.partidas-presupuestales-partida {
+        justify-content: center;
+        text-align: center !important;
+        font-size: 1.05rem;
+        font-weight: 700;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.18);
+    }
+
+    .partidas-presupuestales-index-table td.partidas-presupuestales-partida::before {
+        content: none;
+    }
+
+    .partidas-presupuestales-index-badge {
+        padding: 3px 12px;
+        font-size: 0.7rem;
+    }
+
+    .partidas-presupuestales-index-table td[data-label="Acciones"] {
+        justify-content: center;
+    }
+
+    .partidas-presupuestales-index-table td[data-label="Acciones"]::before {
+        content: none;
+    }
+
+    .partidas-presupuestales-index-actions {
+        justify-content: center;
+        min-width: 0;
+        margin: 0;
+    }
+}
+
 /* =========================================================
    FIX LIGHT MODE
    ========================================================= */

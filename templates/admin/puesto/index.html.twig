@@ -43,21 +43,21 @@
 				<tbody>
 					{% for puesto in puestos %}
 						<tr class="puesto-index-page-row">
-							<td class="puesto-index-page-name">
+							<td class="puesto-index-page-name" data-label="Nombre">
 								{{ puesto.nombre }}
 							</td>
 
-							<td class="puesto-index-page-supervisor">
+							<td class="puesto-index-page-supervisor" data-label="Supervisor directo">
 								{{ puesto.supervisorDirecto ? puesto.supervisorDirecto.nombre : '—' }}
 							</td>
 
-							<td class="text-center">
+							<td class="text-center" data-label="Estado">
 								<span class="puesto-index-page-badge {{ puesto.activo ? 'puesto-index-page-badge--active' : 'puesto-index-page-badge--inactive' }}">
 									{{ puesto.activo ? 'Activo' : 'Inactivo' }}
 								</span>
 							</td>
 
-							<td class="text-center">
+							<td class="text-center" data-label="Acciones">
 								<div class="puesto-index-page-actions">
 									<a href="{{ path('app_puesto_show', {'id': puesto.id}) }}"
 									   data-turbo-frame="content"

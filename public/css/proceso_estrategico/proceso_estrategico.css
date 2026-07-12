@@ -522,6 +522,102 @@
     }
 }
 
+/* Tabla → lista de cards, sin scroll horizontal ni columnas ocultas */
+@media (max-width: 576px) {
+    .proceso-estrategico-index-table-wrapper {
+        overflow-x: visible;
+    }
+
+    .proceso-estrategico-index-table {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        border-spacing: 0;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    .proceso-estrategico-index-table thead {
+        display: none;
+    }
+
+    .proceso-estrategico-index-table tbody {
+        display: block;
+    }
+
+    .proceso-estrategico-index-table tbody tr {
+        display: block;
+        margin-bottom: 10px;
+        padding: 4px 14px;
+        border-radius: 14px;
+    }
+
+    .proceso-estrategico-index-table tbody tr:hover {
+        transform: none;
+    }
+
+    .proceso-estrategico-index-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        width: auto !important;
+        padding: 7px 0;
+        font-size: 0.85rem;
+        line-height: 1.3;
+        text-align: left !important;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.08);
+    }
+
+    .proceso-estrategico-index-table td:last-child {
+        border-bottom: none;
+    }
+
+    .proceso-estrategico-index-table td::before {
+        content: attr(data-label);
+        flex: 0 0 92px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #9fb3c8;
+        text-align: left;
+    }
+
+    .proceso-estrategico-index-table td.proceso-estrategico-index-row-name {
+        justify-content: center;
+        text-align: center !important;
+        font-size: 0.98rem;
+        font-weight: 700;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.18);
+    }
+
+    .proceso-estrategico-index-table td.proceso-estrategico-index-row-name::before {
+        content: none;
+    }
+
+    .proceso-estrategico-index-status-badge {
+        padding: 3px 12px;
+        font-size: 0.7rem;
+    }
+
+    .proceso-estrategico-index-table td[data-label="Acciones"] {
+        justify-content: center;
+    }
+
+    .proceso-estrategico-index-table td[data-label="Acciones"]::before {
+        content: none;
+    }
+
+    .proceso-estrategico-index-row-actions {
+        justify-content: center;
+        min-width: 0;
+        margin: 0;
+    }
+}
+
 /* =========================================================
    FIX LIGHT MODE
    ========================================================= */

@@ -60,16 +60,16 @@
 				<tbody>
 					{% for indicador in indicadores_basicos %}
 						<tr class="indicadores-basicos-row">
-							<td class="indicadores-basicos-nombre">
+							<td class="indicadores-basicos-nombre" data-label="Indicador">
 								{{ indicador.nombreIndicador }}
 							</td>
-							<td class="indicadores-basicos-formula">
+							<td class="indicadores-basicos-formula" data-label="Fórmula">
 								{{ indicador.formula }}
 							</td>
-							<td class="indicadores-basicos-observaciones">
+							<td class="indicadores-basicos-observaciones" data-label="Observaciones">
 								{{ indicador.observaciones ?: '—' }}
 							</td>
-							<td class="indicadores-basicos-responsable">
+							<td class="indicadores-basicos-responsable" data-label="Responsable">
 								{% if indicador.departamentos|length > 0 %}
 									{% for dep in indicador.departamentos %}{{ dep.nombre }}{% if not loop.last %}, {% endif %}{% endfor %}
 								{% else %}
@@ -77,13 +77,13 @@
 								{% endif %}
 							</td>
 							{% if is_granted('ROLE_ADMIN') %}
-								<td class="text-center">
+								<td class="text-center" data-label="Estado">
 									<span class="indicadores-basicos-index-badge {{ indicador.isActivo() ? 'indicadores-basicos-index-badge--active' : 'indicadores-basicos-index-badge--inactive' }}">
 										{{ indicador.isActivo() ? 'Activo' : 'Inactivo' }}
 									</span>
 								</td>
 							{% endif %}
-							<td class="text-center">
+							<td class="text-center" data-label="Acciones">
 								<div class="indicadores-basicos-index-actions">
 									<a href="{{ path('app_indicadores_basicos_show', {'id': indicador.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="indicadores-basicos-index-action-btn indicadores-basicos-index-action-btn--view" title="Ver indicador">
 										<i class="bi bi-eye"></i>

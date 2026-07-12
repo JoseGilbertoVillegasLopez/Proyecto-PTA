@@ -55,16 +55,16 @@
 				<tbody>
 					{% for personal in personals %}
 						<tr class="personal-row">
-							<td class="personal-nombre">{{ personal }}</td>
-							<td>{{ personal.correo }}</td>
-							<td>{{ personal.puesto.nombre }}</td>
-							<td>{{ personal.departamento.nombre }}</td>
-							<td class="text-center">
+							<td class="personal-nombre" data-label="Nombre completo">{{ personal }}</td>
+							<td data-label="Correo">{{ personal.correo }}</td>
+							<td data-label="Puesto">{{ personal.puesto.nombre }}</td>
+							<td data-label="Departamento">{{ personal.departamento.nombre }}</td>
+							<td class="text-center" data-label="Estado">
 								<span class="personal-index-badge {{ personal.activo ? 'personal-index-badge--active' : 'personal-index-badge--inactive' }}">
 									{{ personal.activo ? 'Activo' : 'Inactivo' }}
 								</span>
 							</td>
-							<td class="text-center">
+							<td class="text-center" data-label="Acciones">
 								<div class="personal-index-actions">
 									<a href="{{ path('app_personal_show', {'id': personal.id}) }}"
 									   data-turbo-frame="content"
