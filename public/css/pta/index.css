@@ -105,14 +105,6 @@
     font-size: 0.9rem;
 
     appearance: none;
-    background-image:
-        linear-gradient(45deg, transparent 50%, var(--pta-primary) 50%),
-        linear-gradient(135deg, var(--pta-primary) 50%, transparent 50%);
-    background-position:
-        calc(100% - 20px) calc(50% - 4px),
-        calc(100% - 14px) calc(50% - 4px);
-    background-size: 6px 6px;
-    background-repeat: no-repeat;
 
     transition:
         border-color 0.2s ease,
@@ -420,3 +412,261 @@
     border-color: rgba(13, 202, 240, 0.42);
     color: #ffffff;
 }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+.pta-index-table-wrapper {
+    overflow-x: auto;
+}
+
+@media (max-width: 1330px) {
+    .pta-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pta-toolbar-left,
+    .pta-toolbar-right {
+        width: 100%;
+    }
+
+    .pta-toolbar-left .pta-add-btn {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .pta-filter-form {
+        flex-wrap: wrap;
+        background: linear-gradient(
+            145deg,
+            rgba(18, 27, 35, 0.95),
+            rgba(10, 16, 22, 0.9)
+        );
+        border: 1px solid var(--pta-border-soft);
+        border-radius: 16px;
+        padding: 14px 16px;
+    }
+
+    .pta-filter-form .form-label {
+        width: 100%;
+        margin-bottom: 2px;
+    }
+
+    .pta-filter-form select,
+    .pta-filter-form .pta-select-combobox {
+        width: 100%;
+        max-width: none;
+        flex: 1 1 100%;
+    }
+
+    .pta-filter-form button {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+    /* Tabla → lista de cards, sin scroll horizontal ni columnas ocultas */
+    .pta-index-table-wrapper {
+        overflow-x: visible;
+    }
+
+    .pta-index-table-wrapper .pta-index-table {
+        display: block;
+        width: 100%;
+        min-width: 0 !important;
+        border-spacing: 0;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    .pta-index-table-wrapper .pta-index-table thead {
+        display: none;
+    }
+
+    .pta-index-table-wrapper .pta-index-table tbody {
+        display: block;
+    }
+
+    .pta-index-table-wrapper .pta-index-table tbody tr {
+        display: block;
+        margin-bottom: 10px;
+        padding: 4px 14px;
+        border-radius: 14px;
+    }
+
+    .pta-index-table-wrapper .pta-index-table tbody tr:hover {
+        transform: none;
+    }
+
+    .pta-index-table-wrapper .pta-index-table td {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: auto !important;
+        max-width: none !important;
+        white-space: normal !important;
+        padding: 10px 0;
+        font-size: 0.85rem;
+        line-height: 1.3;
+        text-align: center !important;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.08);
+    }
+
+    .pta-index-table-wrapper .pta-index-table td:last-child {
+        border-bottom: none;
+    }
+
+    .pta-index-table-wrapper .pta-index-table td::before {
+        content: attr(data-label);
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #9fb3c8;
+        text-align: center;
+    }
+
+    .pta-index-table-wrapper .pta-index-table td.pta-index-table-name {
+        justify-content: center;
+        text-align: center !important;
+        font-size: 0.98rem;
+        font-weight: 700;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.18);
+    }
+
+    .pta-index-table-wrapper .pta-index-table td.pta-index-table-name::before {
+        content: none;
+    }
+
+    .pta-index-table-wrapper .pta-index-table td[data-label="#"] {
+        opacity: 1;
+    }
+
+    .pta-index-table-wrapper .pta-index-table td[data-label="#"] strong {
+        color: var(--pta-primary);
+        font-size: 1rem;
+    }
+
+    .pta-index-table-wrapper .pta-index-table td[data-label="Acciones"] {
+        justify-content: center;
+    }
+
+    .pta-index-table-wrapper .pta-index-table td[data-label="Acciones"]::before {
+        content: none;
+    }
+
+    .pta-index-table-wrapper .pta-actions {
+        justify-content: center;
+        min-width: 0;
+        margin: 0;
+    }
+}
+
+/* =========================================================
+   COMBOBOX DE FILTRO (año, departamento, puesto)
+   generado por public/js/pta/select_combobox.js — reemplaza el <select>
+   nativo para evitar el picker de pantalla completa de Android/iOS, que no
+   se puede estilizar. Sin buscador: solo botón + lista clicable.
+   ========================================================= */
+.pta-select-combobox {
+    position: relative;
+    width: 220px;
+    max-width: 220px;
+    flex: 0 0 auto;
+}
+
+/* Selector ".pta-filter-form .pta-select-combobox__trigger" (2 clases) a
+   propósito: gana por especificidad a ".pta-filter-form button" (clase +
+   elemento), que ya existe para el botón cuadrado 44x44 de filtrar. */
+.pta-filter-form .pta-select-combobox__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    height: auto;
+
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+    color: #e6f1ff;
+    border: 1px solid var(--pta-border-soft);
+    border-radius: 14px;
+
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: left;
+    appearance: none;
+    font-family: inherit;
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.pta-select-combobox__trigger-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pta-select-combobox__trigger-arrow {
+    flex-shrink: 0;
+    color: var(--pta-primary);
+    font-size: 0.85rem;
+    transition: transform 0.2s ease;
+}
+
+.pta-filter-form .pta-select-combobox__trigger:hover,
+.pta-filter-form .pta-select-combobox__trigger--open {
+    border-color: var(--pta-primary);
+}
+
+.pta-filter-form .pta-select-combobox__trigger--open {
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
+}
+
+.pta-select-combobox__trigger--open .pta-select-combobox__trigger-arrow {
+    transform: rotate(180deg);
+}
+
+.pta-select-combobox__list {
+    position: fixed;
+    z-index: 9999;
+    margin: 6px 0 0 0;
+    padding: 6px;
+    list-style: none;
+    max-height: 260px;
+    overflow-y: auto;
+    border-radius: 14px;
+    background: #0c1520;
+    border: 1px solid rgba(13, 202, 240, 0.25);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+.pta-select-combobox__item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #e6f1ff;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.pta-select-combobox__item:hover {
+    background: rgba(13, 202, 240, 0.15);
+}
+
+.pta-select-combobox__item--selected {
+    background: rgba(13, 202, 240, 0.18);
+    color: var(--pta-primary);
+    font-weight: 700;
+}
+

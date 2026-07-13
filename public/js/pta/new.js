@@ -97,6 +97,197 @@ function enforceOnlyDigits(input) {
     });
 }
 
+/**
+ * =====================================================
+ * TOGGLE DE 2 BOTONES (selects de exactamente 2 opciones)
+ * -----------------------------------------------------
+ * Mismo patrón visual que el toggle #/% de Meta (.tipo-toggle).
+ * Se usa para Tendencia (Positiva/Negativa) y Año de Ejecución
+ * (año actual/siguiente) — un combobox con lista sería
+ * sobre-ingeniería para 2 opciones.
+ * =====================================================
+ */
+function crearToggleDesdeSelect(select) {
+    if (!select || select.dataset.toggleListo === 'true') return;
+
+    select.dataset.toggleListo = 'true';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'tipo-toggle btn-group btn-group-sm';
+    wrapper.setAttribute('role', 'group');
+    select.insertAdjacentElement('beforebegin', wrapper);
+    wrapper.appendChild(select);
+    select.hidden = true;
+
+    Array.from(select.options)
+        .filter((opcion) => opcion.value !== '')
+        .forEach((opcion) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'btn tipo-btn';
+            btn.textContent = opcion.text;
+
+            if (opcion.selected) {
+                btn.classList.add('active');
+            }
+
+            btn.addEventListener('click', () => {
+                select.value = opcion.value;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+
+                wrapper.querySelectorAll('.tipo-btn').forEach((otro) => {
+                    otro.classList.toggle('active', otro === btn);
+                });
+            });
+
+            wrapper.appendChild(btn);
+        });
+}
+
+/**
+ * =====================================================
+ * COMBOBOX BOTÓN + LISTA (selects con varias opciones)
+ * -----------------------------------------------------
+ * Mismo patrón que pta/encabezado/index (sin buscador de texto).
+ * Se usa para el select de "Indicador asociado" en cada
+ * accion-card. Las opciones se leen en vivo del <select> cada
+ * vez que se abre la lista, así que sigue funcionando aunque
+ * syncIndicadoresConAcciones() reconstruya sus <option> después.
+ * =====================================================
+ */
+function crearComboboxDesdeSelect(select) {
+    if (!select || select.dataset.comboboxListo === 'true') return;
+
+    select.dataset.comboboxListo = 'true';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'pta-combo';
+    select.insertAdjacentElement('beforebegin', wrapper);
+    wrapper.appendChild(select);
+    select.hidden = true;
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'pta-combo__trigger';
+
+    const textoSpan = document.createElement('span');
+    textoSpan.className = 'pta-combo__trigger-text';
+    trigger.appendChild(textoSpan);
+
+    const flecha = document.createElement('i');
+    flecha.className = 'bi bi-chevron-down pta-combo__trigger-arrow';
+    trigger.appendChild(flecha);
+
+    wrapper.appendChild(trigger);
+
+    const lista = document.createElement('ul');
+    lista.className = 'pta-combo__list';
+    lista.hidden = true;
+    wrapper.appendChild(lista);
+
+    function sincronizarTexto() {
+        const seleccionada = select.options[select.selectedIndex];
+        textoSpan.textContent = seleccionada ? seleccionada.text : '';
+    }
+
+    function posicionarLista() {
+        const rect = trigger.getBoundingClientRect();
+        const espacioAbajo = window.innerHeight - rect.bottom;
+        const abrirArriba = espacioAbajo < 260 && rect.top > espacioAbajo;
+
+        lista.style.left = `${rect.left}px`;
+        lista.style.width = `${rect.width}px`;
+
+        if (abrirArriba) {
+            lista.style.top = 'auto';
+            lista.style.bottom = `${window.innerHeight - rect.top}px`;
+        } else {
+            lista.style.bottom = 'auto';
+            lista.style.top = `${rect.bottom}px`;
+        }
+    }
+
+    function cerrarLista() {
+        lista.hidden = true;
+        trigger.classList.remove('pta-combo__trigger--open');
+        document.removeEventListener('mousedown', onClickFuera);
+    }
+
+    function onClickFuera(event) {
+        if (!wrapper.contains(event.target)) {
+            cerrarLista();
+        }
+    }
+
+    function renderizarLista() {
+        lista.innerHTML = '';
+
+        const opciones = Array.from(select.options).filter((o) => o.value !== '');
+
+        opciones.forEach((opcion) => {
+            const item = document.createElement('li');
+            item.className = 'pta-combo__item';
+
+            if (opcion.selected) {
+                item.classList.add('pta-combo__item--selected');
+            }
+
+            item.textContent = opcion.text;
+            item.addEventListener('mousedown', (event) => {
+                event.preventDefault();
+                select.value = opcion.value;
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+                cerrarLista();
+            });
+
+            lista.appendChild(item);
+        });
+
+        if (opciones.length === 0) {
+            const vacio = document.createElement('li');
+            vacio.className = 'pta-combo__empty';
+            vacio.textContent = 'Agrega un indicador primero';
+            lista.appendChild(vacio);
+        }
+
+        posicionarLista();
+    }
+
+    function abrirLista() {
+        renderizarLista();
+        lista.hidden = false;
+        trigger.classList.add('pta-combo__trigger--open');
+        document.addEventListener('mousedown', onClickFuera);
+    }
+
+    trigger.addEventListener('click', () => {
+        if (lista.hidden) {
+            abrirLista();
+        } else {
+            cerrarLista();
+        }
+    });
+
+    trigger.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            cerrarLista();
+        }
+    });
+
+    select.addEventListener('change', sincronizarTexto);
+
+    function onScrollOResize() {
+        if (!lista.hidden) {
+            posicionarLista();
+        }
+    }
+
+    document.addEventListener('scroll', onScrollOResize, true);
+    window.addEventListener('resize', onScrollOResize);
+
+    sincronizarTexto();
+}
+
 
 /**
      * =====================================================
@@ -235,6 +426,9 @@ initPersonalSearch({
     resultsSelector: ".responsable-results"
 });
 
+    // Año de Ejecución: select de 2 opciones → toggle de 2 botones
+    crearToggleDesdeSelect(frame.querySelector('.pta-anio-select'));
+
 
     /**
      * =====================================================
@@ -327,6 +521,10 @@ initPersonalSearch({
                 hidden.value = "";
                 select.value = "";
             }
+
+            // Re-sincronizar el texto mostrado por el combobox (sus <option>
+            // se acaban de reconstruir arriba, sin disparar 'change' solas)
+            select.dispatchEvent(new Event("change"));
         });
 
         console.log("🔄 Indicadores sincronizados con acciones");
@@ -608,6 +806,9 @@ initPersonalSearch({
             if (cardValorBase) enforceOnlyDigits(cardValorBase);
             if (cardMeta) enforceOnlyDigits(cardMeta);
 
+            // Tendencia: select de 2 opciones → toggle de 2 botones
+            crearToggleDesdeSelect(card.querySelector('[name$="[tendencia]"]'));
+
             // Actualizar encabezado del card en tiempo real
             const indicadorTextarea = card.querySelector('[name$="[indicador]"]');
             const icNumText = card.querySelector('.ic-num-text');
@@ -718,6 +919,9 @@ initPersonalSearch({
             const indicadorField = card.querySelector(".ac-field--indicador");
             indicadorField.appendChild(indicadorSelect);
             indicadorField.appendChild(indicadorHidden);
+
+            // Indicador asociado: puede tener varias opciones → combobox botón + lista
+            crearComboboxDesdeSelect(indicadorSelect);
 
             // Pills de meses
             const mesesGrid = card.querySelector(".ac-meses-grid");
@@ -844,12 +1048,22 @@ initPersonalSearch({
             }
 
             // ===============================
-            // VALIDACIÓN DE RESPONSABLES
+            // VALIDACIÓN DE RESPONSABLES Y AÑO DE EJECUCIÓN
+            // -------------------------------
+            // El select de Año queda hidden dentro del toggle, así que el
+            // navegador ya NO bloquea el submit por su "required" nativo
+            // (un elemento hidden queda excluido de la validación HTML5) —
+            // hay que revisarlo aquí a mano.
             // ===============================
             const supervisorHidden = frame.querySelector('input[name$="[supervisor]"]');
             const avalHidden = frame.querySelector('input[name$="[aval]"]');
+            const anioSelect = frame.querySelector('.pta-anio-select');
 
             let erroresResponsables = [];
+
+            if (!anioSelect || anioSelect.value === "") {
+                erroresResponsables.push("Año de Ejecución");
+            }
 
             if (!supervisorHidden || supervisorHidden.value === "") {
                 erroresResponsables.push("Supervisor del Proyecto");
@@ -927,7 +1141,9 @@ initPersonalSearch({
 
                 if (!indicadorHidden || indicadorHidden.value === "") {
                     erroresAccion.push("sin indicador");
-                    const selectVisible = row.querySelector(".ac-select");
+                    // El .ac-select real queda oculto dentro del combobox — el
+                    // error visual y el scroll deben apuntar al botón visible
+                    const selectVisible = row.querySelector(".pta-combo__trigger") || row.querySelector(".ac-select");
                     if (selectVisible) {
                         selectVisible.classList.add("field-error");
                         if (!primerCampoConError) primerCampoConError = selectVisible;
