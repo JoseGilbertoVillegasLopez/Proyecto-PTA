@@ -500,7 +500,7 @@
 /* =========================================================
    RESPONSIVE
    ========================================================= */
-@media (max-width: 992px) {
+@media (max-width: 1330px) {
     .proceso-estrategico-index-toolbar {
         flex-direction: column;
         align-items: stretch;
@@ -516,14 +516,10 @@
         width: 100%;
         min-width: 100%;
     }
-
-    .proceso-estrategico-index-table {
-        min-width: 700px;
-    }
 }
 
 /* Tabla → lista de cards, sin scroll horizontal ni columnas ocultas */
-@media (max-width: 576px) {
+@media (max-width: 1330px) {
     .proceso-estrategico-index-table-wrapper {
         overflow-x: visible;
     }
@@ -930,10 +926,6 @@
     .proceso-estrategico-show-title {
         font-size: 1.3rem;
     }
-
-    .proceso-estrategico-show-table {
-        min-width: 620px;
-    }
 }
 
 /* =========================================================
@@ -1146,18 +1138,32 @@
 .proceso-estrategico-new-select {
     width: 100%;
     min-height: 48px;
-    padding: 12px 14px;
+    padding: 12px 42px 12px 14px;
     border-radius: 14px;
     border: 1px solid rgba(13, 202, 240, 0.15);
-    background: linear-gradient(
-        145deg,
-        rgba(18, 27, 35, 0.95),
-        rgba(10, 16, 22, 0.9)
-    );
+    background-color: #121b23;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #9fd8e8 50%),
+        linear-gradient(135deg, #9fd8e8 50%, transparent 50%),
+        linear-gradient(145deg, rgba(18, 27, 35, 0.95), rgba(10, 16, 22, 0.9));
+    background-position:
+        calc(100% - 22px) 50%,
+        calc(100% - 16px) 50%,
+        0 0;
+    background-size:
+        6px 6px,
+        6px 6px,
+        100% 100%;
+    background-repeat: no-repeat;
     color: #e6f1ff;
     font-size: 0.95rem;
     font-weight: 500;
     outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color-scheme: dark;
     box-shadow: none;
     transition:
         border-color 0.2s ease,
@@ -1165,14 +1171,19 @@
         transform 0.2s ease;
 }
 
+.proceso-estrategico-new-select:hover {
+    border-color: rgba(13, 202, 240, 0.35);
+    background-color: #172532;
+}
+
 .proceso-estrategico-new-select:focus {
     border-color: #0dcaf0;
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
-    background: linear-gradient(
-        145deg,
-        rgba(20, 31, 41, 0.98),
-        rgba(12, 18, 25, 0.94)
-    );
+    background-color: #142333;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #c7f2ff 50%),
+        linear-gradient(135deg, #c7f2ff 50%, transparent 50%),
+        linear-gradient(145deg, rgba(20, 31, 41, 0.98), rgba(12, 18, 25, 0.94));
     color: #e6f1ff;
 }
 
@@ -1554,18 +1565,32 @@
 .proceso-estrategico-edit-select {
     width: 100%;
     min-height: 48px;
-    padding: 12px 14px;
+    padding: 12px 42px 12px 14px;
     border-radius: 14px;
     border: 1px solid rgba(13, 202, 240, 0.15);
-    background: linear-gradient(
-        145deg,
-        rgba(18, 27, 35, 0.95),
-        rgba(10, 16, 22, 0.9)
-    );
+    background-color: #121b23;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #9fd8e8 50%),
+        linear-gradient(135deg, #9fd8e8 50%, transparent 50%),
+        linear-gradient(145deg, rgba(18, 27, 35, 0.95), rgba(10, 16, 22, 0.9));
+    background-position:
+        calc(100% - 22px) 50%,
+        calc(100% - 16px) 50%,
+        0 0;
+    background-size:
+        6px 6px,
+        6px 6px,
+        100% 100%;
+    background-repeat: no-repeat;
     color: #e6f1ff;
     font-size: 0.95rem;
     font-weight: 500;
     outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color-scheme: dark;
     box-shadow: none;
     transition:
         border-color 0.2s ease,
@@ -1573,14 +1598,19 @@
         transform 0.2s ease;
 }
 
+.proceso-estrategico-edit-select:hover {
+    border-color: rgba(13, 202, 240, 0.35);
+    background-color: #172532;
+}
+
 .proceso-estrategico-edit-select:focus {
     border-color: #0dcaf0;
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
-    background: linear-gradient(
-        145deg,
-        rgba(20, 31, 41, 0.98),
-        rgba(12, 18, 25, 0.94)
-    );
+    background-color: #142333;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #c7f2ff 50%),
+        linear-gradient(135deg, #c7f2ff 50%, transparent 50%),
+        linear-gradient(145deg, rgba(20, 31, 41, 0.98), rgba(12, 18, 25, 0.94));
     color: #e6f1ff;
 }
 
@@ -1792,4 +1822,43 @@
     .proceso-estrategico-show-table tbody {
         grid-template-columns: 1fr;
     }
+}
+
+/* =========================================================
+   TOGGLE ACTIVO/INACTIVO
+   generado por public/js/proceso_estrategico/select_toggle.js
+   ========================================================= */
+.proceso-estrategico-activo-toggle {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.proceso-estrategico-activo-toggle__btn {
+    flex: 1;
+    min-height: 48px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(13, 202, 240, 0.15);
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+    color: #9fb3c8;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.proceso-estrategico-activo-toggle__btn:hover {
+    border-color: rgba(13, 202, 240, 0.35);
+}
+
+.proceso-estrategico-activo-toggle__btn--active {
+    border-color: #0dcaf0;
+    background: rgba(13, 202, 240, 0.18);
+    color: #e6f1ff;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
 }
