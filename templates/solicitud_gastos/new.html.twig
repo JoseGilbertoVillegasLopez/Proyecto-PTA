@@ -176,7 +176,7 @@
 							<tbody id="sg-detalle-tbody">
 								<tr>
 									{# Celdas que abarcan todas las filas de partidas — rowspan gestionado por JS #}
-									<td id="sg-td-pe" rowspan="1" class="sg-span-cell">
+									<td id="sg-td-pe" rowspan="1" class="sg-span-cell" data-label="Proceso Estratégico">
 										<div class="sg-combobox sg-pe-combobox">
 											<input type="text"
 												   class="sg-new__input sg-combobox__input"
@@ -188,7 +188,7 @@
 											<ul class="sg-combobox__list" hidden></ul>
 										</div>
 									</td>
-									<td id="sg-td-pc" rowspan="1" class="sg-span-cell">
+									<td id="sg-td-pc" rowspan="1" class="sg-span-cell" data-label="Proceso Clave">
 										{# Combobox para proceso clave #}
 										<div class="sg-combobox sg-pc-combobox">
 											<input type="text"
@@ -201,23 +201,23 @@
 											<ul class="sg-combobox__list" hidden></ul>
 										</div>
 									</td>
-									<td id="sg-td-pei" rowspan="1" class="sg-span-cell sg-autofield-cell">
+									<td id="sg-td-pei" rowspan="1" class="sg-span-cell sg-autofield-cell" data-label="PEI">
 										<span class="sg-autofield" id="sg-pei">—</span>
 									</td>
-									<td id="sg-td-paig" rowspan="1" class="sg-span-cell sg-autofield-cell">
+									<td id="sg-td-paig" rowspan="1" class="sg-span-cell sg-autofield-cell" data-label="PAIG">
 										<span class="sg-autofield" id="sg-paig">—</span>
 									</td>
-									<td id="sg-td-meta" rowspan="1" class="sg-span-cell sg-autofield-cell">
+									<td id="sg-td-meta" rowspan="1" class="sg-span-cell sg-autofield-cell" data-label="Meta PDI/PTA">
 										<span class="sg-autofield" id="sg-meta">—</span>
 									</td>
 									{# Primera fila de partida #}
-									<td class="sg-td-capitulo">
+									<td class="sg-td-capitulo" data-label="Capítulo">
 										<span class="sg-partida-capitulo sg-autofield">—</span>
 									</td>
-									<td class="sg-td-partida-code">
+									<td class="sg-td-partida-code" data-label="Partida">
 										<span class="sg-partida-code sg-autofield">—</span>
 									</td>
-									<td class="sg-td-desc">
+									<td class="sg-td-desc" data-label="Descripción">
 										<div class="sg-combobox">
 											<input type="text"
 												   class="sg-new__input sg-combobox__input"
@@ -229,7 +229,7 @@
 											<ul class="sg-combobox__list" hidden></ul>
 										</div>
 									</td>
-									<td class="sg-td-cantidad">
+									<td class="sg-td-cantidad" data-label="Cantidad">
 										<input type="number"
 											   step="0.01"
 											   min="0.01"

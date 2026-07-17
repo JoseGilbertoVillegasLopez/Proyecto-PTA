@@ -119,15 +119,11 @@
 				</div>
 				<div class="sg-new__field">
 					<span class="sg-new__label">Transferencia en beneficio de</span>
-					<div class="sg-show__display sg-show__display--textarea">
-						{{ solicitud.transferenciaEnBeneficioDe ?: '—' }}
-					</div>
+					<div class="sg-show__display sg-show__display--textarea">{{ solicitud.transferenciaEnBeneficioDe ?: '—' }}</div>
 				</div>
 				<div class="sg-new__field">
 					<span class="sg-new__label">Cta / Clave del beneficiario</span>
-					<div class="sg-show__display sg-show__display--textarea">
-						{{ solicitud.ctaClaveBeneficiario ?: '—' }}
-					</div>
+					<div class="sg-show__display sg-show__display--textarea">{{ solicitud.ctaClaveBeneficiario ?: '—' }}</div>
 				</div>
 			</div>
 
@@ -220,6 +216,63 @@
 							{% endfor %}
 						</tbody>
 					</table>
+				</div>
+
+				{# ===================================================== #}
+				{# CARDS (MÓVIL) — mismo dato que la tabla de arriba,     #}
+				{# el contexto (rowspan) se muestra una sola vez y luego #}
+				{# una card por partida                                  #}
+				{# ===================================================== #}
+
+				<div class="sg-detalle-cards">
+					{% if solicitud.partidas is empty %}
+						<div class="sg-evidencias__empty">Sin partidas registradas.</div>
+					{% else %}
+						<div class="sg-detalle-ctx-card">
+							<div class="sg-detalle-ctx-card__header">
+								<i class="bi bi-signpost-2-fill"></i>
+								Contexto estratégico
+							</div>
+							<div class="sg-detalle-ctx-card__body">
+								<div class="sg-detalle-ctx-field">
+									<span class="sg-detalle-ctx-label">Proceso Estratégico</span>
+									<span class="sg-detalle-ctx-value">{{ solicitud.procesoEstrategico ? solicitud.procesoEstrategico.nombre : '—' }}</span>
+								</div>
+								<div class="sg-detalle-ctx-field">
+									<span class="sg-detalle-ctx-label">Proceso Clave</span>
+									<span class="sg-detalle-ctx-value">{{ solicitud.procesoClave ? solicitud.procesoClave.nombre : '—' }}</span>
+								</div>
+								<div class="sg-detalle-ctx-chips">
+									<div class="sg-detalle-ctx-chip">
+										<span class="sg-detalle-ctx-chip__label">PEI</span>
+										<span class="sg-detalle-ctx-chip__value">{{ solicitud.procesoClave ? solicitud.procesoClave.pei : '—' }}</span>
+									</div>
+									<div class="sg-detalle-ctx-chip">
+										<span class="sg-detalle-ctx-chip__label">PAIG</span>
+										<span class="sg-detalle-ctx-chip__value">{{ solicitud.procesoClave ? solicitud.procesoClave.paig : '—' }}</span>
+									</div>
+									<div class="sg-detalle-ctx-chip">
+										<span class="sg-detalle-ctx-chip__label">Meta PDI/PTA</span>
+										<span class="sg-detalle-ctx-chip__value">{{ solicitud.procesoClave ? solicitud.procesoClave.metaPdiPta : '—' }}</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						{% for item in solicitud.partidas %}
+							<div class="sg-detalle-card">
+								<div class="sg-detalle-card__header">
+									<span class="sg-detalle-card__badge">Cap. {{ item.partida.capitulo }}</span>
+									<span class="sg-detalle-card__badge sg-detalle-card__badge--partida">{{ item.partida.partida }}</span>
+								</div>
+								<div class="sg-detalle-card__desc">{{ item.partida.descripcion }}</div>
+								<div class="sg-detalle-card__monto">
+									<span class="sg-detalle-card__monto-label">Cantidad</span>
+									<span class="sg-detalle-card__monto-valor">$ {{ item.monto|number_format(2, '.', ',') }}</span>
+								</div>
+							</div>
+						{% endfor %}
+					{% endif %}
 				</div>
 
 				{# Total #}

@@ -183,9 +183,9 @@
 							{% for puesto in puestosConSerie %}
 								{% set folioSerieFila = foliosPorSerie[puesto.serie] ?? null %}
 								<tr>
-									<td>{{ puesto.nombre }}</td>
-									<td><span class="sgc__serie-badge">{{ puesto.serie }}</span></td>
-									<td>
+									<td data-label="Puesto">{{ puesto.nombre }}</td>
+									<td data-label="Serie"><span class="sgc__serie-badge">{{ puesto.serie }}</span></td>
+									<td data-label="Último folio usado">
 										<input type="number"
 											   min="0"
 											   step="1"

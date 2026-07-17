@@ -14,20 +14,20 @@
 } %}
 {% for solicitud in solicitudes %}
 	<tr>
-		<td class="sg-index__col-id">{{ solicitud.id }}</td>
-		<td class="sg-index__col-solicitante">{{ solicitud.solicitante }}</td>
-		<td class="sg-index__col-depto">{{ solicitud.solicitante.departamento.nombre }}</td>
-		<td class="sg-index__col-tipo">{{ solicitud.tipoSolicitud.nombre }}</td>
-		<td class="sg-index__col-concepto">{{ solicitud.porConceptoDe }}</td>
-		<td class="sg-index__col-fecha">{{ solicitud.fechaNecesita|date('d/m/Y') }}</td>
-		<td class="sg-index__col-total">$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}</td>
-		<td class="sg-index__col-estado">
+		<td class="sg-index__col-id" data-label="#">{{ solicitud.id }}</td>
+		<td class="sg-index__col-solicitante sg-index__col-nombre" data-label="Solicitante">{{ solicitud.solicitante }}</td>
+		<td class="sg-index__col-depto" data-label="Departamento">{{ solicitud.solicitante.departamento.nombre }}</td>
+		<td class="sg-index__col-tipo" data-label="Tipo">{{ solicitud.tipoSolicitud.nombre }}</td>
+		<td class="sg-index__col-concepto" data-label="Por concepto de">{{ solicitud.porConceptoDe }}</td>
+		<td class="sg-index__col-fecha" data-label="Para cuándo">{{ solicitud.fechaNecesita|date('d/m/Y') }}</td>
+		<td class="sg-index__col-total" data-label="Total">$ {{ solicitud.cantidadTotal|number_format(2, '.', ',') }}</td>
+		<td class="sg-index__col-estado" data-label="Estado">
 			<span class="sg-badge sg-badge--{{ solicitud.estado }}">
 				<i class="bi {{ sg_estado_iconos[solicitud.estado] }}"></i> {{ sg_estado_labels[solicitud.estado] }}
 			</span>
 		</td>
-		<td class="sg-index__col-avance">{{ solicitud.contarRevisionesResueltas }}/3</td>
-		<td class="sg-index__col-acciones">
+		<td class="sg-index__col-avance" data-label="Avance">{{ solicitud.contarRevisionesResueltas }}/3</td>
+		<td class="sg-index__col-acciones" data-label="Acciones">
 			<a href="{{ path('app_solicitud_gastos_show', { id: solicitud.id }) }}"
 			   class="sg-index__action-btn sg-index__action-btn--ver"
 			   data-turbo-frame="content"

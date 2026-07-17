@@ -33,6 +33,131 @@ function bootSgNew(context) {
         });
     }
 
+    // ── SELECTS → COMBOBOX (Tipo de solicitud, Documento, Banco) ──
+    // Mismo patrón que public/js/pta/select_combobox.js: reemplaza el
+    // <select> nativo por botón + lista clicable (sin buscador) para
+    // poder estilizar la lista desplegada. El <select> original queda
+    // oculto pero sigue siendo el que se envía en el formulario.
+    function crearSgSelectCombobox(select) {
+        if (!select || select.dataset.comboboxListo === '1') return;
+        select.dataset.comboboxListo = '1';
+
+        var wrapper = document.createElement('div');
+        wrapper.className = 'sg-select-combobox';
+        select.insertAdjacentElement('beforebegin', wrapper);
+        wrapper.appendChild(select);
+        select.hidden = true;
+
+        var trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'sg-select-combobox__trigger';
+
+        var textoSpan = document.createElement('span');
+        textoSpan.className = 'sg-select-combobox__trigger-text';
+        trigger.appendChild(textoSpan);
+
+        var flecha = document.createElement('i');
+        flecha.className = 'bi bi-chevron-down sg-select-combobox__trigger-arrow';
+        trigger.appendChild(flecha);
+
+        wrapper.appendChild(trigger);
+
+        var lista = document.createElement('ul');
+        lista.className = 'sg-select-combobox__list';
+        lista.hidden = true;
+        wrapper.appendChild(lista);
+
+        function sincronizarTexto() {
+            var seleccionada = select.options[select.selectedIndex];
+            textoSpan.textContent = seleccionada ? seleccionada.text : '';
+        }
+
+        function posicionarLista() {
+            var rect = trigger.getBoundingClientRect();
+            var espacioAbajo = window.innerHeight - rect.bottom;
+            var abrirArriba = espacioAbajo < 260 && rect.top > espacioAbajo;
+
+            lista.style.left = rect.left + 'px';
+            lista.style.width = rect.width + 'px';
+
+            if (abrirArriba) {
+                lista.style.top = 'auto';
+                lista.style.bottom = (window.innerHeight - rect.top) + 'px';
+            } else {
+                lista.style.bottom = 'auto';
+                lista.style.top = rect.bottom + 'px';
+            }
+        }
+
+        function cerrarLista() {
+            lista.hidden = true;
+            trigger.classList.remove('sg-select-combobox__trigger--open');
+            document.removeEventListener('mousedown', onClickFuera);
+        }
+
+        function onClickFuera(event) {
+            if (!wrapper.contains(event.target)) cerrarLista();
+        }
+
+        function renderizarLista() {
+            lista.innerHTML = '';
+
+            Array.from(select.options).forEach(function (opcion) {
+                var item = document.createElement('li');
+                item.className = 'sg-select-combobox__item';
+                if (opcion.selected) item.classList.add('sg-select-combobox__item--selected');
+                item.textContent = opcion.text;
+
+                item.addEventListener('mousedown', function (event) {
+                    event.preventDefault();
+                    select.value = opcion.value;
+                    select.dispatchEvent(new Event('change', { bubbles: true }));
+                    cerrarLista();
+                });
+
+                lista.appendChild(item);
+            });
+
+            posicionarLista();
+        }
+
+        function abrirLista() {
+            renderizarLista();
+            lista.hidden = false;
+            trigger.classList.add('sg-select-combobox__trigger--open');
+            document.addEventListener('mousedown', onClickFuera);
+        }
+
+        trigger.addEventListener('click', function () {
+            if (lista.hidden) {
+                abrirLista();
+            } else {
+                cerrarLista();
+            }
+        });
+
+        trigger.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') cerrarLista();
+        });
+
+        select.addEventListener('change', function () {
+            sincronizarTexto();
+            trigger.classList.remove('sg-select-combobox__trigger--error');
+        });
+
+        function onScrollOResize() {
+            if (!lista.hidden) posicionarLista();
+        }
+
+        document.addEventListener('scroll', onScrollOResize, true);
+        window.addEventListener('resize', onScrollOResize);
+
+        sincronizarTexto();
+    }
+
+    root.querySelectorAll('#tipo_solicitud, #documento_verificacion, #banco')
+        .forEach(crearSgSelectCombobox);
+
     // ── DATOS JSON ────────────────────────────────────────────
     var partidas = [], procesosClave = [], procesosEstrategicos = [];
     try {
@@ -305,13 +430,13 @@ function bootSgNew(context) {
 
         var tr = document.createElement('tr');
         tr.innerHTML =
-            '<td class="sg-td-capitulo">' +
+            '<td class="sg-td-capitulo" data-label="Capítulo">' +
                 '<span class="sg-partida-capitulo sg-autofield">—</span>' +
             '</td>' +
-            '<td class="sg-td-partida-code">' +
+            '<td class="sg-td-partida-code" data-label="Partida">' +
                 '<span class="sg-partida-code sg-autofield">—</span>' +
             '</td>' +
-            '<td class="sg-td-desc">' +
+            '<td class="sg-td-desc" data-label="Descripción">' +
                 '<div class="sg-combobox">' +
                     '<input type="text" class="sg-new__input sg-combobox__input"' +
                            ' placeholder="Buscar descripción..." autocomplete="off">' +
@@ -320,7 +445,7 @@ function bootSgNew(context) {
                     '<ul class="sg-combobox__list" hidden></ul>' +
                 '</div>' +
             '</td>' +
-            '<td class="sg-td-cantidad">' +
+            '<td class="sg-td-cantidad" data-label="Cantidad">' +
                 '<input type="number" step="0.01" min="0.01"' +
                        ' class="sg-new__input sg-inp-monto"' +
                        ' name="solicitud[partidas][' + rowCount + '][monto]"' +
@@ -466,12 +591,36 @@ function bootSgNew(context) {
 
     if (form) {
         form.addEventListener('submit', function (event) {
-            var evidenceCount = getEvidenceCount();
+            // Los selects required convertidos a combobox quedan `hidden`,
+            // así que el navegador ya NO los valida por su HTML5 "required"
+            // nativo (un elemento hidden queda excluido de esa validación) —
+            // hay que revisarlos aquí a mano.
+            var primerComboboxInvalido = null;
 
-            if (evidenceCount < MIN_EVIDENCIAS || evidenceCount > MAX_EVIDENCIAS) {
-                event.preventDefault();
+            ['tipo_solicitud', 'documento_verificacion'].forEach(function (id) {
+                var select = root.querySelector('#' + id);
+                if (!select) return;
+
+                var trigger = select.closest('.sg-select-combobox')?.querySelector('.sg-select-combobox__trigger');
+
+                if (select.value === '') {
+                    trigger?.classList.add('sg-select-combobox__trigger--error');
+                    if (!primerComboboxInvalido) primerComboboxInvalido = trigger;
+                } else {
+                    trigger?.classList.remove('sg-select-combobox__trigger--error');
+                }
+            });
+
+            var evidenceCount = getEvidenceCount();
+            var evidenceInvalida = evidenceCount < MIN_EVIDENCIAS || evidenceCount > MAX_EVIDENCIAS;
+
+            if (evidenceInvalida) {
                 showEvidenceError('Debes adjuntar entre ' + MIN_EVIDENCIAS + ' y ' + MAX_EVIDENCIAS + ' archivos de evidencia.');
-                preview?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            if (primerComboboxInvalido || evidenceInvalida) {
+                event.preventDefault();
+                (primerComboboxInvalido || preview)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });
     }

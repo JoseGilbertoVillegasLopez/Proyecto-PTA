@@ -45,9 +45,9 @@
 				<tbody>
 					{% for banco in bancos %}
 						<tr class="{{ banco.estado == 'cancelado' ? 'sgb__row--cancelado' : '' }}">
-							<td class="sgb__td-id">{{ banco.id }}</td>
-							<td class="sgb__td-nombre">{{ banco.nombre }}</td>
-							<td class="sgb__td-estado">
+							<td class="sgb__td-id" data-label="#">{{ banco.id }}</td>
+							<td class="sgb__td-nombre" data-label="Nombre del Banco"><span><i class="bi bi-bank2"></i> {{ banco.nombre }}</span></td>
+							<td class="sgb__td-estado" data-label="Estado">
 								{% if banco.estado == 'activo' %}
 									<span class="sgb__badge sgb__badge--activo">
 										<i class="bi bi-check-circle-fill"></i> Activo
@@ -58,7 +58,7 @@
 									</span>
 								{% endif %}
 							</td>
-							<td class="sgb__td-action">
+							<td class="sgb__td-action" data-label="Acciones">
 								{% if banco.estado == 'activo' %}
 									<form method="POST"
 										  action="{{ path('app_sg_banco_cancelar', { id: banco.id }) }}"

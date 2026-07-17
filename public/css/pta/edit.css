@@ -904,6 +904,17 @@
     font-variant-numeric: tabular-nums;
 }
 
+/* El badge junta Meta/Base/hint de captura en un solo texto nowrap
+   sin flex-wrap: en pantallas angostas el contenido no cabe y se
+   corta contra el borde. Se permite envolver sin tocar el look de escritorio */
+@media (max-width: 768px) {
+    .pta-show.pta-edit .ia-meta-badge {
+        white-space: normal;
+        flex-wrap: wrap;
+        border-radius: 12px;
+    }
+}
+
 /* Hint objetivo real (esPorcentaje=true) */
 .pta-show.pta-edit .ia-meta-hint {
     display: inline-block;

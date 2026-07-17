@@ -205,6 +205,87 @@
     color: var(--ma-warning);
 }
 
+/* =========================================================
+   RESPONSIVE — tabla de módulos → cards
+   ========================================================= */
+@media (max-width: 640px) {
+    .ma-index-table {
+        display: block;
+        border-spacing: 0;
+    }
+
+    .ma-index-table thead {
+        display: none;
+    }
+
+    .ma-index-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .ma-index-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        border-radius: 14px;
+        box-shadow: var(--ma-inset);
+        background: var(--ma-bg-row);
+        padding: 14px 16px;
+    }
+
+    .ma-index-row td {
+        background: none;
+        box-shadow: none;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        width: auto;
+    }
+
+    .ma-index-row td::before {
+        content: attr(data-label);
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--ma-muted);
+    }
+
+    .ma-index-row td:first-child {
+        order: 1;
+        flex-basis: 100%;
+    }
+
+    .ma-index-desc {
+        order: 2;
+        flex-basis: 100%;
+        max-width: none;
+    }
+
+    .ma-index-row td[data-label="Encargados"],
+    .ma-index-row td[data-label="Con acceso"],
+    .ma-index-row td[data-label="Estado"] {
+        order: 3;
+        flex: 1 1 30%;
+        align-items: center;
+        text-align: center;
+    }
+
+    .ma-index-row td[data-label="Acciones"] {
+        order: 4;
+        flex-basis: 100%;
+        align-items: center;
+        margin-top: 4px;
+    }
+
+    .ma-index-row td[data-label="Acciones"]::before {
+        content: none;
+    }
+}
+
 /* ══════════════════════════════════════════════════════
    EDIT — 3 columnas
    ══════════════════════════════════════════════════════ */
@@ -535,6 +616,94 @@
 .ma-puesto-card-cargo option {
     background-color: #0d151d;
     color: var(--ma-text);
+}
+
+/* =========================================================
+   COMBOBOX DE CARGO (reemplaza el <select> nativo)
+   ---------------------------------------------------------
+   Generado por modulo_acceso.js — botón + lista clicable, sin
+   buscador (mismo patrón que pta/select_combobox.js y el de
+   solicitud_gastos/new.js). El <select> original queda oculto
+   pero sigue siendo el que se lee al hacer submit.
+   ========================================================= */
+.ma-select-combobox {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.ma-select-combobox__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    background-color: rgba(10, 18, 26, 0.85);
+    color: var(--ma-text-dim);
+    border: 1px solid rgba(254, 202, 87, 0.3);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color var(--ma-tr), box-shadow var(--ma-tr);
+}
+
+.ma-select-combobox__trigger:hover,
+.ma-select-combobox__trigger--open {
+    border-color: rgba(254, 202, 87, 0.55);
+}
+
+.ma-select-combobox__trigger--open {
+    box-shadow: 0 0 0 2px rgba(254, 202, 87, 0.2);
+}
+
+.ma-select-combobox__trigger-arrow {
+    flex-shrink: 0;
+    color: var(--ma-warning);
+    font-size: 0.68rem;
+    transition: transform 0.2s ease;
+}
+
+.ma-select-combobox__trigger--open .ma-select-combobox__trigger-arrow {
+    transform: rotate(180deg);
+}
+
+.ma-select-combobox__list {
+    position: fixed;
+    z-index: 9999;
+    background: #0c1520;
+    border: 1px solid rgba(254, 202, 87, 0.3);
+    border-radius: 10px;
+    max-height: 220px;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+}
+
+.ma-select-combobox__list:not([hidden]) {
+    display: block;
+}
+
+.ma-select-combobox__item {
+    padding: 7px 10px;
+    border-radius: 7px;
+    font-size: 0.8rem;
+    color: var(--ma-text-dim);
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+
+.ma-select-combobox__item:hover {
+    background: rgba(254, 202, 87, 0.12);
+}
+
+.ma-select-combobox__item--selected {
+    background: rgba(254, 202, 87, 0.15);
+    color: var(--ma-warning);
+    font-weight: 700;
 }
 
 .ma-puesto-card-btn {

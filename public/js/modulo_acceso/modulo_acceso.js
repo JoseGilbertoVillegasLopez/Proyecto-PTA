@@ -17,6 +17,129 @@
         const encSet = new Set();
         const accSet = new Set();
 
+        // ── Cargo → combobox (botón + lista, sin buscador) ─────────────────────
+        // Mismo patrón que pta/select_combobox.js: reemplaza el <select> nativo
+        // para poder estilizar la lista desplegada. El <select> original queda
+        // oculto pero sigue siendo el que se lee al hacer submit.
+        function crearMaSelectCombobox(select) {
+            if (!select || select.dataset.comboboxListo === '1') return;
+            select.dataset.comboboxListo = '1';
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'ma-select-combobox';
+            select.insertAdjacentElement('beforebegin', wrapper);
+            wrapper.appendChild(select);
+            select.hidden = true;
+
+            const trigger = document.createElement('button');
+            trigger.type = 'button';
+            trigger.className = 'ma-select-combobox__trigger';
+
+            const textoSpan = document.createElement('span');
+            textoSpan.className = 'ma-select-combobox__trigger-text';
+            trigger.appendChild(textoSpan);
+
+            const flecha = document.createElement('i');
+            flecha.className = 'bi bi-chevron-down ma-select-combobox__trigger-arrow';
+            trigger.appendChild(flecha);
+
+            wrapper.appendChild(trigger);
+
+            // La lista se agrega a document.body (no a wrapper): .ma-puesto-card
+            // tiene transform en :hover, y cualquier transform en un ancestro
+            // rompe position:fixed en sus descendientes (queda relativo a ese
+            // ancestro en vez del viewport). onClickFuera revisa wrapper Y lista
+            // por separado ya que dejan de estar anidados en el DOM.
+            const lista = document.createElement('ul');
+            lista.className = 'ma-select-combobox__list';
+            lista.hidden = true;
+            document.body.appendChild(lista);
+
+            function sincronizarTexto() {
+                const seleccionada = select.options[select.selectedIndex];
+                textoSpan.textContent = seleccionada ? seleccionada.text : '';
+            }
+
+            function posicionarLista() {
+                const rect = trigger.getBoundingClientRect();
+                const espacioAbajo = window.innerHeight - rect.bottom;
+                const abrirArriba = espacioAbajo < 240 && rect.top > espacioAbajo;
+
+                lista.style.left = rect.left + 'px';
+                lista.style.width = Math.max(rect.width, 120) + 'px';
+
+                if (abrirArriba) {
+                    lista.style.top = 'auto';
+                    lista.style.bottom = (window.innerHeight - rect.top) + 'px';
+                } else {
+                    lista.style.bottom = 'auto';
+                    lista.style.top = rect.bottom + 'px';
+                }
+            }
+
+            function cerrarLista() {
+                lista.hidden = true;
+                trigger.classList.remove('ma-select-combobox__trigger--open');
+                document.removeEventListener('mousedown', onClickFuera);
+            }
+
+            function onClickFuera(event) {
+                if (!wrapper.contains(event.target) && !lista.contains(event.target)) cerrarLista();
+            }
+
+            function renderizarLista() {
+                lista.innerHTML = '';
+
+                Array.from(select.options).forEach((opcion) => {
+                    const item = document.createElement('li');
+                    item.className = 'ma-select-combobox__item';
+                    if (opcion.selected) item.classList.add('ma-select-combobox__item--selected');
+                    item.textContent = opcion.text;
+
+                    item.addEventListener('mousedown', (event) => {
+                        event.preventDefault();
+                        select.value = opcion.value;
+                        select.dispatchEvent(new Event('change', { bubbles: true }));
+                        cerrarLista();
+                    });
+
+                    lista.appendChild(item);
+                });
+
+                posicionarLista();
+            }
+
+            function abrirLista() {
+                renderizarLista();
+                lista.hidden = false;
+                trigger.classList.add('ma-select-combobox__trigger--open');
+                document.addEventListener('mousedown', onClickFuera);
+            }
+
+            trigger.addEventListener('click', () => {
+                if (lista.hidden) {
+                    abrirLista();
+                } else {
+                    cerrarLista();
+                }
+            });
+
+            trigger.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') cerrarLista();
+            });
+
+            select.addEventListener('change', sincronizarTexto);
+
+            function onScrollOResize() {
+                if (!lista.hidden) posicionarLista();
+            }
+
+            document.addEventListener('scroll', onScrollOResize, true);
+            window.addEventListener('resize', onScrollOResize);
+
+            sincronizarTexto();
+        }
+
         // ── Helpers ──────────────────────────────────────────────────────────
 
         function listEl(name) {
@@ -75,6 +198,7 @@
                 select.innerHTML = '<option value="">Sin cargo</option>' +
                     Object.entries(cargosCatalogo).map(([valor, label]) => `<option value="${valor}">${label}</option>`).join('');
                 div.appendChild(select);
+                crearMaSelectCombobox(select);
             }
 
             const btn = document.createElement('button');
@@ -134,16 +258,18 @@
 
         listEl('encargados').querySelectorAll('.ma-puesto-card').forEach(card => {
             encSet.add(card.dataset.id);
-            const btn = card.querySelector('button');
+            const btn = card.querySelector('.ma-puesto-card-btn--remove');
             if (btn) btn.addEventListener('click', () => {
                 removeFromCol(card.dataset.id, card.dataset.nombre, 'encargados');
             });
+            const cargoSelect = card.querySelector('.ma-puesto-card-cargo');
+            if (cargoSelect) crearMaSelectCombobox(cargoSelect);
         });
 
         if (usaAcceso) {
             listEl('con_acceso').querySelectorAll('.ma-puesto-card').forEach(card => {
                 accSet.add(card.dataset.id);
-                const btn = card.querySelector('button');
+                const btn = card.querySelector('.ma-puesto-card-btn--remove');
                 if (btn) btn.addEventListener('click', () => {
                     removeFromCol(card.dataset.id, card.dataset.nombre, 'con_acceso');
                 });

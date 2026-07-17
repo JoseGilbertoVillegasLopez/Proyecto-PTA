@@ -221,6 +221,7 @@
 {% if resultado.contexto.nivel == 'FINAL' %}
 <section class="pta-monitoreo-ptas">
 
+    <div class="pta-monitoreo-table-wrapper">
     <table class="pta-monitoreo-table">
 
         <thead>
@@ -238,29 +239,29 @@
         <tbody>
             {% for pta in resultado.ptas %}
                 <tr class="pta-status-{{ pta.estado_global|lower }}">
-                    <td class="pta-col-id">
+                    <td class="pta-col-id" data-label="#">
                         {{ pta.pta_id }}
                     </td>
 
-                    <td class="pta-col-nombre">
+                    <td class="pta-col-nombre pta-monitoreo-table-name" data-label="Proyecto PTA">
                         {{ pta.nombre }}
                     </td>
 
-                    <td class="pta-col-departamento">
+                    <td class="pta-col-departamento" data-label="Departamento">
                         {{ pta.departamento }}
                     </td>
 
-                    <td class="pta-col-puesto">
+                    <td class="pta-col-puesto" data-label="Puesto">
                         {{ pta.puesto ?? '—' }}
                     </td>
 
-                    <td class="pta-col-estado">
+                    <td class="pta-col-estado" data-label="Estado">
                         <span class="badge pta-badge-{{ pta.estado_global|lower }}">
                             {{ pta.estado_global == 'OK' ? 'En tiempo' : pta.estado_global }}
                         </span>
                     </td>
 
-                    <td class="pta-col-accion">
+                    <td class="pta-col-accion" data-label="Acciones">
                         <span class="pta-actions">
 
                             {# Ver PTA (SHOW) #}
@@ -304,6 +305,7 @@
         </tbody>
 
     </table>
+    </div>
 
 </section>
 {% endif %}

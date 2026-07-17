@@ -30,33 +30,33 @@
             <tbody>
                 {% for item in resumen %}
                     <tr class="ma-index-row">
-                        <td>
+                        <td data-label="Módulo">
                             <span class="ma-index-slug">{{ item.modulo.slug }}</span>
                             <span class="ma-index-label">{{ item.modulo.label }}</span>
                         </td>
-                        <td class="ma-index-desc">{{ item.modulo.descripcion ?? '—' }}</td>
-                        <td class="text-center">
+                        <td class="ma-index-desc" data-label="Descripción">{{ item.modulo.descripcion ?? '—' }}</td>
+                        <td class="text-center" data-label="Encargados">
                             {% if item.modulo.usaEncargado %}
                                 <span class="ma-badge ma-badge--enc">{{ item.encargados }}</span>
                             {% else %}
                                 <span class="ma-badge ma-badge--muted">No aplica</span>
                             {% endif %}
                         </td>
-                        <td class="text-center">
+                        <td class="text-center" data-label="Con acceso">
                             {% if item.modulo.usaAcceso %}
                                 <span class="ma-badge ma-badge--acc">{{ item.con_acceso }}</span>
                             {% else %}
                                 <span class="ma-badge ma-badge--muted">Todos</span>
                             {% endif %}
                         </td>
-                        <td class="text-center">
+                        <td class="text-center" data-label="Estado">
                             {% if item.modulo.activo %}
                                 <span class="ma-badge ma-badge--active">Activo</span>
                             {% else %}
                                 <span class="ma-badge ma-badge--inactive">Inactivo</span>
                             {% endif %}
                         </td>
-                        <td class="text-center">
+                        <td class="text-center" data-label="Acciones">
                             <a href="{{ path('app_admin_modulo_acceso_edit', { id: item.modulo.id }) }}"
                                data-turbo-frame="content"
                                data-turbo-action="advance"

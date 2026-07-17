@@ -258,3 +258,101 @@
     padding: 6px 10px;
     font-size: 0.9rem;
 }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 640px) {
+    /* Topbar (grid 3 col) sin @media se quedaba apretado: título arriba,
+       Volver + Guardar centrados en una fila debajo */
+    .sgc .sgb__topbar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .sgc .sgb__titulo {
+        text-align: center;
+    }
+
+    .sgc .sgb__topbar .sgb__btn-submit {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .sgc .sgb__btn-volver {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Tabla "Último folio usado por departamento" → cards */
+    .sgc__tabla-series-wrap {
+        max-height: none;
+        border: none;
+        overflow: visible;
+    }
+
+    .sgc__tabla-series {
+        display: block;
+    }
+
+    .sgc__tabla-series thead {
+        display: none;
+    }
+
+    .sgc__tabla-series tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .sgc__tabla-series tbody tr {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        background: #0d151d;
+        border: 1px solid rgba(13, 202, 240, 0.12);
+        border-radius: 12px;
+        padding: 12px 14px;
+    }
+
+    .sgc__tabla-series tbody td {
+        padding: 0 !important;
+        border: none !important;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .sgc__tabla-series td::before {
+        content: attr(data-label);
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #9fb3c8;
+    }
+
+    .sgc__tabla-series td:nth-child(1) {
+        order: 1;
+        flex-basis: 100%;
+        font-weight: 600;
+    }
+
+    .sgc__tabla-series td:nth-child(2) {
+        order: 2;
+        flex: 1;
+    }
+
+    .sgc__tabla-series td:nth-child(3) {
+        order: 3;
+        flex: 1;
+        align-items: flex-end;
+    }
+
+    .sgc__input--tabla {
+        width: 100%;
+    }
+}
