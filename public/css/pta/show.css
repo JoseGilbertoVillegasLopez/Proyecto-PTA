@@ -48,6 +48,24 @@
     margin-bottom: 1.5rem;
 }
 
+@media (max-width: 768px) {
+    .pta-show .pta-topbar {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .pta-show .pta-topbar-left {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .pta-show .pta-resp-header {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+
 /* =========================================================
    BOTONES SUPERIORES
    ========================================================= */
@@ -471,6 +489,23 @@
     min-width: 0;
 }
 
+/* min-width:0 permite encoger sin límite y nunca salta de línea aunque
+   haya flex-wrap; en pantallas chicas los 4-5 campos quedaban encimados
+   en una sola fila ilegible. Se fuerza un ancho mínimo para que el wrap
+   sí ocurra, mismos breakpoints que usa .ic-row-meta en new.css */
+@media (max-width: 860px) {
+    .pta-show .ic-row-meta .ic-field {
+        min-width: 140px;
+    }
+}
+
+@media (max-width: 500px) {
+    .pta-show .ic-row-meta .ic-field {
+        flex-basis: 100%;
+        min-width: 0;
+    }
+}
+
 /* =========================================================
    SHOW — IC-DISPLAY (valores dentro de indicator-card)
    ========================================================= */
@@ -712,6 +747,21 @@
     background: rgba(255, 107, 107, 0.12);
     border: 1px solid rgba(255, 107, 107, 0.3);
     color: #ff6b6b;
+}
+
+/* En pantallas chicas los badges compiten con el título por espacio
+   y lo dejan casi invisible (ellipsis casi inmediato); se bajan a su
+   propia línea para que el título conserve ancho legible junto al num */
+@media (max-width: 576px) {
+    .pta-show .pta-accordion .accordion-button {
+        flex-wrap: wrap;
+    }
+
+    .pta-show .pta-accordion .pta-acc-badges {
+        flex-basis: 100%;
+        margin-left: 36px;
+        margin-right: 0;
+    }
 }
 
 /* Cuerpo del accordion */

@@ -173,8 +173,12 @@
 }
 
 @media (max-width: 900px) {
+    /* Responsable ocupa el ancho completo arriba (label/valor apilados,
+       el valor puede ser un nombre largo de varias líneas); Proyecto #
+       y Año se acomodan uno junto al otro debajo — evita 3 cards
+       apiladas con mucho espacio vacío en Proyecto/Año */
     .pta-historial .pta-historial-meta-card {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: 1fr 1fr !important;
     }
 
     .pta-historial .pta-historial-meta-card__item,
@@ -183,6 +187,12 @@
     .pta-historial .pta-historial-meta-card__item--anio {
         justify-content: center !important;
         text-align: center !important;
+    }
+
+    .pta-historial .pta-historial-meta-card__item--responsable {
+        grid-column: 1 / -1;
+        flex-direction: column;
+        gap: 4px;
     }
 }
 
@@ -289,6 +299,28 @@
     margin-bottom: 4px;
     color: var(--pta-primary);
     text-transform: uppercase;
+}
+
+/* =========================================================
+   RESPONSIVE — CARD DE INDICADOR
+   ---------------------------------------------------------
+   El padding fijo de 40px y el grid 3fr/0.5fr/0.5fr/0.5fr de
+   pta-indicador-data no cedían nada en móvil: los datos de
+   0.5fr quedaban con ~17px reales y el texto se partía letra
+   por letra (mismo bug que ic-row-meta en show.css).
+   ========================================================= */
+@media (max-width: 576px) {
+    .pta-historial .pta-indicador-card {
+        padding: 20px 18px 22px;
+    }
+
+    .pta-historial .pta-historial-indicador-header .pta-indicador-top {
+        flex-wrap: wrap;
+    }
+
+    .pta-historial .pta-historial-indicador-header .pta-indicador-data {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* =========================================================
@@ -880,6 +912,13 @@
     margin-bottom: 0.5rem;
     background: transparent;
     text-align: center;
+}
+
+@media (max-width: 576px) {
+    .pta-historial .pta-chart-summary {
+        flex-wrap: wrap;
+        gap: 1.25rem;
+    }
 }
 
 .pta-historial .pta-chart-summary__item {
@@ -1965,7 +2004,7 @@
 
 @media (max-width: 576px) {
     .pta-historial .pta-hist-valores-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         gap: 8px;
     }
 

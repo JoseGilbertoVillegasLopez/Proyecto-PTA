@@ -219,6 +219,16 @@
 @media (max-width: 520px) {
     .pta-meter__row {
         grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    /* El globo del % flota con top:-34px sobre la barra; con el row
+       apilado a 1 columna necesita ese espacio libre arriba del track
+       (el gap de arriba) para no encimarse con el label */
+    .pta-meter__bubble {
+        top: -26px;
+        font-size: 0.68rem;
+        padding: 3px 7px;
     }
 }
 
@@ -580,4 +590,134 @@
     white-space: normal; /* permite salto de línea */
     word-break: break-word; /* rompe palabras largas */
     line-height: 1.35;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+.pta-monitoreo-table-wrapper {
+    overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+    /* Padding doblado (contenedor + report-card) comía ~124px de
+       ancho en teléfono, mismo patrón ya corregido en grafica.css */
+    .pta-monitoreo {
+        padding: 20px 16px 40px;
+    }
+
+    .pta-report-card {
+        padding: 16px 14px;
+    }
+
+    /* Cards más compactas en altura: título/métricas/gráfica tenían
+       demasiado aire entre ellos en móvil */
+    .pta-report-card__title {
+        margin-bottom: 10px;
+    }
+
+    .pta-report-card__subtitle {
+        margin-bottom: 8px;
+    }
+
+    .pta-report-metrics {
+        margin-bottom: 12px;
+        gap: 10px;
+    }
+
+    .pta-metric {
+        padding: 8px 10px;
+    }
+
+    .pta-report-chart {
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+
+    .pta-meter {
+        gap: 10px;
+    }
+
+    /* Tabla final (nivel FINAL) sin ningún tratamiento responsive:
+       anchos fijos en % + botones nowrap se desbordaban en móvil.
+       Bloque dedicado (no se reusa index.css) porque esta tabla
+       define sus propios anchos por clase (.pta-col-nombre 45%, etc)
+       que chocarían por especificidad con los nth-child de index.css. */
+    .pta-monitoreo-table-wrapper {
+        overflow-x: visible;
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table {
+        display: block;
+        width: 100%;
+        border-spacing: 0;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table thead {
+        display: none;
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table tbody {
+        display: block;
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table tbody tr {
+        display: block;
+        margin-bottom: 10px;
+        padding: 4px 14px;
+        border-radius: 14px;
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table tbody tr:hover {
+        transform: none;
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table tbody tr::after {
+        display: none;
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table td {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: auto !important;
+        max-width: none !important;
+        white-space: normal !important;
+        text-align: center !important;
+        padding: 10px 0 !important;
+        border-radius: 0 !important;
+        font-size: 0.85rem;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.08);
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table td:last-child {
+        border-bottom: none;
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table td::before {
+        content: attr(data-label);
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--pta-muted);
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table td.pta-monitoreo-table-name {
+        font-size: 0.98rem;
+        font-weight: 700;
+        padding-bottom: 12px !important;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.18);
+    }
+
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table td.pta-monitoreo-table-name::before,
+    .pta-monitoreo-table-wrapper .pta-monitoreo-table td[data-label="Acciones"]::before {
+        content: none;
+    }
 }

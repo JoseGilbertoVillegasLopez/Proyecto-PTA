@@ -1,0 +1,26 @@
+{# templates/admin/emails/solicitud_gastos_resolucion_rechazada.txt.twig #}
+{{ appName }}
+— Solicitud de gastos rechazada
+{{ fecha|date('d/m/Y H:i') }}
+
+Hola,
+{{ nombreSolicitante|default('Solicitante') }}
+
+{% if folio %}
+Te informamos que tu solicitud de gastos con folio {{ folio }},
+realizada el {{ fechaSolicitud|date('d/m/Y') }}, fue
+RECHAZADA el {{ fechaResolucion|date('d/m/Y') }}.
+{% else %}
+Te informamos que tu solicitud de gastos realizada el
+{{ fechaSolicitud|date('d/m/Y') }} fue
+RECHAZADA el {{ fechaResolucion|date('d/m/Y') }}.
+{% endif %}
+{% if comentarios|length > 0 %}
+Comentarios de la revisión:
+{% for c in comentarios %}
+- {{ c.cargo }}{% if c.nombre %} ({{ c.nombre }}{% if c.puesto %}, {{ c.puesto }}{% endif %}){% endif %}:
+  {{ c.comentario }}
+{% endfor %}
+{% endif %}
+Dudas:
+{{ soporteEmail }}

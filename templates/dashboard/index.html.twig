@@ -24,7 +24,18 @@
 		{% endif %}
 	{% endif %}
 
-	<div style="display: flex; height: 100vh; background: #1e242b;">
+	<div class="pta-dashboard-shell">
+
+		<!-- TOPBAR MÓVIL -->
+		<div class="pta-dashboard-topbar">
+			<button type="button" class="pta-dashboard-toggle" data-dashboard-toggle aria-label="Abrir menú" aria-expanded="false">
+				<i class="bi bi-list"></i>
+			</button>
+			<span class="pta-dashboard-topbar-brand">
+				<i class="bi bi-mortarboard-fill"></i>
+				Sistema PTA
+			</span>
+		</div>
 
 		<!-- ASIDE -->
 		<aside class="pta-dashboard-aside">
@@ -199,8 +210,11 @@
 
 		</aside>
 
+		<!-- OVERLAY MÓVIL -->
+		<div class="pta-dashboard-overlay" data-dashboard-overlay></div>
+
 		<!-- CONTENIDO -->
-		<main style="flex: 1; padding: 30px; overflow-y: auto;">
+		<main class="pta-dashboard-main">
 			{% set section = section is defined ? section : null %}
 
 			{% set srcMap = {
@@ -218,6 +232,7 @@
 				'solicitud_gastos': path('app_solicitud_gastos_index'),
 				'solicitud_gastos_encargado': path('app_solicitud_gastos_encargado_index'),
 				'solicitud_gastos_bancos': path('app_sg_banco_index'),
+				'solicitud_gastos_configuracion': path('app_sg_configuracion_edit'),
 				'reporte_indicadores': path('app_reporte_indicadores_index'),
 				'reporte_indicadores_encargado': path('app_reporte_indicadores_encargado_index'),
 				'reporte_pta_encargado': path('app_reporte_pta_encargado_index'),

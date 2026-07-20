@@ -1,0 +1,239 @@
+<turbo-frame id="content">
+<link rel="stylesheet" href="{{ asset('css/solicitud_gastos/configuracion.css') }}">
+<div class="sgc" data-sgc-view="edit">
+
+	<div class="sgb__topbar sgc__topbar">
+		<a href="{{ path('app_solicitud_gastos_encargado_index') }}"
+		   class="sgb__btn-volver"
+		   data-turbo-frame="content"
+		   data-turbo-action="advance">
+			<i class="bi bi-arrow-left-circle-fill"></i>
+			<span>Volver</span>
+		</a>
+		<h1 class="sgb__titulo">
+			<i class="bi bi-gear-fill"></i>
+			Configuración de Solicitud de Gastos
+		</h1>
+		<button type="submit" form="sgc-form" class="sgb__btn-submit">
+			<i class="bi bi-check-circle-fill"></i>
+			Guardar Configuración
+		</button>
+	</div>
+
+	{% for label, messages in app.flashes %}
+		{% for message in messages %}
+			<div class="sgb__flash sgb__flash--{{ label }}">
+				<i class="bi bi-{{ label == 'success' ? 'check-circle-fill' : 'exclamation-triangle-fill' }}"></i>
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
+	<form method="POST" action="{{ path('app_sg_configuracion_edit') }}" id="sgc-form">
+		<input type="hidden" name="_token" value="{{ csrf_token('configuracion_solicitud_gastos') }}">
+
+		<div class="sgc__grid">
+
+			<div class="sgc__card">
+				<h2 class="sgc__card-title"><i class="bi bi-check2-square"></i> Criterio de aprobación</h2>
+				<p class="sgc__card-desc">¿Cuántos de los 3 votos definen el resultado de una solicitud?</p>
+				<div class="sgc__segmented">
+					<input type="radio" name="criterio_aprobacion" id="criterio_unanime" value="unanime"
+						   {{ config.criterioAprobacion == 'unanime' ? 'checked' : '' }}>
+					<label for="criterio_unanime">
+						Unánime
+						<span>Los 3 deben aceptar</span>
+					</label>
+					<input type="radio" name="criterio_aprobacion" id="criterio_mayoria" value="mayoria"
+						   {{ config.criterioAprobacion == 'mayoria' ? 'checked' : '' }}>
+					<label for="criterio_mayoria">
+						Mayoría
+						<span>2 de 3 definen</span>
+					</label>
+				</div>
+			</div>
+
+			<div class="sgc__card">
+				<h2 class="sgc__card-title"><i class="bi bi-chat-left-text"></i> Comentarios de revisión</h2>
+				<p class="sgc__card-desc">¿Se comparten con el solicitante los comentarios que dejó cada encargado al votar? Solo se muestran los cargos que sí dejaron comentario.</p>
+				<div class="sgc__segmented">
+					<input type="radio" name="mostrar_motivo_rechazo" id="motivo_no" value="0"
+						   {{ not config.mostrarMotivoRechazo ? 'checked' : '' }}>
+					<label for="motivo_no">No</label>
+					<input type="radio" name="mostrar_motivo_rechazo" id="motivo_si" value="1"
+						   {{ config.mostrarMotivoRechazo ? 'checked' : '' }}>
+					<label for="motivo_si">Sí</label>
+				</div>
+			</div>
+
+			<div class="sgc__card">
+				<h2 class="sgc__card-title"><i class="bi bi-file-earmark-check"></i> ¿A qué solicitudes se les asigna folio?</h2>
+				<p class="sgc__card-desc">¿Qué estados reciben folio real?</p>
+				<div class="sgc__segmented">
+					<input type="radio" name="folio_aplica_a" id="folio_solo_aceptadas" value="solo_aceptadas"
+						   {{ config.folioAplicaA == 'solo_aceptadas' ? 'checked' : '' }}>
+					<label for="folio_solo_aceptadas">
+						Solo aceptadas
+					</label>
+					<input type="radio" name="folio_aplica_a" id="folio_aceptadas_rechazadas" value="aceptadas_y_rechazadas"
+						   {{ config.folioAplicaA == 'aceptadas_y_rechazadas' ? 'checked' : '' }}>
+					<label for="folio_aceptadas_rechazadas">
+						Aceptadas y rechazadas
+					</label>
+				</div>
+			</div>
+
+			<div class="sgc__card">
+				<h2 class="sgc__card-title"><i class="bi bi-arrow-repeat"></i> Ciclo de reinicio del folio</h2>
+				<p class="sgc__card-desc">¿Cada cuánto vuelve el contador a cero?</p>
+				<div class="sgc__segmented">
+					<input type="radio" name="folio_ciclo_reinicio" id="ciclo_continuo" value="continuo"
+						   {{ config.folioCicloReinicio == 'continuo' ? 'checked' : '' }}>
+					<label for="ciclo_continuo">
+						Continuo
+						<span>Nunca reinicia</span>
+					</label>
+					<input type="radio" name="folio_ciclo_reinicio" id="ciclo_semestral" value="semestral"
+						   {{ config.folioCicloReinicio == 'semestral' ? 'checked' : '' }}>
+					<label for="ciclo_semestral">
+						Semestral
+						<span>Cada 6 meses</span>
+					</label>
+					<input type="radio" name="folio_ciclo_reinicio" id="ciclo_anual" value="anual"
+						   {{ config.folioCicloReinicio == 'anual' ? 'checked' : '' }}>
+					<label for="ciclo_anual">
+						Anual
+						<span>Cada 1 de enero</span>
+					</label>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="sgc__grid sgc__fila-folio" id="sgc-fila-folio">
+
+			<div class="sgc__card">
+				<h2 class="sgc__card-title"><i class="bi bi-collection"></i> Contador del folio</h2>
+				<p class="sgc__card-desc">
+					Continuo: un solo número para todos, solo cambia la serie (ej. RM-23, RF-24, DE-25).
+					Por departamento: cada serie lleva su propio contador independiente, los números
+					se repiten entre series (ej. RM-10, RM-11... RF-10, RF-11...).
+				</p>
+				<div class="sgc__segmented">
+					<input type="radio" name="folio_alcance" id="alcance_global" value="global"
+						   {{ config.folioAlcance == 'global' ? 'checked' : '' }}>
+					<label for="alcance_global">
+						Continuo
+						<span>Un número para todos</span>
+					</label>
+					<input type="radio" name="folio_alcance" id="alcance_por_serie" value="por_serie"
+						   {{ config.folioAlcance == 'por_serie' ? 'checked' : '' }}>
+					<label for="alcance_por_serie">
+						Por departamento
+						<span>Cada serie, su propio contador</span>
+					</label>
+				</div>
+			</div>
+
+			<div class="sgc__card" id="sgc-folio-global">
+				<h2 class="sgc__card-title"><i class="bi bi-123"></i> Último folio usado</h2>
+				<p class="sgc__card-desc">
+					Si finanzas ya venía numerando folios en físico, indica aquí el último que usaron
+					para que las solicitudes digitales continúen la numeración desde ese punto.
+				</p>
+				<div class="sgc__folio-row">
+					<input type="number"
+						   min="0"
+						   step="1"
+						   name="folio_contador_actual"
+						   id="sgc-folio-input"
+						   class="sgc__input"
+						   value="{{ config.folioContadorActual }}">
+					<p class="sgc__folio-hint">
+						La siguiente solicitud resuelta tendrá el folio
+						<strong id="sgc-folio-siguiente">{{ config.folioContadorActual + 1 }}</strong>.
+						{% if config.folioPeriodoActual %}
+							<br>Periodo vigente del contador: {{ config.folioPeriodoActual }}
+						{% endif %}
+					</p>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="sgc__grid">
+
+			<div class="sgc__card sgc__card--full" id="sgc-folio-por-serie">
+				<h2 class="sgc__card-title"><i class="bi bi-diagram-3"></i> Último folio usado por departamento</h2>
+				<p class="sgc__card-desc">
+					Indica el último folio que cada departamento venía usando en físico — cada uno
+					lleva su propio contador independiente, así que los números pueden repetirse
+					entre series.
+				</p>
+				<div class="sgc__tabla-series-wrap">
+					<table class="sgc__tabla-series">
+						<thead>
+							<tr>
+								<th>Puesto</th>
+								<th>Serie</th>
+								<th>Último folio usado</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for puesto in puestosConSerie %}
+								{% set folioSerieFila = foliosPorSerie[puesto.serie] ?? null %}
+								<tr>
+									<td data-label="Puesto">{{ puesto.nombre }}</td>
+									<td data-label="Serie"><span class="sgc__serie-badge">{{ puesto.serie }}</span></td>
+									<td data-label="Último folio usado">
+										<input type="number"
+											   min="0"
+											   step="1"
+											   name="folio_serie[{{ puesto.serie }}]"
+											   class="sgc__input sgc__input--tabla"
+											   value="{{ folioSerieFila ? folioSerieFila.contadorActual : 0 }}">
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+	</form>
+
+</div>
+
+<script>
+(function () {
+	var input = document.getElementById('sgc-folio-input');
+	var salida = document.getElementById('sgc-folio-siguiente');
+	if (!input || !salida) return;
+
+	input.addEventListener('input', function () {
+		var valor = parseInt(input.value, 10);
+		salida.textContent = (isNaN(valor) || valor < 0) ? '—' : String(valor + 1);
+	});
+})();
+
+(function () {
+	var radios = document.querySelectorAll('input[name="folio_alcance"]');
+	var filaFolio = document.getElementById('sgc-fila-folio');
+	var seccionGlobal = document.getElementById('sgc-folio-global');
+	var seccionPorSerie = document.getElementById('sgc-folio-por-serie');
+	if (!radios.length || !filaFolio || !seccionGlobal || !seccionPorSerie) return;
+
+	function actualizar() {
+		var seleccionado = document.querySelector('input[name="folio_alcance"]:checked');
+		var esPorSerie = seleccionado && seleccionado.value === 'por_serie';
+		seccionGlobal.style.display = esPorSerie ? 'none' : '';
+		filaFolio.classList.toggle('sgc__fila-folio--una-columna', esPorSerie);
+		seccionPorSerie.style.display = esPorSerie ? '' : 'none';
+	}
+
+	radios.forEach(function (r) { r.addEventListener('change', actualizar); });
+	actualizar();
+})();
+</script>
+</turbo-frame>

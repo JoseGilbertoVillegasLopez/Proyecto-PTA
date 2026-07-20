@@ -165,11 +165,13 @@
 
 @media (max-width: 800px) {
     .sg-new__grid-3 { grid-template-columns: 1fr 1fr; }
+    .sg-new__grid-4 { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 640px) {
     .sg-new__grid-2,
-    .sg-new__grid-3 { grid-template-columns: 1fr; }
+    .sg-new__grid-3,
+    .sg-new__grid-4 { grid-template-columns: 1fr; }
 }
 
 /* =========================================================
@@ -331,6 +333,18 @@
 /* Responsable / Jefe de Área / Autoriza: mismo ancho para los 3 */
 .sg-new__grid-autoriza {
     grid-template-columns: 1fr 1fr 1fr;
+}
+
+/* Esta regla va DESPUÉS de los @media de grid-3 (línea ~166) a propósito:
+   sin este bloque, esta regla (incondicional, más abajo en el archivo)
+   le ganaba en cascada a los @media que intentaban colapsar grid-3, y
+   la fila se quedaba en 3 columnas fijas siempre, sin importar el viewport */
+@media (max-width: 800px) {
+    .sg-new__grid-autoriza { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+    .sg-new__grid-autoriza { grid-template-columns: 1fr; }
 }
 
 /* Nombre arriba, puesto debajo */
@@ -573,6 +587,15 @@
     white-space: nowrap;
 }
 
+/* "Documentos a presentar para la solicitud" es más largo que el resto de
+   las etiquetas de sección y no cabía en una sola línea en móvil */
+@media (max-width: 640px) {
+    .sg-new__section-label {
+        white-space: normal;
+        text-align: center;
+    }
+}
+
 /* =========================================================
    TABLA DETALLE DEL GASTO
    ========================================================= */
@@ -737,6 +760,156 @@
 }
 
 /* =========================================================
+   DETALLE DEL GASTO — CARDS EN MÓVIL
+   ---------------------------------------------------------
+   Misma tabla y mismo JS (new.js) de agregar/quitar partidas,
+   solo se reacomoda con flex + order (igual patrón que la card
+   de solicitud de gastos). La 1a fila trae además las celdas
+   rowspan (Proceso Estratégico/Clave/PEI/PAIG/Meta), por eso
+   esa card queda con 2 secciones: Contexto + Partida 1.
+   ========================================================= */
+@media (max-width: 640px) {
+    .sg-detalle-scroll {
+        overflow-x: visible;
+    }
+
+    .sg-detalle-table {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        background: none;
+        box-shadow: none;
+        border-spacing: 0;
+    }
+
+    .sg-detalle-table thead {
+        display: none;
+    }
+
+    .sg-detalle-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        counter-reset: sg-partida;
+    }
+
+    .sg-detalle-table tbody tr {
+        counter-increment: sg-partida;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: #0d151d;
+        border: 1px solid rgba(13, 202, 240, 0.15);
+        border-radius: 14px;
+        padding: 14px;
+    }
+
+    /* Encabezado de sección — solo en la 1a card (trae el contexto) */
+    .sg-detalle-table tbody tr:first-child::before {
+        content: "Contexto estratégico";
+        order: 0;
+        flex-basis: 100%;
+        font-size: 0.68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--sg-primary);
+    }
+
+    /* Divisor "Partida N" — numerado automático, una por card */
+    .sg-detalle-table tbody tr::after {
+        content: "Partida " counter(sg-partida);
+        order: 6;
+        flex-basis: 100%;
+        font-size: 0.68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--sg-muted);
+        padding-top: 6px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sg-detalle-table td {
+        display: block;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+
+    /* Contexto: Proceso Estratégico / Proceso Clave — ancho completo
+       (identificadas por ID en el twig, no por clase) */
+    .sg-detalle-table #sg-td-pe { order: 1; flex-basis: 100%; }
+    .sg-detalle-table #sg-td-pc { order: 2; flex-basis: 100%; }
+
+    /* PEI / PAIG / Meta: chips cortos en una fila, no necesitan fila completa */
+    .sg-detalle-table #sg-td-pei,
+    .sg-detalle-table #sg-td-paig,
+    .sg-detalle-table #sg-td-meta {
+        order: 3;
+        flex: 1 1 30%;
+        background: rgba(13, 202, 240, 0.06);
+        border: 1px solid rgba(13, 202, 240, 0.15) !important;
+        border-radius: 10px !important;
+        padding: 6px 8px !important;
+        text-align: center;
+    }
+
+    /* Partida: Capítulo + Partida lado a lado; Descripción y Cantidad completas */
+    .sg-detalle-table .sg-td-capitulo     { order: 7;  flex-basis: calc(50% - 5px); }
+    .sg-detalle-table .sg-td-partida-code { order: 8;  flex-basis: calc(50% - 5px); }
+    .sg-detalle-table .sg-td-desc         { order: 9;  flex-basis: 100%; }
+    .sg-detalle-table .sg-td-cantidad     { order: 10; flex-basis: 100%; }
+
+    /* Botón eliminar — solo en partidas 2+, alineado a la derecha */
+    .sg-detalle-table .sg-td-action {
+        order: 11;
+        flex-basis: 100%;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .sg-detalle-table .sg-td-action:empty {
+        display: none;
+    }
+
+    /* Etiquetas mini arriba de cada campo (mismo patrón data-label del resto del sistema) */
+    .sg-detalle-table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--sg-muted);
+        margin-bottom: 4px;
+    }
+
+    .sg-detalle-table #sg-td-pei::before,
+    .sg-detalle-table #sg-td-paig::before,
+    .sg-detalle-table #sg-td-meta::before {
+        color: var(--sg-primary);
+        font-size: 0.58rem;
+    }
+
+    /* Los inputs/combobox vuelven a su tamaño normal — ya no están
+       comprimidos para caber en columnas angostas de tabla */
+    .sg-detalle-table .sg-combobox__input,
+    .sg-detalle-table .sg-new__select,
+    .sg-detalle-table .sg-inp-monto {
+        font-size: 0.9rem !important;
+        padding: 10px 14px !important;
+        border-radius: 12px !important;
+    }
+
+    .sg-detalle-table .sg-inp-monto {
+        text-align: left;
+    }
+}
+
+/* =========================================================
    COMBOBOX DE BÚSQUEDA (descripción de partida)
    ========================================================= */
 
@@ -807,6 +980,111 @@
     font-size: 0.78rem;
     color: var(--sg-muted);
     text-align: center;
+}
+
+/* =========================================================
+   COMBOBOX DE SELECT (Tipo de solicitud, Documento, Banco)
+   ---------------------------------------------------------
+   Generado por new.js — reemplaza el <select> nativo para poder
+   estilizar la lista desplegada (los <option> nativos no se pueden
+   tematizar de forma consistente entre navegadores). Sin buscador:
+   solo botón + lista clicable, mismo patrón que pta/select_combobox.js.
+   ========================================================= */
+.sg-select-combobox {
+    position: relative;
+    width: 100%;
+}
+
+.sg-select-combobox__trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    background-color: var(--sg-bg-input);
+    color: #fff;
+    border: 1px solid var(--sg-border-soft);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sg-select-combobox__trigger:hover,
+.sg-select-combobox__trigger--open {
+    border-color: var(--sg-primary);
+}
+
+.sg-select-combobox__trigger--open {
+    box-shadow: 0 0 0 3px rgba(13, 202, 240, 0.15);
+}
+
+.sg-new__grid-4 .sg-select-combobox .sg-select-combobox__trigger {
+    height: 46px;
+}
+
+.sg-select-combobox__trigger-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sg-select-combobox__trigger-arrow {
+    flex-shrink: 0;
+    color: var(--sg-primary);
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.sg-select-combobox__trigger--open .sg-select-combobox__trigger-arrow {
+    transform: rotate(180deg);
+}
+
+/* Error de validación (select required sin seleccionar) */
+.sg-select-combobox__trigger--error {
+    border-color: var(--sg-danger) !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.18) !important;
+}
+
+.sg-select-combobox__list {
+    position: fixed;
+    z-index: 9999;
+    background: #0c1520;
+    border: 1px solid var(--sg-border);
+    border-radius: 10px;
+    max-height: 240px;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 6px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6);
+}
+
+.sg-select-combobox__list:not([hidden]) {
+    display: block;
+}
+
+.sg-select-combobox__item {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: #e6f1ff;
+    cursor: pointer;
+    transition: background 0.12s ease;
+}
+
+.sg-select-combobox__item:hover {
+    background: rgba(13, 202, 240, 0.1);
+}
+
+.sg-select-combobox__item--selected {
+    background: rgba(13, 202, 240, 0.15);
+    color: var(--sg-primary);
+    font-weight: 700;
 }
 
 /* =========================================================

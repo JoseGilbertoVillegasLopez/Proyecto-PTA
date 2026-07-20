@@ -1,6 +1,6 @@
 <turbo-frame id="content">
 
-	<div class="card pta-card">
+	<div class="card pta-card pta-encabezado-index-card">
 
 		<h4 class="pta-title mb-3">
 			<i class="bi bi-list-ul"></i>
@@ -67,6 +67,7 @@
 		</div>
 
 
+		<div class="pta-index-table-wrapper">
 		<table class="pta-monitoreo-table pta-index-table">
 			<thead>
 				<tr>
@@ -84,34 +85,34 @@
 					<tr>
 
 						{# Número de proyecto #}
-						<td>
+						<td data-label="#">
 							<strong>{{ encabezado.id }}</strong>
 						</td>
 
 						{# Nombre #}
-						<td>
+						<td class="pta-index-table-name" data-label="Nombre del proyecto">
 							{{ encabezado.nombre }}
 						</td>
 
 						{# Objetivo #}
-						<td class="text-truncate" style="max-width: 400px;">
+						<td class="text-truncate" style="max-width: 400px;" data-label="Objetivo">
 							{{ encabezado.objetivo }}
 						</td>
 
 						{# CREADO #}
-						<td class="text-center">
+						<td class="text-center" data-label="Creado">
 							{{ encabezado.fechaCreacion|date('d/m/Y') }}
 						</td>
 
 						{# PERIODO / AÑO DE EJECUCIÓN #}
-						<td class="text-center">
+						<td class="text-center" data-label="Periodo">
 							<span class="pta-badge pta-badge-periodo">
 								{{ encabezado.anioEjecucion }}
 							</span>
 						</td>
 
 
-						<td class="text-center">
+						<td class="text-center" data-label="Acciones">
 							<div class="pta-actions">
 
 								<a href="{{ path('app_encabezado_show', { id: encabezado.id, anio: anioSeleccionado, departamento: filtrosActivos.departamento, puesto: filtrosActivos.puesto, from: 'index' }) }}" data-turbo-frame="content" data-turbo-action="advance" class="pta-action-btn pta-action-view" title="Ver PTA">
@@ -143,6 +144,7 @@
 
 			</tbody>
 		</table>
+		</div>
 
 	</div>
 

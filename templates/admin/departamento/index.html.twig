@@ -43,24 +43,24 @@
 				<tbody>
 					{% for departamento in departamentos %}
 						<tr class="departamento-index-page-row">
-							<td class="departamento-index-page-name">
+							<td class="departamento-index-page-name" data-label="Nombre">
 								{{ departamento.nombre }}
 							</td>
 
-							<td class="text-center">
+							<td class="text-center" data-label="Estado">
 								<span class="departamento-index-page-badge {{ departamento.activo ? 'departamento-index-page-badge--active' : 'departamento-index-page-badge--inactive' }}">
 									{{ departamento.activo ? 'Activo' : 'Inactivo' }}
 								</span>
 							</td>
 
-							<td class="text-center">
+							<td class="text-center" data-label="Indicadores">
 								<span class="departamento-index-page-indicator-count">
 									<i class="bi bi-bar-chart-line-fill"></i>
 									{{ departamento.indicadoresBasicos|length }}
 								</span>
 							</td>
 
-							<td class="text-center">
+							<td class="text-center" data-label="Acciones">
 								<div class="departamento-index-page-actions">
 									<a href="{{ path('app_departamento_show', {'id': departamento.id}) }}"
 									   data-turbo-frame="content"

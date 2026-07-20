@@ -51,24 +51,56 @@
     color: var(--sg-primary);
 }
 
-/* Header encargado: título centrado, botón a la derecha */
+/* Header encargado: título centrado, botones a la derecha. Grid de 3
+   columnas (no position:absolute) para que la columna de acciones SIEMPRE
+   reserve el espacio real que necesitan sus botones, sin importar cuántos
+   sean ni el ancho de pantalla — así nunca se encima con el título ni
+   entre sí. */
 .sg-index__header--enc {
-    position: relative;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
 }
 
 .sg-index__titulo--enc {
+    grid-column: 2;
     font-size: 1.85rem;
     text-align: center;
+    justify-self: center;
+}
+
+.sg-index__header--enc .sg-index__acciones {
+    grid-column: 3;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .sg-index__header--enc .sg-index__bancos-btn {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
     padding: 11px 22px;
     font-size: 0.92rem;
+}
+
+/* Móvil: título arriba, botones abajo centrados en su propia fila
+   en vez del grid 1fr/auto/1fr fijo (apretado con título 1.85rem) */
+@media (max-width: 768px) {
+    .sg-index__header--enc {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .sg-index__titulo--enc {
+        font-size: 1.4rem;
+    }
+
+    .sg-index__header--enc .sg-index__acciones {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 }
 
 /* =========================================================
@@ -449,6 +481,10 @@
     transform: translateY(-1px);
 }
 
+.sg-index__action-label {
+    display: none;
+}
+
 /* =========================================================
    EMPTY STATE
    ========================================================= */
@@ -501,4 +537,211 @@
 /* Transition del tbody al filtrar */
 #sg-tabla-body {
     transition: opacity 0.15s ease;
+}
+
+/* =========================================================
+   RESPONSIVE — CARD DE SOLICITUD EN MÓVIL
+   ---------------------------------------------------------
+   Diseño real de card (no lista mecánica label/valor):
+   header (# + estado) — título (concepto) — meta (tipo/fecha)
+   — total destacado — botón Ver de ancho completo.
+   ========================================================= */
+@media (max-width: 768px) {
+    .sg-index__table-wrapper {
+        overflow-x: visible;
+    }
+
+    .sg-index__table {
+        display: block;
+        width: 100%;
+        border-spacing: 0;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    .sg-index__table thead {
+        display: none;
+    }
+
+    .sg-index__table tbody {
+        display: block;
+    }
+
+    .sg-index__table tbody tr {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+        padding: 14px 16px;
+        border-radius: 14px;
+    }
+
+    .sg-index__table tbody tr:hover {
+        transform: none;
+    }
+
+    .sg-index__table td {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        width: auto !important;
+        max-width: none !important;
+        white-space: normal !important;
+        padding: 6px 0 !important;
+        font-size: 0.85rem;
+    }
+
+    .sg-index__table td::before {
+        content: attr(data-label);
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--sg-muted);
+    }
+
+    /* Header: # (izq, junto con su etiqueta en la misma línea) — Estado (der) */
+    .sg-index__table td.sg-index__col-id {
+        order: 1;
+        flex-basis: 35%;
+        flex-direction: row;
+        align-items: baseline;
+        gap: 5px;
+        text-align: left;
+        font-size: 1.05rem;
+    }
+
+    .sg-index__table td.sg-index__col-estado {
+        order: 2;
+        flex-basis: 65%;
+        align-items: flex-end;
+        text-align: right;
+    }
+
+    .sg-index__table td.sg-index__col-estado::before {
+        content: none;
+    }
+
+    /* Título: concepto de la solicitud, con acento de borde */
+    .sg-index__table td.sg-index__col-nombre {
+        order: 3;
+        flex-basis: 100%;
+        align-items: flex-start;
+        text-align: left;
+        font-size: 1rem;
+        font-weight: 700;
+        border-left: 3px solid var(--sg-primary);
+        border-radius: 0 8px 8px 0;
+        background: rgba(13, 202, 240, 0.04);
+        margin: 6px 0;
+        padding: 8px 0 8px 10px !important;
+    }
+
+    .sg-index__table td.sg-index__col-nombre::before {
+        content: none;
+    }
+
+    /* Meta: Tipo — Para cuándo */
+    .sg-index__table td.sg-index__col-tipo {
+        order: 4;
+        flex-basis: 50%;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .sg-index__table td.sg-index__col-fecha {
+        order: 5;
+        flex-basis: 50%;
+        align-items: flex-end;
+        text-align: right;
+        white-space: nowrap !important;
+    }
+
+    /* Total destacado */
+    .sg-index__table td.sg-index__col-total {
+        order: 6;
+        flex-basis: 100%;
+        align-items: flex-start;
+        text-align: left;
+        font-size: 1.6rem;
+        font-weight: 800;
+        border-top: 1px solid rgba(13, 202, 240, 0.1);
+        margin-top: 6px;
+        padding-top: 10px !important;
+    }
+
+    /* Botón Ver — ancho completo con ícono + texto */
+    .sg-index__table td.sg-index__col-acciones {
+        order: 7;
+        flex-basis: 100%;
+        margin-top: 8px;
+    }
+
+    .sg-index__table td.sg-index__col-acciones::before {
+        content: none;
+    }
+
+    .sg-index__table .sg-index__action-btn {
+        width: 100%;
+        height: auto;
+        gap: 8px;
+        padding: 11px 0;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .sg-index__action-label {
+        display: inline;
+    }
+
+    /* ── Variante ENCARGADO: columnas extra (Departamento, Concepto, Avance) ──
+       No tenían order/flex-basis propio y por default caían todas en order:0
+       con ancho automático, amontonándose en una sola fila. */
+    .sg-index__table--enc td.sg-index__col-nombre {
+        align-items: center;
+        text-align: center;
+    }
+
+    .sg-index__table--enc td.sg-index__col-depto {
+        order: 4;
+        flex-basis: 50%;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .sg-index__table--enc td.sg-index__col-tipo {
+        order: 5;
+        flex-basis: 50%;
+        align-items: flex-end;
+        text-align: right;
+    }
+
+    /* Por concepto de: fila propia completa, el valor suele ser texto largo */
+    .sg-index__table--enc td.sg-index__col-concepto {
+        order: 6;
+        flex-basis: 100%;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .sg-index__table--enc td.sg-index__col-fecha {
+        order: 7;
+        flex-basis: 50%;
+    }
+
+    .sg-index__table--enc td.sg-index__col-avance {
+        order: 8;
+        flex-basis: 50%;
+        align-items: flex-end;
+        text-align: right;
+    }
+
+    .sg-index__table--enc td.sg-index__col-total {
+        order: 9;
+    }
+
+    .sg-index__table--enc td.sg-index__col-acciones {
+        order: 10;
+    }
 }

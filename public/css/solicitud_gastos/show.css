@@ -17,6 +17,42 @@
     flex-wrap: wrap;
 }
 
+/* Móvil: título en su propia fila arriba; estado + avance (+ pdf si
+   aplica) se agrupan juntos en la fila de abajo en vez de competir
+   por espacio con el título */
+@media (max-width: 640px) {
+    .sg-new__titulo {
+        flex-basis: 100%;
+    }
+
+    /* Estado + Avance (+ PDF) centrados en su fila */
+    .sg-show__topbar-right {
+        justify-content: center;
+    }
+
+    /* Campos de solo lectura del encabezado (franja superior + fila de
+       campos), incluyendo "Por concepto de": todos centrados */
+    .sg-new__readonly-item {
+        align-items: center;
+        text-align: center;
+    }
+
+    .sg-show__display {
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* Autorización de la solicitud: label + nombre + puesto centrados */
+    .sg-new__grid-autoriza .sg-new__label {
+        text-align: center;
+    }
+
+    .sg-autoriza-display {
+        align-items: center;
+        text-align: center;
+    }
+}
+
 /* ── Badges de estado ── */
 .sg-badge {
     display: inline-flex;
@@ -92,6 +128,12 @@
     line-height: 1.5;
 }
 
+@media (max-width: 640px) {
+    .sg-show__display--parrafo {
+        text-align: center;
+    }
+}
+
 /* Fila Tipo de solicitud / Documento que presenta / Descripción:
    mismo alto para los 3 aunque la etiqueta del documento sea larga y se envuelva en 2 líneas */
 .sg-new__grid-tipo .sg-show__display {
@@ -116,6 +158,176 @@
 .sg-show__detalle-table thead th:nth-child(7)  { width: 9%;  }
 .sg-show__detalle-table thead th:nth-child(8)  { width: 24%; }
 .sg-show__detalle-table thead th:nth-child(9)  { width: 8%;  }
+
+/* ── Detalle del gasto: cards en móvil ──
+   La tabla tiene columnas con rowspan (Proceso Estratégico, Proceso
+   Clave, PEI, PAIG, Meta) que no se pueden convertir a cards solo con
+   CSS. Se renderizan ambas estructuras en el twig y se alterna cuál
+   se muestra según el ancho de pantalla. */
+.sg-detalle-cards {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .sg-show .sg-detalle-scroll {
+        display: none;
+    }
+
+    .sg-show .sg-detalle-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+/* Card de contexto estratégico (Proceso Estratégico/Clave + PEI/PAIG/Meta) */
+.sg-detalle-ctx-card {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0d151d;
+    border: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+.sg-detalle-ctx-card__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(13, 202, 240, 0.08);
+    border-bottom: 1px solid rgba(13, 202, 240, 0.15);
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--sg-primary);
+}
+
+.sg-detalle-ctx-card__body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sg-detalle-ctx-field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.sg-detalle-ctx-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--sg-muted);
+}
+
+.sg-detalle-ctx-value {
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* PEI / PAIG / Meta: chips cortos en una fila, no necesitan su propia fila completa */
+.sg-detalle-ctx-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sg-detalle-ctx-chip {
+    flex: 1 1 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    background: rgba(13, 202, 240, 0.06);
+    border: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+.sg-detalle-ctx-chip__label {
+    font-size: 0.62rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--sg-muted);
+}
+
+.sg-detalle-ctx-chip__value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--sg-primary);
+    text-align: center;
+}
+
+/* Card por partida */
+.sg-detalle-card {
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0d151d;
+    border: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+.sg-detalle-card__header {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sg-detalle-card__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--sg-muted);
+}
+
+.sg-detalle-card__badge--partida {
+    background: rgba(13, 202, 240, 0.1);
+    color: var(--sg-primary);
+}
+
+.sg-detalle-card__desc {
+    padding: 12px 14px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.sg-detalle-card__monto {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: rgba(29, 209, 161, 0.06);
+    border-top: 1px solid rgba(29, 209, 161, 0.15);
+}
+
+.sg-detalle-card__monto-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--sg-muted);
+}
+
+.sg-detalle-card__monto-valor {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--sg-success);
+}
 
 /* ── Grid de evidencias adjuntas ── */
 .sg-evidencias__grid {
@@ -376,6 +588,52 @@
     background: rgba(255, 107, 107, 0.3);
     color: #fff;
     box-shadow: 0 8px 28px rgba(255, 107, 107, 0.2);
+}
+
+/* ── Modal: comentario/motivo al votar ── */
+.sg-voto-modal .sg-voto-modal__pregunta {
+    color: #d4ebf4;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 0 18px 0;
+    text-align: center;
+}
+
+.sg-voto-modal__label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #9fb3c8;
+    margin-bottom: 8px;
+}
+
+.sg-voto-modal .sg-voto__comentario {
+    max-width: none;
+    min-height: 100px;
+    margin-bottom: 18px;
+}
+
+.sg-voto-modal__opciones {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+}
+
+.sg-voto-modal .sg-show__revisar-btn {
+    padding: 10px 28px;
+    font-size: 0.9rem;
+}
+
+/* Botón "No" (sin modificador aceptar/rechazar): neutro, no verde por defecto */
+.sg-voto-modal__opciones .sg-show__revisar-btn:not(.sg-voto__btn--aceptar):not(.sg-voto__btn--rechazar) {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(230, 241, 255, 0.25);
+    color: #e6f1ff;
+}
+
+.sg-voto-modal__opciones .sg-show__revisar-btn:not(.sg-voto__btn--aceptar):not(.sg-voto__btn--rechazar):hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
 }
 
 /* ── Formulario de comprobante ── */

@@ -531,7 +531,7 @@
 /* =========================================================
    RESPONSIVE
    ========================================================= */
-@media (max-width: 992px) {
+@media (max-width: 1330px) {
     .proceso-clave-index-toolbar {
         flex-direction: column;
         align-items: stretch;
@@ -547,9 +547,110 @@
         width: 100%;
         min-width: 100%;
     }
+}
+
+@media (max-width: 1330px) {
+    .proceso-clave-index-main-title {
+        font-size: 1.35rem;
+    }
+
+    .proceso-clave-index-row-action-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Tabla → lista de cards, sin scroll horizontal ni columnas ocultas */
+    .proceso-clave-index-table-wrapper {
+        overflow-x: visible;
+    }
 
     .proceso-clave-index-table {
-        min-width: 1100px;
+        display: block;
+        width: 100%;
+        min-width: 0;
+        border-spacing: 0;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+    }
+
+    .proceso-clave-index-table thead {
+        display: none;
+    }
+
+    .proceso-clave-index-table tbody {
+        display: block;
+    }
+
+    .proceso-clave-index-table tbody tr {
+        display: block;
+        margin-bottom: 10px;
+        padding: 4px 14px;
+        border-radius: 14px;
+    }
+
+    .proceso-clave-index-table tbody tr:hover {
+        transform: none;
+    }
+
+    .proceso-clave-index-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        width: auto !important;
+        padding: 7px 0;
+        font-size: 0.85rem;
+        line-height: 1.3;
+        text-align: left !important;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.08);
+    }
+
+    .proceso-clave-index-table td:last-child {
+        border-bottom: none;
+    }
+
+    .proceso-clave-index-table td::before {
+        content: attr(data-label);
+        flex: 0 0 100px;
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: #9fb3c8;
+        text-align: left;
+    }
+
+    .proceso-clave-index-table td.proceso-clave-index-row-name {
+        justify-content: center;
+        text-align: center !important;
+        font-size: 0.98rem;
+        font-weight: 700;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(13, 202, 240, 0.18);
+    }
+
+    .proceso-clave-index-table td.proceso-clave-index-row-name::before {
+        content: none;
+    }
+
+    .proceso-clave-index-status-badge {
+        padding: 3px 12px;
+        font-size: 0.7rem;
+    }
+
+    .proceso-clave-index-table td[data-label="Acciones"] {
+        justify-content: center;
+    }
+
+    .proceso-clave-index-table td[data-label="Acciones"]::before {
+        content: none;
+    }
+
+    .proceso-clave-index-row-actions {
+        justify-content: center;
+        min-width: 0;
+        margin: 0;
     }
 }
 
@@ -867,10 +968,6 @@
     .proceso-clave-show-title {
         font-size: 1.3rem;
     }
-
-    .proceso-clave-show-table {
-        min-width: 620px;
-    }
 }
 
 /* =========================================================
@@ -1078,18 +1175,32 @@
 .proceso-clave-new-select {
     width: 100%;
     min-height: 48px;
-    padding: 12px 14px;
+    padding: 12px 42px 12px 14px;
     border-radius: 14px;
     border: 1px solid rgba(13, 202, 240, 0.15);
-    background: linear-gradient(
-        145deg,
-        rgba(18, 27, 35, 0.95),
-        rgba(10, 16, 22, 0.9)
-    );
+    background-color: #121b23;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #9fd8e8 50%),
+        linear-gradient(135deg, #9fd8e8 50%, transparent 50%),
+        linear-gradient(145deg, rgba(18, 27, 35, 0.95), rgba(10, 16, 22, 0.9));
+    background-position:
+        calc(100% - 22px) 50%,
+        calc(100% - 16px) 50%,
+        0 0;
+    background-size:
+        6px 6px,
+        6px 6px,
+        100% 100%;
+    background-repeat: no-repeat;
     color: #e6f1ff;
     font-size: 0.95rem;
     font-weight: 500;
     outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color-scheme: dark;
     box-shadow: none;
     transition:
         border-color 0.2s ease,
@@ -1097,14 +1208,19 @@
         transform 0.2s ease;
 }
 
+.proceso-clave-new-select:hover {
+    border-color: rgba(13, 202, 240, 0.35);
+    background-color: #172532;
+}
+
 .proceso-clave-new-select:focus {
     border-color: #0dcaf0;
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
-    background: linear-gradient(
-        145deg,
-        rgba(20, 31, 41, 0.98),
-        rgba(12, 18, 25, 0.94)
-    );
+    background-color: #142333;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #c7f2ff 50%),
+        linear-gradient(135deg, #c7f2ff 50%, transparent 50%),
+        linear-gradient(145deg, rgba(20, 31, 41, 0.98), rgba(12, 18, 25, 0.94));
     color: #e6f1ff;
 }
 
@@ -1503,18 +1619,32 @@
 .proceso-clave-edit-select {
     width: 100%;
     min-height: 48px;
-    padding: 12px 14px;
+    padding: 12px 42px 12px 14px;
     border-radius: 14px;
     border: 1px solid rgba(13, 202, 240, 0.15);
-    background: linear-gradient(
-        145deg,
-        rgba(18, 27, 35, 0.95),
-        rgba(10, 16, 22, 0.9)
-    );
+    background-color: #121b23;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #9fd8e8 50%),
+        linear-gradient(135deg, #9fd8e8 50%, transparent 50%),
+        linear-gradient(145deg, rgba(18, 27, 35, 0.95), rgba(10, 16, 22, 0.9));
+    background-position:
+        calc(100% - 22px) 50%,
+        calc(100% - 16px) 50%,
+        0 0;
+    background-size:
+        6px 6px,
+        6px 6px,
+        100% 100%;
+    background-repeat: no-repeat;
     color: #e6f1ff;
     font-size: 0.95rem;
     font-weight: 500;
     outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    color-scheme: dark;
     box-shadow: none;
     transition:
         border-color 0.2s ease,
@@ -1522,14 +1652,19 @@
         transform 0.2s ease;
 }
 
+.proceso-clave-edit-select:hover {
+    border-color: rgba(13, 202, 240, 0.35);
+    background-color: #172532;
+}
+
 .proceso-clave-edit-select:focus {
     border-color: #0dcaf0;
     box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
-    background: linear-gradient(
-        145deg,
-        rgba(20, 31, 41, 0.98),
-        rgba(12, 18, 25, 0.94)
-    );
+    background-color: #142333;
+    background-image:
+        linear-gradient(45deg, transparent 50%, #c7f2ff 50%),
+        linear-gradient(135deg, #c7f2ff 50%, transparent 50%),
+        linear-gradient(145deg, rgba(20, 31, 41, 0.98), rgba(12, 18, 25, 0.94));
     color: #e6f1ff;
 }
 
@@ -1744,4 +1879,43 @@
     .proceso-clave-show-table tbody {
         grid-template-columns: 1fr;
     }
+}
+
+/* =========================================================
+   TOGGLE ACTIVO/INACTIVO
+   generado por public/js/proceso_clave/select_toggle.js
+   ========================================================= */
+.proceso-clave-activo-toggle {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.proceso-clave-activo-toggle__btn {
+    flex: 1;
+    min-height: 48px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(13, 202, 240, 0.15);
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+    color: #9fb3c8;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.proceso-clave-activo-toggle__btn:hover {
+    border-color: rgba(13, 202, 240, 0.35);
+}
+
+.proceso-clave-activo-toggle__btn--active {
+    border-color: #0dcaf0;
+    background: rgba(13, 202, 240, 0.18);
+    color: #e6f1ff;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
 }

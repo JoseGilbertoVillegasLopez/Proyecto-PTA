@@ -308,3 +308,142 @@
     color: #e6f1ff;
     background: rgba(255, 255, 255, 0.05);
 }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 640px) {
+    /* Topbar: título en su propia fila arriba, botones agrupados
+       y centrados debajo (mismo patrón usado en el resto del sistema) */
+    .sgb__topbar {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .sgb__titulo {
+        flex-basis: 100%;
+        justify-content: center;
+    }
+
+    .sgb__btn-nuevo {
+        margin-left: 0;
+    }
+
+    /* =====================================================
+       TABLA DE BANCOS → CARDS
+       ---------------------------------------------------------
+       Mismo tratamiento "premium" que ya usan las demás listas
+       del sistema (pta index, historial, sg index): gradiente +
+       sombra en capas + hover, en vez de un fondo plano. Fila:
+       ícono + nombre (izq) — estado (der), separador, botón de
+       acción discreto abajo a la derecha. El # no se muestra.
+       Selectores compuestos (.sgb__table td.sgb__td-x) a propósito:
+       con una sola clase pierden en especificidad contra la regla
+       genérica ".sgb__table td::before" (clase + elemento).
+       ===================================================== */
+    .sgb__table {
+        display: block;
+    }
+
+    .sgb__table thead {
+        display: none;
+    }
+
+    .sgb__table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .sgb__table tbody tr {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 12px;
+        background: linear-gradient(145deg, rgba(18, 27, 35, 0.95), rgba(10, 16, 22, 0.9));
+        box-shadow: inset 0 0 0 1px rgba(13, 202, 240, 0.15), 0 10px 26px rgba(0, 0, 0, 0.7);
+        border-radius: 16px;
+        padding: 16px 18px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .sgb__table tbody tr:hover {
+        transform: translateY(-2px);
+        box-shadow: inset 0 0 0 1px rgba(13, 202, 240, 0.4), 0 16px 36px rgba(0, 0, 0, 0.8);
+    }
+
+    .sgb__table tbody td {
+        padding: 0 !important;
+        border: none !important;
+        width: auto !important;
+    }
+
+    .sgb__table td.sgb__td-id {
+        display: none !important;
+    }
+
+    /* Título: ícono + nombre del banco */
+    .sgb__table td.sgb__td-nombre {
+        order: 1;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .sgb__table td.sgb__td-nombre span {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .sgb__table td.sgb__td-nombre .bi {
+        color: #0dcaf0;
+        font-size: 1.1rem;
+    }
+
+    .sgb__table td.sgb__td-nombre::before {
+        content: none;
+    }
+
+    /* Estado: badge a la derecha, misma fila que el nombre */
+    .sgb__table td.sgb__td-estado {
+        order: 2;
+        flex-shrink: 0;
+    }
+
+    .sgb__table td.sgb__td-estado::before {
+        content: none;
+    }
+
+    /* Separador + botón de acción, discreto y alineado a la derecha */
+    .sgb__table td.sgb__td-action {
+        order: 3;
+        flex-basis: 100%;
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 12px !important;
+        margin-top: 2px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .sgb__table td.sgb__td-action:empty {
+        display: none;
+        border-top: none;
+        padding-top: 0 !important;
+        margin-top: 0;
+    }
+
+    .sgb__table td.sgb__td-action::before {
+        content: none;
+    }
+
+    .sgb__table .sgb__btn-cancelar,
+    .sgb__table .sgb__btn-reactivar {
+        width: auto;
+        padding: 7px 16px;
+        font-size: 0.78rem;
+    }
+}
+

@@ -12,13 +12,22 @@
 			<i class="bi bi-collection-fill"></i>
 			Solicitudes de Gastos
 		</h1>
-		<a href="{{ path('app_sg_banco_index') }}"
-		   class="sg-index__bancos-btn"
-		   data-turbo-frame="content"
-		   data-turbo-action="advance">
-			<i class="bi bi-bank2"></i>
-			Gestionar Bancos
-		</a>
+		<div class="sg-index__acciones">
+			<a href="{{ path('app_sg_banco_index') }}"
+			   class="sg-index__bancos-btn"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance">
+				<i class="bi bi-bank2"></i>
+				Gestionar Bancos
+			</a>
+			<a href="{{ path('app_sg_configuracion_edit') }}"
+			   class="sg-index__bancos-btn"
+			   data-turbo-frame="content"
+			   data-turbo-action="advance">
+				<i class="bi bi-gear-fill"></i>
+				Configuración
+			</a>
+		</div>
 	</div>
 
 	{# ===================================================== #}
@@ -99,7 +108,7 @@
 	{# ===================================================== #}
 
 	<div class="sg-index__table-wrapper">
-		<table class="sg-index__table">
+		<table class="sg-index__table sg-index__table--enc">
 			<thead>
 				<tr>
 					<th>#</th>

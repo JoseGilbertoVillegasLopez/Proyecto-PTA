@@ -20,6 +20,31 @@
 }
 
 /* =====================================================
+   HEADER SUPERIOR (VOLVER + TÍTULO)
+   -----------------------------------------------------
+   Nunca tuvo estilos propios: el título usaba el tamaño
+   default de <h1> del navegador, mucho más grande que el
+   botón Volver y sin espacio real entre ambos.
+   ===================================================== */
+.pta-module__header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.pta-module__title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* =====================================================
    CARD DEL INDICADOR (YA SIN GRIS)
    ===================================================== */
 .pta-grafica-card {
@@ -77,6 +102,34 @@
     font-size: 1.1rem;
     font-weight: 600;
     color: #ffffff;
+}
+
+/* .pta-indicador-header no tenía flex-wrap: título + 4 stats en una
+   sola fila (gap 2rem + gap 1.6rem) desbordaba cualquier pantalla de
+   teléfono. Título y stats pasan a su propia fila completa. */
+@media (max-width: 768px) {
+    .pta-indicador-header {
+        flex-wrap: wrap;
+    }
+
+    .pta-indicador-main {
+        flex-basis: 100%;
+    }
+
+    .pta-indicador-stats {
+        flex-basis: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem 1.4rem;
+    }
+
+    .pta-card__body {
+        height: 400px;
+    }
+
+    .pta-chart {
+        height: 380px;
+    }
 }
 
 /* =====================================================

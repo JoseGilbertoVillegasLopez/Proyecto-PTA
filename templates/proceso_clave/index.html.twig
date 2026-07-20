@@ -42,18 +42,18 @@
 				<tbody>
 					{% for proceso in proceso_claves %}
 						<tr class="proceso-clave-index-row">
-							<td class="proceso-clave-index-row-name">{{ proceso.nombre }}</td>
-							<td>{{ proceso.pei }}</td>
-							<td>{{ proceso.paig }}</td>
-							<td>{{ proceso.metaPdiPta }}</td>
+							<td class="proceso-clave-index-row-name" data-label="Nombre">{{ proceso.nombre }}</td>
+							<td data-label="PEI">{{ proceso.pei }}</td>
+							<td data-label="PAIG">{{ proceso.paig }}</td>
+							<td data-label="Meta PDI/PTA">{{ proceso.metaPdiPta }}</td>
 							{% if is_granted('ROLE_ADMIN') %}
-								<td class="text-center">
+								<td class="text-center" data-label="Estado">
 									<span class="proceso-clave-index-status-badge {{ proceso.activo ? 'proceso-clave-index-status-badge--active' : 'proceso-clave-index-status-badge--inactive' }}">
 										{{ proceso.activo ? 'Activo' : 'Inactivo' }}
 									</span>
 								</td>
 							{% endif %}
-							<td class="text-center">
+							<td class="text-center" data-label="Acciones">
 								<div class="proceso-clave-index-row-actions">
 									<a href="{{ path('app_proceso_clave_show', {'id': proceso.id}) }}" data-turbo-frame="content" data-turbo-action="advance" class="proceso-clave-index-row-action-btn proceso-clave-index-row-action-btn--view" title="Ver proceso clave">
 										<i class="bi bi-eye"></i>

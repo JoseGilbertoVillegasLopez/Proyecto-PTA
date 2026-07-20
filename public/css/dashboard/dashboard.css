@@ -4,6 +4,79 @@
    ========================================================= */
 
 /* ===============================
+   SHELL (layout de dos columnas)
+   =============================== */
+.pta-dashboard-shell {
+    display: flex;
+    height: 100vh;
+    height: 100dvh;
+    background: #1e242b;
+    overflow: hidden;
+}
+
+.pta-dashboard-main {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* ===============================
+   TOGGLE MÓVIL (oculto en escritorio)
+   =============================== */
+.pta-dashboard-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid rgba(13, 202, 240, 0.25);
+    background: rgba(6, 15, 22, 0.92);
+    color: #0dcaf0;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.pta-dashboard-toggle:hover {
+    background: rgba(13, 202, 240, 0.12);
+}
+
+/* ===============================
+   TOPBAR MÓVIL (oculto en escritorio)
+   =============================== */
+.pta-dashboard-topbar {
+    display: none;
+    align-items: center;
+    gap: 12px;
+}
+
+.pta-dashboard-topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #e6f1ff;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.pta-dashboard-topbar-brand i {
+    color: #0dcaf0;
+    font-size: 1.15rem;
+}
+
+/* ===============================
+   OVERLAY MÓVIL (oculto en escritorio)
+   =============================== */
+.pta-dashboard-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 10, 16, 0.75);
+    z-index: 1040;
+}
+
+/* ===============================
    ASIDE
    =============================== */
 .pta-dashboard-aside {
@@ -219,4 +292,67 @@ main {
 .pta-dashboard-menu {
     scrollbar-width: thin;
     scrollbar-color: rgba(13, 202, 240, 0.3) transparent;
+}
+
+/* =========================================================
+   RESPONSIVE — menú como drawer en móvil
+   ========================================================= */
+@media (max-width: 768px) {
+    .pta-dashboard-topbar {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 56px;
+        padding: 0 14px;
+        background: rgba(6, 15, 22, 0.96);
+        border-bottom: 1px solid rgba(13, 202, 240, 0.14);
+        z-index: 1030;
+    }
+
+    .pta-dashboard-toggle {
+        display: flex;
+        flex-shrink: 0;
+    }
+
+    .pta-dashboard-aside {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 82%;
+        max-width: 280px;
+        height: 100vh;
+        height: 100dvh;
+        z-index: 1050;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.5);
+        overscroll-behavior: contain;
+    }
+
+    .pta-dashboard-menu {
+        overscroll-behavior: contain;
+    }
+
+    body.pta-dashboard-open .pta-dashboard-aside {
+        transform: translateX(0);
+    }
+
+    body.pta-dashboard-open .pta-dashboard-overlay {
+        display: block;
+    }
+
+    body.pta-dashboard-open .pta-dashboard-toggle {
+        display: none;
+    }
+
+    body.pta-dashboard-open {
+        overflow: hidden;
+    }
+
+    .pta-dashboard-main {
+        width: 100%;
+        padding: 76px 16px 20px;
+    }
 }

@@ -154,6 +154,7 @@ function inicializarPersonalEditNombramiento() {
     function personalEditResetNombramientoFields() {
         personalEditPdfInput.value = '';
         personalEditTipoSelect.selectedIndex = 0;
+        personalEditTipoSelect.dispatchEvent(new Event('change'));
     }
 
     function personalEditShowValidationError(
@@ -449,6 +450,7 @@ function inicializarPersonalNewNombramiento() {
     function personalNewResetNombramientoFields() {
         personalNewPdfInput.value = '';
         personalNewTipoSelect.selectedIndex = 0;
+        personalNewTipoSelect.dispatchEvent(new Event('change'));
     }
 
     function personalNewShowValidationError(
