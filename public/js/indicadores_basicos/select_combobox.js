@@ -11,10 +11,6 @@ function inicializarIndicadoresBasicosNewCombobox() {
     }
 
     contenedor.dataset.comboboxInit = 'true';
-
-    contenedor
-        .querySelectorAll('select[id$="_grupo"]')
-        .forEach((select) => crearComboboxDesdeSelect(select));
 }
 
 function inicializarIndicadoresBasicosEditCombobox() {
@@ -25,10 +21,6 @@ function inicializarIndicadoresBasicosEditCombobox() {
     }
 
     contenedor.dataset.comboboxInit = 'true';
-
-    contenedor
-        .querySelectorAll('select[id$="_grupo"]')
-        .forEach((select) => crearComboboxDesdeSelect(select));
 
     contenedor
         .querySelectorAll('select[id$="_activo"]')
