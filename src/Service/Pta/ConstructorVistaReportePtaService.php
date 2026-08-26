@@ -92,6 +92,7 @@ $partidas = array_map(function ($p) {
         return [
             'pta' => [
                 'id' => $encabezado->getId(),
+                'numero_proyecto' => $encabezado->getNumeroProyecto(),
                 'nombre' => $encabezado->getNombre(),
                 'objetivo' => $encabezado->getObjetivo(),
                 'anio' => $encabezado->getAnioEjecucion(),

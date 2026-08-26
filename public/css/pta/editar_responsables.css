@@ -68,83 +68,9 @@
 }
 
 /* =========================================================
-   Campos del proyecto - estilo show de personal
+   Información del Proyecto — reusa .pta-info-card/.pta-anio-card
+   etc. de new.css/show.css (ver responsables_edit.html.twig)
    ========================================================= */
-
-.pta-resp-project-details {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 16px;
-    margin-bottom: 22px;
-}
-
-.pta-resp-project-detail {
-    grid-column: span 3;
-    min-width: 0;
-    padding: 15px 16px;
-    border-radius: 14px;
-    background: linear-gradient(
-        145deg,
-        rgba(18, 27, 35, 0.95),
-        rgba(10, 16, 22, 0.9)
-    );
-    border: 1px solid rgba(13, 202, 240, 0.15);
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.025),
-        0 8px 20px rgba(0, 0, 0, 0.32);
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        border-color 0.25s ease;
-}
-
-.pta-resp-project-detail:hover {
-    transform: translateY(-2px);
-    border-color: rgba(13, 202, 240, 0.45);
-    box-shadow:
-        inset 0 0 0 1px rgba(13, 202, 240, 0.14),
-        0 16px 36px rgba(0, 0, 0, 0.5);
-}
-
-.pta-resp-project-detail--name {
-    grid-column: span 4;
-}
-
-.pta-resp-project-detail--number {
-    grid-column: span 2;
-}
-
-.pta-resp-project-detail--objective {
-    grid-column: 1 / -1;
-}
-
-.pta-resp-project-detail-label,
-.pta-resp-project-detail-value {
-    display: block;
-}
-
-.pta-resp-project-detail-label {
-    margin-bottom: 8px;
-    color: #dbeafe;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.35px;
-    text-transform: uppercase;
-}
-
-.pta-resp-project-detail-value {
-    color: #e6f1ff;
-    font-size: 0.96rem;
-    font-weight: 500;
-    line-height: 1.45;
-    overflow-wrap: anywhere;
-}
-
-.pta-resp-project-detail--number .pta-resp-project-detail-value {
-    color: #ffffff;
-    font-size: 1.15rem;
-    font-weight: 850;
-}
 
 /* =========================================================
    Card responsables
@@ -200,6 +126,21 @@
 
 .pta-resp-field {
     min-width: 0;
+    text-align: center;
+}
+
+.pta-resp-field-icon {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9feaff;
+    background: rgba(13, 202, 240, 0.13);
+    border: 1px solid rgba(13, 202, 240, 0.25);
+    font-size: 1.4rem;
 }
 
 .pta-resp-field label {
@@ -340,6 +281,157 @@
 }
 
 /* =========================================================
+   Responsables adicionales
+   ========================================================= */
+
+.pta-resp-adicionales-count {
+    margin-left: auto;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #9feaff;
+    background: rgba(13, 202, 240, 0.13);
+    border: 1px solid rgba(13, 202, 240, 0.25);
+}
+
+.pta-resp-adicionales-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.pta-resp-adicional-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(13, 202, 240, 0.15);
+}
+
+.pta-resp-adicional-nombre {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #e6f1ff;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.pta-resp-adicional-nombre i {
+    color: #9feaff;
+}
+
+.pta-resp-adicional-remove-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 107, 107, 0.35);
+    background: rgba(255, 107, 107, 0.08);
+    color: #ff6b6b;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.pta-resp-adicional-remove-btn:hover {
+    background: rgba(255, 107, 107, 0.22);
+    box-shadow: 0 0 0 1px rgba(255, 107, 107, 0.5);
+    transform: scale(1.08);
+}
+
+.pta-resp-adicionales-empty {
+    margin: 0;
+    color: #9fb3c8;
+    font-size: 0.85rem;
+}
+
+.pta-resp-nuevos-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.pta-resp-nuevos-container:not(:empty) {
+    margin-bottom: 12px;
+}
+
+/* La fila nueva reusa .pta-resp-adicional-item (mismas dimensiones/ícono
+   que las filas ya guardadas) — solo se agrega el buscador editable */
+.pta-resp-nuevo-search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+.pta-resp-nuevo-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    color: #e6f1ff;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.pta-resp-nuevo-input::placeholder {
+    color: rgba(169, 223, 241, 0.55);
+    font-weight: 500;
+}
+
+.pta-resp-nuevo-search-wrap .search-results {
+    position: absolute;
+    top: calc(100% + 7px);
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    max-height: 230px;
+    overflow-y: auto;
+    padding: 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(13, 202, 240, 0.32);
+    background: linear-gradient(145deg, #0d1923, #070d13);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.025),
+        0 18px 36px rgba(0, 0, 0, 0.72);
+}
+
+.pta-resp-nuevo-search-wrap .search-results:empty {
+    display: none;
+}
+
+.pta-resp-adicional-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 38px;
+    padding: 0 18px;
+    border-radius: 8px;
+    border: 1px dashed rgba(13, 202, 240, 0.5);
+    background: rgba(13, 202, 240, 0.08);
+    color: #9feaff;
+    font-size: 0.8rem;
+    font-weight: 800;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.pta-resp-adicional-add-btn:hover {
+    background: rgba(13, 202, 240, 0.16);
+    border-color: rgba(13, 202, 240, 0.75);
+    transform: translateY(-1px);
+}
+
+/* =========================================================
    Modal
    ========================================================= */
 
@@ -404,15 +496,8 @@
         padding: 22px;
     }
 
-    .pta-resp-project-details,
     .pta-resp-fields {
         grid-template-columns: 1fr;
-    }
-
-    .pta-resp-project-detail,
-    .pta-resp-project-detail--number,
-    .pta-resp-project-detail--objective {
-        grid-column: auto;
     }
 }
 
@@ -432,5 +517,10 @@
 
     .pta-resp-save-btn {
         width: 100%;
+    }
+
+    .pta-resp-nuevo-row {
+        flex-direction: column;
+        align-items: stretch;
     }
 }

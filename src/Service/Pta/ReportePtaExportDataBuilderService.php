@@ -57,8 +57,9 @@ class ReportePtaExportDataBuilderService
             'entregado_fecha'      => $reporteTrimestre->getEntregadoFecha(),
 
             'pta' => [
-                'id'       => $encabezado->getId(),
-                'nombre'   => $encabezado->getNombre(),
+                'id'              => $encabezado->getId(),
+                'numero_proyecto' => $encabezado->getNumeroProyecto(),
+                'nombre'          => $encabezado->getNombre(),
                 'objetivo' => $encabezado->getObjetivo(),
                 'anio'     => $encabezado->getAnioEjecucion(),
             ],

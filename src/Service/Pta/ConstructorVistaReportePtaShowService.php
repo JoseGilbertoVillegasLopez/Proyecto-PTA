@@ -166,6 +166,7 @@ class ConstructorVistaReportePtaShowService
         return [
             'pta' => [
                 'id' => $pta->getId(),
+                'numero_proyecto' => $pta->getNumeroProyecto(),
                 'nombre' => $pta->getNombre(),
                 'objetivo' => $pta->getObjetivo(),
                 'puesto_responsable' => $puesto?->getNombre(),

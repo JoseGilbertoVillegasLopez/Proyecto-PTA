@@ -426,6 +426,132 @@ initPersonalSearch({
     resultsSelector: ".responsable-results"
 });
 
+    /**
+     * =====================================================
+     * MANEJO DE RESPONSABLES ADICIONALES
+     * -----------------------------------------------------
+     * El responsable oficial (creador del PTA) es fijo y no
+     * se maneja aquí. Esta colección es solo para personas
+     * extra que ayudan a llevar a cabo el PTA — máximo 5.
+     * =====================================================
+     */
+    const addResponsableBtn = frame.querySelector("#add-responsable-adicional");
+    const responsablesAdicionalesHolder = frame.querySelector(
+        "[data-collection-holder='responsablesAdicionales']"
+    );
+
+    if (addResponsableBtn && responsablesAdicionalesHolder) {
+
+        const MAX_RESPONSABLES_ADICIONALES = 5;
+
+        responsablesAdicionalesHolder.dataset.index =
+            responsablesAdicionalesHolder.querySelectorAll(".resp-adicional-row").length;
+
+        function actualizarBotonAgregarResponsable() {
+            const total = responsablesAdicionalesHolder.querySelectorAll(".resp-adicional-row").length;
+            addResponsableBtn.style.display = total >= MAX_RESPONSABLES_ADICIONALES ? "none" : "";
+        }
+
+        // Buscador de personal, igual que initPersonalSearch pero acotado a una fila específica
+        function initPersonalSearchEnFila(row) {
+
+            const input = row.querySelector(".personal-search");
+            const hidden = row.querySelector('input[name$="[personal]"]');
+            const results = row.querySelector(".search-results");
+
+            if (!input || !hidden || !results) return;
+
+            let controller = null;
+
+            input.addEventListener("input", () => {
+
+                const q = input.value.trim();
+                hidden.value = "";
+                results.innerHTML = "";
+
+                if (q.length < 2) return;
+
+                if (controller) controller.abort();
+                controller = new AbortController();
+
+                fetch(`/api/personal/buscar?q=${encodeURIComponent(q)}`, {
+                    signal: controller.signal
+                })
+                    .then(r => r.json())
+                    .then(data => {
+                        results.innerHTML = "";
+                        data.forEach(p => {
+                            const item = document.createElement("div");
+                            item.classList.add("search-item");
+                            item.textContent = p.nombre;
+                            item.addEventListener("click", () => {
+                                input.value = p.nombre;
+                                hidden.value = p.id;
+                                results.innerHTML = "";
+                            });
+                            results.appendChild(item);
+                        });
+                    })
+                    .catch(() => {});
+            });
+
+            frame.addEventListener("click", (e) => {
+                if (!results.contains(e.target) && e.target !== input) {
+                    results.innerHTML = "";
+                }
+            });
+        }
+
+        addResponsableBtn.addEventListener("click", () => {
+
+            const total = responsablesAdicionalesHolder.querySelectorAll(".resp-adicional-row").length;
+            if (total >= MAX_RESPONSABLES_ADICIONALES) return;
+
+            const index = responsablesAdicionalesHolder.dataset.index;
+            const prototype = responsablesAdicionalesHolder.dataset.prototype;
+
+            const temp = document.createElement("div");
+            temp.innerHTML = prototype.replace(/__name__/g, index);
+
+            const personalHidden = temp.querySelector('[name$="[personal]"]');
+            const personalSearch = temp.querySelector('[name$="[personal_search]"]');
+
+            if (personalSearch) {
+                personalSearch.className = "pta-input resp-input personal-search";
+                personalSearch.setAttribute("placeholder", "Buscar por nombre...");
+                personalSearch.setAttribute("autocomplete", "off");
+            }
+
+            const row = document.createElement("div");
+            row.classList.add("resp-adicional-row");
+            row.innerHTML = `
+                <div class="resp-search-wrap position-relative">
+                    <i class="bi bi-search resp-search-icon"></i>
+                    ${personalSearch ? personalSearch.outerHTML : ''}
+                    ${personalHidden ? personalHidden.outerHTML : ''}
+                    <div class="search-results"></div>
+                </div>
+                <button type="button" class="ic-remove-btn remove-responsable-adicional" title="Eliminar responsable">
+                    <i class="bi bi-trash3"></i>
+                </button>
+            `;
+
+            responsablesAdicionalesHolder.appendChild(row);
+            responsablesAdicionalesHolder.dataset.index++;
+
+            initPersonalSearchEnFila(row);
+
+            row.querySelector(".remove-responsable-adicional").addEventListener("click", () => {
+                row.remove();
+                actualizarBotonAgregarResponsable();
+            });
+
+            actualizarBotonAgregarResponsable();
+        });
+
+        actualizarBotonAgregarResponsable();
+    }
+
     // Año de Ejecución: select de 2 opciones → toggle de 2 botones
     crearToggleDesdeSelect(frame.querySelector('.pta-anio-select'));
 

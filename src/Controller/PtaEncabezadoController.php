@@ -163,6 +163,19 @@ final class PtaEncabezadoController extends AbstractController
                 }
             }
 
+            // Responsables adicionales vienen como IDs en campos hidden (mapped=false)
+            $responsablesAdicionalesData = $data['responsablesAdicionales'] ?? [];
+            foreach ($encabezado->getResponsablesAdicionales() as $index => $responsableAdicional) {
+                $personalId = $responsablesAdicionalesData[$index]['personal'] ?? null;
+                $personal   = $personalId ? $entityManager->getRepository(Personal::class)->find($personalId) : null;
+
+                if ($personal) {
+                    $responsableAdicional->setPersonal($personal);
+                } else {
+                    $encabezado->removeResponsablesAdicionale($responsableAdicional);
+                }
+            }
+
             $encabezado->setFechaCreacion(new \DateTime());
             $encabezado->setStatus(true);
 

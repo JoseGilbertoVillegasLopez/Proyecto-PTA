@@ -58,17 +58,31 @@ class Encabezado
     #[ORM\Column]
     private ?int $anioEjecucion = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $numeroProyecto = null;
+
     /**
      * NUEVA RELACIÓN: ReportePtaTrimestre
      */
     #[ORM\OneToMany(mappedBy: 'encabezado', targetEntity: ReportePtaTrimestre::class, cascade: ['persist', 'remove'])]
     private Collection $reportePtaTrimestres;
 
+    /**
+     * @var Collection<int, PtaResponsableAdicional>
+     */
+    #[Assert\Count(
+        max: 5,
+        maxMessage: 'Máximo 5 responsables adicionales por PTA.'
+    )]
+    #[ORM\OneToMany(targetEntity: PtaResponsableAdicional::class, mappedBy: 'encabezado', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $responsablesAdicionales;
+
     public function __construct()
     {
         $this->indicadores = new ArrayCollection();
         $this->acciones = new ArrayCollection();
         $this->reportePtaTrimestres = new ArrayCollection();
+        $this->responsablesAdicionales = new ArrayCollection();
     }
 
     public function getId(): ?int { return $this->id; }
@@ -152,6 +166,33 @@ class Encabezado
 
     public function getAnioEjecucion(): ?int { return $this->anioEjecucion; }
     public function setAnioEjecucion(int $anioEjecucion): static { $this->anioEjecucion = $anioEjecucion; return $this; }
+
+    public function getNumeroProyecto(): ?string { return $this->numeroProyecto; }
+    public function setNumeroProyecto(?string $numeroProyecto): static { $this->numeroProyecto = $numeroProyecto; return $this; }
+
+    /**
+     * @return Collection<int, PtaResponsableAdicional>
+     */
+    public function getResponsablesAdicionales(): Collection { return $this->responsablesAdicionales; }
+
+    public function addResponsablesAdicionale(PtaResponsableAdicional $responsable): static
+    {
+        if (!$this->responsablesAdicionales->contains($responsable)) {
+            $this->responsablesAdicionales->add($responsable);
+            $responsable->setEncabezado($this);
+        }
+        return $this;
+    }
+
+    public function removeResponsablesAdicionale(PtaResponsableAdicional $responsable): static
+    {
+        if ($this->responsablesAdicionales->removeElement($responsable)) {
+            if ($responsable->getEncabezado() === $this) {
+                $responsable->setEncabezado(null);
+            }
+        }
+        return $this;
+    }
 
     /**
      * MÉTODOS PARA REPORTE PTA TRIMESTRE

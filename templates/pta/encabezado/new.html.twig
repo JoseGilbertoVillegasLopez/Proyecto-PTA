@@ -35,7 +35,33 @@
 
 	<div class="pta-info-grid">
 
-		{# COLUMNA IZQUIERDA — NOMBRE + OBJETIVO #}
+		{# COLUMNA IZQUIERDA — NÚMERO DE PROYECTO + AÑO DE EJECUCIÓN #}
+		<div class="pta-info-col-side">
+
+			<div class="pta-anio-card pta-anio-card--stack mb-3">
+				<label class="pta-field-label mb-2"># Proyecto</label>
+				{{ form_widget(form.numeroProyecto, {
+					attr: { class: 'pta-input', placeholder: 'Número de proyecto...' }
+				}) }}
+				{{ form_errors(form.numeroProyecto) }}
+			</div>
+
+			<div class="pta-anio-card pta-anio-card--stack">
+				<label class="pta-field-label mb-2">
+					<i class="bi bi-calendar-check"></i> Año de Ejecución
+				</label>
+				{{ form_widget(form.anioEjecucion, {
+					attr: { class: 'pta-input pta-anio-select' }
+				}) }}
+				{{ form_errors(form.anioEjecucion) }}
+				<p class="pta-anio-hint">
+					Año en que se ejecutará y evaluará este PTA.
+				</p>
+			</div>
+
+		</div>
+
+		{# COLUMNA DERECHA — NOMBRE + OBJETIVO #}
 		<div class="pta-info-col-main">
 
 			<div class="pta-field-group">
@@ -58,25 +84,6 @@
 					attr: { class: 'pta-input pta-textarea-objetivo fixed-textarea', rows: 3, placeholder: 'Describe el objetivo general del proyecto...' }
 				}) }}
 				{{ form_errors(form.objetivo) }}
-			</div>
-
-		</div>
-
-		{# COLUMNA DERECHA — AÑO DE EJECUCIÓN #}
-		<div class="pta-info-col-side">
-
-			<div class="pta-anio-card">
-				<div class="pta-anio-icon">
-					<i class="bi bi-calendar-check"></i>
-				</div>
-				<label class="pta-field-label mb-2">Año de Ejecución</label>
-				{{ form_widget(form.anioEjecucion, {
-					attr: { class: 'pta-input pta-anio-select' }
-				}) }}
-				{{ form_errors(form.anioEjecucion) }}
-				<p class="pta-anio-hint">
-					Año en que se ejecutará y evaluará este PTA.
-				</p>
 			</div>
 
 		</div>
@@ -151,6 +158,31 @@
 	</h4>
 
 	<div class="resp-grid">
+
+		{# RESPONSABLE/S — oficial (fijo, el usuario logueado) + adicionales (dinámicos, máx. 5) #}
+		<div class="resp-card resp-card--responsables">
+			<div class="resp-icon-wrap">
+				<i class="bi bi-person-fill"></i>
+			</div>
+			<div class="resp-role">Responsable/s del Proyecto</div>
+
+			<div class="resp-oficial-row">
+				<i class="bi bi-person-check-fill"></i>
+				<span>{{ app.user.personal }}</span>
+				<span class="resp-oficial-tag">Responsable oficial</span>
+			</div>
+
+			<div
+				data-collection-holder="responsablesAdicionales"
+				data-prototype="{{ form_widget(form.responsablesAdicionales.vars.prototype)|e('html_attr') }}"
+				class="resp-adicionales-container">
+			</div>
+
+			<button type="button" class="pta-add-btn" id="add-responsable-adicional">
+				<i class="bi bi-plus-lg"></i>
+				Responsable
+			</button>
+		</div>
 
 		{# SUPERVISOR #}
 		<div class="resp-card">

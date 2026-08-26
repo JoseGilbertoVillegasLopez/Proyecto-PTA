@@ -319,7 +319,7 @@ class ReportePtaWordExportService
             ]
         ));
         $cell->addText(
-            'Proyecto ' . ($data['pta']['id'] ?? '') . '. ' . (string)($data['pta']['nombre'] ?? ''),
+            'Proyecto ' . ($data['pta']['numero_proyecto'] ?? '') . '. ' . (string)($data['pta']['nombre'] ?? ''),
             'rpta-header-white',
             [
                 'alignment'   => Jc::CENTER,

@@ -43,6 +43,16 @@
 			</h4>
 
 			<div class="pta-info-grid">
+				<div class="pta-info-col-side">
+					<div class="pta-anio-card">
+						<div class="pta-anio-icon"><i class="bi bi-hash"></i></div>
+						<label class="pta-field-label mb-2">Número de Proyecto</label>
+						<div class="pta-show-year">{{ encabezado.numeroProyecto ?? 'N/A' }}</div>
+						<p class="pta-anio-hint">
+							<i class="bi bi-calendar-check"></i> Año de ejecución: {{ encabezado.anioEjecucion }}
+						</p>
+					</div>
+				</div>
 				<div class="pta-info-col-main">
 					<div class="pta-field-group">
 						<label class="pta-field-label">
@@ -55,14 +65,6 @@
 							<i class="bi bi-bullseye"></i> Objetivo del Proyecto
 						</label>
 						<div class="pta-show-text pta-show-text--objetivo">{{ encabezado.objetivo }}</div>
-					</div>
-				</div>
-				<div class="pta-info-col-side">
-					<div class="pta-anio-card">
-						<div class="pta-anio-icon"><i class="bi bi-calendar-check"></i></div>
-						<label class="pta-field-label mb-2">Año de Ejecución</label>
-						<div class="pta-show-year">{{ encabezado.anioEjecucion }}</div>
-						<p class="pta-anio-hint">Proyecto #{{ encabezado.id }}</p>
 					</div>
 				</div>
 			</div>

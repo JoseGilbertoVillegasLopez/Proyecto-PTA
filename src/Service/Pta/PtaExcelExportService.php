@@ -130,7 +130,7 @@ class PtaExcelExportService
         $this->wrapAndAuto($sheet, 'C5', 5, $encabezado->getObjetivo());
 
         $sheet->setCellValue('A6', 'Número de proyecto');
-        $sheet->setCellValue('A7', $encabezado->getId());
+        $sheet->setCellValue('A7', $encabezado->getNumeroProyecto());
 
         $sheet->setCellValue('C6', 'Nombre del proyecto');
         $sheet->setCellValue('C7', $encabezado->getNombre());
@@ -291,19 +291,26 @@ class PtaExcelExportService
     {
         $resp = $encabezado->getResponsables();
 
+        // Responsable oficial + adicionales van juntos en UNA sola fila,
+        // separados por "/" (así lo pide el formato oficial impreso).
+        $personasResponsables = array_filter(array_merge(
+            [$encabezado->getResponsable()],
+            array_map(fn($adicional) => $adicional->getPersonal(), $encabezado->getResponsablesAdicionales()->toArray())
+        ));
+
+        $responsableNombre = implode('/', array_map(fn($p) => (string) $p, $personasResponsables));
+        $responsablePuesto = implode('/', array_map(fn($p) => $p->getPuesto()?->getNombre() ?? '', $personasResponsables));
+
         $filas = [
-            ['label' => 'Responsable del proyecto', 'persona' => $encabezado->getResponsable()],
-            ['label' => 'Supervisor', 'persona' => $resp?->getSupervisor()],
-            ['label' => 'Aval', 'persona' => $resp?->getAval()],
+            ['label' => 'Responsable del proyecto', 'nombre' => $responsableNombre, 'puesto' => $responsablePuesto],
+            ['label' => 'Supervisor', 'nombre' => $resp?->getSupervisor() ? (string) $resp->getSupervisor() : '', 'puesto' => $resp?->getSupervisor()?->getPuesto()?->getNombre() ?? ''],
+            ['label' => 'Aval', 'nombre' => $resp?->getAval() ? (string) $resp->getAval() : '', 'puesto' => $resp?->getAval()?->getPuesto()?->getNombre() ?? ''],
         ];
 
         foreach ($filas as $item) {
 
-            $persona = $item['persona'];
-            $nombre = $persona ? (string)$persona : '';
-            $puesto = ($persona && $persona->getPuesto())
-                ? $persona->getPuesto()->getNombre()
-                : '';
+            $nombre = $item['nombre'];
+            $puesto = $item['puesto'];
 
             $sheet->mergeCells("A{$row}:B{$row}");
             $sheet->mergeCells("C{$row}:D{$row}");
