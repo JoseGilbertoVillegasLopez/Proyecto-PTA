@@ -3,9 +3,11 @@
 CLAUDE.md
 .agents/
 
-# Uploads generados por usuarios
+# Uploads generados por usuarios (excepto logos, esos sí se versionan)
 /public/uploads/pta/
 /public/uploads/solicitud_gastos/
+/public/uploads/nombramientos/
+/public/uploads/reporte_indicadores/
 
 ###> symfony/framework-bundle ###
 /.env.local
