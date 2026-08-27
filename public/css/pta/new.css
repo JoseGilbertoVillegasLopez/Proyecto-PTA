@@ -148,21 +148,26 @@ textarea.field-error,
 }
 
 .pta-info-grid {
-    display: grid;
-    grid-template-columns: 1fr 280px;
+    display: flex;
     gap: 0;
 }
 
 .pta-info-col-main {
+    flex: 1 1 auto;
+    min-width: 0;
     padding: 1.4rem;
-    border-right: 1px solid var(--pta-border-soft);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .pta-info-col-side {
+    flex: 0 0 280px;
     padding: 1.4rem;
     display: flex;
     flex-direction: column;
     align-items: stretch;
+    border-right: 1px solid var(--pta-border-soft);
 }
 
 /* Label con ícono */
@@ -221,6 +226,12 @@ textarea.field-error,
     justify-content: center;
 }
 
+/* Variante: 2 cards apiladas (número de proyecto + año), en vez de 1 sola card compartida */
+.pta-anio-card--stack {
+    height: auto;
+    padding: 0.75rem 1rem;
+}
+
 .pta-anio-icon {
     font-size: 2rem;
     color: var(--pta-primary);
@@ -250,10 +261,10 @@ textarea.field-error,
 /* Responsive: colapsa a una columna en móvil */
 @media (max-width: 700px) {
     .pta-info-grid {
-        grid-template-columns: 1fr;
+        flex-direction: column;
     }
 
-    .pta-info-col-main {
+    .pta-info-col-side {
         border-right: none;
         border-bottom: 1px solid var(--pta-border-soft);
     }
@@ -699,11 +710,11 @@ textarea.field-error,
 }
 
 /* =========================================================
-   RESPONSABLES — GRID DE DOS CARDS
+   RESPONSABLES — GRID DE TRES CARDS EN PARALELO
    ========================================================= */
 .resp-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     padding: 1.2rem 1.4rem 1.4rem;
 }
@@ -765,6 +776,61 @@ textarea.field-error,
 
 .resp-input {
     padding-left: 34px !important;
+}
+
+/* =========================================================
+   RESPONSABLE/S — CARD EN PARALELO CON SUPERVISOR/AVAL
+   (oficial + adicionales, mismo ancho que las otras 2 cards)
+   ========================================================= */
+.resp-oficial-row {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    padding: 10px 14px;
+    background: rgba(29, 209, 161, 0.08);
+    border: 1px solid rgba(29, 209, 161, 0.25);
+    border-radius: 10px;
+    color: #e6f1ff;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.resp-oficial-row i {
+    color: var(--pta-ok);
+}
+
+.resp-oficial-tag {
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--pta-ok);
+    background: rgba(29, 209, 161, 0.12);
+    border: 1px solid rgba(29, 209, 161, 0.3);
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.resp-adicionales-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.resp-adicional-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.resp-adicional-row .resp-search-wrap {
+    flex: 1;
 }
 
 @media (max-width: 600px) {

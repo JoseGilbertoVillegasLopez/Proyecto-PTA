@@ -13,20 +13,40 @@
 					</a>
 				</div>
 
-				<div class="pta-resp-project-details">
-					<div class="pta-resp-project-detail pta-resp-project-detail--name">
-						<span class="pta-resp-project-detail-label">Nombre del Proyecto</span>
-						<span class="pta-resp-project-detail-value">{{ encabezado.nombre }}</span>
-					</div>
+				<div class="pta-show card pta-card pta-info-card mb-4">
+					<h4 class="pta-title">
+						<i class="bi bi-file-earmark-text"></i> Información del Proyecto
+					</h4>
 
-					<div class="pta-resp-project-detail pta-resp-project-detail--number">
-						<span class="pta-resp-project-detail-label">Numero de Proyecto</span>
-						<span class="pta-resp-project-detail-value">{{ encabezado.id }}</span>
-					</div>
+					<div class="pta-info-grid">
+						<div class="pta-info-col-side">
+							<div class="pta-anio-card pta-anio-card--stack mb-3">
+								<label class="pta-field-label mb-2"># Proyecto</label>
+								<div class="pta-show-year pta-show-year--compact">{{ encabezado.numeroProyecto ?? 'N/A' }}</div>
+							</div>
 
-					<div class="pta-resp-project-detail pta-resp-project-detail--objective">
-						<span class="pta-resp-project-detail-label">Objetivo</span>
-						<span class="pta-resp-project-detail-value">{{ encabezado.objetivo }}</span>
+							<div class="pta-anio-card pta-anio-card--stack">
+								<label class="pta-field-label mb-2">
+									<i class="bi bi-calendar-check"></i> Año de Ejecución
+								</label>
+								<div class="pta-show-year pta-show-year--compact">{{ encabezado.anioEjecucion }}</div>
+							</div>
+						</div>
+
+						<div class="pta-info-col-main">
+							<div class="pta-field-group">
+								<label class="pta-field-label">
+									<i class="bi bi-pencil-square"></i> Nombre del Proyecto
+								</label>
+								<div class="pta-show-text pta-show-text--nombre">{{ encabezado.nombre }}</div>
+							</div>
+							<div class="pta-field-group mt-3">
+								<label class="pta-field-label">
+									<i class="bi bi-bullseye"></i> Objetivo del Proyecto
+								</label>
+								<div class="pta-show-text pta-show-text--objetivo">{{ encabezado.objetivo }}</div>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -44,6 +64,7 @@
 
 					<div class="pta-resp-fields">
 						<div class="pta-resp-field">
+							<div class="pta-resp-field-icon"><i class="bi bi-person-fill"></i></div>
 							<label for="responsable-search">Responsable</label>
 							<div class="pta-resp-input-wrap">
 								<input type="hidden" name="responsable_id" value="{{ encabezado.responsable.id ?? '' }}">
@@ -57,6 +78,7 @@
 						</div>
 
 						<div class="pta-resp-field">
+							<div class="pta-resp-field-icon"><i class="bi bi-person-badge"></i></div>
 							<label for="supervisor-search">Supervisor</label>
 							<div class="pta-resp-input-wrap">
 								<input type="hidden" name="supervisor_id" value="{{ encabezado.responsables.supervisor.id ?? '' }}">
@@ -70,6 +92,7 @@
 						</div>
 
 						<div class="pta-resp-field">
+							<div class="pta-resp-field-icon"><i class="bi bi-person-check"></i></div>
 							<label for="aval-search">Aval</label>
 							<div class="pta-resp-input-wrap">
 								<input type="hidden" name="aval_id" value="{{ encabezado.responsables.aval.id ?? '' }}">
@@ -85,14 +108,58 @@
 				</div>
 
 				<input type="hidden" name="_token" value="{{ csrf_token('responsables_' ~ encabezado.id) }}">
-
-				<div class="pta-resp-actions">
-					<button type="button" class="pta-resp-save-btn js-confirmar-responsables" id="btn-confirmar">
-						<i class="bi bi-floppy2-fill"></i>
-						<span>Guardar cambios</span>
-					</button>
-				</div>
 			</form>
+
+			<div class="pta-resp-card">
+				<h4 class="pta-resp-card-title">
+					<i class="bi bi-person-plus-fill"></i>
+					Responsables Adicionales
+					<span class="pta-resp-adicionales-count" id="resp-adicionales-count">{{ encabezado.responsablesAdicionales|length }}/5</span>
+				</h4>
+
+				<div class="pta-resp-adicionales-list">
+					{% for adicional in encabezado.responsablesAdicionales %}
+						<div class="pta-resp-adicional-item">
+							<span class="pta-resp-adicional-nombre">
+								<i class="bi bi-person"></i>
+								{{ adicional.personal }}
+							</span>
+							<form method="post"
+								action="{{ path('app_encabezado_responsable_adicional_eliminar', { id: encabezado.id, responsableAdicionalId: adicional.id }) }}"
+								data-turbo-frame="content"
+								onsubmit="return confirm('¿Eliminar a {{ adicional.personal }} de los responsables adicionales?');">
+								<input type="hidden" name="_token" value="{{ csrf_token('responsables_' ~ encabezado.id) }}">
+								<button type="submit" class="pta-resp-adicional-remove-btn" title="Eliminar responsable adicional">
+									<i class="bi bi-trash3"></i>
+								</button>
+							</form>
+						</div>
+					{% else %}
+						<p class="pta-resp-adicionales-empty">No hay responsables adicionales.</p>
+					{% endfor %}
+				</div>
+
+				{% if encabezado.responsablesAdicionales|length < 5 %}
+					<div
+						data-collection-holder="nuevosResponsablesAdicionales"
+						data-max="5"
+						data-current-count="{{ encabezado.responsablesAdicionales|length }}"
+						class="pta-resp-nuevos-container">
+					</div>
+
+					<button type="button" class="pta-resp-adicional-add-btn" id="add-responsable-adicional">
+						<i class="bi bi-plus-lg"></i>
+						Agregar
+					</button>
+				{% endif %}
+			</div>
+
+			<div class="pta-resp-actions">
+				<button type="button" class="pta-resp-save-btn js-confirmar-responsables" id="btn-confirmar">
+					<i class="bi bi-floppy2-fill"></i>
+					<span>Guardar cambios</span>
+				</button>
+			</div>
 			</div>
 		</div>
 

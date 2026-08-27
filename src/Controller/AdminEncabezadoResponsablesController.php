@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Encabezado;
 use App\Entity\Responsables;
 use App\Entity\Personal;
+use App\Entity\PtaResponsableAdicional;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,6 +72,23 @@ class AdminEncabezadoResponsablesController extends AbstractController
                 }
             }
 
+            // ➕ RESPONSABLES ADICIONALES NUEVOS (0 a N filas agregadas en el frontend, máximo 5 en total)
+            $nuevosResponsablesIds = $request->request->all('nuevos_responsables_adicionales');
+
+            foreach ($nuevosResponsablesIds as $nuevoId) {
+                if (!$nuevoId || count($encabezado->getResponsablesAdicionales()) >= 5) {
+                    continue;
+                }
+
+                $personal = $entityManager->getRepository(Personal::class)->find($nuevoId);
+                if ($personal) {
+                    $nuevo = new PtaResponsableAdicional();
+                    $nuevo->setPersonal($personal);
+                    $encabezado->addResponsablesAdicionale($nuevo);
+                    $entityManager->persist($nuevo);
+                }
+            }
+
             $entityManager->flush();
 
             // 🔁 REDIRECCIÓN LIMPIA AL SHOW (NO render directo)
@@ -99,6 +117,42 @@ class AdminEncabezadoResponsablesController extends AbstractController
             'content_url' => $this->generateUrl('app_encabezado_responsables_edit', [
                 'id' => $encabezado->getId(),
             ]),
+        ]);
+    }
+
+    // ============================
+    // ELIMINAR RESPONSABLE ADICIONAL
+    // ============================
+    #[Route('/{id}/responsables/adicional/{responsableAdicionalId}/eliminar', name: 'app_encabezado_responsable_adicional_eliminar', methods: ['POST'])]
+    public function eliminarResponsableAdicional(
+        Request $request,
+        Encabezado $encabezado,
+        int $responsableAdicionalId,
+        EntityManagerInterface $entityManager
+    ): Response {
+
+        // 🔒 SOLO ADMIN
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        if (
+            !$this->isCsrfTokenValid(
+                'responsables_' . $encabezado->getId(),
+                $request->request->get('_token')
+            )
+        ) {
+            throw $this->createAccessDeniedException('Token CSRF inválido');
+        }
+
+        $adicional = $entityManager->getRepository(PtaResponsableAdicional::class)->find($responsableAdicionalId);
+
+        // ✅ Solo se borra si pertenece al encabezado de la URL (nunca responsable/supervisor/aval)
+        if ($adicional && $adicional->getEncabezado()?->getId() === $encabezado->getId()) {
+            $entityManager->remove($adicional);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_encabezado_responsables_edit', [
+            'id' => $encabezado->getId(),
         ]);
     }
 }

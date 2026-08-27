@@ -41,6 +41,12 @@ function initReporteNew(root) {
 
     root.dataset.reporteInitialized = "1";
 
+    if (root.dataset.reporteForm === "reporte-show") {
+        // show es solo lectura: no debe cargar botones de agregar
+        // ni la validación de envío pensada para new/edit (bloqueaba "Entregar Reporte")
+        return;
+    }
+
     console.log("Reporte PTA NEW JS cargado ✔");
     console.log("Root encontrado:", root);
 

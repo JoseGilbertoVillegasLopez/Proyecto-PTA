@@ -98,6 +98,23 @@ class EncabezadoType extends AbstractType
 
             /**
              * =============================================
+             * NÚMERO DE PROYECTO
+             * ---------------------------------------------
+             * - Identificador textual del proyecto
+             * - Campo simple de texto (input), NO textarea
+             * =============================================
+             */
+            ->add('numeroProyecto', TextType::class, [
+                'label' => 'Número de Proyecto',
+                'required' => true,
+                'attr' => [
+                    'class' => 'pta-input',
+                    'placeholder' => 'Número de proyecto',
+                ],
+            ])
+
+            /**
+             * =============================================
              * RESPONSABLE PRINCIPAL
              * ---------------------------------------------
              * - Es el Personal asociado al usuario logueado
@@ -131,6 +148,27 @@ class EncabezadoType extends AbstractType
              * =============================================
              */
             ->add('responsables', ResponsablesType::class)
+
+            /**
+             * =============================================
+             * COLECCIÓN DE RESPONSABLES ADICIONALES
+             * ---------------------------------------------
+             * - CollectionType dinámico
+             * - Cada fila se mapea a PtaResponsableAdicional
+             * - Se maneja con JS + prototype
+             *
+             * by_reference = false:
+             * - Obliga a Doctrine a usar add/remove
+             * - Necesario para relaciones OneToMany
+             *   (Encabezado::$responsablesAdicionales)
+             * =============================================
+             */
+            ->add('responsablesAdicionales', CollectionType::class, [
+                'entry_type' => ResponsableAdicionalType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+            ])
 
             /**
              * =============================================

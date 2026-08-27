@@ -299,7 +299,7 @@ class ReportePtaPdfExportService
     $html .= '
         <tr>
             <td colspan="8" class="bg-blue">
-                Proyecto ' . $this->esc((string)($data['pta']['id'] ?? '')) . '. ' . $this->esc((string)($data['pta']['nombre'] ?? '')) . '
+                Proyecto ' . $this->esc((string)($data['pta']['numero_proyecto'] ?? '')) . '. ' . $this->esc((string)($data['pta']['nombre'] ?? '')) . '
             </td>
         </tr>
     ';

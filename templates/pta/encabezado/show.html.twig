@@ -52,14 +52,6 @@
 			</a>
 
 		</div>
-
-		<div class="pta-topbar-right">
-			<div class="pta-year-chip">
-				<i class="bi bi-calendar-event"></i>
-				<span>Año de ejecución:</span>
-				<strong>{{ encabezado.anioEjecucion }}</strong>
-			</div>
-		</div>
 	</div>
 
 
@@ -73,6 +65,19 @@
 		</h4>
 
 		<div class="pta-info-grid">
+			<div class="pta-info-col-side">
+				<div class="pta-anio-card pta-anio-card--stack mb-3">
+					<label class="pta-field-label mb-2"># Proyecto</label>
+					<div class="pta-show-year pta-show-year--compact">{{ encabezado.numeroProyecto ?? 'N/A' }}</div>
+				</div>
+
+				<div class="pta-anio-card pta-anio-card--stack">
+					<label class="pta-field-label mb-2">
+						<i class="bi bi-calendar-check"></i> Año de Ejecución
+					</label>
+					<div class="pta-show-year pta-show-year--compact">{{ encabezado.anioEjecucion }}</div>
+				</div>
+			</div>
 			<div class="pta-info-col-main">
 				<div class="pta-field-group">
 					<label class="pta-field-label">
@@ -85,14 +90,6 @@
 						<i class="bi bi-bullseye"></i> Objetivo del Proyecto
 					</label>
 					<div class="pta-show-text pta-show-text--objetivo">{{ encabezado.objetivo }}</div>
-				</div>
-			</div>
-			<div class="pta-info-col-side">
-				<div class="pta-anio-card">
-					<div class="pta-anio-icon"><i class="bi bi-calendar-check"></i></div>
-					<label class="pta-field-label mb-2">Año de Ejecución</label>
-					<div class="pta-show-year">{{ encabezado.anioEjecucion }}</div>
-					<p class="pta-anio-hint">Proyecto #{{ encabezado.id }}</p>
 				</div>
 			</div>
 		</div>
@@ -440,11 +437,32 @@
 
 		<div class="resp-grid resp-grid--3">
 
-			<div class="resp-card">
+			<div class="resp-card resp-card--responsables">
 				<div class="resp-icon-wrap"><i class="bi bi-person-fill"></i></div>
-				<div class="resp-role">Responsable del Proyecto</div>
-				<div class="resp-name">{{ encabezado.responsable ?? '—' }}</div>
-				<div class="resp-puesto">{{ encabezado.responsable.puesto.nombre ?? '—' }}</div>
+				<div class="resp-role">Responsables</div>
+
+				<div class="resp-list">
+					<div class="resp-list-item">
+						<div class="resp-list-item-info">
+							<span class="resp-list-item-name">
+								<i class="bi bi-person-check-fill"></i> {{ encabezado.responsable ?? '—' }}
+								<span class="resp-oficial-tag">Oficial</span>
+							</span>
+							<span class="resp-list-item-puesto">{{ encabezado.responsable.puesto.nombre ?? '—' }}</span>
+						</div>
+					</div>
+
+					{% for adicional in encabezado.responsablesAdicionales %}
+						<div class="resp-list-item">
+							<div class="resp-list-item-info">
+								<span class="resp-list-item-name">
+									<i class="bi bi-person"></i> {{ adicional.personal }}
+								</span>
+								<span class="resp-list-item-puesto">{{ adicional.personal.puesto.nombre ?? '—' }}</span>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
 			</div>
 
 			<div class="resp-card">

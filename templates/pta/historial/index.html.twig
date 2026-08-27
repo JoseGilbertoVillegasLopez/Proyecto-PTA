@@ -76,7 +76,7 @@
 				{% for encabezado in ptaPropio %}
 					<tr>
 						<td data-label="#">
-							<strong>{{ encabezado.id }}</strong>
+							<strong>{{ encabezado.numeroProyecto ?? 'N/A' }}</strong>
 						</td>
 
 						<td data-label="Proyecto" class="pta-index-table-name">{{ encabezado.nombre }}</td>
@@ -140,7 +140,7 @@
 					{% for encabezado in ptaPuesto %}
 						<tr>
 							<td data-label="#">
-								<strong>{{ encabezado.id }}</strong>
+								<strong>{{ encabezado.numeroProyecto ?? 'N/A' }}</strong>
 							</td>
 
 							<td data-label="Proyecto" class="pta-index-table-name">{{ encabezado.nombre }}</td>
