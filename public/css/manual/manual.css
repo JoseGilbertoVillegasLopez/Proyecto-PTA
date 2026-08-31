@@ -1,0 +1,184 @@
+/* =========================================================
+   MANUAL DE USUARIO - ESTILOS DEL MODULO
+   Archivo cargado desde base.html.twig.
+   Namespace manual-* para no mezclarse con otros CSS.
+   ========================================================= */
+
+.manual-index,
+.manual-modulo {
+	color: #e6f1ff;
+	background: linear-gradient(145deg, rgba(10, 18, 26, 0.96), rgba(6, 12, 18, 0.92));
+	border-radius: 22px;
+	padding: 20px;
+	box-shadow:
+		inset 0 0 0 1px rgba(13, 202, 240, 0.18),
+		0 18px 46px rgba(0, 0, 0, 0.85);
+}
+
+.manual-index__header,
+.manual-modulo__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	flex-wrap: wrap;
+	margin-bottom: 24px;
+}
+
+.manual-index__title,
+.manual-modulo__title {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	color: #e6f1ff;
+	font-size: 1.5rem;
+	margin: 0;
+}
+
+.manual-index__title i,
+.manual-modulo__title i {
+	color: #0dcaf0;
+}
+
+.manual-index__subtitle {
+	color: #9fb3c8;
+	margin: 4px 0 0;
+}
+
+.manual-index__empty {
+	color: #9fb3c8;
+	text-align: center;
+	padding: 40px 0;
+}
+
+.manual-index__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 16px;
+}
+
+.manual-index__card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	padding: 28px 16px;
+	border-radius: 14px;
+	background: rgba(255, 255, 255, 0.03);
+	color: #e6f1ff;
+	text-decoration: none;
+	border: 1px solid rgba(13, 202, 240, 0.18);
+	transition: transform .15s ease, border-color .15s ease;
+}
+
+.manual-index__card:hover {
+	transform: translateY(-2px);
+	border-color: #0dcaf0;
+	color: #e6f1ff;
+}
+
+.manual-index__card i {
+	font-size: 28px;
+	color: #0dcaf0;
+}
+
+.manual-modulo__back {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: #9fb3c8;
+	text-decoration: none;
+	font-size: 0.9rem;
+}
+
+.manual-modulo__back:hover {
+	color: #0dcaf0;
+}
+
+.manual-modulo__print {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: rgba(13, 202, 240, 0.12);
+	color: #0dcaf0;
+	border: 1px solid rgba(13, 202, 240, 0.3);
+	border-radius: 10px;
+	padding: 8px 14px;
+	cursor: pointer;
+}
+
+.manual-modulo__print:hover {
+	background: rgba(13, 202, 240, 0.2);
+}
+
+.manual-modulo__accordion .accordion-item {
+	background: rgba(255, 255, 255, 0.02);
+	border: 1px solid rgba(13, 202, 240, 0.15);
+	border-radius: 12px !important;
+	margin-bottom: 12px;
+	overflow: hidden;
+}
+
+.manual-modulo__toggle {
+	background: transparent;
+	color: #e6f1ff;
+	font-weight: 600;
+}
+
+.manual-modulo__toggle:not(.collapsed) {
+	background: rgba(13, 202, 240, 0.1);
+	color: #0dcaf0;
+	box-shadow: none;
+}
+
+.manual-modulo__toggle:focus {
+	box-shadow: none;
+}
+
+.manual-modulo__body {
+	color: #e6f1ff;
+}
+
+.manual-modulo__body img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+	border: 1px solid rgba(13, 202, 240, 0.2);
+	margin-bottom: 14px;
+	display: block;
+}
+
+.manual-modulo__body ol {
+	padding-left: 20px;
+}
+
+.manual-modulo__body ol li {
+	margin-bottom: 8px;
+}
+
+.manual-modulo__body a {
+	color: #0dcaf0;
+}
+
+/* =========================================================
+   EXPORTAR A PDF — imprime solo el contenido del módulo
+   ========================================================= */
+@media print {
+	.pta-dashboard-aside,
+	.pta-dashboard-topbar,
+	.pta-dashboard-overlay,
+	.manual-modulo__back,
+	.manual-modulo__print {
+		display: none !important;
+	}
+
+	.manual-modulo__accordion .accordion-collapse {
+		display: block !important;
+		height: auto !important;
+		visibility: visible !important;
+	}
+
+	.manual-modulo__toggle::after {
+		display: none !important;
+	}
+}

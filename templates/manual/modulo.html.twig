@@ -1,0 +1,38 @@
+<turbo-frame id="content">
+<section class="manual-modulo" data-page="manual-modulo">
+
+	<header class="manual-modulo__header">
+		<a href="{{ path('app_manual_index') }}" data-turbo-frame="content" data-turbo-action="advance"
+		   class="manual-modulo__back">
+			<i class="bi bi-arrow-left"></i> Manual
+		</a>
+		<h1 class="manual-modulo__title">
+			<i class="bi {{ modulo.icono }}"></i>
+			{{ modulo.label }}
+		</h1>
+		<button type="button" class="manual-modulo__print" onclick="window.print()">
+			<i class="bi bi-printer"></i> Exportar / Imprimir
+		</button>
+	</header>
+
+	<div class="accordion manual-modulo__accordion" id="manualAccordion">
+		{% for vista in modulo.vistas %}
+			<div class="accordion-item manual-modulo__item" id="vista-{{ vista.slug }}">
+				<h2 class="accordion-header">
+					<button class="accordion-button manual-modulo__toggle {{ loop.first ? '' : 'collapsed' }}" type="button"
+							data-bs-toggle="collapse" data-bs-target="#panel-{{ vista.slug }}">
+						{{ vista.label }}
+					</button>
+				</h2>
+				<div id="panel-{{ vista.slug }}" class="accordion-collapse collapse {{ loop.first ? 'show' : '' }}"
+					 data-bs-parent="#manualAccordion">
+					<div class="accordion-body manual-modulo__body">
+						{% include 'manual/contenido/' ~ modulo.slug ~ '/' ~ vista.slug ~ '.html.twig' %}
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+
+</section>
+</turbo-frame>

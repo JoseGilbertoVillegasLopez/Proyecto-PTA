@@ -1,0 +1,28 @@
+<turbo-frame id="content">
+<section class="manual-index" data-page="manual-index">
+
+	<header class="manual-index__header">
+		<h1 class="manual-index__title">
+			<i class="bi bi-question-circle"></i>
+			Manual de Usuario
+		</h1>
+		<p class="manual-index__subtitle">Elige un módulo para ver su guía de uso.</p>
+	</header>
+
+	{% if modulos is empty %}
+		<p class="manual-index__empty">Todavía no hay contenido de manual disponible para tu usuario.</p>
+	{% else %}
+		<div class="manual-index__grid">
+			{% for m in modulos %}
+				<a href="{{ path('app_manual_modulo', { slug: m.slug }) }}"
+				   data-turbo-frame="content" data-turbo-action="advance"
+				   class="manual-index__card">
+					<i class="bi {{ m.icono }}"></i>
+					<span>{{ m.label }}</span>
+				</a>
+			{% endfor %}
+		</div>
+	{% endif %}
+
+</section>
+</turbo-frame>
