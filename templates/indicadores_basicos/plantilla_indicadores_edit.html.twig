@@ -19,8 +19,13 @@
 			</div>
 		</header>
 
+		<form id="plantilla-indicadores-edit-cycle-form" method="get" action="{{ path('app_indicadores_basicos_plantilla_indicadores_edit') }}" data-turbo-frame="content" hidden></form>
+
 		<form id="plantilla-indicadores-edit-form" method="post" action="{{ path('app_indicadores_basicos_plantilla_indicadores_edit') }}" data-turbo-frame="content" class="plantilla-indicadores-form">
 			<input type="hidden" name="_token" value="{{ csrf_token('edit_plantilla_indicadores') }}">
+			{% for ciclo in ciclos %}
+				<input type="hidden" name="ciclo_{{ loop.index }}" value="{{ ciclo.id }}">
+			{% endfor %}
 
 			<div class="plantilla-indicadores-table-wrapper">
 				<table class="plantilla-indicadores-table plantilla-indicadores-table--edit">
@@ -34,7 +39,20 @@
 							<th class="plantilla-indicadores-col-indicador">Indicador</th>
 							{% for ciclo in ciclos %}
 								<th>Cantidad</th>
-								<th>%Ciclo {{ ciclo.nombre }}</th>
+								<th>
+									<span>%Ciclo</span>
+									{% if loop.first %}
+										<select name="ciclo_{{ loop.index }}" form="plantilla-indicadores-edit-cycle-form" class="plantilla-indicadores-cycle-select" title="Seleccionar ciclo" onchange="this.form.requestSubmit()">
+											{% for cicloDisponible in ciclos_disponibles %}
+												<option value="{{ cicloDisponible.id }}" {{ cicloDisponible.id == ciclo.id ? 'selected' : '' }}>
+													{{ cicloDisponible.nombre }}
+												</option>
+											{% endfor %}
+										</select>
+									{% else %}
+										<span class="plantilla-indicadores-cycle-label">{{ ciclo.nombre }}</span>
+									{% endif %}
+								</th>
 							{% endfor %}
 							<th>Media estatal</th>
 							<th>Media nacional</th>

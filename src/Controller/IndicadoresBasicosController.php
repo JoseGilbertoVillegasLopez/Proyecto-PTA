@@ -93,7 +93,12 @@ final class IndicadoresBasicosController extends AbstractController
 
         $grupos = $repository->findActivosGroupedByGrupo();
         $indicadores = $this->flattenIndicadoresFromGroups($grupos);
-        $ciclos = $cicloService->getCiclosVisibles();
+        $selectedCycleIds = [
+            $request->request->get('ciclo_1') ?? $request->query->get('ciclo_1'),
+            $request->request->get('ciclo_2') ?? $request->query->get('ciclo_2'),
+            $request->request->get('ciclo_3') ?? $request->query->get('ciclo_3'),
+        ];
+        $ciclos = $cicloService->getCiclosParaVista($selectedCycleIds);
         $recentChanges = [];
 
         if ($request->isMethod('POST')) {
@@ -176,6 +181,7 @@ final class IndicadoresBasicosController extends AbstractController
             $colorService,
             $grupos,
             $indicadores,
+            selectedCycleIds: $selectedCycleIds,
             recentChanges: $request->getSession()->get('plantilla_indicadores_recent_changes', []),
             canEditPlantilla: true
         );
