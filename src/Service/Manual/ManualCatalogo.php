@@ -76,16 +76,11 @@ class ManualCatalogo
                 return null;
             }
 
-            $vistas = $this->getVistas($slug);
-            if ($vistas === []) {
-                return null;
-            }
-
             return [
                 'slug' => $def['slug'],
                 'label' => $def['label'],
                 'icono' => $def['icono'],
-                'vistas' => $vistas,
+                'vistas' => $this->getVistas($slug),
             ];
         }
 

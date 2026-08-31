@@ -1,0 +1,68 @@
+<h3 class="manual-modulo__subhead">Vista general del formulario</h3>
+
+<img src="{{ asset('img/manual/pta/pta_new_general.png') }}" alt="Formulario completo para crear un nuevo PTA">
+
+<ol>
+	<li><strong>Número de proyecto</strong> — campo libre donde escribes el número de proyecto al que pertenece este PTA. A diferencia del folio interno del sistema, este número lo asigna la institución y puede repetirse entre distintos PTA.</li>
+	<li><strong>Nombre del proyecto</strong> — nombre con el que se identificará el proyecto.</li>
+	<li><strong>Objetivo del proyecto</strong> — objetivo que persigue el proyecto.</li>
+	<li><strong>Año de ejecución</strong> — año en que se llevará a cabo el proyecto: el año actual o el siguiente.</li>
+	<li><strong>Agregar indicador</strong> — abre un formulario para capturar la información de un nuevo indicador. Ver <a href="#pta-new-indicadores">la sección de Indicadores</a>.</li>
+	<li><strong>Agregar acción</strong> — abre un formulario para capturar una acción asociada a los indicadores ya creados. Ver <a href="#pta-new-acciones">la sección de Acciones</a>.</li>
+	<li><strong>Responsable del proyecto</strong> — el responsable oficial se llena automáticamente con tus datos al entrar a la página. Desde aquí también puedes agregar responsables adicionales si el proyecto lo requiere.</li>
+	<li><strong>Agregar responsable</strong> — agrega un campo de búsqueda para sumar un responsable adicional al proyecto (hasta 5).</li>
+	<li><strong>Supervisor del proyecto</strong> — selecciona a la persona que supervisará el proyecto.</li>
+	<li><strong>Aval del proyecto</strong> — selecciona a la persona que avala el proyecto.</li>
+	<li><strong>Guardar</strong> — crea el proyecto una vez que todos los campos estén llenados correctamente.</li>
+</ol>
+
+<h3 class="manual-modulo__subhead" id="pta-new-info">Información del proyecto</h3>
+
+<img src="{{ asset('img/manual/pta/pta_new_infoproyecto.png') }}" alt="Campos de información general del proyecto">
+
+<ol>
+	<li><strong>Número de proyecto</strong> — campo libre, número asignado por la institución (puede repetirse entre PTA distintos).</li>
+	<li><strong>Nombre del proyecto</strong> — nombre con el que se identificará el proyecto.</li>
+	<li><strong>Objetivo del proyecto</strong> — objetivo que persigue el proyecto.</li>
+	<li><strong>Año de ejecución</strong> — año en que se llevará a cabo el proyecto: el año actual o el siguiente.</li>
+</ol>
+
+<h3 class="manual-modulo__subhead" id="pta-new-indicadores">Indicadores</h3>
+
+<img src="{{ asset('img/manual/pta/pta_new_indicadores.png') }}" alt="Formulario para agregar un indicador">
+
+<ol>
+	<li><strong>Nombre del indicador</strong> — nombre con el que se identificará el indicador a crear.</li>
+	<li><strong>Fórmula</strong> — fórmula con la que se calcula el indicador.</li>
+	<li><strong>Valor base</strong> — cantidad con la que arranca el proyecto respecto a la Meta. Por ejemplo, si el indicador busca subir la matrícula de una carrera a 1500 alumnos, el valor base es la cantidad de alumnos inscritos al momento de crear el PTA.</li>
+	<li><strong>Meta</strong> — valor total que se busca alcanzar para este indicador en el periodo correspondiente.</li>
+	<li><strong>Selector # / %</strong> — define si la Meta se mide en número o en porcentaje. Al elegir porcentual se abre un modal para indicar si el avance se capturará como valor numérico o como porcentaje.</li>
+	<li><strong>Periodo</strong> — periodo en el que se lleva a cabo el proyecto para este indicador.</li>
+	<li><strong>Tendencia</strong> — indica si el indicador busca aumentar o disminuir una cantidad. Por ejemplo, bajar el índice de reprobación de un valor base de 100 a una meta de 20 es tendencia negativa; subir el número de docentes de 25 a 33 es tendencia positiva. Este dato es clave para que las gráficas de avance se lean correctamente.</li>
+	<li><strong>Agregar indicador</strong> — agrega un nuevo formulario para capturar otro indicador.</li>
+	<li><strong>Eliminar</strong> — quita un indicador de la lista.</li>
+</ol>
+
+<h3 class="manual-modulo__subhead" id="pta-new-acciones">Acciones</h3>
+
+<img src="{{ asset('img/manual/pta/pta_new_acciones.png') }}" alt="Formulario para agregar una acción">
+
+<ol>
+	<li><strong>Encabezado</strong> — describe brevemente la acción.</li>
+	<li><strong>Indicador</strong> — selecciona a qué indicador pertenece esta acción.</li>
+	<li><strong>Descripción de la acción</strong> — describe la acción que se llevará a cabo.</li>
+	<li><strong>Periodo de ejecución</strong> — selecciona los meses en los que se llevará a cabo la acción.</li>
+	<li><strong>Agregar</strong> — agrega un nuevo formulario para capturar otra acción.</li>
+</ol>
+
+<h3 class="manual-modulo__subhead" id="pta-new-responsables">Responsables</h3>
+
+<img src="{{ asset('img/manual/pta/pta_new_responsables.png') }}" alt="Sección de responsables del proyecto">
+
+<ol>
+	<li><strong>Responsable oficial</strong> — se llena automáticamente con tus datos, ya que eres quien crea el PTA.</li>
+	<li><strong>Agregar responsable</strong> — agrega un campo de búsqueda para sumar un responsable adicional (hasta 5).</li>
+	<li><strong>Supervisor del proyecto</strong> — buscador: escribe parte del nombre para ver las coincidencias y elegir al supervisor.</li>
+	<li><strong>Aval del proyecto</strong> — buscador: escribe parte del nombre para ver las coincidencias y elegir al aval.</li>
+	<li><strong>Guardar</strong> — crea el proyecto una vez que todos los campos estén llenados correctamente.</li>
+</ol>
