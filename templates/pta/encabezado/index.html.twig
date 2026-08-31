@@ -74,7 +74,7 @@
 					<th>#</th>
 					<th>Nombre del proyecto</th>
 					<th>Objetivo</th>
-					<th class="text-center">Creado</th>
+					<th class="text-center">Área</th>
 					<th class="text-center">Periodo</th>
 					<th class="text-center">Acciones</th>
 				</tr>
@@ -99,9 +99,9 @@
 							{{ encabezado.objetivo }}
 						</td>
 
-						{# CREADO #}
-						<td class="text-center" data-label="Creado">
-							{{ encabezado.fechaCreacion|date('d/m/Y') }}
+						{# ÁREA — serie del puesto del responsable; si no tiene serie configurada, se usa el nombre del puesto #}
+						<td class="text-center" data-label="Área">
+							{{ encabezado.responsable.puesto.serie ?? encabezado.responsable.puesto.nombre ?? '—' }}
 						</td>
 
 						{# PERIODO / AÑO DE EJECUCIÓN #}

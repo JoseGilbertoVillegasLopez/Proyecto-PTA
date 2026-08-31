@@ -20,7 +20,8 @@ class EncabezadoRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('e')
             ->join('e.responsable', 'r')
-            ->join('r.puesto', 'p');
+            ->join('r.puesto', 'p')
+            ->addSelect('r', 'p');
 
         /* =====================================
          * ESTADO INICIAL — VISIBILIDAD BASE
