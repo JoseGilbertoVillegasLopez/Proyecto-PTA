@@ -1,10 +1,8 @@
-function initManualModulo() {
+function manualExpandFromHash() {
     const page = document.querySelector('[data-page="manual-modulo"]');
-
-    if (!page || page.dataset.manualReady === "true") {
+    if (!page) {
         return;
     }
-    page.dataset.manualReady = "true";
 
     const hash = window.location.hash;
     if (!hash) {
@@ -22,7 +20,9 @@ function initManualModulo() {
         return;
     }
 
-    new bootstrap.Collapse(panel, { show: true });
+    if (!panel.classList.contains("show")) {
+        new bootstrap.Collapse(panel, { show: true });
+    }
     if (toggle) {
         toggle.classList.remove("collapsed");
     }
@@ -30,6 +30,17 @@ function initManualModulo() {
     item.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function initManualModulo() {
+    const page = document.querySelector('[data-page="manual-modulo"]');
+    if (!page || page.dataset.manualReady === "true") {
+        return;
+    }
+    page.dataset.manualReady = "true";
+
+    manualExpandFromHash();
+}
+
 document.addEventListener("DOMContentLoaded", initManualModulo);
 document.addEventListener("turbo:load", initManualModulo);
 document.addEventListener("turbo:render", initManualModulo);
+window.addEventListener("hashchange", manualExpandFromHash);

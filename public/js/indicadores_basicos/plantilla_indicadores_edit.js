@@ -1,4 +1,22 @@
 (function () {
+    const INDICADORES_SOLO_RAZON = ["28", "29", "30"];
+    const INDICADORES_DIVISOR_1000 = ["32"];
+
+    function calculateRazon(indicadorId, cantidad1, cantidad2) {
+        const razon = cantidad1 / cantidad2;
+        const id = String(indicadorId);
+
+        if (INDICADORES_SOLO_RAZON.includes(id)) {
+            return razon;
+        }
+
+        if (INDICADORES_DIVISOR_1000.includes(id)) {
+            return razon / 1000;
+        }
+
+        return razon * 100;
+    }
+
     function parseNumber(value) {
         if (value === null || value === undefined || value === "") {
             return null;
@@ -81,7 +99,7 @@
             return;
         }
 
-        const formattedResult = formatPercentage((cantidad1 / cantidad2) * 100);
+        const formattedResult = formatPercentage(calculateRazon(indicadorId, cantidad1, cantidad2));
 
         resultCell.textContent = formattedResult;
         resultCell.classList.add("plantilla-indicadores-result-cell--live");

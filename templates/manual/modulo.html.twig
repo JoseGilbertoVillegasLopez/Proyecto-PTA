@@ -15,24 +15,28 @@
 		</button>
 	</header>
 
-	<div class="accordion manual-modulo__accordion" id="manualAccordion">
-		{% for vista in modulo.vistas %}
-			<div class="accordion-item manual-modulo__item" id="vista-{{ vista.slug }}">
-				<h2 class="accordion-header">
-					<button class="accordion-button manual-modulo__toggle {{ loop.first ? '' : 'collapsed' }}" type="button"
-							data-bs-toggle="collapse" data-bs-target="#panel-{{ vista.slug }}">
-						{{ vista.label }}
-					</button>
-				</h2>
-				<div id="panel-{{ vista.slug }}" class="accordion-collapse collapse {{ loop.first ? 'show' : '' }}"
-					 data-bs-parent="#manualAccordion">
-					<div class="accordion-body manual-modulo__body">
-						{% include 'manual/contenido/' ~ modulo.slug ~ '/' ~ vista.slug ~ '.html.twig' %}
+	{% if modulo.vistas is empty %}
+		<p class="manual-index__empty">Todavía no hay contenido de manual para este módulo.</p>
+	{% else %}
+		<div class="accordion manual-modulo__accordion" id="manualAccordion">
+			{% for vista in modulo.vistas %}
+				<div class="accordion-item manual-modulo__item" id="vista-{{ vista.slug }}">
+					<h2 class="accordion-header">
+						<button class="accordion-button manual-modulo__toggle {{ loop.first ? '' : 'collapsed' }}" type="button"
+								data-bs-toggle="collapse" data-bs-target="#panel-{{ vista.slug }}">
+							{{ vista.label }}
+						</button>
+					</h2>
+					<div id="panel-{{ vista.slug }}" class="accordion-collapse collapse {{ loop.first ? 'show' : '' }}"
+						 data-bs-parent="#manualAccordion">
+						<div class="accordion-body manual-modulo__body">
+							{% include 'manual/contenido/' ~ modulo.slug ~ '/' ~ vista.slug ~ '.html.twig' %}
+						</div>
 					</div>
 				</div>
-			</div>
-		{% endfor %}
-	</div>
+			{% endfor %}
+		</div>
+	{% endif %}
 
 </section>
 </turbo-frame>

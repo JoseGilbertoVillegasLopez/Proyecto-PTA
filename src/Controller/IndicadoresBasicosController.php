@@ -122,7 +122,7 @@ final class IndicadoresBasicosController extends AbstractController
                     $cicloData = $ciclosData[$cicloId] ?? [];
                     $cantidad1 = $this->normalizeDecimalInput($cicloData['cantidad1'] ?? null);
                     $cantidad2 = $this->normalizeDecimalInput($cicloData['cantidad2'] ?? null);
-                    $resultado = $this->calculateResultadoCiclo($cantidad1, $cantidad2);
+                    $resultado = $this->calculateResultadoCiclo($indicadorId, $cantidad1, $cantidad2);
 
                     $registro = $semaforoRepository->findOneByIndicadorAndCiclo($indicador, $ciclo);
                     $previousCantidad1 = $registro?->getCantidad1();
@@ -373,7 +373,10 @@ final class IndicadoresBasicosController extends AbstractController
         return number_format((float) $value, 2, '.', '');
     }
 
-    private function calculateResultadoCiclo(?string $cantidad1, ?string $cantidad2): ?string
+    private const INDICADORES_SOLO_RAZON = ['28', '29', '30'];
+    private const INDICADORES_DIVISOR_1000 = ['32'];
+
+    private function calculateResultadoCiclo(string $indicadorId, ?string $cantidad1, ?string $cantidad2): ?string
     {
         if ($cantidad1 === null || $cantidad2 === null) {
             return null;
@@ -390,7 +393,17 @@ final class IndicadoresBasicosController extends AbstractController
             return null;
         }
 
-        return number_format(($cantidad1Float / $cantidad2Float) * 100, 2, '.', '');
+        $razon = $cantidad1Float / $cantidad2Float;
+
+        if (in_array($indicadorId, self::INDICADORES_SOLO_RAZON, true)) {
+            return number_format($razon, 2, '.', '');
+        }
+
+        if (in_array($indicadorId, self::INDICADORES_DIVISOR_1000, true)) {
+            return number_format($razon / 1000, 2, '.', '');
+        }
+
+        return number_format($razon * 100, 2, '.', '');
     }
 
     private function trackChangedField(

@@ -3,6 +3,12 @@ document.addEventListener('turbo:frame-load', inicializarPuestoNewCombobox);
 document.addEventListener('turbo:load', inicializarPuestoEditCombobox);
 document.addEventListener('turbo:frame-load', inicializarPuestoEditCombobox);
 
+// El combobox con buscador solo tiene sentido en móvil (evita el picker nativo
+// de Android/iOS); en escritorio se deja el <select> nativo con su tema oscuro.
+function esMovil() {
+    return window.matchMedia('(max-width: 1330px)').matches;
+}
+
 function inicializarPuestoNewCombobox() {
     const contenedor = document.querySelector('.puesto-new-page-card');
 
@@ -12,9 +18,11 @@ function inicializarPuestoNewCombobox() {
 
     contenedor.dataset.comboboxInit = 'true';
 
-    contenedor
-        .querySelectorAll('select[id$="_supervisorDirecto"]')
-        .forEach((select) => crearComboboxDesdeSelect(select));
+    if (esMovil()) {
+        contenedor
+            .querySelectorAll('select[id$="_supervisorDirecto"]')
+            .forEach((select) => crearComboboxDesdeSelect(select));
+    }
 }
 
 function inicializarPuestoEditCombobox() {
@@ -26,9 +34,11 @@ function inicializarPuestoEditCombobox() {
 
     contenedor.dataset.comboboxInit = 'true';
 
-    contenedor
-        .querySelectorAll('select[id$="_supervisorDirecto"]')
-        .forEach((select) => crearComboboxDesdeSelect(select));
+    if (esMovil()) {
+        contenedor
+            .querySelectorAll('select[id$="_supervisorDirecto"]')
+            .forEach((select) => crearComboboxDesdeSelect(select));
+    }
 
     contenedor
         .querySelectorAll('select[id$="_activo"]')

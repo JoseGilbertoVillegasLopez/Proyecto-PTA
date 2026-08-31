@@ -1,0 +1,65 @@
+{% if pta_alcance() in ['GLOBAL', 'JERARQUICO'] %}
+
+	<img src="{{ asset('img/manual/pta/pta_index_admin.png') }}" alt="Listado de PTA con filtros de Departamento y Puesto">
+
+	<ol>
+		<li>
+			<strong>Agregar</strong> — abre el formulario para crear un nuevo PTA.
+			Ver <a href="#vista-new">cómo crear un PTA</a>.
+		</li>
+		<li>
+			<strong>Filtro por Año de ejecución</strong> — filtra los PTA por el año en que se llevaron (o se llevarán) a cabo, por ejemplo 2025. Se puede combinar con el filtro de Departamento o de Puesto.
+		</li>
+		<li>
+			<strong>Filtro Departamento</strong> — filtra los PTA por departamento. Se puede combinar con el filtro de Año.
+		</li>
+		<li>
+			<strong>Filtro Puesto</strong> — filtra los PTA por un puesto específico. Se puede combinar con el filtro de Año.
+		</li>
+		<li>
+			<strong>Lista de PTA</strong> — muestra los proyectos que corresponden al filtro aplicado. Como tienes un puesto con jerarquía (o eres administrador), aquí ves los PTA de tu área o los de todo el instituto, no solo los tuyos. Cada fila muestra el número de proyecto, el nombre, el objetivo, el área responsable y el periodo de ejecución.
+		</li>
+		<li>
+			<strong>Ver</strong> — abre la información y el avance de ese PTA, sea tuyo o de otra persona.
+			Ver <a href="#vista-show">el detalle del PTA</a>.
+		</li>
+		<li>
+			<strong>Editar</strong> — solo aparece en los PTA donde tú eres el responsable oficial. Abre la captura de avances del proyecto.
+			Ver <a href="#vista-edit">cómo capturar avances</a>.
+		</li>
+		<li>
+			<strong>Reporte</strong> — solo aparece en los PTA donde tú eres el responsable oficial. Abre la vista para elegir qué trimestre reportar.
+			Ver <a href="{{ path('app_manual_modulo', { slug: 'reporte_pta' }) }}" data-turbo-frame="content" data-turbo-action="advance">el manual de Reporte PTA</a>.
+		</li>
+	</ol>
+
+{% else %}
+
+	<img src="{{ asset('img/manual/pta/pta_index.png') }}" alt="Listado de tus PTA">
+
+	<ol>
+		<li>
+			<strong>Agregar</strong> — abre el formulario para crear un nuevo PTA.
+			Ver <a href="#vista-new">cómo crear un PTA</a>.
+		</li>
+		<li>
+			<strong>Filtro por Año de ejecución</strong> — filtra tus PTA por el año o periodo de ejecución.
+		</li>
+		<li>
+			<strong>Lista de PTA</strong> — muestra únicamente los PTA donde eres responsable, correspondientes al año actual o al año filtrado.
+		</li>
+		<li>
+			<strong>Ver</strong> — abre la información y el avance del proyecto.
+			Ver <a href="#vista-show">el detalle del PTA</a>.
+		</li>
+		<li>
+			<strong>Editar</strong> — abre la captura de avances de tu PTA.
+			Ver <a href="#vista-edit">cómo capturar avances</a>.
+		</li>
+		<li>
+			<strong>Reporte</strong> — abre la vista para elegir qué trimestre reportar.
+			Ver <a href="{{ path('app_manual_modulo', { slug: 'reporte_pta' }) }}" data-turbo-frame="content" data-turbo-action="advance">el manual de Reporte PTA</a>.
+		</li>
+	</ol>
+
+{% endif %}

@@ -1046,8 +1046,12 @@ initPersonalSearch({
             indicadorField.appendChild(indicadorSelect);
             indicadorField.appendChild(indicadorHidden);
 
-            // Indicador asociado: puede tener varias opciones → combobox botón + lista
-            crearComboboxDesdeSelect(indicadorSelect);
+            // Indicador asociado: puede tener varias opciones → combobox botón + lista,
+            // pero solo tiene sentido en móvil (evita el picker nativo de Android/iOS);
+            // en escritorio se deja el <select> nativo con su tema oscuro.
+            if (window.matchMedia('(max-width: 1330px)').matches) {
+                crearComboboxDesdeSelect(indicadorSelect);
+            }
 
             // Pills de meses
             const mesesGrid = card.querySelector(".ac-meses-grid");
