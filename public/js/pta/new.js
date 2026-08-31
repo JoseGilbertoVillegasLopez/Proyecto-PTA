@@ -1121,6 +1121,9 @@ initPersonalSearch({
     if (ptaForm) {
         ptaForm.addEventListener("submit", (e) => {
 
+            limpiarErroresVisuales(frame);
+            let primerCampoConError = null;
+
             // ===============================
             // VALIDACIÓN: capturaEnPorcentaje
             // --------------------------------
@@ -1189,14 +1192,29 @@ initPersonalSearch({
 
             if (!anioSelect || anioSelect.value === "") {
                 erroresResponsables.push("Año de Ejecución");
+                const anioToggle = anioSelect?.closest('.tipo-toggle');
+                if (anioToggle) {
+                    anioToggle.classList.add("field-error");
+                    if (!primerCampoConError) primerCampoConError = anioToggle;
+                }
             }
 
             if (!supervisorHidden || supervisorHidden.value === "") {
                 erroresResponsables.push("Supervisor del Proyecto");
+                const supervisorInput = frame.querySelector('.supervisor-search');
+                if (supervisorInput) {
+                    supervisorInput.classList.add("field-error");
+                    if (!primerCampoConError) primerCampoConError = supervisorInput;
+                }
             }
 
             if (!avalHidden || avalHidden.value === "") {
                 erroresResponsables.push("Aval del Proyecto");
+                const avalInput = frame.querySelector('.aval-search');
+                if (avalInput) {
+                    avalInput.classList.add("field-error");
+                    if (!primerCampoConError) primerCampoConError = avalInput;
+                }
             }
 
             if (erroresResponsables.length > 0) {
@@ -1209,9 +1227,16 @@ initPersonalSearch({
                 erroresResponsables.forEach(r => {
                     const li = document.createElement("li");
                     li.classList.add("list-group-item", "bg-dark", "text-light");
-                    li.innerHTML = `<strong>Responsables:</strong> ${r}`;
+                    li.innerHTML = `<strong>Falta:</strong> ${r}`;
                     lista.appendChild(li);
                 });
+
+                if (primerCampoConError) {
+                    primerCampoConError.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+                }
 
                 new bootstrap.Modal(
                     document.getElementById("erroresModal")
@@ -1219,10 +1244,6 @@ initPersonalSearch({
 
                 return;
             }
-
-            limpiarErroresVisuales(frame);
-
-            let primerCampoConError = null;
 
             const indicadoresRows = frame.querySelectorAll(".indicator-row");
             const accionesRows = frame.querySelectorAll(".accion-row");

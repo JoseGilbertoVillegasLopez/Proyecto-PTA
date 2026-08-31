@@ -196,6 +196,15 @@
 						</li>
 					{% endif %}
 
+					<li class="pta-dashboard-menu-item">
+						<a href="{{ path('app_admin_dashboard', { section: 'ayuda' }) }}"
+						   class="pta-dashboard-link {{ currentSection == 'ayuda' ? 'pta-dashboard-link--active' : '' }}"
+						   data-turbo-action="advance">
+							<i class="bi bi-question-circle"></i>
+							<span>Ayuda</span>
+						</a>
+					</li>
+
 				</ul>
 
 			</div>
@@ -236,7 +245,8 @@
 				'reporte_indicadores': path('app_reporte_indicadores_index'),
 				'reporte_indicadores_encargado': path('app_reporte_indicadores_encargado_index'),
 				'reporte_pta_encargado': path('app_reporte_pta_encargado_index'),
-				'modulos_acceso': path('app_admin_modulo_acceso_index')
+				'modulos_acceso': path('app_admin_modulo_acceso_index'),
+				'ayuda': path('app_manual_index')
 			} %}
 
 			{% if is_granted('ROLE_ADMIN') %}
