@@ -198,7 +198,11 @@
                 select.innerHTML = '<option value="">Sin cargo</option>' +
                     Object.entries(cargosCatalogo).map(([valor, label]) => `<option value="${valor}">${label}</option>`).join('');
                 div.appendChild(select);
-                crearMaSelectCombobox(select);
+                // Solo tiene sentido en móvil (evita el picker nativo de Android/iOS);
+                // en escritorio se deja el <select> nativo con su tema oscuro.
+                if (window.matchMedia('(max-width: 1330px)').matches) {
+                    crearMaSelectCombobox(select);
+                }
             }
 
             const btn = document.createElement('button');
@@ -263,7 +267,9 @@
                 removeFromCol(card.dataset.id, card.dataset.nombre, 'encargados');
             });
             const cargoSelect = card.querySelector('.ma-puesto-card-cargo');
-            if (cargoSelect) crearMaSelectCombobox(cargoSelect);
+            if (cargoSelect && window.matchMedia('(max-width: 1330px)').matches) {
+                crearMaSelectCombobox(cargoSelect);
+            }
         });
 
         if (usaAcceso) {

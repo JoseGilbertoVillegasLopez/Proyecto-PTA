@@ -10,9 +10,13 @@ function inicializarPtaIndexCombobox() {
 
     contenedor.dataset.comboboxInit = 'true';
 
-    contenedor
-        .querySelectorAll('select[name="anio"], select[name="departamento"], select[name="puesto"]')
-        .forEach((select) => crearComboboxDesdeSelect(select));
+    // El dropdown propio solo tiene sentido en móvil (evita el picker nativo
+    // de Android/iOS); en escritorio se deja el <select> nativo con su tema oscuro.
+    if (window.matchMedia('(max-width: 1330px)').matches) {
+        contenedor
+            .querySelectorAll('select[name="anio"], select[name="departamento"], select[name="puesto"]')
+            .forEach((select) => crearComboboxDesdeSelect(select));
+    }
 }
 
 /**

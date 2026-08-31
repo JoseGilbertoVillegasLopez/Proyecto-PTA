@@ -155,8 +155,12 @@ function bootSgNew(context) {
         sincronizarTexto();
     }
 
-    root.querySelectorAll('#tipo_solicitud, #documento_verificacion, #banco')
-        .forEach(crearSgSelectCombobox);
+    // Solo tiene sentido en móvil (evita el picker nativo de Android/iOS);
+    // en escritorio se deja el <select> nativo con su tema oscuro.
+    if (window.matchMedia('(max-width: 1330px)').matches) {
+        root.querySelectorAll('#tipo_solicitud, #documento_verificacion, #banco')
+            .forEach(crearSgSelectCombobox);
+    }
 
     // ── DATOS JSON ────────────────────────────────────────────
     var partidas = [], procesosClave = [], procesosEstrategicos = [];
