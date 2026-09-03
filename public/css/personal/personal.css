@@ -1353,6 +1353,52 @@
 }
 
 /* =========================================================
+   INPUT FILE (DICTAMEN)
+   class="personal-new-input-file"
+   ========================================================= */
+.personal-new-input-file {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(13, 202, 240, 0.15);
+    background: linear-gradient(
+        145deg,
+        rgba(18, 27, 35, 0.95),
+        rgba(10, 16, 22, 0.9)
+    );
+    color: #e6f1ff;
+    font-size: 0.9rem;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.personal-new-input-file:focus {
+    border-color: #0dcaf0;
+    box-shadow: 0 0 0 2px rgba(13, 202, 240, 0.25);
+}
+
+.personal-new-input-file::file-selector-button {
+    margin-right: 12px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(13, 202, 240, 0.16);
+    color: #0dcaf0;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.personal-new-input-file::file-selector-button:hover {
+    background: rgba(13, 202, 240, 0.28);
+    color: #ffffff;
+}
+
+/* =========================================================
    SELECTS
    class="personal-new-select"
    ========================================================= */
